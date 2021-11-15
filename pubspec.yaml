@@ -30,6 +30,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   sizer: ^2.0.13
   flutter_svg: ^0.22.0
+  flutter_native_splash: ^1.2.4
+  shared_preferences: ^2.0.7
+  email_validator: ^2.0.1
+  carousel_slider: ^4.0.0
+  http: ^0.13.3
+  
 
 dev_dependencies:
   flutter_test:
@@ -64,12 +70,51 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Black.ttf
+        - asset: assets/fonts/Roboto-BlackItalic.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+        - asset: assets/fonts/Roboto-BoldItalic.ttf
+        - asset: assets/fonts/Roboto-Italic.ttf
+        - asset: assets/fonts/Roboto-Light.ttf
+        - asset: assets/fonts/Roboto-LightItalic.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+        - asset: assets/fonts/Roboto-MediumItalic.ttf
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Thin.ttf
+        - asset: assets/fonts/Roboto-ThinItalic.ttf
+        - asset: assets/fonts/RobotoCondensed-Bold.ttf
+        - asset: assets/fonts/RobotoCondensed-BoldItalic.ttf
+        - asset: assets/fonts/RobotoCondensed-Italic.ttf
+        - asset: assets/fonts/RobotoCondensed-Light.ttf
+        - asset: assets/fonts/RobotoCondensed-LightItalic.ttf
+        - asset: assets/fonts/RobotoCondensed-Regular.ttf
+
+
+
+  
+    - family: RobotoCondensed
+      fonts:
+        - asset: assets/fonts/RobotoCondensed-Bold.ttf
+        - asset: assets/fonts/RobotoCondensed-BoldItalic.ttf
+        - asset: assets/fonts/RobotoCondensed-Italic.ttf
+        - asset: assets/fonts/RobotoCondensed-Light.ttf
+        - asset: assets/fonts/RobotoCondensed-LightItalic.ttf
+        - asset: assets/fonts/RobotoCondensed-Regular.ttf
+
+    - family: Segoepr
+      fonts:
+        - asset: assets/fonts/segoepr.ttf
+        - asset: assets/fonts/segoeprb.ttf
+           
+     
+       
+
+
+        
+       
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

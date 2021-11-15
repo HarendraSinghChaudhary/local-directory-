@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wemarkthespot/screens/introduction_Screen.dart';
-import 'package:wemarkthespot/screens/login_screen.dart';
+
+
+
+import 'package:wemarkthespot/screens/splash.dart';
+
+
+
 import 'package:wemarkthespot/theme.dart';
 
 void main() {
@@ -17,7 +22,7 @@ class WeMarkTheSpot extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'We Mark The Spot',
           theme: theme(),
-          home:  IntdroductionScreen(),
+          home:  Splash()
         );
       },
     );

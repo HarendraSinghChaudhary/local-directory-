@@ -29,8 +29,13 @@ class DefaultButton extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: 14.sp,
             color: Colors.white,
+            fontFamily: 'Roboto'
+            
+
+            
+
           ),
         ),
       ),

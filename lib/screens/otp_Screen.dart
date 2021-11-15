@@ -1,20 +1,32 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/screens/change_password.dart';
+import 'package:wemarkthespot/screens/resetPassword.dart';
+import 'package:wemarkthespot/services/api_client.dart';
 import '../constant.dart';
 
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({ Key? key }) : super(key: key);
+
+  String email;
+
+  OtpScreen({required this.email});
+
+  
 
   @override
   _OtpScreenState createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  bool isloading = false;
 
-
+  late FocusNode pin1FocusNode;
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
   late FocusNode pin4FocusNode;
@@ -23,6 +35,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
+    pin1FocusNode = FocusNode();
     pin2FocusNode = FocusNode();
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
@@ -32,6 +45,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void dispose() {
     super.dispose();
+    pin1FocusNode.dispose();
     pin2FocusNode.dispose();
     pin3FocusNode.dispose();
     pin4FocusNode.dispose();
@@ -40,6 +54,12 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void nextField(String value, FocusNode focusNode) {
     if (value.length == 1) {
+      focusNode.requestFocus();
+    }
+  }
+
+   void previousField(String value, FocusNode focusNode) {
+    if (value.length == 0) {
       focusNode.requestFocus();
     }
   }
@@ -57,9 +77,17 @@ class _OtpScreenState extends State<OtpScreen> {
                SizedBox(
                 height: 12.h,
               ),
+
+              Center(child: Image.asset("assets/images/logo_name.png")),
+
+              SizedBox(
+                height: 8.h,
+              ),
               Text(
                 "OTP Verification",
-                style: TextStyle(color: kCyanColor, fontSize: 20.sp),
+                style: TextStyle(color: kCyanColor, fontSize: 18.5.sp,
+                fontFamily: 'Segoepr'
+                ),
               ),
 
               SizedBox(height: 2.h,),
@@ -67,7 +95,9 @@ class _OtpScreenState extends State<OtpScreen> {
 
               Text(
                 "Please enter OTP to reset your password",
-                style: TextStyle(color: Colors.grey, fontSize: 10.sp),
+                style: TextStyle(color: Color(0xFFCECECE), fontSize: 11.sp,
+                fontFamily: 'Roboto'
+                ),
               ),
 
               SizedBox(height: 10.h,),
@@ -81,6 +111,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(
                   width: 60,
                   child: TextFormField(
+                    focusNode: pin1FocusNode,
                     autofocus: true,
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
@@ -90,6 +121,10 @@ class _OtpScreenState extends State<OtpScreen> {
                     decoration: otpInputDecoration,
                     onChanged: (value) {
                       nextField(value, pin2FocusNode);
+                      //previousField(value, pin2FocusNode);
+
+                      
+                     
                     },
                   ),
                 ),
@@ -97,13 +132,16 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 60,
                   child: TextFormField(
                     focusNode: pin2FocusNode,
+
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
                     color: Colors.white),
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     decoration: otpInputDecoration,
-                    onChanged: (value) => nextField(value, pin3FocusNode),
+                    onChanged: (value) { nextField(value, pin3FocusNode);
+                     previousField(value, pin2FocusNode);
+                    }
                   ),
                 ),
                 SizedBox(
@@ -117,7 +155,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     decoration: otpInputDecoration,
-                    onChanged: (value) => nextField(value, pin4FocusNode),
+                    onChanged: (value) { nextField(value, pin4FocusNode);
+                    previousField(value, pin3FocusNode);
+                    }
                   ),
                 ),
                 
@@ -156,7 +196,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Text("Resend OTP",
                 style: TextStyle(
                   color: kPrimaryColor,
-                  fontSize: 12.sp
+                  fontSize: 12.sp,
+                  fontFamily: 'Roboto'
                 ),
                 ),
               ),
@@ -164,15 +205,23 @@ class _OtpScreenState extends State<OtpScreen> {
 
               SizedBox(height: 7.h,),
 
+               isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :
+
               DefaultButton(
-                width: 45.w, 
-                height: 8.h,
+                width: 40.w, 
+                height: 6.h,
                 text: "Continue",
                 
                 
                 press: () {
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePassword()));
+             
                 })
 
 
@@ -182,4 +231,84 @@ class _OtpScreenState extends State<OtpScreen> {
         )
     );
   }
+
+
+
+    Future<dynamic> forgotPasswordApi(String email, String otp) async {
+    setState(() {
+      isloading = true;
+    });
+    print(email);
+   
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          RestDatasource.OTPPASSWORD_URL,
+         
+        ),
+        body: {
+          "email": widget.email.toString().trim(),
+          "otp": pin1FocusNode.toString()+pin2FocusNode.toString()+pin3FocusNode.toString()+pin4FocusNode.toString()
+
+          
+          
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+      msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('id', jsonRes["data"]["id"].toString());
+        // prefs.setString('email', jsonRes["data"]["email"].toString());
+        // prefs.commit();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => ResetPassword()),
+            (route) => false);
+
+        setState(() {
+          isloading = false;
+        });
+      }else{
+        setState(() {
+          isloading = false;
+        });
+            ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+
+
+
+
+
+
+
+
+
 }

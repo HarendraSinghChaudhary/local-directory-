@@ -7,25 +7,25 @@ class IntdroductionScreen extends StatefulWidget {
   const IntdroductionScreen({Key? key}) : super(key: key);
 
   @override
-  _IntdroductionScreenState createState() => _IntdroductionScreenState();
+  _InteroductionScreenState createState() => _InteroductionScreenState();
 }
 
-class _IntdroductionScreenState extends State<IntdroductionScreen> {
+class _InteroductionScreenState extends State<IntdroductionScreen> {
   int currentPage = 0;
   List<Map<String, String>> splashData = [
     {
       "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
       "image": "assets/images/resimage.jpg"
     },
     {
       "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
       "image": "assets/images/resimage.jpg"
     },
     {
       "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
       "image": "assets/images/resimage.jpg"
     },
   ];
@@ -84,7 +84,10 @@ class _IntdroductionScreenState extends State<IntdroductionScreen> {
                             "Skip",
                             textAlign: TextAlign.end,
                             style:
-                                TextStyle(color: kPrimaryColor, fontSize: 12.sp),
+                                TextStyle(color: kPrimaryColor, 
+                                fontSize: 12.sp,
+                                fontFamily: 'Roboto'
+                                ),
                           ),
                         ),
                       ],
@@ -128,10 +131,10 @@ class SplashContent extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: Container(
-            height: 100.h,
+            height: 120.h,
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Color(0xFFFFECDF),
+              
                 borderRadius: BorderRadius.circular(5),
                 boxShadow: [
                   BoxShadow(
@@ -142,11 +145,18 @@ class SplashContent extends StatelessWidget {
                 ],
                 image: DecorationImage(
                     image: AssetImage(image), fit: BoxFit.cover)),
+
+                //     child: FadeInImage(placeholder: AssetImage("assets/images/resimage.jpg"), 
+                // image: AssetImage(image),
+                // fit: BoxFit.fill,
+                // ),
+
+
           ),
         ),
-        SizedBox(
-          height: 4.h,
-        ),
+        // SizedBox(
+        //   height: 2.h,
+        // ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: Container(
@@ -156,13 +166,22 @@ class SplashContent extends StatelessWidget {
               children: [
                 Text(
                   "Lorem Ipsum",
-                  style: TextStyle(fontSize: 20.sp, color: kCyanColor),
+                  style: TextStyle(fontSize: 22.sp, color: kCyanColor,
+                  fontFamily: 'Segoepr'
+                  
+                  ),
                 ),
                 SizedBox(
                   height: 2.h,
                 ),
                 Text(
                   text,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: 'Roboto',
+                    color: Colors.white.withOpacity(0.7)
+                  
+                  ),
                   textAlign: TextAlign.start,
                 ),
               ],
