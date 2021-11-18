@@ -24,22 +24,20 @@ class EditProfile extends StatefulWidget {
   String dob;
   String image;
 
-
-  EditProfile({required this.id, required this.name, required this.email, required this.country_code, required this.phone, required this.dob, required this.image});
+  EditProfile(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.country_code,
+      required this.phone,
+      required this.dob,
+      required this.image});
 
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-
-
-  
-
-
-
-
-
   String? uptoname;
   String? uptoemail;
   String? uptoPhone;
@@ -48,39 +46,34 @@ class _EditProfileState extends State<EditProfile> {
   String? code = "91";
   bool isloading = false;
   String image = "";
-    String base64Image = "";
+  String base64Image = "";
   String fileName = "";
   File? file;
   bool isLoading = false;
   final picker = ImagePicker();
   get kPrimaryColor => null;
 
-   final formkey = GlobalKey<FormState>();
-
-
+  final formkey = GlobalKey<FormState>();
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
   TextEditingController dOBController = new TextEditingController();
 
-
   @override
-void initState() {
-  super.initState();
-  nameController.text=widget.name;
-  emailController.text = widget.email;
-  phoneController.text = widget.phone;
-  dOBController.text = widget.dob;
-}
+  void initState() {
+    super.initState();
+    nameController.text = widget.name;
+    emailController.text = widget.email;
+    phoneController.text = widget.phone;
+    dOBController.text = widget.dob == 'null' ? '' : widget.dob;
+  }
 
-
-
-
+  String? dob;
   @override
   Widget build(BuildContext context) {
-
-    print("name1: " +widget.name.toString() );
+    print(dOBController.text.runtimeType);
+    print("name1: " + widget.name.toString());
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -107,25 +100,22 @@ void initState() {
                     child: Stack(
                       children: [
                         file == null
-                    ? 
-                        CircleAvatar(
-                          radius: 15.w,
-                          backgroundImage:
-                              NetworkImage(widget.image.toString()),
-                        ): 
-
-                        CircleAvatar(
-                          radius: 15.w,
-                          backgroundImage:
-                              FileImage(File(file!.path)),
-                        ),
+                            ? CircleAvatar(
+                                radius: 15.w,
+                                backgroundImage:
+                                    NetworkImage(widget.image.toString()),
+                              )
+                            : CircleAvatar(
+                                radius: 15.w,
+                                backgroundImage: FileImage(File(file!.path)),
+                              ),
                         Positioned(
                           top: 12.h,
                           left: 12.w,
                           child: InkWell(
-                            onTap: (){
-                                getImage();
-                              },
+                            onTap: () {
+                              getImage();
+                            },
                             child: Container(
                               height: 4.h,
                               width: 4.h,
@@ -147,129 +137,110 @@ void initState() {
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: builNameFormField(),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: buildEmailFormField(),
             ),
-
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: buildPhoneFormField(),
+            // ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: buildPhoneFormField(),
+              child: GestureDetector(
+                  onTap: () {
+                    var picked = showDatePicker(
+                      context: context,
+                      initialDate: DateTime(2021),
+                      firstDate: DateTime(1970),
+                      lastDate: DateTime.now(),
+                    );
+                    picked.then((value) {
+                      // print(value!.day.toString().padLeft(2, '0'));
+                      // print(value.month.toString().padLeft(2, '0'));
+                      setState(() {
+                        dob = value!.day.toString().padLeft(2, '0') +
+                            '/' +
+                            value.month.toString().padLeft(2, '0') +
+                            '/' +
+                            value.year.toString();
+                        print(dob);
+                        dOBController.text = dob!;
+                      });
+                    });
+                  },
+                  child: buildDOBFormField()),
             ),
-
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: buildDOBFormField(),
+            SizedBox(
+              height: 3.5.h,
             ),
+            isloading
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator()
+                        : CupertinoActivityIndicator())
+                : DefaultButton(
+                    width: 40.w,
+                    height: 6.h,
+                    text: "Save",
+                    press: () {
+                      uptoname = nameController.text.toString();
+                      if (uptoname == null) {
+                        uptoname = widget.name.toString();
+                      }
+                      print("name: " + uptoname.toString());
 
+                      uptoemail = emailController.text.toString();
 
+                      if (uptoemail == null) {
+                        uptoemail = widget.email.toString();
+                      }
+                      print("email : " + uptoemail.toString());
 
-            SizedBox(height: 3.5.h,),
+                      uptoPhone = phoneController.text.toString();
 
+                      if (uptoPhone == null) {
+                        uptoPhone = phoneController.text.toString();
+                        print(
+                            "phone Number: " + phoneController.text.toString());
+                      }
 
+                      uptoDob = dOBController.text.toString();
 
+                      if (uptoDob == null) {
+                        uptoDob = phoneController.text.toString();
+                        print("dob: " + dOBController.text.toString());
+                      }
 
+                      uploadData(
+                          uptoname.toString(),
+                          widget.email.toString(),
+                          uptoPhone.toString(),
+                          uptoDob.toString(),
+                          widget.country_code.toString());
 
-             isloading
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator()
-                          : CupertinoActivityIndicator())
-                  :
-
-
-
-
-
-            DefaultButton(
-              width: 40.w, 
-              height: 6.h, 
-              text: "Save", 
-              press: () {
-
-                
-                       
-                        uptoname = nameController.text.toString();
-                         if (uptoname  == null){
-                          uptoname  = widget.name.toString();
-                          
-                          } 
-                          print("name: "+uptoname .toString());
-
-                          uptoemail= emailController.text.toString();
-
-
-                          if (uptoemail == null) {
-
-                          uptoemail=  widget.email.toString();
-
-                            
-                          }
-                          print("email : " +uptoemail.toString());
-
-
-                        
-                            
-                              
-                              uptoPhone = phoneController.text.toString();
-                            
-
-                            if(uptoPhone==null){
-                              uptoPhone = phoneController.text.toString();
-                              print("phone Number: " +phoneController.text.toString());
-                            }
-
-
-                            uptoDob = dOBController.text.toString();
-
-                            if(uptoDob==null){
-                              uptoDob = phoneController.text.toString();
-                              print("dob: " +dOBController.text.toString());
-                            }
-
-
-                          
-                            uploadData(uptoname.toString(), widget.email.toString(), uptoPhone.toString(), uptoDob.toString(), widget.country_code.toString());
-
-                            // userRegister(email.toString(), phone.toString(),
-                            //     firstname.toString() + ' ' + lastname.toString());
-                          
-
-               
-              })
-
-
-
-            
-
-
-
+                      // userRegister(email.toString(), phone.toString(),
+                      //     firstname.toString() + ' ' + lastname.toString());
+                    })
           ],
         ),
       ),
     );
   }
 
-
-
   TextFormField builNameFormField() {
     return TextFormField(
       controller: nameController,
-      
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: TextInputType.emailAddress,
-       
       decoration: InputDecoration(
-        hintText: "Elina Rosewelt",
+        hintText: "Name",
         hintStyle: TextStyle(color: Colors.white),
         focusColor: Colors.white,
 
@@ -277,109 +248,103 @@ void initState() {
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
         fillColor: Colors.white,
-        
       ),
     );
   }
-
-
 
   TextFormField buildEmailFormField() {
     return TextFormField(
       controller: emailController,
       enabled: false,
-     
-      
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: TextInputType.emailAddress,
-       inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
         hintText: "elina@dmail.com",
         hintStyle: TextStyle(color: Colors.white),
         focusColor: Colors.white,
+        disabledBorder: outlineInputBorder(),
+        // border:outline  //OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
 
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
         fillColor: Colors.white,
-        
-        
       ),
     );
   }
 
+  // TextFormField buildPhoneFormField() {
+  //   return TextFormField(
+  //     controller: phoneController,
 
-  TextFormField buildPhoneFormField() {
-    return TextFormField(
-      controller: phoneController,
-      
-      style: TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      keyboardType: TextInputType.number,
-       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: InputDecoration(
-        hintText: "9876543210",
-        hintStyle: TextStyle(color: Colors.white),
-        focusColor: Colors.white,
-         prefixIcon: CountryCodePicker(
-                          
-                           showFlag: true,
-                          
-                          onChanged: print,
-                          // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                          initialSelection: "+"+widget.country_code.toString(),
-                          // favorite: ['+91', 'FR'],
-                          // optional. Shows only country name and flag
-                          showCountryOnly: false,
-                          // optional. Shows only country name and flag when popup is closed.
-                          showOnlyCountryWhenClosed: false,
-                          // optional. aligns the flag and the Text left
-                          alignLeft: false,
-                        ),
+  //     style: TextStyle(color: Colors.white),
+  //     cursorColor: Colors.white,
+  //     keyboardType: TextInputType.number,
+  //      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+  //     decoration: InputDecoration(
+  //       hintText: "9876543210",
+  //       hintStyle: TextStyle(color: Colors.white),
+  //       focusColor: Colors.white,
+  //        prefixIcon: CountryCodePicker(
 
-        // If  you are using latest version of flutter then lable text and hint text shown like this
-        // if you r using flutter less then 1.20.* then maybe this is not working properly
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        fillColor: Colors.white,
-        
-      ),
-    );
-  }
+  //                          showFlag: true,
 
+  //                         onChanged: print,
+  //                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+  //                         initialSelection: "+"+widget.country_code.toString(),
+  //                         // favorite: ['+91', 'FR'],
+  //                         // optional. Shows only country name and flag
+  //                         showCountryOnly: false,
+  //                         // optional. Shows only country name and flag when popup is closed.
+  //                         showOnlyCountryWhenClosed: false,
+  //                         // optional. aligns the flag and the Text left
+  //                         alignLeft: false,
+  //                       ),
 
+  //       // If  you are using latest version of flutter then lable text and hint text shown like this
+  //       // if you r using flutter less then 1.20.* then maybe this is not working properly
+  //       floatingLabelBehavior: FloatingLabelBehavior.always,
+  //       fillColor: Colors.white,
+
+  //     ),
+  //   );
+  // }
 
   TextFormField buildDOBFormField() {
     return TextFormField(
       controller: dOBController,
-      
+
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
+      enabled: false,
       //keyboardType: TextInputType.emailAddress,
-       inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
-        hintText: "12/12/1998",
-        hintStyle: TextStyle(color: Colors.white,
-        fontStyle: FontStyle.normal
-        ),
+        disabledBorder: outlineInputBorder(),
+        hintText: "DD/MM/YYYY",
+        hintStyle: TextStyle(color: Colors.white, fontStyle: FontStyle.normal),
         focusColor: Colors.white,
 
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
         fillColor: Colors.white,
-        suffixIcon: 
-        
-        
-        CustommSurffixIcon(
+        suffixIcon: CustommSurffixIcon(
           svgIcon: "assets/icons/-calendar.svg",
-          
         ),
       ),
     );
   }
 
-   Future<dynamic> uploadData(String name, String email, String phone, String dob, String country_code, ) async {
+  Future<dynamic> uploadData(
+    String name,
+    String email,
+    String phone,
+    String dob,
+    String country_code,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -397,30 +362,28 @@ void initState() {
     );
     if (name.toString() != "null" || name.toString() != "") {
       request.fields["name"] = name.toString();
-      print("name: "+name.toString());
+      print("name: " + name.toString());
     }
 
-      if (email.toString() != "null" || email.toString() != "") {
+    if (email.toString() != "null" || email.toString() != "") {
       request.fields["email"] = widget.email.toString();
-      print("email: "+email.toString());
+      print("email: " + email.toString());
     }
 
-      if (phone.toString() != "null" || phone.toString() != "") {
+    if (phone.toString() != "null" || phone.toString() != "") {
       request.fields["phone"] = phone.toString();
-      print("phone: "+phone.toString());
+      print("phone: " + phone.toString());
     }
 
-     if (dob.toString() != "dob" || phone.toString() != "") {
+    if (dob.toString() != "dob" || phone.toString() != "") {
       request.fields["dob"] = dob.toString();
-      print("dob: "+dob.toString());
+      print("dob: " + dob.toString());
     }
 
-     if (country_code.toString() != "null" || country_code.toString() != "") {
+    if (country_code.toString() != "null" || country_code.toString() != "") {
       request.fields["country_code"] = country_code.toString();
-      print("country_code: "+country_code.toString());
+      print("country_code: " + country_code.toString());
     }
-
-  
 
     request.fields["id"] = id.toString();
     //request.files.add(await http.MultipartFile.fromPath(base64Image, fileName));
@@ -448,11 +411,12 @@ void initState() {
 
       if (jsonRes["status"].toString() == "true") {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        
+
         prefs.setString('id', jsonRes["data"]["id"].toString());
         prefs.setString('email', jsonRes["data"]["email"].toString());
         prefs.setString('name', jsonRes["data"]["name"].toString());
-        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString(
+            'country_code', jsonRes["data"]["country_code"].toString());
         prefs.setString('phone', jsonRes["data"]["phone"].toString());
         prefs.setString('dob', jsonRes["data"]["dob"].toString());
         prefs.setString('image', jsonRes["data"]["image"].toString());
@@ -460,9 +424,6 @@ void initState() {
         setState(() {
           isloading = false;
         });
-
-
-
 
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));
@@ -484,13 +445,7 @@ void initState() {
     }
   }
 
-
-
-
-
-
-
-    Future getImage() async {
+  Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
@@ -507,55 +462,15 @@ void initState() {
     print("Image: " + base64Image.toString() + "_");
     setState(() {});
   }
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class CustommSurffixIcon extends StatelessWidget {
   const CustommSurffixIcon({
     Key? key,
     required this.svgIcon,
-   
   }) : super(key: key);
 
   final String svgIcon;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -573,5 +488,4 @@ class CustommSurffixIcon extends StatelessWidget {
       ),
     );
   }
-
 }

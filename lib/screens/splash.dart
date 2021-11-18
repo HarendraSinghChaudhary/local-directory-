@@ -7,8 +7,6 @@ import 'package:wemarkthespot/screens/introduction_Screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
 
-
-
 class Splash extends StatefulWidget {
   @override
   State<Splash> createState() => _SplashState();
@@ -26,7 +24,6 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Center(
         child: Container(
           child: Stack(
@@ -34,18 +31,13 @@ class _SplashState extends State<Splash> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-              child: 
-              
-              Image.asset('assets/images/bg.png'),
-            ),
-
-            Center(child: SvgPicture.asset("assets/icons/logo-2.svg")),
-           
-            Positioned(
-              bottom: 5.h,
-              left: 30.w,
-
-              child: Image.asset("assets/images/where.png"))
+                child: Image.asset('assets/images/bg.png'),
+              ),
+              Center(child: SvgPicture.asset("assets/icons/logo-2.svg")),
+              Positioned(
+                  bottom: 5.h,
+                  left: 30.w,
+                  child: Image.asset("assets/images/where.png"))
             ],
           ),
         ),
@@ -59,13 +51,12 @@ class _SplashState extends State<Splash> {
     print("id :" + id.toString() + "^");
 
     Future.delayed(Duration(seconds: 3), () {
+      // Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => IntdroductionScreen()));
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => IntdroductionScreen()));
-
-
-      id.toString() == "" || id.toString() == "null" || id == null
-          ? Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()))
+      id.toString() == "" || id.toString() == "null" || id == ''
+          ? Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => IntdroductionScreen()))
           : Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomeNav()));
     });

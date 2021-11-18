@@ -9,34 +9,30 @@ import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/screens/inTheKnow.dart';
 import 'package:wemarkthespot/screens/location.dart';
 
-
-
-
-
 class HomeNav extends StatefulWidget {
-
-  
   @override
   _HomeNavState createState() => _HomeNavState();
 }
 
 class _HomeNavState extends State<HomeNav> {
   int _index = 0;
-  List widgets = <Widget>[Home(), Explore(), Hotspot(), InTheKnow(), Account()];
+  List widgets = <Widget>[
+    Home(),
+    Scaffold(), Scaffold(), Scaffold(),
+    // Explore(), Hotspot(), InTheKnow(),
+    Account()
+  ];
 
-    //LanguageChange languageChange = new LanguageChange();
-    GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
+  //LanguageChange languageChange = new LanguageChange();
+  GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 
-
-   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: widgets.elementAt(_index),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        
+          backgroundColor: Colors.black,
           currentIndex: _index,
           type: BottomNavigationBarType.fixed,
           // showSelectedLabels: true,
@@ -54,14 +50,14 @@ class _HomeNavState extends State<HomeNav> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/icons/home.svg',
-                  width: 8.w,
-                  color: _index == 0 ? Color(0xFF1DC2C2) : Color(0xFF7A7A7A),
-                ),
-                //dashboard
-                label: "",
-                ),
+              icon: SvgPicture.asset(
+                'assets/icons/home.svg',
+                width: 8.w,
+                color: _index == 0 ? Color(0xFF1DC2C2) : Color(0xFF7A7A7A),
+              ),
+              //dashboard
+              label: "",
+            ),
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/icons/location1.svg',
@@ -89,8 +85,7 @@ class _HomeNavState extends State<HomeNav> {
 
                 //Menu
                 label: ""),
-
-                 BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   'assets/icons/tab_profile1.svg',
                   width: 6.w,
@@ -107,7 +102,8 @@ class _HomeNavState extends State<HomeNav> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var id = pref.getString("id").toString();
     var email = pref.getString("email").toString();
-      final BottomNavigationBar? navigationBar = globalKey.currentWidget as BottomNavigationBar?;
+    final BottomNavigationBar? navigationBar =
+        globalKey.currentWidget as BottomNavigationBar?;
     navigationBar!.onTap!(1);
   }
 }

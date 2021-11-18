@@ -16,9 +16,7 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  var name, email, id, country_code, phone, dob,image ;
-
-  
+  var name, email, id, country_code, phone, dob, image;
 
   @override
   void initState() {
@@ -28,7 +26,6 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
-    print("nameyes: "+name.toString());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -102,27 +99,28 @@ class _AccountState extends State<Account> {
                     SizedBox(
                       height: 0.7.h,
                     ),
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/phone.svg",
-                          width: 3.5.w,
-                        ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        Text(
-                          country_code.toString()+phone.toString(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 12.sp,
-                              fontFamily: 'Roboto'),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 0.7.h,
-                    ),
+                    // Row(
+                    //   children: [
+                    //     SvgPicture.asset(
+                    //       "assets/icons/phone.svg",
+                    //       width: 3.5.w,
+                    //     ),
+                    //     SizedBox(
+                    //       width: 2.w,
+                    //     ),
+                    //     Text(
+                    //       country_code.toString()+phone.toString(),
+                    //       style: TextStyle(
+                    //           color: Colors.white.withOpacity(0.8),
+                    //           fontSize: 12.sp,
+                    //           fontFamily: 'Roboto'),
+                    //     ),
+                    //   ],
+                    // ),
+
+                    // SizedBox(
+                    //   height: 0.7.h,
+                    // ),
                     Row(
                       children: [
                         SvgPicture.asset(
@@ -133,7 +131,7 @@ class _AccountState extends State<Account> {
                           width: 2.w,
                         ),
                         Text(
-                          dob.toString(),
+                          dob == "null" ? "DD/MM/YYYY" : dob.toString(),
                           style: TextStyle(
                               color: Colors.white.withOpacity(0.8),
                               fontSize: 12.sp,
@@ -166,16 +164,18 @@ class _AccountState extends State<Account> {
               height: 6.h,
               text: "Edit",
               press: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditProfile(
-                      id: id.toString(),
-                      name: name.toString(),
-                      email: email.toString(),
-                      country_code: country_code.toString(),
-                      phone: phone.toString(),
-                      dob: dob.toString(),
-                      image: image.toString(),
-                    )));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProfile(
+                              id: id.toString(),
+                              name: name.toString(),
+                              email: email.toString(),
+                              country_code: country_code.toString(),
+                              phone: phone.toString(),
+                              dob: dob.toString(),
+                              image: image.toString(),
+                            )));
               }),
           SizedBox(
             height: 3.h,
@@ -428,8 +428,6 @@ class _AccountState extends State<Account> {
     image = pref.getString("image").toString();
     print("image: " + image.toString());
 
-    setState(() {
-      
-    });
+    setState(() {});
   }
 }

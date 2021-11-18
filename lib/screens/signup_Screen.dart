@@ -24,13 +24,11 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
   bool obscure = true;
   bool obscure1 = true;
 
-    String guestMail = "guest@yopmail.com";
+  String guestMail = "guest@yopmail.com";
   String guestPassword = "123456";
-
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
@@ -39,10 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool checkTandC = false;
   var _selected = "0";
-
+  bool agree = false;
   bool isloading = false;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +58,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                    guestApi(guestMail.toString().trim(), guestPassword.toString().trim());
+                        guestApi(guestMail.toString().trim(),
+                            guestPassword.toString().trim());
                       },
                       child: Text(
                         "Skip",
@@ -154,23 +151,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               Row(
                 children: [
-                  Radio(
-                    activeColor: kPrimaryColor,
-                    hoverColor: Colors.white,
-                    fillColor: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return kPrimaryColor;
-                      }
-                      return Colors.white60;
-                    }),
-                    value: "1",
-                    groupValue: _selected,
-                    onChanged: (val) {
-                      setState(() {
-                        _selected = val.toString();
-                      });
-                    },
-                  ),
+                  Checkbox(
+                      activeColor: Color(0xFFE9BC1D),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            topRight: Radius.circular(5),
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5)),
+                      ),
+                      fillColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return kPrimaryColor;
+                        }
+                        return Colors.white60;
+                      }),
+                      value: agree,
+                      onChanged: (val) {
+                        setState(() {
+                          agree = val!;
+                        });
+                      }),
+
+                  // Radio(
+                  //   activeColor: kPrimaryColor,
+                  //   hoverColor: Colors.white,
+                  //   fillColor: MaterialStateProperty.resolveWith((states) {
+                  //     if (states.contains(MaterialState.selected)) {
+                  //       return kPrimaryColor;
+                  //     }
+                  //     return Colors.white60;
+                  //   }),
+                  //   value: true,
+                  //   groupValue: selected,
+                  //   onChanged: (val) {
+                  //     setState(() {
+                  //       selected = !selected;
+                  //     });
+                  //   },
+                  // ),
                   Text(
                     "I agree with terms and condition and private policy",
                     style: TextStyle(color: kPrimaryColor, fontSize: 10.sp),
@@ -214,58 +233,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Platform.isAndroid
                           ? CircularProgressIndicator()
                           : CupertinoActivityIndicator())
-                  :
+                  : DefaultButton(
+                      width: 40.w,
+                      height: 6.h,
+                      text: "Sign Up",
+                      press: () {
+                        print(_selected);
+                        if (agree) {
+                          String username = "";
+                          username = nameController.text.toString().trim();
 
-              DefaultButton(
-                  width: 40.w,
-                  height: 6.h,
-                  text: "Sign Up",
-                  press: () {
-                    String username = "";
-                    username = nameController.text.toString().trim();
-                   
-                    var email = emailController.text.toString().trim();
-                    var password = passwordController.text.toString().trim();
-                    var confirmPassword =
-                        confirmPasswordController.text.trim().toString();
+                          var email = emailController.text.toString().trim();
+                          var password =
+                              passwordController.text.toString().trim();
+                          var confirmPassword =
+                              confirmPasswordController.text.trim().toString();
 
-                    if (username.toString()!= "") {
-                      print("name: " +username.toString()+"00");
+                          if (username.toString() != "") {
+                            print("name: " + username.toString() + "00");
 
-                      if (EmailValidator.validate(email)) {
-                        print("email: " +email.toString());
+                            if (EmailValidator.validate(email)) {
+                              print("email: " + email.toString());
 
+                              if (password.length > 7 && password.length < 25) {
+                                print("password: " + password.toString());
 
-                        if (password.length > 7 && password.length < 25) {
-                          print("password: " +password.toString());
-
-
-                          if (password.toString() == confirmPassword.toString()) {
-                            print("confirm password: " +confirmPassword.toString());
-                            userRegister(username.toString(),
-                            email.toString(),
-                            password.toString());
+                                if (password.toString() ==
+                                    confirmPassword.toString()) {
+                                  print("confirm password: " +
+                                      confirmPassword.toString());
+                                  userRegister(username.toString(),
+                                      email.toString(), password.toString());
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Password and confirm password must be same")));
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Password must be between 8 to 25 Charactors")));
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please enter email id ")));
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    "Password and confirm password must be same")));
+                                content: Text("Please enter your name")));
                           }
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Password must be between 8 to 25 Charactors")));
                         }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Please enter email id ")));
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter your name")));
-                    }
-                  }),
-
-       
+                      }),
             ],
           ),
         ),
@@ -273,7 +293,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-    Future<dynamic> guestApi(String email, String password, ) async {
+  Future<dynamic> guestApi(
+    String email,
+    String password,
+  ) async {
     setState(() {
       isloading = true;
     });
@@ -284,17 +307,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     http.Response? res;
     var request = http.post(
         Uri.parse(
-
           RestDatasource.LOGIN_URL,
-         
         ),
         body: {
           "email": guestMail.toString().trim(),
-
-
-
           "password": guestPassword.toString().trim(),
-          
         });
 
     await request.then((http.Response response) {
@@ -326,11 +343,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         setState(() {
           isloading = false;
         });
-      }else{
+      } else {
         setState(() {
           isloading = false;
         });
-            ScaffoldMessenger.of(context)
+        ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));
       }
     } else {
@@ -343,16 +360,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-
-
-
-    Future<dynamic> userRegister(String username, String email, String password) async {
+  Future<dynamic> userRegister(
+      String username, String email, String password) async {
     setState(() {
       isloading = true;
     });
-    print("username: "+username);
-    print("useremail: "+email);
-    print("userpassword: "+password);
+    print("username: " + username);
+    print("useremail: " + email);
+    print("userpassword: " + password);
     String msg = "";
     var jsonRes;
     http.Response? res;
@@ -360,9 +375,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Uri.parse(RestDatasource.SignUP_URL
             // RestDatasource.SEND_OTP,
             ),
-        body: {"username": username.toString(),
-        "email": email.toString(),
-        "password": password.toString()
+        body: {
+          "username": username.toString(),
+          "email": email.toString(),
+          "password": password.toString()
         });
 
     await request.then((http.Response response) {
@@ -380,20 +396,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print("message: " + jsonRes["otp"].toString() + "_");
 
       if (jsonRes["status"] == true) {
-
-         SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('id', jsonRes["data"]["id"].toString());
         prefs.setString('email', jsonRes["data"]["email"].toString());
         prefs.setString('name', jsonRes["data"]["name"].toString());
-        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString(
+            'country_code', jsonRes["data"]["country_code"].toString());
         prefs.setString('phone', jsonRes["data"]["phone"].toString());
         prefs.setString('dob', jsonRes["data"]["dob"].toString());
         prefs.setString('image', jsonRes["data"]["image"].toString());
         prefs.commit();
 
-
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('OTP sent to registered Email Id  ')),
+          SnackBar(content: Text(jsonRes["message"])),
         );
 
         // print('getotp1: ' + getotp.toString());
@@ -401,8 +416,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => OTPSignUp(
-                  email: email.toString(),
-                      
+                      email: email.toString(),
                     )));
 
         setState(() {
@@ -427,15 +441,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-
-
-
   TextFormField buildNameFormField() {
     return TextFormField(
       controller: nameController,
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      // inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
         hintText: " Name",
         hintStyle: TextStyle(color: Colors.grey),
@@ -494,20 +505,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
         suffixIcon: Padding(
           padding: EdgeInsets.only(right: 10),
           child: IconButton(
-                                  icon: obscure
-                                      ? Icon(
-                                          Icons.visibility_outlined,
-                                          color: Colors.grey,
-                                        )
-                                      : Icon(
-                                          Icons.visibility_off_outlined,
-                                          color: kPrimaryColor,
-                                        ),
-                                  onPressed: () {
-                                    setState(() {
-                                      obscure = !obscure;
-                                    });
-                                  }),
+              icon: obscure
+                  ? Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.grey,
+                    )
+                  : Icon(
+                      Icons.visibility_off_outlined,
+                      color: kPrimaryColor,
+                    ),
+              onPressed: () {
+                setState(() {
+                  obscure = !obscure;
+                });
+              }),
         ),
       ),
     );
@@ -526,25 +537,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-         suffixIcon: Padding(
+        suffixIcon: Padding(
           padding: EdgeInsets.only(right: 10),
           child: IconButton(
-                                  icon: obscure1
-                                      ? Icon(
-                                          Icons.visibility_outlined,
-                                          color: Colors.grey,
-                                        )
-                                      : Icon(
-                                          Icons.visibility_off_outlined,
-                                          color: kPrimaryColor,
-                                        ),
-                                  onPressed: () {
-                                    setState(() {
-                                      obscure1 = !obscure1;
-                                    });
-                                  }),
+              icon: obscure1
+                  ? Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.grey,
+                    )
+                  : Icon(
+                      Icons.visibility_off_outlined,
+                      color: kPrimaryColor,
+                    ),
+              onPressed: () {
+                setState(() {
+                  obscure1 = !obscure1;
+                });
+              }),
         ),
-       
       ),
     );
   }

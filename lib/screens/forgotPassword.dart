@@ -12,9 +12,8 @@ import 'package:wemarkthespot/screens/otp_Screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
 
-
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({ Key? key }) : super(key: key);
+  const ForgotPassword({Key? key}) : super(key: key);
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
@@ -25,111 +24,93 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   TextEditingController emailController = new TextEditingController();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 20.h,),
+            SizedBox(
+              height: 20.h,
+            ),
             Center(child: Image.asset("assets/images/logo_name.png")),
-            SizedBox(height: 10.h,),
-            Text("Forgot Password",
-            style: TextStyle(
-              color: kCyanColor,
-              fontSize: 18.5.sp,
-              fontFamily: 'Segoepr'
+            SizedBox(
+              height: 10.h,
             ),
+            Text(
+              "Forgot Password",
+              style: TextStyle(
+                  color: kCyanColor, fontSize: 18.5.sp, fontFamily: 'Segoepr'),
             ),
-            SizedBox(height: 1.h,),
-             Container(
-               child: Text("Enter your email address to follow\n"
-               "the instructions to reset password",
-            style: TextStyle(
-                color: Color(0xFFCECECE),
-                fontSize: 11.sp,
-                fontFamily: 'Roboto'
+            SizedBox(
+              height: 1.h,
             ),
+            Container(
+              child: Text(
+                "Enter your email address to follow\n"
+                "the instructions to reset password",
+                style: TextStyle(
+                    color: Color(0xFFCECECE),
+                    fontSize: 11.sp,
+                    fontFamily: 'Roboto'),
+              ),
             ),
-             ),
-      
-             SizedBox(height: 5.h,),
-      
-             Padding(
-               padding: const EdgeInsets.all(8.0),
-               child: buildEmailFormField(),
-             ),
-      
-             SizedBox(height: 3.h,),
-
-
-             isloading
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator()
-                          : CupertinoActivityIndicator())
-                  :
-      
-      
-               DefaultButton(
+            SizedBox(
+              height: 5.h,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: buildEmailFormField(),
+            ),
+            SizedBox(
+              height: 3.h,
+            ),
+            isloading
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator()
+                        : CupertinoActivityIndicator())
+                : DefaultButton(
                     width: 40.w,
                     height: 6.h,
                     text: "Submit",
-                    
                     press: () {
-
                       var email = emailController.text.toString().trim();
 
-
-
-                        if (EmailValidator.validate(email) ) {
-                          forgotPasswordApi(email.toString());
-                      
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter valid email id")));
-                    }
-
-
-
-
-                      
+                      if (EmailValidator.validate(email)) {
+                        forgotPasswordApi(email.toString());
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Please enter valid email id")));
+                      }
                     }),
           ],
         ),
       ),
-      
     );
   }
 
-
-  Future<dynamic> forgotPasswordApi(String email,) async {
+  Future<dynamic> forgotPasswordApi(
+    String email,
+  ) async {
     setState(() {
       isloading = true;
     });
     print(email);
-   
+
     String msg = "";
     var jsonRes;
     http.Response? res;
     var request = http.post(
         Uri.parse(
-
           RestDatasource.FORGOTPASSWORD_URL,
-         
         ),
         body: {
           "email": email.toString().trim(),
-          
-          
         });
 
     await request.then((http.Response response) {
@@ -154,17 +135,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => OtpScreen(email: email.toString(),)),
+            MaterialPageRoute(
+                builder: (context) => OtpScreen(
+                      email: email.toString(),
+                    )),
             (route) => false);
 
         setState(() {
           isloading = false;
         });
-      }else{
+      } else {
         setState(() {
           isloading = false;
         });
-            ScaffoldMessenger.of(context)
+        ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));
       }
     } else {
@@ -177,11 +161,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
   }
 
-
-
-
-
-   TextFormField buildEmailFormField() {
+  TextFormField buildEmailFormField() {
     return TextFormField(
       controller: emailController,
       style: TextStyle(color: Colors.white),
@@ -208,11 +188,9 @@ class CustomSurffixIcon extends StatelessWidget {
   const CustomSurffixIcon({
     Key? key,
     required this.svgIcon,
-   
   }) : super(key: key);
 
   final String svgIcon;
-  
 
   @override
   Widget build(BuildContext context) {
