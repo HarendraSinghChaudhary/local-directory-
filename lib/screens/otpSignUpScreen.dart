@@ -1,8 +1,11 @@
+
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/screens/change_password.dart';
@@ -24,6 +27,15 @@ String email;
 }
 
 class _OTPSignUpState extends State<OTPSignUp> {
+
+  String? otp;
+
+
+  TextEditingController first = new TextEditingController();
+  TextEditingController second = new TextEditingController();
+  TextEditingController third = new TextEditingController();
+  TextEditingController fourth = new TextEditingController();
+
 
 
    bool isloading = false;
@@ -98,7 +110,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
 
 
               Text(
-                "Please enter OTP to reset your password",
+                "Please enter OTP to create account",
                 style: TextStyle(color: Color(0xFFCECECE), fontSize: 11.sp,
                 fontFamily: 'Roboto'
                 ),
@@ -115,6 +127,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
                 SizedBox(
                   width: 60,
                   child: TextFormField(
+                    controller: first,
                     focusNode: pin1FocusNode,
                     autofocus: true,
                     obscureText: false,
@@ -135,6 +148,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
                 SizedBox(
                   width: 60,
                   child: TextFormField(
+                    controller: second,
                     focusNode: pin2FocusNode,
 
                     obscureText: false,
@@ -152,6 +166,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
                   width: 60,
                   
                   child: TextFormField(
+                    controller: third,
                     focusNode: pin3FocusNode,
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
@@ -173,6 +188,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
                   width: 60,
                   
                   child: TextFormField(
+                    controller: fourth,
                     focusNode: pin4FocusNode,
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
@@ -225,11 +241,16 @@ class _OTPSignUpState extends State<OTPSignUp> {
                 
                 press: () {
 
+                  otp = first.text.toString().trim()+
+                        second.text.toString().trim()+
+                        third.text.toString().trim()+
+                        fourth.text.toString().trim();
+
                   print("email Widget: "+widget.email.toString());
 
-                  print("otp: "+pin1FocusNode.toString()+pin2FocusNode.toString()+pin3FocusNode.toString()+pin4FocusNode.toString() );
+                  print("otp: "+otp.toString());
 
-                  forgotPasswordApi(widget.email.toString(), pin1FocusNode.toString()+pin2FocusNode.toString()+pin3FocusNode.toString()+pin4FocusNode.toString());
+                  forgotPasswordApi(widget.email.toString(), otp.toString());
 
              
                 })
@@ -261,13 +282,16 @@ class _OTPSignUpState extends State<OTPSignUp> {
         ),
         body: {
           "email": widget.email.toString().trim(),
-          "otp": pin1FocusNode.toString()+pin2FocusNode.toString()+pin3FocusNode.toString()+pin4FocusNode.toString()
+          "otp": first.text.toString().trim()+
+                        second.text.toString().trim()+
+                        third.text.toString().trim()+
+                        fourth.text.toString().trim()
 
           
           
         });
 
-    await request.then((http.Response response) {
+     await request.then((http.Response response) {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -279,10 +303,10 @@ class _OTPSignUpState extends State<OTPSignUp> {
     });
     if (res!.statusCode == 200) {
       if (jsonRes["status"] == true) {
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('id', jsonRes["data"]["id"].toString());
-        // prefs.setString('email', jsonRes["data"]["email"].toString());
-        // prefs.commit();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('id', jsonRes["data"]["id"].toString());
+        prefs.setString('email', jsonRes["data"]["email"].toString());
+        prefs.commit();
 
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));

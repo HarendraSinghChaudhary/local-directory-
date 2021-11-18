@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wemarkthespot/screens/homenave.dart';
 
 import 'package:wemarkthespot/screens/introduction_Screen.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/screens/login_screen.dart';
 
 
 
@@ -51,20 +54,20 @@ class _SplashState extends State<Splash> {
   }
 
   getLoginStatus() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // id = prefs.getString("id").toString();
-    // print("id :" + id + "^");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString("id").toString();
+    print("id :" + id.toString() + "^");
 
     Future.delayed(Duration(seconds: 3), () {
 
       Navigator.push(context, MaterialPageRoute(builder: (context) => IntdroductionScreen()));
 
 
-      // id.toString() == "" || id.toString() == "null" || id == null
-      //     ? Navigator.pushReplacement(
-      //         context, MaterialPageRoute(builder: (context) => Login()))
-      //     : Navigator.pushReplacement(
-      //         context, MaterialPageRoute(builder: (context) => HomeNav()));
+      id.toString() == "" || id.toString() == "null" || id == null
+          ? Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => LoginScreen()))
+          : Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomeNav()));
     });
   }
 }

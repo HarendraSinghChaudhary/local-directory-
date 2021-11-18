@@ -234,11 +234,14 @@ class _HotspotState extends State<Hotspot> {
             ],
           ),
 
-           Padding(
-             
-                padding: const EdgeInsets.all(4.0),
-                child: buildMessageFormField(),
-              )
+           Positioned(
+             //bottom: 0.0,
+             child: Padding(
+               
+                  padding: const EdgeInsets.all(4.0),
+                  child: buildMessageFormField(),
+                ),
+           )
 
 
             ],

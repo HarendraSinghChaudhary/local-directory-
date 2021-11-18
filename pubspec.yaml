@@ -35,6 +35,8 @@ dependencies:
   email_validator: ^2.0.1
   carousel_slider: ^4.0.0
   http: ^0.13.3
+  image_picker: ^0.8.0+3
+  country_code_picker: ^2.0.2
   
 
 dev_dependencies:

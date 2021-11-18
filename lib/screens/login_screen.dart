@@ -25,6 +25,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+   bool obscure = true;
+
+  String guestMail = "guest@yopmail.com";
+  String guestPassword = "123456";
 
   bool isloading = false;
   String? email;
@@ -51,10 +55,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                  //     isloading
+                  // // ? Align(
+                  // //     alignment: Alignment.center,
+                  // //     child: Platform.isAndroid
+                  // //         ? CircularProgressIndicator()
+                  // //         : CupertinoActivityIndicator())
+                  // // :
+
+
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => HomeNav()));
+                        guestApi(guestMail.toString().trim(), guestPassword.toString().trim());
                       },
                       child: Text(
                         "Skip",
@@ -301,18 +313,116 @@ class _LoginScreenState extends State<LoginScreen> {
         return null;
       },
       style: TextStyle(color: Colors.white),
-      obscureText: true,
+      obscureText: obscure,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "Enter your password",
         hintStyle: TextStyle(color: Colors.grey),
+        suffixIcon: Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: IconButton(
+                                  icon: obscure
+                                      ? Icon(
+                                          Icons.visibility_outlined,
+                                          color: Colors.grey,
+                                        )
+                                      : Icon(
+                                          Icons.visibility_off_outlined,
+                                          color: kPrimaryColor,
+                                        ),
+                                  onPressed: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
+                                  }),
+        ),
 
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+       
       ),
     );
+  }
+
+
+   Future<dynamic> guestApi(String email, String password, ) async {
+    setState(() {
+      isloading = true;
+    });
+    print(email);
+    print(password);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          RestDatasource.LOGIN_URL,
+         
+        ),
+        body: {
+          "email": guestMail.toString().trim(),
+
+
+
+          "password": guestPassword.toString().trim(),
+          
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+      msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('id', jsonRes["data"]["id"].toString());
+        prefs.setString('email', jsonRes["data"]["email"].toString());
+        prefs.setString('name', jsonRes["data"]["name"].toString());
+        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.setString('dob', jsonRes["data"]["dob"].toString());
+        prefs.setString('image', jsonRes["data"]["image"].toString());
+        prefs.commit();
+
+
+        print("image: "+jsonRes["data"]["image"].toString());
+
+        
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeNav()),
+            (route) => false);
+
+        setState(() {
+          isloading = false;
+        });
+      }else{
+        setState(() {
+          isloading = false;
+        });
+            ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        //isloading = false;
+      });
+    }
   }
 
 
@@ -351,10 +461,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if (res!.statusCode == 200) {
       if (jsonRes["status"] == true) {
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('id', jsonRes["data"]["id"].toString());
-        // prefs.setString('email', jsonRes["data"]["email"].toString());
-        // prefs.commit();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('id', jsonRes["data"]["id"].toString());
+        prefs.setString('email', jsonRes["data"]["email"].toString());
+        prefs.setString('name', jsonRes["data"]["name"].toString());
+        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.setString('dob', jsonRes["data"]["dob"].toString());
+        prefs.setString('image', jsonRes["data"]["image"].toString());
+        prefs.commit();
 
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));

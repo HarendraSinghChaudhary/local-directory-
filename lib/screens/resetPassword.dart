@@ -1,19 +1,28 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/services/api_client.dart';
 
 
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({ Key? key }) : super(key: key);
+   String email;
+
+  ResetPassword({required this.email});
 
   @override
   _ResetPasswordState createState() => _ResetPasswordState();
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  bool isloading = false;
 
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
@@ -22,6 +31,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
+
+    print("email: "+widget.email.toString());
     return Scaffold(
       backgroundColor: Colors.black,
 
@@ -63,6 +74,14 @@ class _ResetPasswordState extends State<ResetPassword> {
              ),
           
              SizedBox(height: 3.h,),
+
+              isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :
           
           
                DefaultButton(
@@ -82,10 +101,13 @@ class _ResetPasswordState extends State<ResetPassword> {
 
                           if (password.toString() == confirmPassword.toString()) {
                             print("confirm password: " +confirmPassword.toString());
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
+
+                            resetPasswordApi(widget.email.toString(), 
+                            passwordController.text.toString().trim(), 
+                            confirmPasswordController.text.toString().trim() );
+
+
+                           
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(
@@ -148,4 +170,78 @@ class _ResetPasswordState extends State<ResetPassword> {
       ),
     );
   }
+
+
+    Future<dynamic> resetPasswordApi(String email, String newPassword, String confirmPassword) async {
+    setState(() {
+      isloading = true;
+    });
+    print(email);
+   
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          RestDatasource.PASSWORDUPDATE_URL
+         
+        ),
+        body: {
+          "email": widget.email.toString().trim(),
+          "newPassword": passwordController.text.toString().trim(),
+          "confirmPassword": confirmPasswordController.text.toString().trim()
+        
+
+          
+          
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+      msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('id', jsonRes["data"]["id"].toString());
+        // prefs.setString('email', jsonRes["data"]["email"].toString());
+        // prefs.commit();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+
+        setState(() {
+          isloading = false;
+        });
+      }else{
+        setState(() {
+          isloading = false;
+        });
+            ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+
+
 }

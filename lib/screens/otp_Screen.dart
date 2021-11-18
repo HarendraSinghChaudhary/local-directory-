@@ -24,6 +24,14 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+
+   String? otp;
+
+
+  TextEditingController first = new TextEditingController();
+  TextEditingController second = new TextEditingController();
+  TextEditingController third = new TextEditingController();
+  TextEditingController fourth = new TextEditingController();
   bool isloading = false;
 
   late FocusNode pin1FocusNode;
@@ -111,6 +119,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(
                   width: 60,
                   child: TextFormField(
+                    controller: first,
                     focusNode: pin1FocusNode,
                     autofocus: true,
                     obscureText: false,
@@ -131,6 +140,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 SizedBox(
                   width: 60,
                   child: TextFormField(
+                    controller: second,
                     focusNode: pin2FocusNode,
 
                     obscureText: false,
@@ -148,6 +158,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 60,
                   
                   child: TextFormField(
+                    controller: third,
                     focusNode: pin3FocusNode,
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
@@ -169,6 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 60,
                   
                   child: TextFormField(
+                    controller: fourth,
                     focusNode: pin4FocusNode,
                     obscureText: false,
                     style: TextStyle(fontSize: 24,
@@ -192,7 +204,9 @@ class _OtpScreenState extends State<OtpScreen> {
               SizedBox(height: 5.h,),
 
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  resendOtpdApi(widget.email.toString().trim());
+                },
                 child: Text("Resend OTP",
                 style: TextStyle(
                   color: kPrimaryColor,
@@ -221,6 +235,17 @@ class _OtpScreenState extends State<OtpScreen> {
                 
                 press: () {
 
+                    otp = first.text.toString().trim()+
+                        second.text.toString().trim()+
+                        third.text.toString().trim()+
+                        fourth.text.toString().trim();
+
+                  print("email Widget: "+widget.email.toString());
+
+                  print("otp: "+otp.toString());
+
+                  forgotPasswordApi(widget.email.toString(), otp.toString());
+
              
                 })
 
@@ -231,6 +256,76 @@ class _OtpScreenState extends State<OtpScreen> {
         )
     );
   }
+
+   Future<dynamic> resendOtpdApi(String email,) async {
+    setState(() {
+      isloading = true;
+    });
+    print(email);
+   
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          RestDatasource.FORGOTPASSWORD_URL,
+         
+        ),
+        body: {
+          "email": widget.email.toString().trim(),
+          
+          
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+      msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('id', jsonRes["data"]["id"].toString());
+        // prefs.setString('email', jsonRes["data"]["email"].toString());
+        // prefs.commit();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+
+           
+
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => OtpScreen(email: email.toString(),)),
+        //     (route) => false);
+
+        setState(() {
+          isloading = false;
+        });
+      }else{
+        setState(() {
+          isloading = false;
+        });
+            ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+
 
 
 
@@ -251,7 +346,10 @@ class _OtpScreenState extends State<OtpScreen> {
         ),
         body: {
           "email": widget.email.toString().trim(),
-          "otp": pin1FocusNode.toString()+pin2FocusNode.toString()+pin3FocusNode.toString()+pin4FocusNode.toString()
+          "otp": first.text.toString().trim()+
+                        second.text.toString().trim()+
+                        third.text.toString().trim()+
+                        fourth.text.toString().trim()
 
           
           
@@ -279,7 +377,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => ResetPassword()),
+            MaterialPageRoute(builder: (context) => ResetPassword(email: widget.email.toString(),)),
             (route) => false);
 
         setState(() {

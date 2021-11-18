@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/screens/homenave.dart';
@@ -23,6 +24,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  bool obscure = true;
+  bool obscure1 = true;
+
+    String guestMail = "guest@yopmail.com";
+  String guestPassword = "123456";
+
+
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -53,8 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => HomeNav()));
+                    guestApi(guestMail.toString().trim(), guestPassword.toString().trim());
                       },
                       child: Text(
                         "Skip",
@@ -137,11 +145,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: buildPhoneFormField(),
+                child: buildPasswordFormField(),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: buildPasswordFormField(),
+                child: buildConfirmPasswordFormField(),
               ),
 
               Row(
@@ -265,6 +273,78 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+    Future<dynamic> guestApi(String email, String password, ) async {
+    setState(() {
+      isloading = true;
+    });
+    print(email);
+    print(password);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          RestDatasource.LOGIN_URL,
+         
+        ),
+        body: {
+          "email": guestMail.toString().trim(),
+
+
+
+          "password": guestPassword.toString().trim(),
+          
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+      msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('id', jsonRes["data"]["id"].toString());
+        // prefs.setString('email', jsonRes["data"]["email"].toString());
+        // prefs.setString('name', jsonRes["data"]["name"].toString());
+        // prefs.commit();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeNav()),
+            (route) => false);
+
+        setState(() {
+          isloading = false;
+        });
+      }else{
+        setState(() {
+          isloading = false;
+        });
+            ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        //isloading = false;
+      });
+    }
+  }
+
+
+
 
     Future<dynamic> userRegister(String username, String email, String password) async {
     setState(() {
@@ -300,6 +380,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print("message: " + jsonRes["otp"].toString() + "_");
 
       if (jsonRes["status"] == true) {
+
+         SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('id', jsonRes["data"]["id"].toString());
+        prefs.setString('email', jsonRes["data"]["email"].toString());
+        prefs.setString('name', jsonRes["data"]["name"].toString());
+        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.setString('dob', jsonRes["data"]["dob"].toString());
+        prefs.setString('image', jsonRes["data"]["image"].toString());
+        prefs.commit();
+
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('OTP sent to registered Email Id  ')),
         );
@@ -383,8 +475,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  TextFormField buildPhoneFormField() {
+  TextFormField buildPasswordFormField() {
     return TextFormField(
+      obscureText: obscure,
       controller: passwordController,
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
@@ -398,18 +491,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
         fillColor: Colors.white,
-        suffixIcon: CustomSurffixIcon(
-          svgIcon: "assets/icons/Lock.svg",
+        suffixIcon: Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: IconButton(
+                                  icon: obscure
+                                      ? Icon(
+                                          Icons.visibility_outlined,
+                                          color: Colors.grey,
+                                        )
+                                      : Icon(
+                                          Icons.visibility_off_outlined,
+                                          color: kPrimaryColor,
+                                        ),
+                                  onPressed: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
+                                  }),
         ),
       ),
     );
   }
 
-  TextFormField buildPasswordFormField() {
+  TextFormField buildConfirmPasswordFormField() {
     return TextFormField(
       controller: confirmPasswordController,
       style: TextStyle(color: Colors.white),
-      obscureText: true,
+      obscureText: obscure1,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "Confirm password",
@@ -418,7 +526,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+         suffixIcon: Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: IconButton(
+                                  icon: obscure1
+                                      ? Icon(
+                                          Icons.visibility_outlined,
+                                          color: Colors.grey,
+                                        )
+                                      : Icon(
+                                          Icons.visibility_off_outlined,
+                                          color: kPrimaryColor,
+                                        ),
+                                  onPressed: () {
+                                    setState(() {
+                                      obscure1 = !obscure1;
+                                    });
+                                  }),
+        ),
+       
       ),
     );
   }
