@@ -39,6 +39,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool remember = false;
   final formkey = GlobalKey<FormState>();
 
+
+  @override
+  void initState() {
+    _loadUserEmailPassword();
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   InkWell(
                     onTap: () {
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -248,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter email id")));
+                          SnackBar(content: Text("Please enter valid email id")));
                     }
 
                 
@@ -308,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return 'Please Enter Your Password';
         }
         if (val.length < 9 && val.length > 25) {
-          return 'Please Enter valid phone number';
+          return 'Password must be between 8 to 25 Characters';
         }
         return null;
       },
@@ -395,10 +404,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         print("image: "+jsonRes["data"]["image"].toString());
 
-        
+
 
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+
 
         Navigator.pushAndRemoveUntil(
             context,
@@ -412,8 +422,9 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isloading = false;
         });
-            ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+
       }
     } else {
       ScaffoldMessenger.of(context)
@@ -426,7 +437,53 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
+   void _handleRemeberme(bool value) {
+     remember = value;
+     SharedPreferences.getInstance().then(
+           (prefs) {
+         prefs.setBool("remember_me", value);
+         prefs.setString('emaill', emailController.text.toString().trim());
+         prefs.setString('passwordd', passwordController.text.toString().trim());
+       },
+     );
+     setState(() {
+       remember = value;
+     });
+   }
+//load email and password
+  void _loadUserEmailPassword() async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var emaill = _prefs.getString("emaill");
+      var passwordd = _prefs.getString("passwordd");
+      var remeberMee = false;
+      remeberMee = _prefs.getBool("remember_me")!;
+      if(remeberMee!=null) {
+        print("rememberMee " + remeberMee.toString() + "");
+        print("email " + emaill.toString());
+        print("password " + passwordd.toString());
+        if (remeberMee) {
+          setState(() {
+            remember = true;
+          });
+          if(emaill!=null) {
+            if (emaill.toString() != "null" || emaill.toString() != "") {
+              emailController.text = emaill;
+            }
+          }
+          if(passwordd!=null) {
+            if (passwordd.toString() != "null" || passwordd.toString() != "") {
+              passwordController.text = passwordd;
+            }
+          }
+        }
+      }
+    } catch (e)
+    {
+      print(e);
+    }
 
+}
 
   Future<dynamic> loginApi(String email, String password, ) async {
     setState(() {
@@ -472,8 +529,9 @@ class _LoginScreenState extends State<LoginScreen> {
         prefs.commit();
 
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
 
+        _handleRemeberme(remember);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeNav()),
@@ -486,8 +544,9 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isloading = false;
         });
-            ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+
       }
     } else {
       ScaffoldMessenger.of(context)
@@ -498,17 +557,6 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

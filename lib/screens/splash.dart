@@ -48,6 +48,8 @@ class _SplashState extends State<Splash> {
   getLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     id = prefs.getString("id").toString();
+    var firstTime = true;
+    firstTime = prefs.getBool("isFirstTimeLaunch")?? true;
     print("id :" + id.toString() + "^");
 
     Future.delayed(Duration(seconds: 3), () {
@@ -55,8 +57,13 @@ class _SplashState extends State<Splash> {
       //     MaterialPageRoute(builder: (context) => IntdroductionScreen()));
 
       id.toString() == "" || id.toString() == "null" || id == ''
-          ? Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => IntdroductionScreen()))
+          ? firstTime!=null?firstTime?
+      Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => IntdroductionScreen())):
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => LoginScreen())):
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => LoginScreen()))
           : Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomeNav()));
     });

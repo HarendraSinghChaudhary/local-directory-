@@ -27,6 +27,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
 
+  bool obscure = true;
+  bool obscure1 = true;
 
 
   @override
@@ -118,12 +120,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                               content: Text(
                                   "Password must be between 8 to 25 Charactors")));
                         }
-
-
-
-
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginScreen()));
                     }),
                   ],
                 ),
@@ -136,7 +132,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return TextFormField(
       controller: passwordController,
       style: TextStyle(color: Colors.white),
-      obscureText: true,
+      obscureText: obscure,
       keyboardType: TextInputType.emailAddress,
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -146,7 +142,24 @@ class _ResetPasswordState extends State<ResetPassword> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+        suffixIcon: Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: IconButton(
+              icon: obscure
+                  ? Icon(
+                Icons.visibility_outlined,
+                color: Colors.grey,
+              )
+                  : Icon(
+                Icons.visibility_off_outlined,
+                color: kPrimaryColor,
+              ),
+              onPressed: () {
+                setState(() {
+                  obscure = !obscure;
+                });
+              }),
+        ),
       ),
     );
   }
@@ -157,7 +170,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       controller: confirmPasswordController,
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(color: Colors.white),
-      obscureText: false,
+      obscureText: obscure1,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "Confirm New Password",
@@ -166,7 +179,24 @@ class _ResetPasswordState extends State<ResetPassword> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+        suffixIcon: Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: IconButton(
+              icon: obscure1
+                  ? Icon(
+                Icons.visibility_outlined,
+                color: Colors.grey,
+              )
+                  : Icon(
+                Icons.visibility_off_outlined,
+                color: kPrimaryColor,
+              ),
+              onPressed: () {
+                setState(() {
+                  obscure1 = !obscure1;
+                });
+              }),
+        ),
       ),
     );
   }
@@ -215,7 +245,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         // prefs.commit();
 
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
 
         Navigator.pushAndRemoveUntil(
             context,

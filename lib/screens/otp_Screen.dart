@@ -293,7 +293,8 @@ class _OtpScreenState extends State<OtpScreen> {
           "otp": first.text.toString().trim() +
               second.text.toString().trim() +
               third.text.toString().trim() +
-              fourth.text.toString().trim()
+              fourth.text.toString().trim(),
+          "method":"0"
         });
 
     await request.then((http.Response response) {

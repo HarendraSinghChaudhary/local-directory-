@@ -43,7 +43,8 @@ class _EditProfileState extends State<EditProfile> {
   String? uptoPhone;
   String? uptoDob;
 
-  String? code = "91";
+
+  String? code = "+91";
   bool isloading = false;
   String image = "";
   String base64Image = "";
@@ -65,8 +66,9 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
     nameController.text = widget.name;
     emailController.text = widget.email;
-    phoneController.text = widget.phone;
+    phoneController.text = widget.phone=='null'?"Phone no.":widget.phone;
     dOBController.text = widget.dob == 'null' ? '' : widget.dob;
+    code = widget.country_code=="null"?"+91":widget.country_code;
   }
 
   String? dob;
@@ -145,10 +147,10 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.all(8.0),
               child: buildEmailFormField(),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: buildPhoneFormField(),
-            // ),
+             Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: buildPhoneFormField(),
+             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
@@ -222,7 +224,7 @@ class _EditProfileState extends State<EditProfile> {
                           widget.email.toString(),
                           uptoPhone.toString(),
                           uptoDob.toString(),
-                          widget.country_code.toString());
+                          code.toString());
 
                       // userRegister(email.toString(), phone.toString(),
                       //     firstname.toString() + ' ' + lastname.toString());
@@ -236,9 +238,9 @@ class _EditProfileState extends State<EditProfile> {
   TextFormField builNameFormField() {
     return TextFormField(
       controller: nameController,
+      inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Name",
         hintStyle: TextStyle(color: Colors.white),
@@ -261,7 +263,7 @@ class _EditProfileState extends State<EditProfile> {
       keyboardType: TextInputType.emailAddress,
       inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
-        hintText: "elina@dmail.com",
+        hintText: "",
         hintStyle: TextStyle(color: Colors.white),
         focusColor: Colors.white,
         disabledBorder: outlineInputBorder(),
@@ -275,42 +277,49 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  // TextFormField buildPhoneFormField() {
-  //   return TextFormField(
-  //     controller: phoneController,
 
-  //     style: TextStyle(color: Colors.white),
-  //     cursorColor: Colors.white,
-  //     keyboardType: TextInputType.number,
-  //      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-  //     decoration: InputDecoration(
-  //       hintText: "9876543210",
-  //       hintStyle: TextStyle(color: Colors.white),
-  //       focusColor: Colors.white,
-  //        prefixIcon: CountryCodePicker(
+   TextFormField buildPhoneFormField() {
+     return TextFormField(
+       controller: phoneController,
 
-  //                          showFlag: true,
+       style: TextStyle(color: Colors.white),
+       cursorColor: Colors.white,
+       keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+       maxLength: 10,
+       decoration: InputDecoration(
+         hintText: "Phone no.",
+         hintStyle: TextStyle(color: Colors.white),
+         focusColor: Colors.white,
+          prefixIcon: CountryCodePicker(
 
-  //                         onChanged: print,
-  //                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-  //                         initialSelection: "+"+widget.country_code.toString(),
-  //                         // favorite: ['+91', 'FR'],
-  //                         // optional. Shows only country name and flag
-  //                         showCountryOnly: false,
-  //                         // optional. Shows only country name and flag when popup is closed.
-  //                         showOnlyCountryWhenClosed: false,
-  //                         // optional. aligns the flag and the Text left
-  //                         alignLeft: false,
-  //                       ),
+                            showFlag: true,
 
-  //       // If  you are using latest version of flutter then lable text and hint text shown like this
-  //       // if you r using flutter less then 1.20.* then maybe this is not working properly
-  //       floatingLabelBehavior: FloatingLabelBehavior.always,
-  //       fillColor: Colors.white,
+                           onChanged: (val){
+                              code = val.toString();
+                              print(val);
+                           },
 
-  //     ),
-  //   );
-  // }
+                           // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                           initialSelection: code.toString(),
+                           // favorite: ['+91', 'FR'],
+                           // optional. Shows only country name and flag
+                          textStyle: TextStyle(color: Colors.white),
+                           showCountryOnly: false,
+                           // optional. Shows only country name and flag when popup is closed.
+                           showOnlyCountryWhenClosed: false,
+                           // optional. aligns the flag and the Text left
+                           alignLeft: false,
+                         ),
+
+         // If  you are using latest version of flutter then lable text and hint text shown like this
+         // if you r using flutter less then 1.20.* then maybe this is not working properly
+         floatingLabelBehavior: FloatingLabelBehavior.always,
+         fillColor: Colors.white,
+
+       ),
+     );
+   }
 
   TextFormField buildDOBFormField() {
     return TextFormField(

@@ -191,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   //   },
                   // ),
                   Text(
-                    "I agree with terms and condition and private policy",
+                    "I agree with terms & condition and privacy policy",
                     style: TextStyle(color: kPrimaryColor, fontSize: 10.sp),
                   ),
                 ],
@@ -238,8 +238,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 6.h,
                       text: "Sign Up",
                       press: () {
-                        print(_selected);
-                        if (agree) {
+
+
                           String username = "";
                           username = nameController.text.toString().trim();
 
@@ -250,7 +250,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               confirmPasswordController.text.trim().toString();
 
                           if (username.toString() != "") {
-                            print("name: " + username.toString() + "00");
+                            print("name: " + username.toString() + "");
 
                             if (EmailValidator.validate(email)) {
                               print("email: " + email.toString());
@@ -262,8 +262,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     confirmPassword.toString()) {
                                   print("confirm password: " +
                                       confirmPassword.toString());
-                                  userRegister(username.toString(),
-                                      email.toString(), password.toString());
+                                  if (agree) {
+                                    userRegister(username.toString(),
+                                        email.toString(), password.toString());
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Please check on terms and conditions")));
+                                  }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -278,13 +285,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text("Please enter email id ")));
+                                      content: Text("Please enter a valid email id ")));
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text("Please enter your name")));
                           }
-                        }
+
                       }),
             ],
           ),
@@ -446,7 +453,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       controller: nameController,
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-      // inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
       decoration: InputDecoration(
         hintText: " Name",
         hintStyle: TextStyle(color: Colors.grey),

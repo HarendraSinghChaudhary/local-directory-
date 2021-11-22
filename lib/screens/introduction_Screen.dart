@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
@@ -12,21 +13,22 @@ class IntdroductionScreen extends StatefulWidget {
 
 class _InteroductionScreenState extends State<IntdroductionScreen> {
   int currentPage = 0;
+  String btntext = "Skip";
   List<Map<String, String>> splashData = [
     {
       "text":
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/resimage.jpg"
+      "image": "assets/images/intro1.png"
     },
     {
       "text":
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/resimage.jpg"
+      "image": "assets/images/intro2.png"
     },
     {
       "text":
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/resimage.jpg"
+      "image": "assets/images/intro3.png"
     },
   ];
   @override
@@ -43,6 +45,11 @@ class _InteroductionScreenState extends State<IntdroductionScreen> {
                 onPageChanged: (value) {
                   setState(() {
                     currentPage = value;
+                    if(currentPage<2){
+                      btntext = "Skip";
+                    }else{
+                      btntext = "Done";
+                    }
                   });
                 },
                 itemCount: splashData.length,
@@ -77,11 +84,13 @@ class _InteroductionScreenState extends State<IntdroductionScreen> {
                         ),
                         
                         InkWell(
-                          onTap: () {
+                          onTap: () async{
+                            SharedPreferences pref = await SharedPreferences.getInstance();
+                            pref.setBool('isFirstTimeLaunch', false);
                             Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                           },
                           child: Text(
-                            "Skip",
+                            btntext,
                             textAlign: TextAlign.end,
                             style:
                                 TextStyle(color: kPrimaryColor, 

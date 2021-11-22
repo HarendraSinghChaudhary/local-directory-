@@ -89,7 +89,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
         height: 2.h,
       ),
       Text(
-        "Please enter OTP to create account",
+        "Please enter OTP send on your email",
         style: TextStyle(
             color: Color(0xFFCECECE), fontSize: 11.sp, fontFamily: 'Roboto'),
       ),
@@ -199,8 +199,12 @@ class _OTPSignUpState extends State<OTPSignUp> {
                     second.text.toString().trim() +
                     third.text.toString().trim() +
                     fourth.text.toString().trim();
-
-                forgotPasswordApi(widget.email.toString(), otp.toString());
+                if(otp!.length<4){
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("Please enter correct OTP")));
+                }else {
+                  forgotPasswordApi(widget.email.toString(), otp.toString());
+                }
               })
     ]))));
   }
@@ -219,10 +223,8 @@ class _OTPSignUpState extends State<OTPSignUp> {
         ),
         body: {
           "email": widget.email.toString().trim(),
-          "otp": first.text.toString().trim() +
-              second.text.toString().trim() +
-              third.text.toString().trim() +
-              fourth.text.toString().trim()
+          "otp": otp,
+          "method": "1"
         });
 
     await request.then((http.Response response) {
@@ -238,8 +240,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
         prefs.setString('email', jsonRes["data"]["email"].toString());
         prefs.commit();
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
 
         Navigator.pushAndRemoveUntil(
             context,
@@ -280,7 +281,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
     http.Response? res;
     var request = http.post(
         Uri.parse(
-          RestDatasource.FORGOTPASSWORD_URL,
+          RestDatasource.RESEND_OTP,
         ),
         body: {
           "email": widget.email.toString().trim(),

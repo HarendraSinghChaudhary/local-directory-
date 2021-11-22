@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,6 +8,7 @@ import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/donation.dart';
 import 'package:wemarkthespot/screens/editProfile.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
+import 'package:wemarkthespot/screens/signup_Screen.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -55,10 +57,13 @@ class _AccountState extends State<Account> {
             margin: EdgeInsets.only(top: 4.h, left: 5.w),
             child: Row(
               children: [
-                CircleAvatar(
+                image==null? CircleAvatar(
+                  radius: 15.w,
+                  backgroundImage: AssetImage('assets/images/Profile.png'),
+                ):CircleAvatar(
                   radius: 15.w,
                   backgroundImage: NetworkImage(image.toString()),
-                ),
+               ),
 
                 SizedBox(
                   width: 5.w,
@@ -78,23 +83,26 @@ class _AccountState extends State<Account> {
                     SizedBox(
                       height: 0.8.h,
                     ),
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/mail1.svg",
-                          width: 3.5.w,
-                        ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        Text(
-                          email.toString(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 12.sp,
-                              fontFamily: 'Roboto'),
-                        ),
-                      ],
+                    Visibility(
+                      visible: id!=null?id=="72"?false:true:false,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/mail1.svg",
+                            width: 3.5.w,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            email.toString(),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 12.sp,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 0.7.h,
@@ -121,23 +129,26 @@ class _AccountState extends State<Account> {
                     // SizedBox(
                     //   height: 0.7.h,
                     // ),
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/-calendar.svg",
-                          width: 3.5.w,
-                        ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        Text(
-                          dob == "null" ? "DD/MM/YYYY" : dob.toString(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 12.sp,
-                              fontFamily: 'Roboto'),
-                        ),
-                      ],
+                    Visibility(
+                      visible: id!=null?id=="72"?false:true:false,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/-calendar.svg",
+                            width: 3.5.w,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            dob == "null" ? "DD/MM/YYYY" : dob.toString(),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 12.sp,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 )
@@ -164,10 +175,12 @@ class _AccountState extends State<Account> {
               height: 6.h,
               text: "Edit",
               press: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProfile(
+                if(id!=null){
+                  if(id!="72"){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProfile(
                               id: id.toString(),
                               name: name.toString(),
                               email: email.toString(),
@@ -176,6 +189,15 @@ class _AccountState extends State<Account> {
                               dob: dob.toString(),
                               image: image.toString(),
                             )));
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please Login First")));
+                  }
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please Login First")));
+                }
+
               }),
           SizedBox(
             height: 3.h,
@@ -389,16 +411,57 @@ class _AccountState extends State<Account> {
                 DefaultButton(
                     width: 45.w,
                     height: 6.5.h,
-                    text: "Log out",
+                    text: id!=null?id!="72"?"Log out":"Signup":"Signup",
                     press: () async {
-                      var pref = await SharedPreferences.getInstance();
-                      pref.clear();
-                      pref.commit();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => LoginScreen()),
-                          (route) => false);
+                      if(id!=null){
+                        if(id!="72"){
+                          var pref = await SharedPreferences.getInstance();
+                          pref.setString('id', '');
+                          pref.setString('email', '');
+                          pref.setString('name', '');
+                          pref.setString('country_code', '');
+                          pref.setString('phone', '');
+                          pref.setString('dob', '');
+                          pref.setString('image', '');
+                          pref.commit();
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                                  (route) => false);
+                        }else{
+                          var pref = await SharedPreferences.getInstance();
+                          pref.setString('id', '');
+                          pref.setString('email', '');
+                          pref.setString('name', '');
+                          pref.setString('country_code', '');
+                          pref.setString('phone', '');
+                          pref.setString('dob', '');
+                          pref.setString('image', '');
+                          pref.commit();
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => SignUpScreen()),
+                                  (route) => false);
+                        }
+                      }else{
+                        var pref = await SharedPreferences.getInstance();
+                        pref.setString('id', '');
+                        pref.setString('email', '');
+                        pref.setString('name', '');
+                        pref.setString('country_code', '');
+                        pref.setString('phone', '');
+                        pref.setString('dob', '');
+                        pref.setString('image', '');
+                        pref.commit();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            new MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                                (route) => false);
+                      }
+
                     }),
                 SizedBox(
                   height: 3.h,
