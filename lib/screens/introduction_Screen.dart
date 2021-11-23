@@ -48,7 +48,7 @@ class _InteroductionScreenState extends State<IntdroductionScreen> {
                     if(currentPage<2){
                       btntext = "Skip";
                     }else{
-                      btntext = "Done";
+                      btntext = "Skip";
                     }
                   });
                 },

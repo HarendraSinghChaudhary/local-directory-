@@ -41,14 +41,14 @@ class _AccountState extends State<Account> {
             ),
           ),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 4.w),
-            child: InkWell(
-                onTap: () {},
-                child: SvgPicture.asset("assets/icons/message.svg")),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 4.w),
+        //     child: InkWell(
+        //         onTap: () {},
+        //         child: SvgPicture.asset("assets/icons/message.svg")),
+        //   )
+        // ],
       ),
       body: SingleChildScrollView(
           child: Column(
@@ -429,6 +429,12 @@ class _AccountState extends State<Account> {
                               new MaterialPageRoute(
                                   builder: (context) => LoginScreen()),
                                   (route) => false);
+
+
+                                   ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Logged out successflly')));
+
+
                         }else{
                           var pref = await SharedPreferences.getInstance();
                           pref.setString('id', '');

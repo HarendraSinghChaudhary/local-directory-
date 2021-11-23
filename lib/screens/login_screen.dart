@@ -225,8 +225,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 6.h,
                   text: "Login",
                   press: () {
+                    String password = "";
                     var email = emailController.text.toString().trim();
-                    var password = passwordController.text.toString().trim();
+                   password = passwordController.text.toString().trim();
                     
 
 
@@ -239,7 +240,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                     if (EmailValidator.validate(email) ) {
-                          if (
+                        if (password != null ||  password.toString() != "null") {
+
+                            if (
                         password.length > 7 &&
                         password.length < 25) {
 
@@ -253,8 +256,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     } else {
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Password must be between 8 to 25 Charactors")));
+                          SnackBar(content: Text("Please enter password")));
                     }
+                          
+                        } else {
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter password")));
+
+                        }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Please enter valid email id")));
@@ -265,6 +275,8 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 10.h,
               ),
+
+              
               
             ],
           ),
@@ -406,8 +418,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
 
 
         Navigator.pushAndRemoveUntil(

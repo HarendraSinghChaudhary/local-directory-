@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/screens/login_screen.dart';
 
 
 
@@ -13,9 +15,47 @@ void main() {
   runApp(WeMarkTheSpot());
 }
 
-class WeMarkTheSpot extends StatelessWidget {
+class WeMarkTheSpot extends StatefulWidget {
+  @override
+  State<WeMarkTheSpot> createState() => _WeMarkTheSpotState();
+}
+
+class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
+  late SharedPreferences pref;
+  var name, email, id, country_code, phone, dob, image;
+
+
+  @override
+  void initState() {
+    super.initState();
+    getUserList();
+  }
+
+
+
+
+
+
+  @override
+  void dispose() {
+
+    if (id.toString() == '72') {
+
+      pref.remove('id');
+     // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+      
+    }
+    
+    super.dispose();
+
+    
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    print("id no. 1: " +id.toString());
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
@@ -27,4 +67,28 @@ class WeMarkTheSpot extends StatelessWidget {
       },
     );
   }
+
+
+    Future<dynamic> getUserList() async {
+    pref = await SharedPreferences.getInstance();
+    id = pref.getString("id").toString();
+    print("id1: " + id.toString());
+    email = pref.getString("email").toString();
+    print("email: " + email.toString());
+    name = pref.getString("name").toString();
+    print("name: " + name.toString());
+    country_code = pref.getString("country_code").toString();
+    print("country_code: " + country_code.toString());
+    phone = pref.getString("phone").toString();
+    print("phone: " + phone.toString());
+    dob = pref.getString("dob").toString();
+    print("dob: " + dob.toString());
+    image = pref.getString("image").toString();
+    print("image: " + image.toString());
+
+    setState(() {});
+  }
+
+
+
 }

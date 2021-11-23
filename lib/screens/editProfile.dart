@@ -82,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
           child: Padding(
             padding: EdgeInsets.only(right: 15.w),
             child: Text(
-              "Profile",
+              "Edit Profile",
               style:
                   TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
             ),

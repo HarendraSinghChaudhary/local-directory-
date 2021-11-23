@@ -239,14 +239,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       text: "Sign Up",
                       press: () {
 
-
+                          String confirmPassword = "";
                           String username = "";
                           username = nameController.text.toString().trim();
 
                           var email = emailController.text.toString().trim();
                           var password =
                               passwordController.text.toString().trim();
-                          var confirmPassword =
+                         confirmPassword =
                               confirmPasswordController.text.trim().toString();
 
                           if (username.toString() != "") {
@@ -258,7 +258,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               if (password.length > 7 && password.length < 25) {
                                 print("password: " + password.toString());
 
-                                if (password.toString() ==
+                                if (confirmPassword.toString() != "") {
+
+                                  if (password.toString() ==
                                     confirmPassword.toString()) {
                                   print("confirm password: " +
                                       confirmPassword.toString());
@@ -277,10 +279,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           content: Text(
                                               "Password and confirm password must be same")));
                                 }
+                                  
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please enter confirm password")));
+                                }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content: Text(
-                                        "Password must be between 8 to 25 Charactors")));
+                                        "Please enter 8 to 25 characters password")));
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -333,14 +341,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     if (res!.statusCode == 200) {
       if (jsonRes["status"] == true) {
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('id', jsonRes["data"]["id"].toString());
-        // prefs.setString('email', jsonRes["data"]["email"].toString());
-        // prefs.setString('name', jsonRes["data"]["name"].toString());
-        // prefs.commit();
+         SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('id', jsonRes["data"]["id"].toString());
+        prefs.setString('email', jsonRes["data"]["email"].toString());
+        prefs.setString('name', jsonRes["data"]["name"].toString());
+        prefs.setString('country_code', jsonRes["data"]["country_code"].toString());
+        prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.setString('dob', jsonRes["data"]["dob"].toString());
+        prefs.setString('image', jsonRes["data"]["image"].toString());
+        prefs.commit();
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg)));
+
+        print("image: "+jsonRes["data"]["image"].toString());
+
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: Text(msg)));
 
         Navigator.pushAndRemoveUntil(
             context,
