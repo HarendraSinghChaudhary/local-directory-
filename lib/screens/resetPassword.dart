@@ -118,7 +118,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
-                                  "Password must be between 8 to 25 Charactors")));
+                                  "Password must be between 8 to 25 characters")));
                         }
                     }),
                   ],

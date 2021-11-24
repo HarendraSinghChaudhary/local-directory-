@@ -191,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   //   },
                   // ),
                   Text(
-                    "I agree with terms & condition and privacy policy",
+                    "I agree with terms & conditions and privacy policy",
                     style: TextStyle(color: kPrimaryColor, fontSize: 10.sp),
                   ),
                 ],

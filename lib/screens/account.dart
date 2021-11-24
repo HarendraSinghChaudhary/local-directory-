@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:wemarkthespot/screens/donation.dart';
 import 'package:wemarkthespot/screens/editProfile.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
@@ -18,13 +22,15 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  var name, email, id, country_code, phone, dob, image;
+   var name, email, id, country_code, phone, dob, image;
+   bool isloading = true;
 
   @override
   void initState() {
     getUserList();
     super.initState();
   }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +56,68 @@ class _AccountState extends State<Account> {
         //   )
         // ],
       ),
-      body: SingleChildScrollView(
+      body: isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :
+      id.toString() != '72' ? UserAccount() : GuestAccount()
+    );
+  }
+
+    Future<dynamic> getUserList() async {
+
+      setState(() {
+        
+      });
+      
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    id = pref.getString("id").toString();
+    print("id: " + id.toString());
+    email = pref.getString("email").toString();
+    print("email: " + email.toString());
+    name = pref.getString("name").toString();
+    print("name: " + name.toString());
+    country_code = pref.getString("country_code").toString();
+    print("country_code: " + country_code.toString());
+    phone = pref.getString("phone").toString();
+    print("phone: " + phone.toString());
+    dob = pref.getString("dob").toString();
+    print("dob: " + dob.toString());
+    image = pref.getString("image").toString();
+    print("image: " + image.toString());
+
+    setState(() {
+      isloading = false;
+    
+    });
+  }
+
+ 
+}
+
+
+
+class UserAccount extends StatefulWidget {
+  const UserAccount({ Key? key }) : super(key: key);
+
+  @override
+  _UserAccountState createState() => _UserAccountState();
+}
+
+class _UserAccountState extends State<UserAccount> {
+   var name, email, id, country_code, phone, dob, image;
+
+  @override
+  void initState() {
+    getUserList();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
           child: Column(
         children: [
           Container(
@@ -206,27 +273,27 @@ class _AccountState extends State<Account> {
             margin: EdgeInsets.symmetric(horizontal: 3.w),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Inbox",
-                        style: TextStyle(
-                            color: kCyanColor,
-                            fontSize: 13.sp,
-                            fontFamily: 'Roboto'),
-                      ),
-                      SvgPicture.asset(
-                        "assets/icons/-right.svg",
-                        width: 2.5.w,
-                      ),
-                    ],
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {},
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         "Inbox",
+                //         style: TextStyle(
+                //             color: kCyanColor,
+                //             fontSize: 13.sp,
+                //             fontFamily: 'Roboto'),
+                //       ),
+                //       SvgPicture.asset(
+                //         "assets/icons/-right.svg",
+                //         width: 2.5.w,
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
-                  height: 3.h,
+                  height: 1.h,
                 ),
                 InkWell(
                   onTap: () {},
@@ -386,7 +453,9 @@ class _AccountState extends State<Account> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                   // Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussiness()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -476,11 +545,10 @@ class _AccountState extends State<Account> {
             ),
           )
         ],
-      )),
-    );
+      ));
   }
 
-  Future<dynamic> getUserList() async {
+   Future<dynamic> getUserList() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     id = pref.getString("id").toString();
     print("id: " + id.toString());
@@ -498,5 +566,80 @@ class _AccountState extends State<Account> {
     print("image: " + image.toString());
 
     setState(() {});
+  }
+
+
+}
+
+
+
+
+class GuestAccount extends StatefulWidget {
+  const GuestAccount({ Key? key }) : super(key: key);
+
+  @override
+  _GuestAccountState createState() => _GuestAccountState();
+}
+
+class _GuestAccountState extends State<GuestAccount> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+
+        SizedBox(height: 3.h,),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 2.h),
+          height:10.h,
+          width: double.infinity,
+          color: Colors.black,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("Your Profile",
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'Roboto'
+              ),
+              ),
+              SizedBox(height: 1.h,),
+
+
+
+               Text("Log in or sign up to view your complete profile",
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.white.withOpacity(0.8),
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Roboto'
+              ),
+              ),
+
+
+              
+
+            ],
+          ),
+        ),
+
+        SizedBox(
+                      height: 2.h,
+                    ),
+                    DefaultButton(
+                        width: 45.w,
+                        height: 6.5.h,
+                        text: "Continue",
+                        press: ()  {
+
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUpScreen()), 
+                          (route) => false);
+                          
+
+                        }),
+      ],
+    );
   }
 }

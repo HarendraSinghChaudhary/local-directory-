@@ -19,7 +19,7 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     Scaffold(), Scaffold(), Scaffold(),
-    // Explore(), Hotspot(), InTheKnow(),
+    //Explore(), Hotspot(), InTheKnow(),
     Account()
   ];
 

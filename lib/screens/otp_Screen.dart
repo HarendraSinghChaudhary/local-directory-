@@ -99,6 +99,7 @@ class _OtpScreenState extends State<OtpScreen> {
           SizedBox(
             width: 60,
             child: TextFormField(
+              maxLength: 1,
               controller: first,
               focusNode: pin1FocusNode,
               autofocus: true,
@@ -116,6 +117,7 @@ class _OtpScreenState extends State<OtpScreen> {
           SizedBox(
             width: 60,
             child: TextFormField(
+              maxLength: 1,
                 controller: second,
                 focusNode: pin2FocusNode,
                 obscureText: false,
@@ -131,6 +133,7 @@ class _OtpScreenState extends State<OtpScreen> {
           SizedBox(
             width: 60,
             child: TextFormField(
+              maxLength: 1,
                 controller: third,
                 focusNode: pin3FocusNode,
                 obscureText: false,
@@ -146,6 +149,7 @@ class _OtpScreenState extends State<OtpScreen> {
           SizedBox(
             width: 60,
             child: TextFormField(
+              maxLength: 1,
               controller: fourth,
               focusNode: pin4FocusNode,
               obscureText: false,
