@@ -83,8 +83,7 @@ class _HotspotState extends State<Hotspot> {
                           fontWeight: FontWeight.w700),
                       suffixIcon:
                           SearchPrefixIcon(svgIcon: "assets/icons/cross.svg"),
-                      prefixIcon: SearchSurffixIcon(
-                          svgIcon: "assets/icons/search1.svg")),
+                      prefixIcon: Image.asset("assets/images/search.png")),
                 ),
               ),
               SizedBox(
@@ -230,18 +229,20 @@ class _HotspotState extends State<Hotspot> {
                 },
               ),
 
+              buildMessageFormField(),
+
              
             ],
           ),
 
-           Positioned(
-             //bottom: 0.0,
-             child: Padding(
+          //  Positioned(
+          //    //bottom: 0.0,
+          //    child: Padding(
                
-                  padding: const EdgeInsets.all(4.0),
-                  child: buildMessageFormField(),
-                ),
-           )
+          //         padding: const EdgeInsets.all(4.0),
+          //         child: buildMessageFormField(),
+          //       ),
+          //  )
 
 
             ],

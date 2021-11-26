@@ -18,8 +18,8 @@ class _HomeNavState extends State<HomeNav> {
   int _index = 0;
   List widgets = <Widget>[
     Home(),
-    Scaffold(), Scaffold(), Scaffold(),
-    //Explore(), Hotspot(), InTheKnow(),
+    // Scaffold(), Scaffold(), Scaffold(),
+    Explore(), Hotspot(), InTheKnow(),
     Account()
   ];
 

@@ -501,7 +501,7 @@ class _UserAccountState extends State<UserAccount> {
 
 
                                    ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Logged out successflly')));
+          .showSnackBar(SnackBar(content: Text('Logged out successfully')));
 
 
                         }else{

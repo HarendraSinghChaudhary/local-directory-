@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/detailBusiness.dart';
 
 class Explore extends StatefulWidget {
   const Explore({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ class _ExploreState extends State<Explore> {
         automaticallyImplyLeading: true,
         title: Center(
           child: Padding(
-            padding: EdgeInsets.only(right: 13.w),
+            padding: EdgeInsets.only(right: 0.w),
             child: Text(
               "Explore",
               style:
@@ -227,127 +228,132 @@ class _ExploreState extends State<Explore> {
                   itemBuilder: (BuildContext context, int index) {
                     return   Column(
                       children: [
-                        Container(
-                  height: 16.h,
-                 // color: Colors.grey,
-
-                  child: Stack(
-                  children: [
-                        Positioned(
-                          //top: 2.5.h,
-                          
-                         
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussiness()));
+                          },
                           child: Container(
-                            height: 13.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3.w),
-                                color: Color(0xFF7A7A7A)),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 14.h,
-                                  width: 16.h,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3.w),
-                                      color: Colors.white,
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                            "assets/images/11.jpeg",
+                                          height: 16.h,
+                                         
+                        
+                                          child: Stack(
+                                          children: [
+                          Positioned(
+                            //top: 2.5.h,
+                            
+                           
+                            child: Container(
+                              height: 13.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3.w),
+                                  color: Color(0xFF7A7A7A)),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 14.h,
+                                    width: 16.h,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3.w),
+                                        color: Colors.white,
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                              "assets/images/11.jpeg",
+                                            ),
+                                            fit: BoxFit.fill)),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 0.3.h,
+                                      ),
+                                      Text(
+                                        "Restaurant Name ",
+                                        style: TextStyle(
+                                            fontSize: 14.sp,
+                                            color: kCyanColor,
+                                            fontWeight: FontWeight.w700,
+                                            fontFamily: "Segoepr"),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "0.2 miles away",
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: kPrimaryColor,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: "Roboto"),
                                           ),
-                                          fit: BoxFit.fill)),
-                                ),
-                                SizedBox(
-                                  width: 2.w,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 0.3.h,
-                                    ),
-                                    Text(
-                                      "Restaurant Name ",
-                                      style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: kCyanColor,
-                                          fontWeight: FontWeight.w700,
-                                          fontFamily: "Segoepr"),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "0.2 miles away",
-                                          style: TextStyle(
+                                          SizedBox(
+                                            width: 1.2.w,
+                                          ),
+                                          Text(
+                                            "|",
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: "Roboto"),
+                                          ),
+                                          SizedBox(
+                                            width: 1.2.w,
+                                          ),
+                                          Text(
+                                            "4.5",
+                                            style: TextStyle(
                                               fontSize: 10.sp,
                                               color: kPrimaryColor,
-                                              fontWeight: FontWeight.w700,
-                                              fontFamily: "Roboto"),
-                                        ),
-                                        SizedBox(
-                                          width: 1.2.w,
-                                        ),
-                                        Text(
-                                          "|",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.w700,
-                                              fontFamily: "Roboto"),
-                                        ),
-                                        SizedBox(
-                                          width: 1.2.w,
-                                        ),
-                                        Text(
-                                          "4.5",
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                            color: kPrimaryColor,
-                                            //fontWeight: FontWeight.w700
-                                            //fontFamily: "Segoepr"
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 1.w,
-                                        ),
-                                        SvgPicture.asset(
-                                          "assets/icons/star.svg",
-                                          color: kPrimaryColor,
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Container(
-                                      width: 56.w,
-                                      child: Text(
-                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ",
-                                        style: TextStyle(
-                                            fontSize: 8.sp, color: Colors.white
-                                            //fontWeight: FontWeight.w700
-                                            //fontFamily: "Segoepr"
+                                              //fontWeight: FontWeight.w700
+                                              //fontFamily: "Segoepr"
                                             ),
+                                          ),
+                                          SizedBox(
+                                            width: 1.w,
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/icons/star.svg",
+                                            color: kPrimaryColor,
+                                          )
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                      SizedBox(
+                                        height: 1.h,
+                                      ),
+                                      Container(
+                                        width: 56.w,
+                                        child: Text(
+                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ",
+                                          style: TextStyle(
+                                              fontSize: 8.sp, color: Colors.white
+                                              //fontWeight: FontWeight.w700
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
+                          Positioned(
+                            right: 1.w,
+                            top: 0.2.h,
+                            child: InkWell(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                    "assets/icons/-heart.svg")),
+                          )
+                                          ],
+                                        ),
+                        
+                                        ),
                         ),
-                        Positioned(
-                          right: 1.w,
-                          top: 0.2.h,
-                          child: InkWell(
-                              onTap: () {},
-                              child: SvgPicture.asset(
-                                  "assets/icons/-heart.svg")),
-                        )
-                  ],
-                ),
-
-                ),
 
                 // SizedBox(height: 0.5.h,),
                       ],
