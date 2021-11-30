@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/Filter_screen.dart';
+import 'package:wemarkthespot/screens/favourites.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -21,10 +22,10 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               InkWell(
-                // onTap: () {
-                //   Navigator.push(context,
-                //       MaterialPageRoute(builder: (context) => FliterScreen()));
-                // },
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Favorites()));
+                },
                 child: SvgPicture.asset(
                   "assets/icons/heart1.svg",
                   width: 26,

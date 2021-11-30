@@ -79,8 +79,8 @@ class _DonationState extends State<Donation> {
       
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-      //keyboardType: TextInputType.emailAddress,
-       inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      keyboardType: TextInputType.number,
+       
       decoration: InputDecoration(
         hintText: "Enter amount",
         hintStyle: TextStyle(color: Colors.white,

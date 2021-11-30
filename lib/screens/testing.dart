@@ -2,7 +2,7 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:location/location.dart';
-// import 'package:geocoder/geocoder.dart';
+// import 'package:geocoding/geocoding.dart';
 // import 'package:intl/intl.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -14,13 +14,13 @@
 
 
 // class _MyLocationState extends State<MyLocation> {
-//   late LocationData _currentPosition;
-//   late String _address,_dateTime;
-//   late GoogleMapController mapController;
-//   late Marker marker;
+//   LocationData _currentPosition;
+//   String _address,_dateTime;
+//   GoogleMapController mapController;
+//   Marker marker;
 //   Location location = Location();
 
-//   late GoogleMapController _controller;
+//   GoogleMapController _controller;
 //   LatLng _initialcameraposition = LatLng(0.5937, 0.9629);
 
 //   @override
@@ -37,7 +37,7 @@
 //     location.onLocationChanged.listen((l) {
 //       _controller.animateCamera(
 //         CameraUpdate.newCameraPosition(
-//           CameraPosition(target: LatLng(l.latitude!, l.longitude!),zoom: 15),
+//           CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 15),
 //         ),
 //       );
 //     });
@@ -140,16 +140,16 @@
 //     }
 
 //     _currentPosition = await location.getLocation();
-//     _initialcameraposition = LatLng(_currentPosition.latitude!,_currentPosition.longitude!);
+//     _initialcameraposition = LatLng(_currentPosition.latitude,_currentPosition.longitude);
 //     location.onLocationChanged.listen((LocationData currentLocation) {
 //       print("${currentLocation.longitude} : ${currentLocation.longitude}");
 //       setState(() {
 //         _currentPosition = currentLocation;
-//         _initialcameraposition = LatLng(_currentPosition.latitude!,_currentPosition.longitude!);
+//         _initialcameraposition = LatLng(_currentPosition.latitude,_currentPosition.longitude);
 
 //         DateTime now = DateTime.now();
 //         _dateTime = DateFormat('EEE d MMM kk:mm:ss ').format(now);
-//         _getAddress(_currentPosition.latitude!, _currentPosition.longitude!)
+//         _getAddress(_currentPosition.latitude, _currentPosition.longitude)
 //             .then((value) {
 //           setState(() {
 //             _address = "${value.first.addressLine}";

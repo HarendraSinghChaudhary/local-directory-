@@ -8,11 +8,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/instead/iLoginDashboard.dart';
+import 'package:wemarkthespot/screens/checkIn.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:wemarkthespot/screens/donation.dart';
 import 'package:wemarkthespot/screens/editProfile.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
+import 'package:wemarkthespot/screens/notifications.dart';
+import 'package:wemarkthespot/screens/reviews.dart';
+import 'package:wemarkthespot/screens/settings.dart';
 import 'package:wemarkthespot/screens/signup_Screen.dart';
+import 'package:wemarkthespot/screens/testing.dart';
+import 'package:wemarkthespot/screens/updatePassword.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -296,7 +303,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 1.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -318,7 +327,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => CheckIn()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -340,7 +351,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => UpdatePassword()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -362,7 +375,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                   // Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -384,7 +399,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => IloginDashBoard()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -406,7 +423,9 @@ class _UserAccountState extends State<UserAccount> {
                   height: 3.h,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => Notifications()));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -454,7 +473,7 @@ class _UserAccountState extends State<UserAccount> {
                 ),
                 InkWell(
                   onTap: () {
-                   // Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussiness()));
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

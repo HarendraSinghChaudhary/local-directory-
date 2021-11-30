@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const kPrimaryColor = Color(0xFFD66821);
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kIconColor = Color(0xFF7A7A7A);
+const kBackgroundColor = Color(0xFF262626);
 
 const kPrimaryGradientColor = LinearGradient(
   begin: Alignment.topLeft,

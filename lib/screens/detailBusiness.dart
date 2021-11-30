@@ -42,10 +42,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       top: 1.h,
                       child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Explore()));
+
+                            Navigator.pop(context);
+                            
                           },
                           icon: Icon(
                             Icons.arrow_back_ios_new_outlined,
@@ -985,7 +984,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   children: [
                     Column(
                       children: [
-                        SvgPicture.asset("assets/icons/bakance.svg"),
+                        SvgPicture.asset("assets/icons/file.svg"),
                         Text(
                           "Fire",
                           style: TextStyle(
@@ -1013,7 +1012,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ),
                     Column(
                       children: [
-                        SvgPicture.asset("assets/icons/bakance.svg"),
+                        SvgPicture.asset("assets/icons/snow.svg"),
                         Text(
                           "Not Cool",
                           style: TextStyle(

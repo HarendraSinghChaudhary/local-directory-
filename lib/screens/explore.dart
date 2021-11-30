@@ -247,7 +247,7 @@ class _ExploreState extends State<Explore> {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3.w),
-                                  color: Color(0xFF7A7A7A)),
+                                  color: kBackgroundColor),
                               child: Row(
                                 children: [
                                   Container(
