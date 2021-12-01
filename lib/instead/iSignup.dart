@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/instead/iConstant.dart';
 import 'package:wemarkthespot/instead/iDefaultButton.dart';
-import 'package:wemarkthespot/instead/iForgotPassword.dart';
-import 'package:wemarkthespot/instead/iSignup.dart';
+import 'package:wemarkthespot/instead/iLogin.dart';
 
 
-
-class Ilogin extends StatefulWidget {
-  const Ilogin({ Key? key }) : super(key: key);
+class ISignUp extends StatefulWidget {
+  const ISignUp({ Key? key }) : super(key: key);
 
   @override
-  _IloginState createState() => _IloginState();
+  _ISignUpState createState() => _ISignUpState();
 }
 
-class _IloginState extends State<Ilogin> {
+class _ISignUpState extends State<ISignUp> {
 
-  bool obsecure = true;
+  bool obsecure = false;
 
-
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
 
       body: SingleChildScrollView(
         child: Column(
@@ -39,7 +37,7 @@ class _IloginState extends State<Ilogin> {
             SizedBox(height: 6.h,),
 
 
-            Text("Log In",
+            Text("Sign Up",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.sp,
@@ -164,35 +162,20 @@ class _IloginState extends State<Ilogin> {
 
 
 
-                   SizedBox(height: 34.h,),
+                   SizedBox(height: 37.h,),
 
 
 
                    IDefaultButton(
                      width: 93.w, 
                      height: 6.5.h, 
-                     text: "LOG IN", 
+                     text: "SIGN UP", 
                      press: () {}),
 
 
 
 
-            SizedBox(height: 3.h,),
-
-
-            InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => IForgotPassword()));
-              }, 
-              child: Text("Forgot Your Password?",
-                    style: TextStyle(
-                      color: iPrimaryColor.withOpacity(0.5),
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold
-              
-                    ),
-                    ),
-            ),
+          
 
 
 
@@ -201,9 +184,9 @@ class _IloginState extends State<Ilogin> {
 
             InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ISignUp()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Ilogin()));
               }, 
-              child: Text("Don't have an account? SIGNUP NOW",
+              child: Text("You have an account. SIGN IN NOW",
                     style: TextStyle(
                       color: iPrimaryColor,
                       fontSize: 15.sp,

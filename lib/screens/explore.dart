@@ -37,14 +37,12 @@ class _ExploreState extends State<Explore> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Center(
-          child: Padding(
-            padding: EdgeInsets.only(right: 0.w),
-            child: Text(
-              "Explore",
-              style:
-                  TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
-            ),
+        title: Padding(
+          padding: EdgeInsets.only(left: 21.w),
+          child: Text(
+            "Explore",
+            style:
+                TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
           ),
         ),
       ),

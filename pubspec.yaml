@@ -43,6 +43,7 @@ dependencies:
   flutter_slidable: ^1.1.0
   expandable: ^5.0.1
   shimmer: ^2.0.0
+  youtube_player_flutter: ^8.0.0
   
 
 dev_dependencies:

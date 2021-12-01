@@ -4,6 +4,8 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/communityReplies.dart';
+
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
@@ -16,7 +18,7 @@ class DetailBussiness extends StatefulWidget {
 }
 
 class _DetailBussinessState extends State<DetailBussiness> {
-    ScrollController _controller = new ScrollController();
+  ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,9 +44,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       top: 1.h,
                       child: IconButton(
                           onPressed: () {
-
                             Navigator.pop(context);
-                            
                           },
                           icon: Icon(
                             Icons.arrow_back_ios_new_outlined,
@@ -340,341 +340,378 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   Future<dynamic> customModelSheet(BuildContext context) {
     return showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) =>
-                        DraggableScrollableSheet(
-                          expand: false,
-                          maxChildSize: .95,
-                          builder: (BuildContext context,
-                                  ScrollController scrollController) =>
-                              SingleChildScrollView(
-                                  controller: scrollController,
-                                  child: Container(
-                                   // height: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: kCyanColor,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10.w),
-                                            topRight: Radius.circular(10.w))),
-                                    child: SingleChildScrollView(
-
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 1.h,
-                                          ),
-                                          Container(
-                                            height: 1.h,
-                                            width: 25.w,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        3.w)),
-                                          ),
-                                          SizedBox(
-                                            height: 1.h,
-                                          ),
-                                          Text(
-                                            "COMMUNITY REVIEWS",
-                                            style: TextStyle(
-                                                fontSize: 16.sp,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
-                                                fontFamily: "Segoepr"),
-                                          ),
-                                          SizedBox(
-                                            height: 2.h,
-                                          ),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            physics: NeverScrollableScrollPhysics(),
-                                            controller: scrollController,
-                                            itemCount: 9,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return Column(
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) => DraggableScrollableSheet(
+              expand: false,
+              maxChildSize: .95,
+              builder: (BuildContext context,
+                      ScrollController scrollController) =>
+                  SingleChildScrollView(
+                      controller: scrollController,
+                      child: Container(
+                        // height: double.infinity,
+                        decoration: BoxDecoration(
+                            color: kCyanColor,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.w),
+                                topRight: Radius.circular(10.w))),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Container(
+                                height: 1.h,
+                                width: 25.w,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3.w)),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Text(
+                                "COMMUNITY REVIEWS",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: "Segoepr"),
+                              ),
+                              SizedBox(
+                                height: 2.h,
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                controller: scrollController,
+                                itemCount: 9,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: [
+                                      Card(
+                                        
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 4.w),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(3.w)
+                                              ),
+                                        
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
                                                 children: [
-                                                  Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 4.w),
-                                                  height: 19.h,
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4.w),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Colors.black54
-                                                              .withOpacity(0.3),
-                                                          offset: Offset(2, 3),
-                                                          blurRadius: 10,
-                                                          spreadRadius: 1)
-                                                    ],
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 1.5.h,
-                                                                    left: 5.w),
-                                                            child: Column(
-                                                              children: [
-                                                                CircleAvatar(
-                                                                  radius: 7.w,
-                                                                  backgroundImage:
-                                                                      AssetImage(
-                                                                          "assets/images/profilepic.jpeg"),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 0.5.h,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Text(
-                                                                      "3.5",
-                                                                      style: TextStyle(
-                                                                          fontSize: 12
-                                                                              .sp,
-                                                                          color:
-                                                                              kPrimaryColor,
-                                                                          fontWeight:
-                                                                              FontWeight.w500
-                                                                          //fontFamily: "Segoepr"
-                                                                          ),
-                                                                    ),
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                      "assets/icons/star.svg",
-                                                                      color:
-                                                                          kPrimaryColor,
-                                                                    )
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 3.w),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Restaurant Name",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13.sp,
-                                                                      color:
-                                                                          kCyanColor,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontFamily:
-                                                                          "Segoepr"),
-                                                                ),
-                                                                Container(
-                                                                    height: 6.h,
-                                                                    width: 65.w,
-                                                                    child: Text(
-                                                                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                                                      style: TextStyle(
-                                                                          fontSize: 11.sp,
-                                                                          color: Colors.black,
-                                                                          // fontWeight: FontWeight.w500,
-                                                                          fontFamily: "Roboto"
-                                                                          //fontFamily: "Segoepr"
-                                                                          ),
-                                                                    ))
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1.5.h,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 2.w),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                              child: Row(
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {},
-                                                                    child:
-                                                                        SvgPicture
-                                                                            .asset(
-                                                                      "assets/icons/up.svg",
-                                                                      width:
-                                                                          4.5.w,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 1.w,
-                                                                  ),
-                                                                  Text(
-                                                                    "Like(24)",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          11.sp,
-                                                                      color:
-                                                                          kPrimaryColor,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              child: Row(
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {},
-                                                                    child:
-                                                                        SvgPicture
-                                                                            .asset(
-                                                                      "assets/icons/down.svg",
-                                                                      width:
-                                                                          4.5.w,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 1.w,
-                                                                  ),
-                                                                  Text(
-                                                                    "Dislike(05)",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          11.sp,
-                                                                      color: Colors
-                                                                          .black,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                "Report",
-                                                                style: TextStyle(
-                                                                  fontSize: 11.sp,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () {},
-                                                              child: SvgPicture
-                                                                  .asset(
-                                                                "assets/icons/share.svg",
-                                                                width: 4.5.w,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 1.5.h, left: 5.w),
+                                                    child: Column(
+                                                      children: [
+                                                        CircleAvatar(
+                                                          radius: 7.w,
+                                                          backgroundImage:
+                                                              AssetImage(
+                                                                  "assets/images/profilepic.jpeg"),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1.h,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.only(
-                                                            left: 2.w),
-                                                        child: Row(
+                                                        SizedBox(
+                                                          height: 0.5.h,
+                                                        ),
+                                                        Row(
                                                           children: [
                                                             Text(
-                                                              "Replies (05)",
+                                                              "3.5",
                                                               style: TextStyle(
-                                                                fontSize: 11.sp,
-                                                                color:
-                                                                    Colors.black,
-                                                              ),
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                  color:
+                                                                      kPrimaryColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500
+                                                                  //fontFamily: "Segoepr"
+                                                                  ),
                                                             ),
-                                                            SizedBox(
-                                                              width: 1.h,
-                                                            ),
-                                                            Container(
-                                                              height: 3.h,
-                                                              width: 67.w,
-                                                              decoration: BoxDecoration(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              7.w)),
-                                                              child: SizedBox(
-                                                                height: 3.h,
-                                                                child:
-                                                                    TextFormField(
-                                                                  style: TextStyle(
-                                                                      color: Color(
-                                                                          0XFFCECECE)),
-                                                                  maxLines: 5,
-                                                                  decoration: InputDecoration(
-                                                                      border:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      focusedBorder:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      enabledBorder:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      errorBorder:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      disabledBorder:
-                                                                          InputBorder
-                                                                              .none,
-                                                                      hintText:
-                                                                          "Reply",
-                                                                      hintStyle: TextStyle(
-                                                                          fontSize: 8
-                                                                              .sp,
-                                                                          color: Colors
-                                                                              .white)),
-                                                                ),
-                                                              ),
+                                                            SvgPicture.asset(
+                                                              "assets/icons/star.svg",
+                                                              color:
+                                                                  kPrimaryColor,
                                                             )
                                                           ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 3.w),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "Restaurant Name",
+                                                          style: TextStyle(
+                                                              fontSize: 13.sp,
+                                                              color: kCyanColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontFamily:
+                                                                  "Segoepr"),
                                                         ),
-                                                      )
-                                                    ],
-                                                  )),
-                                          
-                                                  SizedBox(height: 2.h,),
-                                          
-                                          
+                                                        Container(
+                                                            height: 6.h,
+                                                            width: 65.w,
+                                                            child: Text(
+                                                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      11.sp,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  // fontWeight: FontWeight.w500,
+                                                                  fontFamily:
+                                                                      "Roboto"
+                                                                  //fontFamily: "Segoepr"
+                                                                  ),
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  )
                                                 ],
-                                              ) ;
-                                            },
-                                          ),
-                                        ],
+                                              ),
+                                              SizedBox(
+                                                height: 1.5.h,
+                                              ),
+
+
+                                               Container(
+                                                height: 18.h,
+                                                width: double.infinity,
+                                                
+                                                child: Image.asset("assets/images/lighting.jpeg",
+                                                fit: BoxFit.fill,
+                                                ),
+                                              ),
+
+                                              SizedBox(
+                                                height: 1.5.h,
+                                              ),
+
+
+                                               Container(
+                                                 padding: EdgeInsets.only(left: 17.w),
+                                               
+                                                width: double.infinity,
+                                                //color: Colors.red,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+
+                                                    Container(
+                                                      height: 3.h,
+                                                      width: 30.w,
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0XFF7C7474),
+                                                        borderRadius: BorderRadius.circular(3.w),
+
+                                                      ),
+                                                      child: Center(
+                                                        child: Text("Staff wear mask",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 9.sp
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    ),
+
+
+                                                    Container(
+                                                      height: 3.h,
+                                                      width: 30.w,
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0XFF7C7474),
+                                                        borderRadius: BorderRadius.circular(3.w),
+
+                                                      ),
+                                                      child: Center(
+                                                        child: Text("Mask Mandtory",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 9.sp
+                                                        ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              ),
+
+                                              SizedBox(
+                                                height: 2.5.h,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 6.w),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      child: Row(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/up.svg",
+                                                              width: 4.5.w,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 1.w,
+                                                          ),
+                                                          Text(
+                                                            "Like(24)",
+                                                            style: TextStyle(
+                                                              fontSize: 11.sp,
+                                                              color:
+                                                                  kPrimaryColor,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      child: Row(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/down.svg",
+                                                              width: 4.5.w,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 1.w,
+                                                          ),
+                                                          Text(
+                                                            "Dislike(05)",
+                                                            style: TextStyle(
+                                                              fontSize: 11.sp,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: Text(
+                                                        "Report",
+                                                        style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {},
+                                                      child: SvgPicture.asset(
+                                                        "assets/icons/share.svg",
+                                                        width: 4.5.w,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 2.5.h,
+                                              ),
+
+
+                                             
+
+
+                                              
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 2.w),
+                                                child: Row(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityReplies()));
+                                                      },
+                                                      child: Text(
+                                                        "Replies (05)",
+                                                        style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 1.h,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 4.h,
+                                                      width: 65.w,
+                                                      child: TextField(
+                                                        onChanged:(val){
+                                                          print(val);
+                                                        },
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12.sp,
+                                                          
+                                                          
+                                                          
+                                                            ),
+                                                        maxLines: 5,
+                                                        decoration: InputDecoration(
+                                                          
+                                                          fillColor: Colors.black,
+                                                          filled: true,
+                                                      
+                                                            
+                                                            hintText: "Reply",
+                                                            hintStyle: TextStyle(
+                                                                fontSize:
+                                                                    9.sp,
+                                                                color: Colors
+                                                                    .white)),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 2.h,
+                                              ),
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 2.h,
                                       ),
-                                    ),
-                                  )),
-                        ));
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+            ));
   }
 
   // customBottomSheet() {
@@ -1118,29 +1155,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(3.w)),
-                  child: Expanded(
-                    child: TextFormField(
-                      style: TextStyle(color: Color(0XFFCECECE)),
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: "Type a Review...",
-                          hintStyle: TextStyle(
-                              fontSize: 12.sp, color: Color(0XFFCECECE))),
-                    ),
+                  child: TextFormField(
+                    style: TextStyle(color: Color(0XFFCECECE)),
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Type a Review...",
+                        hintStyle: TextStyle(
+                            fontSize: 12.sp, color: Color(0XFFCECECE))),
                   ),
                 ),
                 SizedBox(
                   height: 1.7.h,
                 ),
-                Expanded(
-                  child: DefaultButton(
-                      width: 35.w, height: 6.h, text: "Submit", press: () {}),
-                )
+                DefaultButton(
+                    width: 35.w, height: 6.h, text: "Submit", press: () {})
               ],
             ),
           )),
@@ -1262,20 +1295,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(3.w)),
-                  child: Expanded(
-                    child: TextFormField(
-                      style: TextStyle(color: Color(0XFFCECECE)),
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: "Type a Review...",
-                          hintStyle: TextStyle(
-                              fontSize: 12.sp, color: Color(0XFFCECECE))),
-                    ),
+                  child: TextFormField(
+                    style: TextStyle(color: Color(0XFFCECECE)),
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Type a Review...",
+                        hintStyle: TextStyle(
+                            fontSize: 12.sp, color: Color(0XFFCECECE))),
                   ),
                 ),
                 SizedBox(

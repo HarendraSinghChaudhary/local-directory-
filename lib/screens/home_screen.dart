@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/Filter_screen.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,6 +14,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  static String videoID = 'mEZ74WnXGzw';
+
+  // YouTube Video Full URL : https://www.youtube.com/watch?v=dFKhWe2bBkM&feature=emb_title&ab_channel=BBKiVines
+
+  YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: videoID,
+    flags: YoutubePlayerFlags(
+      autoPlay: true,
+      mute: false,
+      loop: true,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,7 +119,11 @@ class _HomeState extends State<Home> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(3.w),
                     color: Colors.white),
-                child: Image.asset("assets/images/map1.png"),
+                child: YoutubePlayer(
+                  controller: _controller,
+                  liveUIColor: Colors.amber,
+                  showVideoProgressIndicator: true,
+                ),
               ),
               SizedBox(
                 height: 2.h,

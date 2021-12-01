@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wemarkthespot/components/shimmerEffect.dart';
+
 import 'package:wemarkthespot/screens/account.dart';
-import 'package:wemarkthespot/screens/explore.dart';
+
 import 'package:wemarkthespot/screens/home_screen.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/screens/inTheKnow.dart';
-import 'package:wemarkthespot/screens/location.dart';
+
+import 'package:wemarkthespot/screens/mapScreen.dart';
 
 class HomeNav extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     // Scaffold(), Scaffold(), Scaffold(),
-    Explore(), Hotspot(), ShimmerEffect(),
+    MapScreen(), Hotspot(), YoutubeApp(),
     Account()
   ];
 
