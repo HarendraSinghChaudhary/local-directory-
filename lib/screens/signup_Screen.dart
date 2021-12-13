@@ -5,13 +5,14 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
 import 'package:wemarkthespot/screens/otpSignUpScreen.dart';
-import 'package:wemarkthespot/screens/otp_Screen.dart';
+
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:http/http.dart' as http;
 import '../constant.dart';

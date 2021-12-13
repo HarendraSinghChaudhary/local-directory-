@@ -57,7 +57,9 @@ class _DonationState extends State<Donation> {
                 width: 40.w, 
                 height: 6.h, 
                 text: "Donate", 
-                press: () {})
+                press: () {
+                  
+                })
 
 
 

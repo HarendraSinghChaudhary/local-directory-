@@ -18,8 +18,8 @@ ThemeData theme() {
 InputDecorationTheme inputDecorationTheme() {
   OutlineInputBorder outlineInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(28),
-   // borderSide: BorderSide(color: kTextColor),
-    gapPadding: 10,
+    borderSide: BorderSide(color: kTextColor),
+    //gapPadding: 10,
   );
   return InputDecorationTheme(
     // If  you are using latest version of flutter then lable text and hint text shown like this

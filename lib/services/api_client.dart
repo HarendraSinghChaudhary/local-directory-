@@ -13,7 +13,16 @@ class RestDatasource {
   static final OTPPASSWORD_URL = BASE_URL + "password_verification";
   static final PASSWORDUPDATE_URL = BASE_URL + "password_update";
   static final EDITPROFILE_URL = BASE_URL + "profile_update";
-  
+  static final HOMEAPI_URL = BASE_URL + "get_homedata";
+  static final NEARBYRESTAURANT_URL = BASE_URL + "getnearby";
+  static final BUSINESSREVIEW_URL = BASE_URL + "business_review";
+  static final COMMUNITYREVIEW_URL = BASE_URL + "community_reviews";
+  static final COMMUNITYREPLYONREVIEW_URL = BASE_URL + "replies_community_reviews";
+  static final GETFAVOURITE_URL = BASE_URL + "getbusinessFavbyuserId";
+  static final USERCHECKINLIST_URL = BASE_URL + "userCheckInList?user_id=";
+  static final BUSSINESSFAV_URL = BASE_URL + "businessfav";
+
+   
 
 
 

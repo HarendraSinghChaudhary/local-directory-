@@ -226,8 +226,6 @@ class _EditProfileState extends State<EditProfile> {
                           uptoDob.toString(),
                           code.toString());
 
-                      // userRegister(email.toString(), phone.toString(),
-                      //     firstname.toString() + ' ' + lastname.toString());
                     })
           ],
         ),

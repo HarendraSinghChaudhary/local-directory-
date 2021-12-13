@@ -1,23 +1,80 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/models/community_review_api_model.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
 
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
+import 'package:wemarkthespot/services/api_client.dart';
 
 class DetailBussiness extends StatefulWidget {
-  const DetailBussiness({Key? key}) : super(key: key);
+  NearBy nearBy;
+
+  DetailBussiness({required this.nearBy});
 
   @override
   _DetailBussinessState createState() => _DetailBussinessState();
 }
 
 class _DetailBussinessState extends State<DetailBussiness> {
+
+
+  String fire = "Fire";
+  String okOk = "OkOk";
+  String notCool = "Not Cool";
+
+  String check = "";
+
+
+
+
+  //var ratting = "";
+  var name = "";
+  //var image = "";
+  var review = "";
+  var business_review_image = "";
+  var business_review_image_status = "";
+  var total_like = "";
+  var total_dislike = "";
+  var business_reviews_id = "";
+  var replies_count = "";
+
+  List<CommunityReviewAPI> communityReviewList = [];
+
+  @override
+  void initState() {
+    communityReviewApi();
+
+    super.initState();
+  }
+
+  String ratting = "";
+
+  TextEditingController reviewController = new TextEditingController();
+  TextEditingController rattingController = new TextEditingController();
+  TextEditingController messageController = new TextEditingController();
+
+  String image = "";
+  String base64Image = "";
+  String fileName = "";
+  File? file;
+  bool isLoading = false;
+  final picker = ImagePicker();
+  //get kPrimaryColor => null;
+
+  bool isloading = false;
+  final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -35,8 +92,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       height: 33.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image:
-                                  AssetImage("assets/images/restaurant.jpeg"),
+                              image: NetworkImage(
+                                  widget.nearBy.business_images.toString()),
                               fit: BoxFit.fill)),
                     ),
                     Positioned(
@@ -70,60 +127,90 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Bar Name",
+                          //"Bar Name",
+                          widget.nearBy.business_name.toString() != "null"
+                              ? widget.nearBy.business_name.toString()
+                              : "Business Name",
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 16.sp,
                               color: kCyanColor,
                               fontWeight: FontWeight.w500,
                               fontFamily: "Segoepr"),
                         ),
-                        SizedBox(width: 52.w),
-                        Text(
-                          "3.5",
-                          style: TextStyle(
-                              fontSize: 12.sp,
+                        Row(
+                          children: [
+                            Text(
+                              // "3.5",
+                              widget.nearBy.ratting.toString() != "null"
+                                  ? widget.nearBy.ratting.toString()
+                                  : "0",
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.w500
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                            SizedBox(
+                              width: 1.w,
+                            ),
+                            SvgPicture.asset(
+                              "assets/icons/star.svg",
                               color: kPrimaryColor,
-                              fontWeight: FontWeight.w500
-                              //fontFamily: "Segoepr"
-                              ),
+                            )
+                          ],
                         ),
-                        SvgPicture.asset(
-                          "assets/icons/star.svg",
-                          color: kPrimaryColor,
-                        )
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Bar",
+                          //"Bar",
+                          widget.nearBy.category_name.toString() != "null"
+                              ? widget.nearBy.category_name.toString()
+                              : "",
                           style: TextStyle(
                               fontSize: 14.sp,
                               color: kPrimaryColor,
                               // fontWeight: FontWeight.w500,
                               fontFamily: "Roboto"),
                         ),
-                        SizedBox(width: 50.w),
-                        Text(
-                          "1200 Reviews  | ",
-                          style: TextStyle(
-                              fontSize: 10.sp,
-                              color: kPrimaryColor,
-                              // fontWeight: FontWeight.w500,
-                              fontFamily: "Roboto"
-                              //fontFamily: "Segoepr"
-                              ),
-                        ),
-                        Text(
-                          "25 People",
-                          style: TextStyle(
-                              fontSize: 10.sp,
-                              color: kPrimaryColor,
-                              // fontWeight: FontWeight.w500,
-                              fontFamily: "Roboto"
-                              //fontFamily: "Segoepr"
-                              ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.nearBy.review_count.toString() +
+                                  " Reviews ",
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: kPrimaryColor,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                            Text(
+                              " | ",
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: kPrimaryColor,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                            Text(
+                              widget.nearBy.user_count.toString() + " People",
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: kPrimaryColor,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -133,22 +220,34 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SvgPicture.asset(
-                          "assets/icons/location-.svg",
-                          color: kCyanColor,
-                          width: 4.w,
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/location-.svg",
+                              color: kCyanColor,
+                              width: 4.w,
+                            ),
+                            SizedBox(
+                              width: 1.w,
+                            ),
+                            Text(
+                              //"1230 Roosvelt Road, Wichita",
+                              widget.nearBy.location.toString() != "null"
+                                  ? widget.nearBy.location.toString()
+                                  : "",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"),
+                            ),
+                          ],
                         ),
                         Text(
-                          "1230 Roosvelt Road, Wichita",
-                          style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white,
-                              // fontWeight: FontWeight.w500,
-                              fontFamily: "Roboto"),
-                        ),
-                        SizedBox(width: 20.w),
-                        Text(
-                          "Distance: 1.2 mi",
+                          //Distance
+                          "Distance: " +
+                              widget.nearBy.distance.toString() +
+                              " mi",
                           style: TextStyle(
                               fontSize: 11.sp,
                               color: Colors.white,
@@ -338,6 +437,266 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
+  Future<dynamic> communityReplyOnReviewApi(
+      String review_id, String messageText) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.COMMUNITYREPLYONREVIEW_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "review_id": review_id,
+          "reply_id": "0",
+          "type": "REVIEW ",
+          "message": messageText
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        setState(() {
+          isloading = false;
+        });
+
+        communityReviewApi();
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+  Future<dynamic> communityReviewApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.COMMUNITYREVIEW_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "business_id": widget.nearBy.id.toString()
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+      communityReviewList.clear();
+
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          CommunityReviewAPI modelAgentSearch = new CommunityReviewAPI();
+
+          modelAgentSearch.name = jsonArray[i]["name"].toString();
+          modelAgentSearch.image = jsonArray[i]["image"].toString();
+          modelAgentSearch.review = jsonArray[i]["review"].toString();
+          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+          modelAgentSearch.business_review_image =
+              jsonArray[i]["business_review_image"].toString();
+          modelAgentSearch.business_review_image_status =
+              jsonArray[i]["business_review_image_status"].toString();
+          modelAgentSearch.total_like = jsonArray[i]["total_like"].toString();
+          modelAgentSearch.total_dislike =
+              jsonArray[i]["total_dislike"].toString();
+          modelAgentSearch.business_reviews_id =
+              jsonArray[i]["business_reviews_id"].toString();
+          modelAgentSearch.replies_count = jsonArray[i]["replies_count"].toString();    
+              
+
+          print("name: " + modelAgentSearch.name.toString());
+
+          communityReviewList.add(modelAgentSearch);
+
+          setState(() {});
+        }
+
+        setState(() {
+          isloading = false;
+        });
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+  Future<dynamic> businessReviewApi(
+    String ratting,
+    String review,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    print("id " + id.toString() + "");
+
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.BUSINESSREVIEW_URL,
+      ),
+    );
+    if (ratting.toString() != "null" || ratting.toString() != "") {
+      request.fields["ratting"] = ratting;
+      print("ratting1: " + ratting.toString());
+    }
+
+    if (review.toString() != "null" || review.toString() != "") {
+      request.fields["review"] = review;
+      print("review1: " + review.toString());
+    }
+
+    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["user_id"] = id.toString();
+    //request.files.add(await http.MultipartFile.fromPath(base64Image, fileName));
+    if (file != null) {
+      request.files.add(http.MultipartFile(
+          'image',
+          File(file!.path).readAsBytes().asStream(),
+          File(file!.path).lengthSync(),
+          filename: fileName));
+      print("image: " + fileName.toString());
+    }
+    var jsonRes;
+    var res = await request.send();
+    // print("ResponseJSON: " + respone.toString() + "_");
+    // print("status: " + jsonRes["success"].toString() + "_");
+    // print("message: " + jsonRes["message"].toString() + "_");
+
+    if (res.statusCode == 200) {
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        Navigator.pop(context);
+        communityReviewApi();
+
+        // prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.commit();
+        setState(() {
+          isloading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        file = File(pickedFile.path);
+      });
+      base64Image = base64Encode(file!.readAsBytesSync());
+    } else {
+      print('No image selected.');
+    }
+
+    fileName = file!.path.split("/").last;
+    print("ImageName: " + fileName.toString() + "_");
+    print("Image: " + base64Image.toString() + "_");
+    Navigator.pop(context);
+    customDialog();
+  }
+
   Future<dynamic> customModelSheet(BuildContext context) {
     return showModalBottomSheet(
         backgroundColor: Colors.transparent,
@@ -384,589 +743,431 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               SizedBox(
                                 height: 2.h,
                               ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                controller: scrollController,
-                                itemCount: 9,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Column(
-                                    children: [
-                                      Card(
-                                        
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 4.w),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(3.w)
-                                              ),
-                                        
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 1.5.h, left: 5.w),
-                                                    child: Column(
+                              isloading
+                                  ? Align(
+                                      alignment: Alignment.center,
+                                      child: Platform.isAndroid
+                                          ? CircularProgressIndicator()
+                                          : CupertinoActivityIndicator())
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      controller: scrollController,
+                                      itemCount: communityReviewList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        TextEditingController
+                                            messageTextController =
+                                            new TextEditingController();
+                                        return Column(
+                                          children: [
+                                            Card(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 4.w),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3.w)),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
                                                       children: [
-                                                        CircleAvatar(
-                                                          radius: 7.w,
-                                                          backgroundImage:
-                                                              AssetImage(
-                                                                  "assets/images/profilepic.jpeg"),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 0.5.h,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              "3.5",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      12.sp,
-                                                                  color:
-                                                                      kPrimaryColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500
-                                                                  //fontFamily: "Segoepr"
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 1.5.h,
+                                                                  left: 5.w),
+                                                          child: Column(
+                                                            children: [
+                                                              CircleAvatar(
+                                                                radius: 7.w,
+                                                                backgroundImage:
+                                                                    NetworkImage(
+                                                                        //user image
+                                                                        communityReviewList[index]
+                                                                            .image
+                                                                            .toString()),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 0.5.h,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    //"3.5",
+                                                                    communityReviewList[
+                                                                            index]
+                                                                        .ratting
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 12
+                                                                            .sp,
+                                                                        color:
+                                                                            kPrimaryColor,
+                                                                        fontWeight:
+                                                                            FontWeight.w500
+                                                                        //fontFamily: "Segoepr"
+                                                                        ),
                                                                   ),
-                                                            ),
-                                                            SvgPicture.asset(
-                                                              "assets/icons/star.svg",
-                                                              color:
-                                                                  kPrimaryColor,
-                                                            )
-                                                          ],
+                                                                  SvgPicture
+                                                                      .asset(
+                                                                    "assets/icons/star.svg",
+                                                                    color:
+                                                                        kPrimaryColor,
+                                                                  )
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 3.w),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                // "Restaurant Name",
+
+                                                                communityReviewList[
+                                                                        index]
+                                                                    .name
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    color:
+                                                                        kCyanColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Segoepr"),
+                                                              ),
+                                                              Container(
+                                                                  height: 6.h,
+                                                                  width: 65.w,
+                                                                  child: Text(
+                                                                    // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                                    communityReviewList[
+                                                                            index]
+                                                                        .review
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 11.sp,
+                                                                        color: Colors.black,
+                                                                        // fontWeight: FontWeight.w500,
+                                                                        fontFamily: "Roboto"
+                                                                        //fontFamily: "Segoepr"
+                                                                        ),
+                                                                  ))
+                                                            ],
+                                                          ),
                                                         )
                                                       ],
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 3.w),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          "Restaurant Name",
-                                                          style: TextStyle(
-                                                              fontSize: 13.sp,
-                                                              color: kCyanColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Segoepr"),
+                                                    SizedBox(
+                                                      height: 1.5.h,
+                                                    ),
+                                                    Visibility(
+                                                      visible: communityReviewList[
+                                                                      index]
+                                                                  .business_review_image
+                                                                  .toString() !=
+                                                              ""
+                                                          ? true
+                                                          : false,
+                                                      child: Container(
+                                                        height: 48.h,
+                                                        width: double.infinity,
+                                                        child: Image.network(
+                                                          //  "assets/images/lighting.jpeg",
+                                                          communityReviewList[
+                                                                  index]
+                                                              .business_review_image
+                                                              .toString(),
+                                                          fit: BoxFit.fill,
                                                         ),
-                                                        Container(
-                                                            height: 6.h,
-                                                            width: 65.w,
-                                                            child: Text(
-                                                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      11.sp,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  // fontWeight: FontWeight.w500,
-                                                                  fontFamily:
-                                                                      "Roboto"
-                                                                  //fontFamily: "Segoepr"
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.5.h,
+                                                    ),
+                                                    Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 17.w),
+                                                        width: double.infinity,
+                                                        //color: Colors.red,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Container(
+                                                              height: 3.h,
+                                                              width: 30.w,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Color(
+                                                                    0XFF7C7474),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3.w),
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "Staff wear mask",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          9.sp),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              height: 3.h,
+                                                              width: 30.w,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Color(
+                                                                    0XFF7C7474),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3.w),
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "Mask Mandtory",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          9.sp),
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )),
+                                                    SizedBox(
+                                                      height: 2.5.h,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 6.w),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            child: Row(
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {},
+                                                                  child:
+                                                                      SvgPicture
+                                                                          .asset(
+                                                                    "assets/icons/up.svg",
+                                                                    width:
+                                                                        4.5.w,
                                                                   ),
-                                                            ))
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 1.5.h,
-                                              ),
-
-
-                                               Container(
-                                                height: 18.h,
-                                                width: double.infinity,
-                                                
-                                                child: Image.asset("assets/images/lighting.jpeg",
-                                                fit: BoxFit.fill,
-                                                ),
-                                              ),
-
-                                              SizedBox(
-                                                height: 1.5.h,
-                                              ),
-
-
-                                               Container(
-                                                 padding: EdgeInsets.only(left: 17.w),
-                                               
-                                                width: double.infinity,
-                                                //color: Colors.red,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                  children: [
-
-                                                    Container(
-                                                      height: 3.h,
-                                                      width: 30.w,
-                                                      decoration: BoxDecoration(
-                                                        color: Color(0XFF7C7474),
-                                                        borderRadius: BorderRadius.circular(3.w),
-
-                                                      ),
-                                                      child: Center(
-                                                        child: Text("Staff wear mask",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 9.sp
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ),
-
-
-                                                    Container(
-                                                      height: 3.h,
-                                                      width: 30.w,
-                                                      decoration: BoxDecoration(
-                                                        color: Color(0XFF7C7474),
-                                                        borderRadius: BorderRadius.circular(3.w),
-
-                                                      ),
-                                                      child: Center(
-                                                        child: Text("Mask Mandtory",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 9.sp
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                              ),
-
-                                              SizedBox(
-                                                height: 2.5.h,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 6.w),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      child: Row(
-                                                        children: [
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 1.w,
+                                                                ),
+                                                                Text(
+                                                                  "Like(" +
+                                                                      communityReviewList[
+                                                                              index]
+                                                                          .total_like
+                                                                          .toString() +
+                                                                      ")",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        11.sp,
+                                                                    color:
+                                                                        kPrimaryColor,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            child: Row(
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {},
+                                                                  child:
+                                                                      SvgPicture
+                                                                          .asset(
+                                                                    "assets/icons/down.svg",
+                                                                    width:
+                                                                        4.5.w,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 1.w,
+                                                                ),
+                                                                Text(
+                                                                  "Dislike(" +
+                                                                      communityReviewList[
+                                                                              index]
+                                                                          .total_dislike
+                                                                          .toString() +
+                                                                      ")",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        11.sp,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
                                                           InkWell(
                                                             onTap: () {},
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/up.svg",
-                                                              width: 4.5.w,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 1.w,
-                                                          ),
-                                                          Text(
-                                                            "Like(24)",
-                                                            style: TextStyle(
-                                                              fontSize: 11.sp,
-                                                              color:
-                                                                  kPrimaryColor,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      child: Row(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () {},
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/down.svg",
-                                                              width: 4.5.w,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 1.w,
-                                                          ),
-                                                          Text(
-                                                            "Dislike(05)",
-                                                            style: TextStyle(
-                                                              fontSize: 11.sp,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {},
-                                                      child: Text(
-                                                        "Report",
-                                                        style: TextStyle(
-                                                          fontSize: 11.sp,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {},
-                                                      child: SvgPicture.asset(
-                                                        "assets/icons/share.svg",
-                                                        width: 4.5.w,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 2.5.h,
-                                              ),
-
-
-                                             
-
-
-                                              
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 2.w),
-                                                child: Row(
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityReplies()));
-                                                      },
-                                                      child: Text(
-                                                        "Replies (05)",
-                                                        style: TextStyle(
-                                                          fontSize: 11.sp,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 1.h,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4.h,
-                                                      width: 65.w,
-                                                      child: TextField(
-                                                        onChanged:(val){
-                                                          print(val);
-                                                        },
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12.sp,
-                                                          
-                                                          
-                                                          
-                                                            ),
-                                                        maxLines: 5,
-                                                        decoration: InputDecoration(
-                                                          
-                                                          fillColor: Colors.black,
-                                                          filled: true,
-                                                      
-                                                            
-                                                            hintText: "Reply",
-                                                            hintStyle: TextStyle(
-                                                                fontSize:
-                                                                    9.sp,
+                                                            child: Text(
+                                                              "Report",
+                                                              style: TextStyle(
+                                                                fontSize: 11.sp,
                                                                 color: Colors
-                                                                    .white)),
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/share.svg",
+                                                              width: 4.5.w,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    )
+                                                    ),
+                                                    SizedBox(
+                                                      height: 2.5.h,
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 2.w),
+                                                      child: Row(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              CommunityReplies()));
+                                                            },
+                                                            child: Text(
+                                                              "Replies ("+ communityReviewList[index].replies_count.toString() +")",
+                                                              style: TextStyle(
+                                                                fontSize: 11.sp,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 1.h,
+                                                          ),
+                                                          isloading
+                                                              ? Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  child: Platform
+                                                                          .isAndroid
+                                                                      ? CircularProgressIndicator()
+                                                                      : CupertinoActivityIndicator())
+                                                              : SizedBox(
+                                                                  width: 65.w,
+                                                                  child:
+                                                                      TextField(
+                                                                    controller:
+                                                                        messageTextController,
+                                                                    onChanged:
+                                                                        (val) {
+                                                                      print(
+                                                                          val);
+
+                                                                      communityReviewList[index]
+                                                                              .messageText =
+                                                                          val.toString();
+                                                                    },
+                                                                    minLines: 1,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .multiline,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          12.sp,
+                                                                    ),
+                                                                    maxLines:
+                                                                        50,
+                                                                    decoration: InputDecoration(
+                                                                        contentPadding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 4.w),
+                                                                        fillColor: Colors.black,
+                                                                        filled: true,
+                                                                        //suffixIconConstraints: BoxConstraints(minWidth: 5),
+
+                                                                        hintText: "Reply",
+                                                                        suffixIcon: InkWell(
+                                                                            onTap: () {
+                                                                              communityReplyOnReviewApi(communityReviewList[index].business_reviews_id.toString(), communityReviewList[index].messageText.toString());
+                                                                            },
+                                                                            child: Icon(Icons.send, color: kPrimaryColor)),
+                                                                        hintStyle: TextStyle(fontSize: 9.sp, color: Colors.white)),
+                                                                  ),
+                                                                )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 2.h,
+                                                    ),
                                                   ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 2.h,
-                                              ),
-                                            ],
-                                          )),
-                                      SizedBox(
-                                        height: 2.h,
-                                      ),
-                                    ],
-                                  );
-                                },
+                                                )),
+                                            SizedBox(
+                                              height: 2.h,
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: buildMessageFormField(),
                               ),
+                              SizedBox(
+                                height: 2.h,
+                              )
                             ],
                           ),
                         ),
                       )),
             ));
   }
-
-  // customBottomSheet() {
-  //   return DraggableScrollableSheet(
-  //     expand: true,
-  //     initialChildSize: .2,
-  //     minChildSize: .5,
-  //     maxChildSize: 1,
-  //     builder: (BuildContext context, ScrollController scrollController) {
-  //       return Container(
-  //         // width: double.infinity,
-  //         // height: 90.h,
-  //         decoration: BoxDecoration(
-  //             color: kCyanColor,
-  //             borderRadius: BorderRadius.only(
-  //                 topLeft: Radius.circular(10.w),
-  //                 topRight: Radius.circular(10.w))),
-  //         child: SingleChildScrollView(
-  //           controller: scrollController,
-  //           child: Column(
-  //             children: [
-  //               SizedBox(
-  //                 height: 1.h,
-  //               ),
-  //               Container(
-  //                 height: 1.h,
-  //                 width: 25.w,
-  //                 decoration: BoxDecoration(
-  //                     color: Colors.white,
-  //                     borderRadius: BorderRadius.circular(3.w)),
-  //               ),
-  //               SizedBox(
-  //                 height: 1.h,
-  //               ),
-  //               Text(
-  //                 "COMMUNITY REVIEWS",
-  //                 style: TextStyle(
-  //                     fontSize: 16.sp,
-  //                     color: Colors.white,
-  //                     fontWeight: FontWeight.w700,
-  //                     fontFamily: "Segoepr"),
-  //               ),
-  //               SizedBox(
-  //                 height: 2.h,
-  //               ),
-  //               Container(
-  //                   margin: EdgeInsets.symmetric(horizontal: 4.w),
-  //                   height: 19.h,
-  //                   width: double.infinity,
-  //                   decoration: BoxDecoration(
-  //                     color: Colors.white,
-  //                     borderRadius: BorderRadius.circular(4.w),
-  //                     boxShadow: [
-  //                       BoxShadow(
-  //                           color: Colors.black54.withOpacity(0.3),
-  //                           offset: Offset(2, 3),
-  //                           blurRadius: 10,
-  //                           spreadRadius: 1)
-  //                     ],
-  //                   ),
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Row(
-  //                         children: [
-  //                           Padding(
-  //                             padding: EdgeInsets.only(top: 1.5.h, left: 5.w),
-  //                             child: Column(
-  //                               children: [
-  //                                 CircleAvatar(
-  //                                   radius: 7.w,
-  //                                   backgroundImage: AssetImage(
-  //                                       "assets/images/profilepic.jpeg"),
-  //                                 ),
-  //                                 SizedBox(
-  //                                   height: 0.5.h,
-  //                                 ),
-  //                                 Row(
-  //                                   children: [
-  //                                     Text(
-  //                                       "3.5",
-  //                                       style: TextStyle(
-  //                                           fontSize: 12.sp,
-  //                                           color: kPrimaryColor,
-  //                                           fontWeight: FontWeight.w500
-  //                                           //fontFamily: "Segoepr"
-  //                                           ),
-  //                                     ),
-  //                                     SvgPicture.asset(
-  //                                       "assets/icons/star.svg",
-  //                                       color: kPrimaryColor,
-  //                                     )
-  //                                   ],
-  //                                 )
-  //                               ],
-  //                             ),
-  //                           ),
-  //                           Padding(
-  //                             padding: EdgeInsets.only(left: 3.w),
-  //                             child: Column(
-  //                               crossAxisAlignment: CrossAxisAlignment.start,
-  //                               children: [
-  //                                 Text(
-  //                                   "Restaurant Name",
-  //                                   style: TextStyle(
-  //                                       fontSize: 13.sp,
-  //                                       color: kCyanColor,
-  //                                       fontWeight: FontWeight.w500,
-  //                                       fontFamily: "Segoepr"),
-  //                                 ),
-  //                                 Container(
-  //                                     height: 6.h,
-  //                                     width: 65.w,
-  //                                     child: Text(
-  //                                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  //                                       style: TextStyle(
-  //                                           fontSize: 11.sp,
-  //                                           color: Colors.black,
-  //                                           // fontWeight: FontWeight.w500,
-  //                                           fontFamily: "Roboto"
-  //                                           //fontFamily: "Segoepr"
-  //                                           ),
-  //                                     ))
-  //                               ],
-  //                             ),
-  //                           )
-  //                         ],
-  //                       ),
-  //                       SizedBox(
-  //                         height: 1.5.h,
-  //                       ),
-  //                       Padding(
-  //                         padding: EdgeInsets.symmetric(horizontal: 2.w),
-  //                         child: Row(
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Container(
-  //                               child: Row(
-  //                                 children: [
-  //                                   InkWell(
-  //                                     onTap: () {},
-  //                                     child: SvgPicture.asset(
-  //                                       "assets/icons/up.svg",
-  //                                       width: 4.5.w,
-  //                                     ),
-  //                                   ),
-  //                                   SizedBox(
-  //                                     width: 1.w,
-  //                                   ),
-  //                                   Text(
-  //                                     "Like(24)",
-  //                                     style: TextStyle(
-  //                                       fontSize: 11.sp,
-  //                                       color: kPrimaryColor,
-  //                                     ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                             Container(
-  //                               child: Row(
-  //                                 children: [
-  //                                   InkWell(
-  //                                     onTap: () {},
-  //                                     child: SvgPicture.asset(
-  //                                       "assets/icons/down.svg",
-  //                                       width: 4.5.w,
-  //                                     ),
-  //                                   ),
-  //                                   SizedBox(
-  //                                     width: 1.w,
-  //                                   ),
-  //                                   Text(
-  //                                     "Dislike(05)",
-  //                                     style: TextStyle(
-  //                                       fontSize: 11.sp,
-  //                                       color: Colors.black,
-  //                                     ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                             InkWell(
-  //                               onTap: () {},
-  //                               child: Text(
-  //                                 "Report",
-  //                                 style: TextStyle(
-  //                                   fontSize: 11.sp,
-  //                                   color: Colors.black,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             InkWell(
-  //                               onTap: () {},
-  //                               child: SvgPicture.asset(
-  //                                 "assets/icons/share.svg",
-  //                                 width: 4.5.w,
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       SizedBox(
-  //                         height: 1.h,
-  //                       ),
-  //                       Padding(
-  //                         padding: EdgeInsets.only(left: 2.w),
-  //                         child: Row(
-  //                           children: [
-  //                             Text(
-  //                               "Replies (05)",
-  //                               style: TextStyle(
-  //                                 fontSize: 11.sp,
-  //                                 color: Colors.black,
-  //                               ),
-  //                             ),
-  //                             SizedBox(
-  //                               width: 1.h,
-  //                             ),
-  //                             Container(
-  //                               height: 3.h,
-  //                               width: 67.w,
-  //                               decoration: BoxDecoration(
-  //                                   color: Colors.black,
-  //                                   borderRadius: BorderRadius.circular(7.w)),
-  //                               child: SizedBox(
-  //                                 height: 3.h,
-  //                                 child: TextFormField(
-  //                                   style: TextStyle(color: Color(0XFFCECECE)),
-  //                                   maxLines: 5,
-  //                                   decoration: InputDecoration(
-  //                                       border: InputBorder.none,
-  //                                       focusedBorder: InputBorder.none,
-  //                                       enabledBorder: InputBorder.none,
-  //                                       errorBorder: InputBorder.none,
-  //                                       disabledBorder: InputBorder.none,
-  //                                       hintText: "Reply",
-  //                                       hintStyle: TextStyle(
-  //                                           fontSize: 8.sp,
-  //                                           color: Colors.white)),
-  //                                 ),
-  //                               ),
-  //                             )
-  //                           ],
-  //                         ),
-  //                       )
-  //                     ],
-  //                   ))
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   checkInDialog() {
     showDialog(
@@ -979,7 +1180,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
           title: SingleChildScrollView(
               child: SizedBox(
-            height: 50.h,
+            height: 51.h,
             width: 95.w,
             child: Column(
               children: [
@@ -1019,47 +1220,76 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Column(
-                      children: [
-                        SvgPicture.asset("assets/icons/file.svg"),
-                        Text(
-                          "Fire",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.white,
+                    InkWell(
+                      onTap: () {
 
-                            //fontFamily: "Roboto"
-                          ),
+                        setState(() {
+                          check = "fire";
+                        });
+                      },
+                      child: Container(
+                        child: Column(
+                          children: [
+                            SvgPicture.asset("assets/icons/file.svg"),
+                            SizedBox(height: 1.2.h,),
+                            Text(
+                              "Fire",
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: check == "fire"? kPrimaryColor : Colors.white,
+                    
+                                //fontFamily: "Roboto"
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        SvgPicture.asset("assets/icons/bakance.svg"),
-                        Text(
-                          "OkOk",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.white,
-
-                            //fontFamily: "Roboto"
-                          ),
+                    InkWell(
+                      onTap: () {
+                         print("tab");
+                        setState(() {
+                          check = "OkOk";
+                         
+                        });
+                      },
+                      child: Container(
+                        child: Column(
+                          children: [
+                            SvgPicture.asset("assets/icons/bakance.svg"),
+                            Text(
+                              "OkOk",
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: check == "OkOk"? kPrimaryColor : Colors.white,
+                    
+                                //fontFamily: "Roboto"
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        SvgPicture.asset("assets/icons/snow.svg"),
-                        Text(
-                          "Not Cool",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.white,
-
-                            //fontFamily: "Roboto"
-                          ),
+                    InkWell(
+                      onTap: () {
+                        check = "Not Cool";
+                      },
+                      child: Container(
+                        child: Column(
+                          children: [
+                            SvgPicture.asset("assets/icons/snow.svg"),
+                            Text(
+                              "Not Cool",
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: check == "Not Cool"? kPrimaryColor : Colors.white,
+                    
+                                //fontFamily: "Roboto"
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     )
                   ],
                 ),
@@ -1187,12 +1417,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          scrollable: true,
           backgroundColor: Colors.black,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
           title: SingleChildScrollView(
               child: SizedBox(
-            height: 30.h,
+            height: 31.h,
             width: 95.w,
             child: Column(
               children: [
@@ -1247,7 +1478,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             color: kPrimaryColor,
                           ),
                           onRatingUpdate: (rating) {
-                            print(rating);
+                            print("Ratting :" + rating.toString());
+                            ratting = rating.toString();
+                            //rat = rattingController.text.toString();
+                            print("Rat: " + ratting.toString());
                           },
                         ),
                       ],
@@ -1270,9 +1504,28 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         Row(
                           children: [
                             InkWell(
-                                onTap: () {},
-                                child:
-                                    SvgPicture.asset("assets/icons/image.svg")),
+                              onTap: () {
+                                getImage();
+                              },
+                              child: file == null
+                                  ? Container(
+                                      child: SvgPicture.asset(
+                                          "assets/icons/image.svg"))
+                                  : Container(
+                                      height: 3.h,
+                                      width: 3.h,
+                                      decoration: BoxDecoration(
+                                          // borderRadius:
+                                          //     BorderRadius.circular(3.w),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            //Color(0xffD5D5D5)
+                                          ),
+                                          image: DecorationImage(
+                                              image:
+                                                  FileImage(File(file!.path)))),
+                                    ),
+                            ),
                             SizedBox(
                               width: 3.w,
                             ),
@@ -1296,6 +1549,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       color: Colors.grey.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(3.w)),
                   child: TextFormField(
+                    controller: reviewController,
                     style: TextStyle(color: Color(0XFFCECECE)),
                     maxLines: 5,
                     decoration: InputDecoration(
@@ -1312,8 +1566,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 SizedBox(
                   height: 1.7.h,
                 ),
-                DefaultButton(
-                    width: 35.w, height: 6.h, text: "Submit", press: () {})
+                isloading
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator()
+                            : CupertinoActivityIndicator())
+                    : DefaultButton(
+                        width: 35.w,
+                        height: 6.h,
+                        text: "Submit",
+                        press: () {
+                          businessReviewApi(ratting.toString(),
+                              reviewController.text.toString());
+
+                          print("ratting goes:" + ratting.toString());
+                        })
               ],
             ),
           )),
@@ -1322,27 +1590,33 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
-  // TextFormField buildReplyFormField() {
-  //   return TextFormField(
+  TextFormField buildMessageFormField() {
+    return TextFormField(
+      // controller: emailController,
 
-  //     style: TextStyle(color: Colors.white),
-  //     cursorColor: Colors.white,
-  //     keyboardType: TextInputType.emailAddress,
+      style: TextStyle(color: Colors.white),
+      cursorColor: Colors.white,
 
-  //     decoration: InputDecoration(
-  //       hintText: "Enter your Email",
-  //       hintStyle: TextStyle(color: Colors.grey),
-  //       focusColor: Colors.white,
+      //inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      decoration: InputDecoration(
+        fillColor: kPrimaryColor, filled: true,
+        //filled: true,
 
-  //       // If  you are using latest version of flutter then lable text and hint text shown like this
-  //       // if you r using flutter less then 1.20.* then maybe this is not working properly
-  //       floatingLabelBehavior: FloatingLabelBehavior.always,
-  //       fillColor: Colors.white,
-  //       suffixIcon: CustomSurffixIcon(
-  //         svgIcon: "assets/icons/Mail.svg",
-  //       ),
-  //     ),
-  //   );
-  // }
+        hintText: "Leave a message...",
+        hintStyle: TextStyle(color: Colors.white),
+        focusColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: kPrimaryColor,
+            width: 2.0,
+          ),
+        ),
 
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+    );
+  }
 }

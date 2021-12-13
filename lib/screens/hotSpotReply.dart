@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
-import 'package:wemarkthespot/screens/hotspot.dart';
 
-class CommunityReplies extends StatefulWidget {
-  const CommunityReplies({Key? key}) : super(key: key);
+
+class HotSpotReply extends StatefulWidget {
+  const HotSpotReply({ Key? key }) : super(key: key);
 
   @override
-  _CommunityRepliesState createState() => _CommunityRepliesState();
+  _HotSpotReplyState createState() => _HotSpotReplyState();
 }
 
-class _CommunityRepliesState extends State<CommunityReplies> {
+class _HotSpotReplyState extends State<HotSpotReply> {
+
   ScrollController _controller = new ScrollController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,72 +33,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
         ),
       ),
 
-     // bottomNavigationBar: BottomAppBar(
-       
-        // child: Container(
-        //   margin: EdgeInsets.symmetric(horizontal: 2.w),
-        //   height: 8.h,
-        //   width: double.infinity,
-        //   //color: Colors.orange,
 
-        //   child: Row(
-        //     children: [
-        //       IconButton(onPressed: () {}, 
-        //       icon: Icon(Icons.add_circle_outline, size: 9.w, color: kPrimaryColor,), 
-        //       ),
-
-        //       SizedBox(width: 1.w,),
-
-        //       Container(
-        //         padding: EdgeInsets.only(top: 1.5.h),
-        //         height: 6.h,
-        //         width: 70.w,
-        //         decoration: BoxDecoration(
-        //           color: kCyanColor,
-        //           borderRadius: BorderRadius.circular(8.w)
-        //         ),
-
-        //         child: Center(
-        //           child: TextField(
-        //             style: TextStyle(color: Colors.white, fontSize: 12.sp),
-        //             maxLines: 1,
-                  
-        //             onChanged: (val) {
-                    
-        //             },
-                   
-        //              decoration: InputDecoration(
-        //                focusColor: Colors.white,
-        //                hoverColor: Colors.white,
-        //             //   // fillColor: kCyanColor,
-        //             //   // filled: true,
-                      
-        //                 border: InputBorder.none,
-        //                  focusedBorder: InputBorder.none,
-        //                  enabledBorder: InputBorder.none,
-        //                  errorBorder: InputBorder.none,
-        //                  disabledBorder: InputBorder.none,
-        //                 hintText: "Type..",
-        //                 hintStyle: TextStyle(
-        //                     color: Colors.white,
-        //                     fontSize: 12.sp,
-        //                     ),
-                        
-                    
-        //                ),
-        //           ),
-        //         ),
-        //       ),
-
-        //       SizedBox(width: 3.w,),
-
-        //        InkWell(
-        //          onTap: () {},
-        //          child: SvgPicture.asset("assets/icons/send1.svg", width: 8.w, color: kPrimaryColor,)),
-        //     ],
-        //   ),
-        // ),
-      //),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -111,6 +48,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                 return Column(
                   children: [
                     Card(
+                      color: kBackgroundColor,
                         margin: EdgeInsets.symmetric(horizontal: 4.w),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.w)),
@@ -165,7 +103,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                       style: TextStyle(
                                           //overflow: TextOverflow.ellipsis,
                                           fontSize: 10.2.sp,
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           fontFamily: 'Roboto'),
                                     ),
                                   ),
@@ -181,10 +119,10 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                         InkWell(
                                           onTap: () {},
                                           child: Text(
-                                            "View Replies",
+                                            "2m ago",
                                             style: TextStyle(
-                                                fontSize: 11.sp,
-                                                color: Colors.black,
+                                                fontSize: 10.sp,
+                                                color: kPrimaryColor,
                                                 fontWeight: FontWeight.w500,
                                                 fontFamily: "Roboto"),
                                           ),
@@ -197,7 +135,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               "Reply",
                                               style: TextStyle(
                                                   fontSize: 11.sp,
-                                                  color: kPrimaryColor,
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily: "Roboto"),
                                             ),
@@ -236,7 +174,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       floatingActionButton: Container(
         width: double.infinity,
         height: 8.h,
-        color: Colors.white,
+        color: Colors.black,
         child: Row(
           children: [
             IconButton(onPressed: () {}, 
@@ -313,7 +251,7 @@ class replyWidget extends StatelessWidget {
         return Card(
            margin: EdgeInsets.symmetric(horizontal: 4.w),
           
-          color: Colors.white,
+          color: kBackgroundColor,
           child: Column(
             children: [
               Container(
@@ -364,7 +302,7 @@ class replyWidget extends StatelessWidget {
                               style: TextStyle(
                                   //overflow: TextOverflow.ellipsis,
                                   fontSize: 8.5.sp,
-                                  color: Colors.black87,
+                                  color: Colors.white,
                                   fontFamily: 'Roboto'),
                             ),
                           ),
@@ -394,7 +332,7 @@ class replyWidget extends StatelessWidget {
                                       "Reply",
                                       style: TextStyle(
                                           fontSize: 10.sp,
-                                          color: kPrimaryColor,
+                                          color: Colors.white,
                                           fontFamily:
                                               "Roboto"),
                                     ),
@@ -418,6 +356,7 @@ class replyWidget extends StatelessWidget {
                 itemCount: 3,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
+                    color: kBackgroundColor,
                  
                      margin: EdgeInsets.symmetric(horizontal: 0.w),
                       child: Container(
@@ -472,7 +411,7 @@ class replyWidget extends StatelessWidget {
                                           //overflow: TextOverflow.ellipsis,
                                           fontSize: 8.5.sp,
                                           color:
-                                              Colors.black87,
+                                              Colors.white,
                                           fontFamily: 'Roboto'),
                                     ),
                                   ),
@@ -503,7 +442,7 @@ class replyWidget extends StatelessWidget {
                                               "Reply",
                                               style: TextStyle(
                                                    fontSize: 10.sp,
-                                          color: kPrimaryColor,
+                                          color: Colors.white,
                                                   fontFamily:
                                                       "Roboto"),
                                             ),
@@ -526,6 +465,7 @@ class replyWidget extends StatelessWidget {
                 itemCount: 3,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
+                    color: kBackgroundColor,
                       margin:
                           EdgeInsets.symmetric(horizontal: 0.w),
                       
@@ -585,7 +525,7 @@ class replyWidget extends StatelessWidget {
                                           style: TextStyle(
                                               //overflow: TextOverflow.ellipsis,
                                               fontSize: 8.5.sp,
-                                              color: Colors.black87,
+                                              color: Colors.white,
                                               fontFamily:
                                                   'Roboto'),
                                         ),
@@ -619,7 +559,7 @@ class replyWidget extends StatelessWidget {
                                                 "Reply",
                                                 style: TextStyle(
                                                    fontSize: 10.sp,
-                                                color: kCyanColor,
+                                                color: Colors.white,
                                                     fontFamily:
                                                         "Roboto"),
                                               ),

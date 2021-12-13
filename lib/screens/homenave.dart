@@ -21,7 +21,7 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     // Scaffold(), Scaffold(), Scaffold(),
-    MapScreen(), Hotspot(), YoutubeApp(),
+    MapScreen(), Hotspot(), TextScreen(),
     Account()
   ];
 

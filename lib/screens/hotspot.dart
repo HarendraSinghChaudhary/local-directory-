@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/hotSpotReply.dart';
 
 class Hotspot extends StatefulWidget {
   const Hotspot({Key? key}) : super(key: key);
@@ -83,121 +84,151 @@ class _HotspotState extends State<Hotspot> {
               ListView.builder(
                 shrinkWrap: true,
                 controller: _controller,
-                itemCount: 4,
+                itemCount: 8,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
-                      Container(
+                      Card(
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
-                          height: 14.h,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3.w),
-                              color: kBackgroundColor),
-                          child: Row(
+                          color: kBackgroundColor,
+                    
+                          child: Column(
                             children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(bottom: 6.h, left: 2.w),
-                                child: CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage: AssetImage(
-                                      "assets/images/profilepic.jpeg"),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 2.w,
-                              ),
-                              Container(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 74.w,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Person Name @ Bar Name",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: 11.sp,
-                                                color: kCyanColor,
-                                                fontFamily: "Segoepr"),
-                                          ),
-                                          SizedBox(
-                                            width: 12.w,
-                                          ),
-                                          Text(
-                                            "2m ago",
-                                            style: TextStyle(
-                                              fontSize: 8.sp,
-                                              color: kPrimaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(bottom: 6.h, left: 2.w),
+                                    child: CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage: AssetImage(
+                                          "assets/images/profilepic.jpeg"),
                                     ),
-                                    SizedBox(
-                                      height: 0.1.h,
-                                    ),
-                                    Container(
-                                      width: 74.w,
-                                      child: Text(
-                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
-                                        style: TextStyle(
-                                            //overflow: TextOverflow.ellipsis,
-                                            fontSize: 10.2.sp,
-                                            color: Color(0xFFCECECE),
-                                            fontFamily: 'Roboto'),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Container(
-                                      width: 74.w,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Text(
-                                              "View Replies",
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  color: Colors.white,
-                                                  fontFamily: "Roboto"),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(right: 4.w),
-                                            child: InkWell(
-                                              onTap: () {},
-                                              child: Text(
-                                                "Reply",
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Container(
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 74.w,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Person Name @ Bar Name",
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.white,
-                                                    fontFamily: "Roboto"),
+                                                    fontSize: 11.sp,
+                                                    color: kCyanColor,
+                                                    fontFamily: "Segoepr"),
                                               ),
-                                            ),
+                                              SizedBox(
+                                                width: 12.w,
+                                              ),
+                                              Text(
+                                                "2m ago",
+                                                style: TextStyle(
+                                                  fontSize: 8.sp,
+                                                  color: kPrimaryColor,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        SizedBox(
+                                          height: 0.1.h,
+                                        ),
+                                        Container(
+                                          width: 74.w,
+                                          child: Text(
+                                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                            style: TextStyle(
+                                                //overflow: TextOverflow.ellipsis,
+                                                fontSize: 10.2.sp,
+                                                color: Color(0xFFCECECE),
+                                                fontFamily: 'Roboto'),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 1.h,
+                                        ),
+                                        Container(
+                                          width: 74.w,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HotSpotReply()));
+                                                  
+                                                },
+                                                child: Text(
+                                                  "View Replies",
+                                                  style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      color: Colors.white,
+                                                      fontFamily: "Roboto"),
+                                                ),
+                                              ),
+                                                     Padding(
+                                                       padding: EdgeInsets.only(right: 8.0),
+                                                       child: SizedBox
+                                                    (
+                                                        width: 50.w,
+                                                        child: TextField(
+                                                          onChanged:(val){
+                                                            print(val);
+                                                          },
+                                                        
+                                                          minLines: 1,
+                                                          keyboardType: TextInputType.multiline,
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12.sp,
+                                                            
+                                                            
+                                                            
+                                                              ),
+                                                          maxLines: 50,
+                                                          decoration: InputDecoration(
+                                                            contentPadding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 4.w),
+                                                            
+                                                            fillColor: Colors.black,
+                                                            filled: true,
+                                                        
+                                                              
+                                                              hintText: "Reply",
+                                                              suffixIcon: SvgPicture.asset("assets/icons/send.svg", color: kPrimaryColor,width: 0.5.w, height: 2.h,),
+                                                              hintStyle: TextStyle(
+                                                                  fontSize:
+                                                                      9.sp,
+                                                                  color: Colors
+                                                                      .white)
+                                                                      ),
+                                                        ),
+                                                    ),
+                                                     )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )
+                                  )
+                                ],
+                              ),
+
+                              SizedBox(height: 2.h,),
                             ],
                           )),
                       SizedBox(
                         height: 2.h,
                       ),
-                      replyWidget(controller: _controller),
-                      SizedBox(
-                        height: 2.h,
-                      ),
+                      //replyWidget(controller: _controller),
+                      
                     ],
                   );
                 },
@@ -211,16 +242,21 @@ class _HotspotState extends State<Hotspot> {
       
         //  buildInput()
       
-          Padding(
-            padding: EdgeInsets.only(top: 75.h),
-            child: buildMessageFormField(),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.only(top: 75.h),
+          //   child: buildMessageFormField(),
+          // ),
       
       
           // buildMessageFormField()
       
          
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(left: 6.w ),
+        child: buildMessageFormField(),
       ),
     );
   }

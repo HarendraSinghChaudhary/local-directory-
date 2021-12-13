@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/services/api_client.dart';
+import 'package:http/http.dart' as http;
 
 
 class CheckIn extends StatefulWidget {
@@ -11,6 +16,19 @@ class CheckIn extends StatefulWidget {
 }
 
 class _CheckInState extends State<CheckIn> {
+
+
+  List<UserCheckInList> userCheckInList = [];
+
+  @override
+  void initState() {
+
+    checkInListApi();
+    super.initState();
+    
+  }
+
+  bool isloading = false;
 
   ScrollController _controller = new ScrollController();
   @override
@@ -40,7 +58,7 @@ class _CheckInState extends State<CheckIn> {
              ListView.builder(
                 shrinkWrap: true,
                 controller: _controller,
-                itemCount: 14,
+                itemCount: userCheckInList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
@@ -58,8 +76,8 @@ class _CheckInState extends State<CheckIn> {
                                     EdgeInsets.only(bottom: 0.h, left: 2.w),
                                 child: CircleAvatar(
                                   radius: 7.w,
-                                  backgroundImage: AssetImage(
-                                      "assets/images/profilepic.jpeg"),
+                                  backgroundImage: NetworkImage(
+                                      userCheckInList[index].businessProfile!.image.toString(),),
                                 ),
                               ),
                               SizedBox(
@@ -77,7 +95,9 @@ class _CheckInState extends State<CheckIn> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Bar Name",
+                                            //"Bar Name",
+
+                                            userCheckInList[index].businessProfile!.name.toString(),
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                                 fontSize: 12.sp,
@@ -117,7 +137,9 @@ class _CheckInState extends State<CheckIn> {
                                             width: 1.2.w,
                                           ),
                                           Text(
-                                            "2 days ago",
+                                            //"2 days ago",
+
+                                            userCheckInList[index].created_at.toString().substring(0,10),
                                             style: TextStyle(
                                               fontSize: 10.sp,
                                               color: Color(0XFF979797),
@@ -151,4 +173,125 @@ class _CheckInState extends State<CheckIn> {
       
     );
   }
+
+
+    Future<dynamic> checkInListApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+     var request = http.get(
+        Uri.parse(
+
+          RestDatasource.USERCHECKINLIST_URL +  id.toString()
+          
+        ),
+       );
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var jsonErray;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+     
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+
+          UserCheckInList modelAgentSearch = new UserCheckInList();
+
+
+          // NearBy modelAgentSearch = new NearBy();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.created_at =
+              jsonArray[i]["created_at"].toString();
+          modelAgentSearch.business_id =
+              jsonArray[i]["business_id"].toString();
+
+
+              
+              jsonErray = jsonRes['data'][i]['user'];
+                UserCheckin modelcheckIn = new UserCheckin();
+
+                modelcheckIn.id = jsonErray["id"].toString();
+                modelcheckIn.name = jsonErray["name"].toString();
+                modelcheckIn.image = jsonErray["image"].toString();
+
+
+                print("name: aw  "+modelcheckIn.name.toString() );
+
+                modelAgentSearch.businessProfile = modelcheckIn;
+
+
+
+    
+
+
+       
+
+          userCheckInList.add(modelAgentSearch);
+
+          setState(() {});
+        }
+
+        setState(() {
+          isloading = false;
+        });
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+}
+
+
+
+class UserCheckInList {
+  UserCheckin? businessProfile ;
+  var id = "";
+  var created_at = "";
+  var business_id = "";
+  
+
+}
+
+
+class UserCheckin {
+  var id = "";
+  var name = "";
+  var image = "";
+
 }
