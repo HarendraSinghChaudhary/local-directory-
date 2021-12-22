@@ -37,6 +37,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   String check = "";
 
+  var communityId = "";
+
   //var ratting = "";
   var name = "";
   //var image = "";
@@ -528,7 +530,73 @@ class _DetailBussinessState extends State<DetailBussiness> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+    Future<dynamic> likeApi( String comId, String likeStatus ) async {
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    print("id community id: " + comId.toString());
+     print("business community id: " + widget.nearBy.id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.LIKECOMMUNITYREVIEW_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "likedislike": likeStatus.toString(),
+          "business_id": widget.nearBy.id.toString() ,
+          "businessreview_id": comId
+                                                                            
+          
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        setState(() {
+          isloading = false;
+        });
+
+        communityReviewApi();
+
+     
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -578,13 +646,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
         communityReviewApi();
 
-        // Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+      
 
       } else {
         setState(() {
@@ -641,6 +703,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
         for (var i = 0; i < jsonArray.length; i++) {
           CommunityReviewAPI modelAgentSearch = new CommunityReviewAPI();
 
+          modelAgentSearch.like_status = jsonArray[i]["like_status"].toString();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.name = jsonArray[i]["name"].toString();
           modelAgentSearch.image = jsonArray[i]["image"].toString();
           modelAgentSearch.review = jsonArray[i]["review"].toString();
@@ -658,22 +722,14 @@ class _DetailBussinessState extends State<DetailBussiness> {
               jsonArray[i]["replies_count"].toString();
 
           print("name: " + modelAgentSearch.name.toString());
+           print("b id: " + modelAgentSearch.id.toString());
 
           communityReviewList.add(modelAgentSearch);
 
           setState(() {});
         }
 
-        // setState(() {
-        //   isloading = false;
-        // });
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+      
 
       } else {
         setState(() {
@@ -1087,14 +1143,28 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                         children: [
                                                           Container(
                                                             child: InkWell(
-                                                              onTap: () {},
+                                                              onTap: () {
+
+                                                                
+                                                                            
+                                                                                                             if (communityReviewList[index]
+                                                                            .like_status.toString() == "1" ) {
+                                                                  
+                                                                }else{
+
+                                                                likeApi(communityReviewList[index]
+                                                                            .business_reviews_id
+                                                                            .toString(), "1");
+                                                                }
+
+                                                              
+                                                              },
                                                               child: Row(
                                                                 children: [
                                                                   SvgPicture
                                                                       .asset(
                                                                     "assets/icons/up.svg",
-                                                                    color: Colors
-                                                                        .black,
+                                                                    color: communityReviewList[index].like_status.toString() == "1"  ? kPrimaryColor : Colors.black,
                                                                     width:
                                                                         4.5.w,
                                                                   ),
@@ -1110,8 +1180,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                     style: TextStyle(
                                                                         fontSize: 11
                                                                             .sp,
-                                                                        color: Colors
-                                                                            .black),
+                                                                        color: communityReviewList[index].like_status.toString() == "1" ? kPrimaryColor : Colors.black),
                                                                   ),
                                                                 ],
                                                               ),
@@ -1119,12 +1188,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                           ),
                                                           Container(
                                                             child: InkWell(
-                                                              onTap: () {},
+                                                              onTap: () {
+
+                                                                if (communityReviewList[index]
+                                                                            .like_status.toString() == "2" ) {
+                                                                  
+                                                                }else{
+
+                                                                likeApi(communityReviewList[index]
+                                                                            .business_reviews_id
+                                                                            .toString(), "2");
+                                                                }
+
+                                                              },
                                                               child: Row(
                                                                 children: [
                                                                   SvgPicture
                                                                       .asset(
                                                                     "assets/icons/down.svg",
+                                                                    color: communityReviewList[index].like_status.toString() == "2"  ? kPrimaryColor : Colors.black,
                                                                     width:
                                                                         4.5.w,
                                                                   ),
@@ -1141,8 +1223,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                         TextStyle(
                                                                       fontSize:
                                                                           11.sp,
-                                                                      color: Colors
-                                                                          .black,
+                                                                      color: communityReviewList[index].like_status.toString() == "2"  ? kPrimaryColor : Colors.black
                                                                     ),
                                                                   ),
                                                                 ],

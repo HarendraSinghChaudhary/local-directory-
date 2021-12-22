@@ -24,6 +24,7 @@ class RestDatasource {
   static final GETHOTSPOT_URL = BASE_URL + "gethotspot";
   static final GETREPLYONCOMMUNITYREVIEW_URL = BASE_URL + "get_replies_community_reviews?review_id=";
   static final REPLYONHOTSPOTREPLY_URL = BASE_URL + "replies_community_reviews";
+  static final LIKECOMMUNITYREVIEW_URL = BASE_URL + "Businesslikedislike";
 
    
 

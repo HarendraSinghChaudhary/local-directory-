@@ -14,6 +14,8 @@ class CommunityReviewAPI{
   var business_reviews_id = "";
   var messageText = "";
   var replies_count = "";
+  var id = "";
+  var like_status = "";
 
   
 
