@@ -22,11 +22,13 @@ class _CommunityRepliesState extends State<CommunityReplies> {
   var created_at = "";
   var review_id = "";
   var message = "";
+  TextEditingController messageController = new  TextEditingController();
 
   List<GETREPLYONCOMMUNITY> getReplyOnCommunityList = [];
   bool isloading = false;
   ScrollController _controller = new ScrollController();
-
+  bool viewVisible = false;
+  var tabOne = "";
   @override
   void initState() {
     getReplyOnCommunityApi();
@@ -172,8 +174,16 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(right: 4.w),
-                                          child: InkWell(
-                                            onTap: () {},
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                viewVisible = true;
+                                                tabOne = getReplyOnCommunityList[index]
+                                                    .id
+                                                    .toString();
+                                              });
+
+                                            },
                                             child: Text(
                                               "Reply",
                                               style: TextStyle(
@@ -213,65 +223,78 @@ class _CommunityRepliesState extends State<CommunityReplies> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        width: double.infinity,
-        height: 8.h,
-        color: Colors.white,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.add_circle_outline,
-                size: 9.w,
-                color: kPrimaryColor,
+      floatingActionButton: Visibility(
+        visible:viewVisible,
+        child: Container(
+          width: double.infinity,
+          height: 8.h,
+          color: Colors.white,
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add_circle_outline,
+                  size: 9.w,
+                  color: kPrimaryColor,
+                ),
               ),
-            ),
-            SizedBox(
-              width: 1.w,
-            ),
-            SizedBox(
-              width: 74.w,
-              height: 6.h,
-              child: TextField(
-                style: TextStyle(color: Colors.white, fontSize: 12.sp),
-                maxLines: 1,
-                onChanged: (val) {},
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
-                  focusColor: Colors.white,
-                  hoverColor: Colors.white,
-                  fillColor: kCyanColor,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(28),
-                      borderSide: BorderSide(color: kCyanColor)),
+              SizedBox(
+                width: 1.w,
+              ),
+              SizedBox(
+                width: 74.w,
+                height: 6.h,
+                child: TextField(
+                  controller: messageController,
+                  style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                  maxLines: 1,
+                  onChanged: (val) {},
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
+                    focusColor: Colors.white,
+                    hoverColor: Colors.white,
+                    fillColor: kCyanColor,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: BorderSide(color: kCyanColor)),
 
-                  // border: InputBorder.none,
-                  //focusedBorder: InputBorder.none,
-                  //  enabledBorder: InputBorder.none,
-                  //  errorBorder: InputBorder.none,
-                  //  disabledBorder: InputBorder.none,
-                  hintText: "Type..",
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.sp,
+                    // border: InputBorder.none,
+                    //focusedBorder: InputBorder.none,
+                    //  enabledBorder: InputBorder.none,
+                    //  errorBorder: InputBorder.none,
+                    //  disabledBorder: InputBorder.none,
+                    hintText: "Type..",
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: 3.w,
-            ),
-            InkWell(
-                onTap: () {},
-                child: SvgPicture.asset(
-                  "assets/icons/send1.svg",
-                  width: 8.w,
-                  color: kPrimaryColor,
-                )),
-          ],
+              SizedBox(
+                width: 3.w,
+              ),
+              InkWell(
+                  onTap: () {
+                    if(messageController.text!="" && messageController.text != "null") {
+                      replyOnHotspotReplyApi(
+                          tabOne.toString(), messageController.text.toString());
+
+                      setState(() {
+                        messageController.text = "";
+                      });
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/send1.svg",
+                    width: 8.w,
+                    color: kPrimaryColor,
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -319,7 +342,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
-
+      getReplyOnCommunityList.clear();
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           GETREPLYONCOMMUNITY modelAgentSearch = new GETREPLYONCOMMUNITY();
@@ -360,15 +383,15 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           if(jsonRes['data'][i]['children'] != null) {
             if(childDataOne.length > 0) {
 
-               for (var i = 0; i < childDataOne.length; i++) {
+               for (var j = 0; j < childDataOne.length; j++) {
             GETREPLYONCOMMUNITY childModelOne = GETREPLYONCOMMUNITY();
 
-            childModelOne.id = childDataOne[i]["id"].toString();
-            childModelOne.created_at = childDataOne[i]["created_at"].toString();
-            childModelOne.review_id = childDataOne[i]["review_id"].toString();
-            childModelOne.message = childDataOne[i]["message"].toString();
+            childModelOne.id = childDataOne[j]["id"].toString();
+            childModelOne.created_at = childDataOne[j]["created_at"].toString();
+            childModelOne.review_id = childDataOne[j]["review_id"].toString();
+            childModelOne.message = childDataOne[j]["message"].toString();
 
-            childrenOne = childDataOne[i]['user'];
+            childrenOne = childDataOne[j]['user'];
             UserData childrenDataOneModel = UserData();
             childrenDataOneModel.id = childrenOne['id'].toString();
             childrenDataOneModel.name = childrenOne['name'].toString();
@@ -394,9 +417,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
 
 
-            childDataTwo = childDataOne[i]['children'];
+            childDataTwo = childDataOne[j]['children'];
 
-            if (childDataOne[i]['children'] != null) {
+            if (childDataOne[j]['children'] != null) {
               if (childDataTwo.length > 0) {
 
                 for (var k = 0; k < childDataTwo.length; k++) {
@@ -421,7 +444,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
                   print("namechild  //: "+childrenDataTwoModel.id.toString());
 
-            modelAgentSearch.childrenList[i].childrenList.add(childrenModelTwo);
+            modelAgentSearch.childrenList[j].childrenList.add(childrenModelTwo);
 
 
 
@@ -431,22 +454,22 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
 
 
-              childDataThree = childDataTwo[i]['children'];
+              childDataThree = childDataTwo[k]['children'];
 
-              if (childDataTwo[i]['children'] != null) {
+              if (childDataTwo[k]['children'] != null) {
 
                 if (childDataThree.length > 0) {
 
-                  for (var  j = 0; j < childDataThree.length; j++) {
+                  for (var  l = 0; l < childDataThree.length; l++) {
 
                     GETREPLYONCOMMUNITY childrenModelThree = GETREPLYONCOMMUNITY();
 
-                  childrenModelThree.id = childDataThree[j]["id"].toString();
-                  childrenModelThree.created_at = childDataThree[j]["created_at"].toString();
-                  childrenModelThree.review_id = childDataThree[j]["review_id"].toString();
-                  childrenModelThree.message = childDataThree[j]["message"].toString();
+                  childrenModelThree.id = childDataThree[l]["id"].toString();
+                  childrenModelThree.created_at = childDataThree[l]["created_at"].toString();
+                  childrenModelThree.review_id = childDataThree[l]["review_id"].toString();
+                  childrenModelThree.message = childDataThree[l]["message"].toString();
 
-                  childrenUserDataThree = childDataThree[j]['user'];
+                  childrenUserDataThree = childDataThree[l]['user'];
 
 
                   UserData childrenDataThreeModel = UserData();
@@ -456,11 +479,11 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
 
                    childrenModelThree.userProfile = childrenDataThreeModel;
-                  print("id Three....."+childDataThree[j]["id"].toString());
+                  print("id Three....."+childDataThree[l]["id"].toString());
 
                   print("namechild  Three //: "+childrenDataThreeModel.id.toString());
 
-                  modelAgentSearch.childrenList[i].childrenList[i].childrenList.add(childrenModelThree);
+                  modelAgentSearch.childrenList[j].childrenList[k].childrenList.add(childrenModelThree);
 
                   
 
@@ -626,7 +649,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 Text(
                                  // "2m ago",
 
-                                 getReplyOnCommunityList[i].created_at.toString().substring(0,10),
+                                 getReplyOnCommunityList[i].childrenList[index].created_at.toString().substring(0,10),
                                   style: TextStyle(
                                     fontSize: 8.sp,
                                     color: kPrimaryColor,
@@ -634,8 +657,15 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(right: 4.w),
-                                  child: InkWell(
-                                    onTap: () {},
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        viewVisible = true;
+                                        tabOne = getReplyOnCommunityList[i]
+                                            .childrenList[index].id
+                                            .toString();
+                                      });
+                                    },
                                     child: Text(
                                       "Reply",
                                       style: TextStyle(
@@ -666,164 +696,56 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                   return Card(
                       elevation: 0,
                       margin: EdgeInsets.symmetric(horizontal: 0.w),
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          left: 8.w,
-                        ),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 6.h, left: 0.w),
-                              child: CircleAvatar(
-                                radius: 4.w,
-                                backgroundImage: NetworkImage(
-                                    getReplyOnCommunityList[i].childrenList[index].childrenList[index].userProfile!.image.toString()
-                                       ),
-                              ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(
+                              left: 8.w,
                             ),
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          //"Person Name @ Bar Name",
-                                          getReplyOnCommunityList[i].childrenList[index].childrenList[index].userProfile!.name.toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kCyanColor,
-                                              fontFamily: "Segoepr"),
-                                        ),
-                                        SizedBox(
-                                          width: 12.w,
-                                        ),
-                                      ],
-                                    ),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 6.h, left: 0.w),
+                                  child: CircleAvatar(
+                                    radius: 4.w,
+                                    backgroundImage: NetworkImage(
+                                        getReplyOnCommunityList[i].childrenList[index].childrenList[k].userProfile!.image.toString()
+                                           ),
                                   ),
-                                  SizedBox(
-                                    height: 0.1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                    //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
-                                      getReplyOnCommunityList[i].childrenList[index].childrenList[index].message.toString(),
-                                      style: TextStyle(
-                                          //overflow: TextOverflow.ellipsis,
-                                          fontSize: 8.5.sp,
-                                          color: Colors.black87,
-                                          fontFamily: 'Roboto'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          //"2m ago",
-                                          getReplyOnCommunityList[i].childrenList[index].childrenList[index].created_at.toString().substring(0,10),
-                                          style: TextStyle(
-                                            fontSize: 8.sp,
-                                            color: kPrimaryColor,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 6.w),
-                                          child: InkWell(
-                                            onTap: () {},
-                                            child: Text(
-                                              "Reply",
+                                ),
+                                SizedBox(
+                                  width: 2.w,
+                                ),
+                                Container(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 74.w,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              //"Person Name @ Bar Name",
+                                              getReplyOnCommunityList[i].childrenList[index].childrenList[k].userProfile!.name.toString(),
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                   fontSize: 10.sp,
-                                                  color: kPrimaryColor,
-                                                  fontFamily: "Roboto"),
+                                                  color: kCyanColor,
+                                                  fontFamily: "Segoepr"),
                                             ),
-                                          ),
+                                            SizedBox(
+                                              width: 12.w,
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ));
-                },
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                controller: _controller,
-                itemCount: getReplyOnCommunityList[i].childrenList[index].childrenList[index].childrenList.length,
-                itemBuilder: (BuildContext context, int j) {
-                  return Card(
-                      elevation: 0,
-                      margin: EdgeInsets.symmetric(horizontal: 0.w),
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          left: 16.w,
-                        ),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: Padding(
-                                padding:
-                                    EdgeInsets.only(bottom: 6.h, left: 0.w),
-                                child: CircleAvatar(
-                                  radius: 4.w,
-                                  backgroundImage:
-                                     // AssetImage("assets/images/loc.png"),
-                                     NetworkImage(
-                                  getReplyOnCommunityList[i].childrenList[index].childrenList[index].childrenList[index].userProfile!.image.toString(),),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                            Flexible(
-                              flex: 8,
-                              child: Container(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 70.w,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            //"Person Name @ Bar Name",
-                                             getReplyOnCommunityList[i].childrenList[index].childrenList[index].childrenList[index].userProfile!.name.toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: kCyanColor,
-                                                fontFamily: "Segoepr"),
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 0.1.h,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 0.w),
-                                      child: Container(
-                                        width: 70.w,
+                                      SizedBox(
+                                        height: 0.1.h,
+                                      ),
+                                      Container(
+                                        width: 74.w,
                                         child: Text(
-                                         // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
-                                         getReplyOnCommunityList[i].childrenList[index].childrenList[index].childrenList[index].message.toString(),
+                                        //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
+                                          getReplyOnCommunityList[i].childrenList[index].childrenList[k].message.toString(),
                                           style: TextStyle(
                                               //overflow: TextOverflow.ellipsis,
                                               fontSize: 8.5.sp,
@@ -831,50 +753,173 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               fontFamily: 'Roboto'),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Container(
-                                      width: 74.w,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            //"2m ago",
-                                             getReplyOnCommunityList[i].childrenList[index].childrenList[index].childrenList[index].created_at.toString().substring(0,10),
-                                            style: TextStyle(
-                                              fontSize: 8.sp,
-                                              color: kPrimaryColor,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(right: 6.w),
-                                            child: InkWell(
-                                              onTap: () {},
-                                              child: Text(
-                                                "Reply",
-                                                style: TextStyle(
-                                                    fontSize: 10.sp,
-                                                    color: kPrimaryColor,
-                                                    fontFamily: "Roboto"),
+                                      SizedBox(
+                                        height: 1.h,
+                                      ),
+                                      Container(
+                                        width: 74.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              //"2m ago",
+                                              getReplyOnCommunityList[i].childrenList[index].childrenList[k].created_at.toString().substring(0,10),
+                                              style: TextStyle(
+                                                fontSize: 8.sp,
+                                                color: kPrimaryColor,
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 6.w),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    viewVisible = true;
+                                                    tabOne = getReplyOnCommunityList[i]
+                                                        .childrenList[index].childrenList[k].id
+                                                        .toString();
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "Reply",
+                                                  style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      color: kPrimaryColor,
+                                                      fontFamily: "Roboto"),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            itemCount: getReplyOnCommunityList[i].childrenList[index].childrenList[k].childrenList.length,
+                            itemBuilder: (BuildContext context, int j) {
+                              return Card(
+                                  elevation: 0,
+                                  margin: EdgeInsets.symmetric(horizontal: 0.w),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                      left: 16.w,
                                     ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          flex: 1,
+                                          child: Padding(
+                                            padding:
+                                            EdgeInsets.only(bottom: 6.h, left: 0.w),
+                                            child: CircleAvatar(
+                                              radius: 4.w,
+                                              backgroundImage:
+                                              // AssetImage("assets/images/loc.png"),
+                                              NetworkImage(
+                                                getReplyOnCommunityList[i].childrenList[index].childrenList[k].childrenList[j].userProfile!.image.toString(),),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        Flexible(
+                                          flex: 8,
+                                          child: Container(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: 70.w,
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        //"Person Name @ Bar Name",
+                                                        getReplyOnCommunityList[i].childrenList[index].childrenList[k].childrenList[j].userProfile!.name.toString(),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                            fontSize: 10.sp,
+                                                            color: kCyanColor,
+                                                            fontFamily: "Segoepr"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 0.1.h,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(right: 0.w),
+                                                  child: Container(
+                                                    width: 70.w,
+                                                    child: Text(
+                                                      // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
+                                                      getReplyOnCommunityList[i].childrenList[index].childrenList[k].childrenList[j].message.toString(),
+                                                      style: TextStyle(
+                                                        //overflow: TextOverflow.ellipsis,
+                                                          fontSize: 8.5.sp,
+                                                          color: Colors.black87,
+                                                          fontFamily: 'Roboto'),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 1.h,
+                                                ),
+                                                Container(
+                                                  width: 74.w,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        //"2m ago",
+                                                        getReplyOnCommunityList[i].childrenList[index].childrenList[k].childrenList[j].created_at.toString().substring(0,10),
+                                                        style: TextStyle(
+                                                          fontSize: 8.sp,
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                      ),
+                                                      Visibility(
+                                                        visible: false,
+                                                        child: Padding(
+                                                          padding:
+                                                          EdgeInsets.only(right: 6.w),
+                                                          child: GestureDetector(
+                                                            onTap: () {},
+                                                            child: Text(
+                                                              "Reply",
+                                                              style: TextStyle(
+                                                                  fontSize: 10.sp,
+                                                                  color: kPrimaryColor,
+                                                                  fontFamily: "Roboto"),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ));
+                            },
+                          ),
+                        ],
                       ));
                 },
               ),
+
               SizedBox(
                 height: 2.h,
               ),
@@ -884,6 +929,84 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       },
     );
   }
+
+
+
+  Future<dynamic> replyOnHotspotReplyApi(
+      String reply_id, String messageText) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    print("id: "+id.toString());
+    print("review_id: "+widget.review_id.toString());
+    print("reply_id: "+reply_id.toString());
+    print("type: "+"REVIEW");
+    print("message: "+messageText.toString());
+
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.COMMUNITYREPLYONREVIEW_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "review_id": widget.review_id.toString(),
+          "reply_id": reply_id,
+          "type": "REVIEW",
+          "message": messageText
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        setState(() {
+          isloading = false;
+        });
+
+        getReplyOnCommunityApi();
+
+
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+
+
 }
 
 class GETREPLYONCOMMUNITY {
