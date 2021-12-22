@@ -22,6 +22,8 @@ class Explore extends StatefulWidget {
 }
 
 class _ExploreState extends State<Explore> {
+
+  bool _hasBeenPressed = true;
   var id = "";
   var fav = "";
   var business_name = "";
@@ -171,12 +173,11 @@ class _ExploreState extends State<Explore> {
                                                     (context, imageProvider) =>
                                                         Container(
                                                   height: 14.h,
-                                                  width: 16.h,
+                                                  width: 15.h,
                                                   decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               3.w),
-                                                      
                                                       image: DecorationImage(
                                                           image: NetworkImage(
                                                               // "assets/images/11.jpeg",
@@ -190,18 +191,17 @@ class _ExploreState extends State<Explore> {
                                                 placeholder: (context, url) =>
                                                     Container(
                                                   height: 14.h,
-                                                  width: 16.h,
+                                                  width: 15.h,
                                                 ),
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Container(
                                                   height: 14.h,
-                                                  width: 16.h,
+                                                  width: 15.h,
                                                   decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               3.w),
-                                                      
                                                       image: DecorationImage(
                                                           image: AssetImage(
                                                             "assets/images/Business.png",
@@ -219,24 +219,29 @@ class _ExploreState extends State<Explore> {
                                                   SizedBox(
                                                     height: 0.3.h,
                                                   ),
-                                                  Text(
-                                                    //"Restaurant Name ",
+                                                  Container(
+                                                    width: 51.w,
+                                                    child: Text(
+                                                      //"Restaurant Name ",
 
-                                                    nearByRestaurantList[index]
-                                                                .business_name
-                                                                .toString() !=
-                                                            "null"
-                                                        ? nearByRestaurantList[
-                                                                index]
-                                                            .business_name
-                                                            .toString()
-                                                        : "Business Name",
-                                                    style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        color: kCyanColor,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontFamily: "Segoepr"),
+                                                      nearByRestaurantList[index]
+                                                                  .business_name
+                                                                  .toString() !=
+                                                              "null"
+                                                          ? nearByRestaurantList[
+                                                                  index]
+                                                              .business_name
+                                                              .toString()
+                                                          : "Business Name",
+                                                          overflow: TextOverflow.ellipsis,
+                                                    
+                                                      style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          color: kCyanColor,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontFamily: "Segoepr"),
+                                                    ),
                                                   ),
                                                   Row(
                                                     children: [
@@ -338,20 +343,51 @@ class _ExploreState extends State<Explore> {
                                         top: 0.2.h,
                                         child: InkWell(
                                             onTap: () {
-                                              var favv = nearByRestaurantList[index].fav.toString()=="1"?"0":"1";
-                                              businessFavApi(nearByRestaurantList[
-                                                                      index]
-                                                                  .id
-                                                                  .toString(),
-                                                                   favv);
 
+
+                                              var favv =
+                                                  nearByRestaurantList[index]
+                                                              .fav
+                                                              .toString() ==
+                                                          "1"
+                                                      ? "0"
+                                                      : "1";
+                                             setState(() {
+                                              nearByRestaurantList[index].fav = favv;
+                                             
+                                            
+                                             });
+
+                                                     
+                                              businessFavApi(
+                                                  nearByRestaurantList[index]
+                                                      .id
+                                                      .toString(),
+                                                  favv, index);
+
+
+                                                 
+
+                                             
                                             },
-                                            child: SvgPicture.asset(
-                                                "assets/icons/-heart.svg", 
-                                                color: nearByRestaurantList[index].fav.toString()  == "1" ? kCyanColor : Colors.white,
-                                                ),
-                                                
-                                                ),
+
+
+                                            child: nearByRestaurantList[index]
+                                                          .fav
+                                                          .toString() ==
+                                                      "1"
+                                                  ?  SvgPicture.asset(
+                                              "assets/icons/active-hear.svg",
+
+                                              // color: _hasBeenPressed ? kCyanColor : Colors.white,
+                                             
+                                            ) : SvgPicture.asset(
+                                              "assets/icons/-heart.svg",
+                                             
+                                           
+                                            ), 
+                                           
+                                          ),
                                       )
                                     ],
                                   ),
@@ -371,14 +407,14 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-    Future<dynamic> businessFavApi(String business_id, String fav
-      ) async {
+  Future<dynamic> businessFavApi(String business_id, String fav, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+     // isloading = true;
     });
+   
 
     var request = http.post(
         Uri.parse(
@@ -388,7 +424,6 @@ class _ExploreState extends State<Explore> {
           "user_id": id.toString(),
           "business_id": business_id,
           "fav": fav,
-         
         });
     String msg = "";
     var jsonArray;
@@ -409,26 +444,26 @@ class _ExploreState extends State<Explore> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-
-        nearByRestaurantList.clear();
-
+      
 
         setState(() {
-          isloading = false;
+          //isloading = false;
         });
 
-        nearBy();
+        isloading = false;
 
-        //communityReviewApi();
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
+        //nearBy();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
 
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+        
 
       } else {
+        if(fav=="1"){
+          nearByRestaurantList[index].fav = "0";
+        }else{
+          nearByRestaurantList[index].fav = "1";
+        }
         setState(() {
           isloading = false;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -443,12 +478,6 @@ class _ExploreState extends State<Explore> {
       });
     }
   }
-
-
-
-
-
-
 
   Future<dynamic> nearBy() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -500,9 +529,9 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.review_count =
               jsonArray[i]["review_count"].toString();
           modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name = jsonArray[i]["category_name"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.business_name.toString());
@@ -534,7 +563,7 @@ class _ExploreState extends State<Explore> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }

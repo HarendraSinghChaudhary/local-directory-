@@ -344,11 +344,12 @@ class _LoginScreenState extends State<LoginScreen> {
           child: IconButton(
                                   icon: obscure
                                       ? Icon(
-                                          Icons.visibility_outlined,
+                                           Icons.visibility_off_outlined,
                                           color: Colors.grey,
                                         )
                                       : Icon(
-                                          Icons.visibility_off_outlined,
+                                         
+                                          Icons.visibility_outlined,
                                           color: kPrimaryColor,
                                         ),
                                   onPressed: () {

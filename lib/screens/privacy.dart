@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
 
@@ -12,7 +13,13 @@ class Privacy extends StatefulWidget {
 }
 
 class _PrivacyState extends State<Privacy> {
-  bool status = false;
+
+
+  bool status = true;
+// // Geolocator _gps = GeoLocator();
+//   getGPS(){
+//     bool status = _gps. 
+//   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +73,7 @@ class _PrivacyState extends State<Privacy> {
                                 //padding: 8.0,
                                 showOnOff: true,
                                 onToggle: (val) {
+
                                   setState(() {
                                     status = val;
                                   });

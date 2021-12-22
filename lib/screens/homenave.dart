@@ -10,6 +10,7 @@ import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/screens/inTheKnow.dart';
 
 import 'package:wemarkthespot/screens/mapScreen.dart';
+import 'package:wemarkthespot/screens/googleMap_screen.dart';
 
 class HomeNav extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     // Scaffold(), Scaffold(), Scaffold(),
-    MapScreen(), Hotspot(), TextScreen(),
+    GoogleMapScreen(), Hotspot(), Scaffold(),
     Account()
   ];
 

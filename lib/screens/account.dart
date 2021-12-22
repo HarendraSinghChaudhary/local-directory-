@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,7 +9,6 @@ import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 
 import 'package:wemarkthespot/screens/checkIn.dart';
-import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:wemarkthespot/screens/donation.dart';
 import 'package:wemarkthespot/screens/editProfile.dart';
 import 'package:wemarkthespot/screens/login_screen.dart';
@@ -137,109 +135,86 @@ class _UserAccountState extends State<UserAccount> {
                 width: 5.w,
               ),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name.toString(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.sp,
-                        fontFamily: 'Roboto'),
-                  ),
-                  SizedBox(
-                    height: 0.8.h,
-                  ),
-                  Visibility(
-                    visible: id != null
-                        ? id == "72"
-                            ? false
-                            : true
-                        : false,
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/mail1.svg",
-                          width: 3.5.w,
-                        ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        Text(
-                          email.toString(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 12.sp,
-                              fontFamily: 'Roboto'),
-                        ),
-                      ],
+              Container(
+                width: 55.w,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      
+                      name.toString(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.sp,
+                          fontFamily: 'Roboto'),
                     ),
-                  ),
-                  SizedBox(
-                    height: 0.7.h,
-                  ),
-                  // Row(
-                  //   children: [
-                  //     SvgPicture.asset(
-                  //       "assets/icons/phone.svg",
-                  //       width: 3.5.w,
-                  //     ),
-                  //     SizedBox(
-                  //       width: 2.w,
-                  //     ),
-                  //     Text(
-                  //       country_code.toString()+phone.toString(),
-                  //       style: TextStyle(
-                  //           color: Colors.white.withOpacity(0.8),
-                  //           fontSize: 12.sp,
-                  //           fontFamily: 'Roboto'),
-                  //     ),
-                  //   ],
-                  // ),
-
-                  // SizedBox(
-                  //   height: 0.7.h,
-                  // ),
-                  Visibility(
-                    visible: id != null
-                        ? id == "72"
-                            ? false
-                            : true
-                        : false,
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/icons/-calendar.svg",
-                          width: 3.5.w,
-                        ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
-                        Text(
-                          dob == "null" ? "DD/MM/YYYY" : dob.toString(),
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 12.sp,
-                              fontFamily: 'Roboto'),
-                        ),
-                      ],
+                    SizedBox(
+                      height: 0.8.h,
                     ),
-                  )
-                ],
+                    Visibility(
+                      visible: id != null
+                          ? id == "72"
+                              ? false
+                              : true
+                          : false,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/mail1.svg",
+                            width: 3.5.w,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            email.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 12.sp,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.7.h,
+                    ),
+             
+                    Visibility(
+                      visible: id != null
+                          ? id == "72"
+                              ? false
+                              : true
+                          : false,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/icons/-calendar.svg",
+                            width: 3.5.w,
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          Text(
+                            dob == "null" ? "DD/MM/YYYY" : dob.toString(),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 12.sp,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               )
 
-              // Container(
-              //   height: 10.h,
-              //   width: 10.h,
-              //   decoration: BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     color: Colors.red,
-              //     image: DecorationImage(
-              //       image: AssetImage("assets/images/Profile1.png")
-              //     )
-              //   ),
-              // )
+             
             ],
           ),
         ),
@@ -281,25 +256,7 @@ class _UserAccountState extends State<UserAccount> {
           margin: EdgeInsets.symmetric(horizontal: 3.w),
           child: Column(
             children: [
-              // InkWell(
-              //   onTap: () {},
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Text(
-              //         "Inbox",
-              //         style: TextStyle(
-              //             color: kCyanColor,
-              //             fontSize: 13.sp,
-              //             fontFamily: 'Roboto'),
-              //       ),
-              //       SvgPicture.asset(
-              //         "assets/icons/-right.svg",
-              //         width: 2.5.w,
-              //       ),
-              //     ],
-              //   ),
-              // ),
+         
               SizedBox(
                 height: 1.h,
               ),
@@ -383,7 +340,7 @@ class _UserAccountState extends State<UserAccount> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()));
+                      MaterialPageRoute(builder: (context) => ChilPage()));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

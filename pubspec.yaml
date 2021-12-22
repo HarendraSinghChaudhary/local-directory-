@@ -37,7 +37,7 @@ dependencies:
   http: ^0.13.3
   image_picker: ^0.8.0+3
   country_code_picker: ^2.0.2
-  
+  google_maps_flutter: ^2.1.1
   flutter_rating_bar: ^4.0.0
   flutter_switch: ^0.3.2
   flutter_slidable: ^1.1.0
@@ -45,6 +45,13 @@ dependencies:
   shimmer: ^2.0.0
   youtube_player_flutter: ^8.0.0
   cached_network_image: ^3.2.0
+  permission_handler: ^8.3.0
+  geolocator: ^8.0.1
+  video_trimmer: ^1.0.0
+  file_picker: ^4.2.8
+ 
+
+  
   
 
 dev_dependencies:
@@ -66,7 +73,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/instaAssets/
+ 
     
   #   - images/a_dot_ham.jpeg
 

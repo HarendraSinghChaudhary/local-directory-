@@ -1,6 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,7 +18,7 @@ import 'package:wemarkthespot/screens/communityReplies.dart';
 
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:wemarkthespot/screens/login_screen.dart';
+import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class DetailBussiness extends StatefulWidget {
@@ -28,16 +31,11 @@ class DetailBussiness extends StatefulWidget {
 }
 
 class _DetailBussinessState extends State<DetailBussiness> {
-
-
-  String fire = "Fire";
-  String okOk = "OkOk";
-  String notCool = "Not Cool";
+  // String fire = "Fire";
+  // String okOk = "OkOk";
+  // String notCool = "Not Cool";
 
   String check = "";
-
-
-
 
   //var ratting = "";
   var name = "";
@@ -78,6 +76,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
+    print("business id: " + widget.nearBy.id.toString());
     return Scaffold(
       body: ListView(
         children: [
@@ -109,12 +108,29 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           )),
                     ),
                     Positioned(
-                        top: 2.h,
-                        left: 85.w,
-                        child: SvgPicture.asset(
-                          "assets/icons/active-heart.svg",
-                          width: 12.w,
-                        ))
+                      top: 2.h,
+                      left: 85.w,
+                      child: InkWell(
+                        onTap: () {
+                          var favv =
+                              widget.nearBy.fav.toString() == "1" ? "0" : "1";
+                          setState(() {
+                            widget.nearBy.fav = favv;
+                          });
+
+                          businessFavApi(widget.nearBy.id.toString(), favv);
+                        },
+                        child: widget.nearBy.fav.toString() == "1"
+                            ? SvgPicture.asset(
+                                "assets/icons/active-hear.svg",
+
+                                // color: _hasBeenPressed ? kCyanColor : Colors.white,
+                              )
+                            : SvgPicture.asset(
+                                "assets/icons/-heart.svg",
+                              ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -219,6 +235,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -230,16 +247,23 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             SizedBox(
                               width: 1.w,
                             ),
-                            Text(
-                              //"1230 Roosvelt Road, Wichita",
-                              widget.nearBy.location.toString() != "null"
-                                  ? widget.nearBy.location.toString()
-                                  : "",
-                              style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: Colors.white,
-                                  // fontWeight: FontWeight.w500,
-                                  fontFamily: "Roboto"),
+                            Container(
+                              width: 55.w,
+                              child: Text(
+                                
+                                //"1230 Roosvelt Road, Wichita",
+                                widget.nearBy.location.toString() != "null"
+                                    ? widget.nearBy.location.toString()
+                                    : "",
+
+                                    maxLines:3,
+                                    textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.w500,
+                                    fontFamily: "Roboto"),
+                              ),
                             ),
                           ],
                         ),
@@ -393,6 +417,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               ),
               InkWell(
                 onTap: () {
+                  print("hello");
                   customModelSheet(context);
                 },
                 child: Container(
@@ -437,6 +462,75 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
+  Future<dynamic> businessFavApi(
+    String business_id,
+    String fav,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      // isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.BUSSINESSFAV_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "business_id": business_id,
+          "fav": fav,
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        setState(() {
+          //isloading = false;
+        });
+
+        isloading = false;
+
+        //nearBy();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+      } else {
+        if (fav == "1") {
+          widget.nearBy.fav = "0";
+        } else {
+          widget.nearBy.fav = "1";
+        }
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
   Future<dynamic> communityReplyOnReviewApi(
       String review_id, String messageText) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -454,7 +548,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
           "user_id": id.toString(),
           "review_id": review_id,
           "reply_id": "0",
-          "type": "REVIEW ",
+          "type": "REVIEW",
           "message": messageText
         });
     String msg = "";
@@ -481,7 +575,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
 
         communityReviewApi();
-        //Navigator.pop(context);
+
+        // Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
         // sliderBannerApi();
@@ -500,7 +595,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -510,7 +605,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+      isloading = false;
     });
 
     var request = http.post(
@@ -557,8 +652,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
               jsonArray[i]["total_dislike"].toString();
           modelAgentSearch.business_reviews_id =
               jsonArray[i]["business_reviews_id"].toString();
-          modelAgentSearch.replies_count = jsonArray[i]["replies_count"].toString();    
-              
+          modelAgentSearch.replies_count =
+              jsonArray[i]["replies_count"].toString();
 
           print("name: " + modelAgentSearch.name.toString());
 
@@ -567,9 +662,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
           setState(() {});
         }
 
-        setState(() {
-          isloading = false;
-        });
+        // setState(() {
+        //   isloading = false;
+        // });
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
@@ -580,16 +675,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
       } else {
         setState(() {
-          isloading = false;
+          // isloading = false;
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {
       setState(() {
-        isloading = false;
+        // isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -673,7 +768,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -695,6 +790,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
     print("Image: " + base64Image.toString() + "_");
     Navigator.pop(context);
     customDialog();
+  }
+
+  Future getCheckInImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        file = File(pickedFile.path);
+      });
+      base64Image = base64Encode(file!.readAsBytesSync());
+    } else {
+      print('No image selected.');
+    }
+
+    fileName = file!.path.split("/").last;
+    print("ImageName: " + fileName.toString() + "_");
+    print("Image: " + base64Image.toString() + "_");
+    Navigator.pop(context);
+    checkInDialog();
   }
 
   Future<dynamic> customModelSheet(BuildContext context) {
@@ -970,71 +1084,67 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                 .spaceBetween,
                                                         children: [
                                                           Container(
-                                                            child: Row(
-                                                              children: [
-                                                                InkWell(
-                                                                  onTap: () {},
-                                                                  child:
-                                                                      SvgPicture
-                                                                          .asset(
+                                                            child: InkWell(
+                                                              onTap: () {},
+                                                              child: Row(
+                                                                children: [
+                                                                  SvgPicture
+                                                                      .asset(
                                                                     "assets/icons/up.svg",
+                                                                    color: Colors
+                                                                        .black,
                                                                     width:
                                                                         4.5.w,
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 1.w,
-                                                                ),
-                                                                Text(
-                                                                  "Like(" +
-                                                                      communityReviewList[
-                                                                              index]
-                                                                          .total_like
-                                                                          .toString() +
-                                                                      ")",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        11.sp,
-                                                                    color:
-                                                                        kPrimaryColor,
+                                                                  SizedBox(
+                                                                    width: 1.w,
                                                                   ),
-                                                                ),
-                                                              ],
+                                                                  Text(
+                                                                    "Like(" +
+                                                                        communityReviewList[index]
+                                                                            .total_like
+                                                                            .toString() +
+                                                                        ")",
+                                                                    style: TextStyle(
+                                                                        fontSize: 11
+                                                                            .sp,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                           Container(
-                                                            child: Row(
-                                                              children: [
-                                                                InkWell(
-                                                                  onTap: () {},
-                                                                  child:
-                                                                      SvgPicture
-                                                                          .asset(
+                                                            child: InkWell(
+                                                              onTap: () {},
+                                                              child: Row(
+                                                                children: [
+                                                                  SvgPicture
+                                                                      .asset(
                                                                     "assets/icons/down.svg",
                                                                     width:
                                                                         4.5.w,
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 1.w,
-                                                                ),
-                                                                Text(
-                                                                  "Dislike(" +
-                                                                      communityReviewList[
-                                                                              index]
-                                                                          .total_dislike
-                                                                          .toString() +
-                                                                      ")",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        11.sp,
-                                                                    color: Colors
-                                                                        .black,
+                                                                  SizedBox(
+                                                                    width: 1.w,
                                                                   ),
-                                                                ),
-                                                              ],
+                                                                  Text(
+                                                                    "Dislike(" +
+                                                                        communityReviewList[index]
+                                                                            .total_dislike
+                                                                            .toString() +
+                                                                        ")",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          11.sp,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                           InkWell(
@@ -1072,12 +1182,19 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              CommunityReplies()));
+                                                                      builder: (context) =>
+                                                                          CommunityReplies(
+                                                                            review_id:
+                                                                                communityReviewList[index].business_reviews_id.toString(),
+                                                                          )));
                                                             },
                                                             child: Text(
-                                                              "Replies ("+ communityReviewList[index].replies_count.toString() +")",
+                                                              "Replies (" +
+                                                                  communityReviewList[
+                                                                          index]
+                                                                      .replies_count
+                                                                      .toString() +
+                                                                  ")",
                                                               style: TextStyle(
                                                                 fontSize: 11.sp,
                                                                 color: Colors
@@ -1157,7 +1274,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: buildMessageFormField(),
+                                child: InkWell(
+                                    onTap: () {
+                                      customDialog();
+                                    },
+                                    child: buildMessageFormField()),
                               ),
                               SizedBox(
                                 height: 2.h,
@@ -1222,7 +1343,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   children: [
                     InkWell(
                       onTap: () {
-
                         setState(() {
                           check = "fire";
                         });
@@ -1231,13 +1351,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         child: Column(
                           children: [
                             SvgPicture.asset("assets/icons/file.svg"),
-                            SizedBox(height: 1.2.h,),
+                            SizedBox(
+                              height: 1.2.h,
+                            ),
                             Text(
                               "Fire",
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: check == "fire"? kPrimaryColor : Colors.white,
-                    
+                                color: check == "fire"
+                                    ? kPrimaryColor
+                                    : Colors.white,
+
                                 //fontFamily: "Roboto"
                               ),
                             ),
@@ -1247,10 +1371,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ),
                     InkWell(
                       onTap: () {
-                         print("tab");
+                        print("tab");
                         setState(() {
                           check = "OkOk";
-                         
                         });
                       },
                       child: Container(
@@ -1261,8 +1384,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               "OkOk",
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: check == "OkOk"? kPrimaryColor : Colors.white,
-                    
+                                color: check == "OkOk"
+                                    ? kPrimaryColor
+                                    : Colors.white,
+
                                 //fontFamily: "Roboto"
                               ),
                             ),
@@ -1272,7 +1397,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ),
                     InkWell(
                       onTap: () {
-                        check = "Not Cool";
+                        setState(() {
+                          check = "Not Cool";
+                        });
                       },
                       child: Container(
                         child: Column(
@@ -1282,8 +1409,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               "Not Cool",
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: check == "Not Cool"? kPrimaryColor : Colors.white,
-                    
+                                color: check == "Not Cool"
+                                    ? kPrimaryColor
+                                    : Colors.white,
+
                                 //fontFamily: "Roboto"
                               ),
                             ),
@@ -1311,7 +1440,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Your Overall Ratting",
+                          "Your Overall Rating",
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: kCyanColor,
@@ -1325,7 +1454,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         RatingBar.builder(
                           itemSize: 24,
                           unratedColor: Color(0XFFCECECE),
-                          initialRating: 3,
+                          initialRating: 0,
                           minRating: 0,
                           direction: Axis.horizontal,
                           allowHalfRating: false,
@@ -1337,7 +1466,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             color: kPrimaryColor,
                           ),
                           onRatingUpdate: (rating) {
-                            print(rating);
+                            print("Ratting :" + rating.toString());
+                            ratting = rating.toString();
+                            //rat = rattingController.text.toString();
+                            print("Rat: " + ratting.toString());
                           },
                         ),
                       ],
@@ -1360,14 +1492,47 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         Row(
                           children: [
                             InkWell(
-                                onTap: () {},
-                                child:
-                                    SvgPicture.asset("assets/icons/image.svg")),
+                              onTap: () {
+                                getCheckInImage();
+                              },
+                              child: file == null
+                                  ? Container(
+                                      child: SvgPicture.asset(
+                                          "assets/icons/image.svg"))
+                                  : Container(
+                                      height: 3.h,
+                                      width: 3.h,
+                                      decoration: BoxDecoration(
+                                          // borderRadius:
+                                          //     BorderRadius.circular(3.w),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            //Color(0xffD5D5D5)
+                                          ),
+                                          image: DecorationImage(
+                                              image:
+                                                  FileImage(File(file!.path)))),
+                                    ),
+                            ),
                             SizedBox(
                               width: 3.w,
                             ),
                             InkWell(
-                                onTap: () {},
+                                onTap: () async {
+                                  FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                    type: FileType.video,
+                                    allowCompression: false,
+                                  );
+                                  if (result != null) {
+                                    File file = File(result.files.single.path!);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                        return TrimmerView(file);
+                                      }),
+                                    );
+                                  }
+                                },
                                 child:
                                     SvgPicture.asset("assets/icons/video.svg")),
                           ],
@@ -1403,7 +1568,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   height: 1.7.h,
                 ),
                 DefaultButton(
-                    width: 35.w, height: 6.h, text: "Submit", press: () {})
+                    width: 35.w,
+                    height: 6.h,
+                    text: "Submit",
+                    press: () {
+                      checkInApi(ratting.toString(), reviewController.text.toString(),
+                          check.toString());
+                    })
               ],
             ),
           )),
@@ -1452,7 +1623,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Your Overall Ratting",
+                          "Your Overall Rating",
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: kCyanColor,
@@ -1466,7 +1637,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         RatingBar.builder(
                           itemSize: 24,
                           unratedColor: Color(0XFFCECECE),
-                          initialRating: 3,
+                          initialRating: 0,
                           minRating: 0,
                           direction: Axis.horizontal,
                           allowHalfRating: false,
@@ -1590,9 +1761,97 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
+  Future<dynamic> checkInApi(String ratting, String review, String tag) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    print("id " + id.toString() + "");
+
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.BUSINESSREVIEW_URL,
+      ),
+    );
+    if (ratting.toString() != "null" || ratting.toString() != "") {
+      request.fields["ratting"] = ratting;
+      print("ratting1: " + ratting.toString());
+    }
+
+    if (review.toString() != "null" || review.toString() != "") {
+      request.fields["review"] = review;
+      print("review1: " + review.toString());
+    }
+
+    if (tag.toString() != "null" || tag.toString() != "") {
+      request.fields["tag"] = tag;
+      print("tag1: " + tag.toString());
+    }
+    request.fields["check_status"] = "1";
+    request.fields["type"] = "CHECK_IN";
+    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["user_id"] = id.toString();
+    //request.files.add(await http.MultipartFile.fromPath(base64Image, fileName));
+    if (file != null) {
+      request.files.add(http.MultipartFile(
+          'image',
+          File(file!.path).readAsBytes().asStream(),
+          File(file!.path).lengthSync(),
+          filename: fileName));
+      print("image: " + fileName.toString());
+    }
+    var jsonRes;
+    var res = await request.send();
+    // print("ResponseJSON: " + respone.toString() + "_");
+    // print("status: " + jsonRes["success"].toString() + "_");
+    // print("message: " + jsonRes["message"].toString() + "_");
+
+    if (res.statusCode == 200) {
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        Navigator.pop(context);
+        communityReviewApi();
+
+        // prefs.setString('phone', jsonRes["data"]["phone"].toString());
+        prefs.commit();
+        setState(() {
+          isloading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
   TextFormField buildMessageFormField() {
     return TextFormField(
       // controller: emailController,
+      enabled: false,
 
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,

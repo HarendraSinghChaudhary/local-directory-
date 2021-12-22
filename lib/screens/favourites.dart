@@ -237,7 +237,11 @@ class _FavoritesState extends State<Favorites> {
                       right: 1.w,
                       top: 0.2.h,
                       child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            businessFavApi(favouriteRestaurantList[index]
+                                                .id
+                                                .toString(), index);
+                          },
                           child: SvgPicture.asset(
                             "assets/icons/-heart.svg",
                             color:
@@ -256,6 +260,84 @@ class _FavoritesState extends State<Favorites> {
       ),
     );
   }
+
+   Future<dynamic> businessFavApi(String business_id, int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+     // isloading = true;
+    });
+   
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.BUSSINESSFAV_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "business_id": business_id,
+          "fav": "0",
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+
+        favouriteRestaurantList.clear();
+      
+
+        setState(() {
+          isloading = false;
+        });
+
+        getFavourite();
+
+     
+
+        //nearBy();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+
+        
+
+      } else {
+        // if(fav=="1"){
+        //   nearByRestaurantList[index].fav = "0";
+        // }else{
+        //   nearByRestaurantList[index].fav = "1";
+        // }
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+
 
   Future<dynamic> getFavourite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

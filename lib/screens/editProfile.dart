@@ -157,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
                   onTap: () {
                     var picked = showDatePicker(
                       context: context,
-                      initialDate: DateTime(2021),
+                      initialDate: DateTime.now(),
                       firstDate: DateTime(1970),
                       lastDate: DateTime.now(),
                     );
@@ -236,6 +236,8 @@ class _EditProfileState extends State<EditProfile> {
   TextFormField builNameFormField() {
     return TextFormField(
       controller: nameController,
+      maxLength: 30,
+      maxLines: 1,
       inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
@@ -447,7 +449,7 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
