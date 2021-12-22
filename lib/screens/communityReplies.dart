@@ -278,6 +278,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
   }
 
   Future<dynamic> getReplyOnCommunityApi() async {
+    print("Widget Id "+widget.review_id);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());

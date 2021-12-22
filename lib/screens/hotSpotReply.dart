@@ -22,7 +22,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
   TextEditingController messageController = new  TextEditingController();
 
-  bool viewVisible = true;
+  bool viewVisible = false;
 
   var id = "";
   var created_at = "";
@@ -189,10 +189,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                           padding: EdgeInsets.only(right: 4.w),
                                           child: InkWell(
                                             onTap: () {
-                                                 tabOne = getReplyOnHotspotList[index]
-                                                      .id
-                                  
-                                                      .toString();
+                                              setState(() {
+                                                viewVisible = true;
+                                                tabOne = getReplyOnHotspotList[index]
+                                                    .id
+                                                    .toString();
+                                              });
+
                                             },
                                             child: Text(
                                               "Reply",
@@ -291,8 +294,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                InkWell(
                  onTap: () {
                     print("tab1");
-                replyOnHotspotReplyApi(tabOne.toString(), messageController.text.toString()
-                                                      );
+                replyOnHotspotReplyApi(tabOne.toString(), messageController.text.toString());
+
+                setState(() {
+                  messageController.text = "";
+                });
                  },
                  child: SvgPicture.asset("assets/icons/send1.svg", width: 8.w, color: kPrimaryColor,)),
             ],
@@ -324,7 +330,6 @@ class _HotSpotReplyState extends State<HotSpotReply> {
         ),
         body: {
           "user_id": id.toString(),
-        
           "review_id": widget.id.toString(),
           "reply_id": reply_id,
           "type": "HOTSPOT",
@@ -386,6 +391,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   }
 
    Future<dynamic> getReplyOnHotspotApi() async {
+    print("getreplyonhotspotapi "+"Running");
+    print("widgetid "+widget.id.toString());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -426,8 +433,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
+      getReplyOnHotspotList.clear();
+
+
 
       if (jsonRes["status"].toString() == "true") {
+
+
+
+
         for (var i = 0; i < jsonArray.length; i++) {
           GETREPLYONHOTSPOT modelAgentSearch = new GETREPLYONHOTSPOT();
 
@@ -449,33 +463,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           modelAgentSearch.userProfile = modelcheckIn;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
           childDataOne = jsonRes['data'][i]['children'];
 
           if(jsonRes['data'][i]['children'] != null) {
             if(childDataOne.length > 0) {
 
-               for (var i = 0; i < childDataOne.length; i++) {
+               for (var j = 0; j < childDataOne.length; j++) {
             GETREPLYONHOTSPOT childModelOne = GETREPLYONHOTSPOT();
 
-            childModelOne.id = childDataOne[i]["id"].toString();
-            childModelOne.created_at = childDataOne[i]["created_at"].toString();
-            childModelOne.review_id = childDataOne[i]["review_id"].toString();
-            childModelOne.message = childDataOne[i]["message"].toString();
+            childModelOne.id = childDataOne[j]["id"].toString();
+            childModelOne.created_at = childDataOne[j]["created_at"].toString();
+            childModelOne.review_id = childDataOne[j]["review_id"].toString();
+            childModelOne.message = childDataOne[j]["message"].toString();
 
-            childrenOne = childDataOne[i]['user'];
+            childrenOne = childDataOne[j]['user'];
             UserData childrenDataOneModel = UserData();
             childrenDataOneModel.id = childrenOne['id'].toString();
             childrenDataOneModel.name = childrenOne['name'].toString();
@@ -501,9 +502,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
 
 
-            childDataTwo = childDataOne[i]['children'];
+            childDataTwo = childDataOne[j]['children'];
 
-            if (childDataOne[i]['children'] != null) {
+            if (childDataOne[j]['children'] != null) {
               if (childDataTwo.length > 0) {
 
                 for (var k = 0; k < childDataTwo.length; k++) {
@@ -528,7 +529,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
                   print("namechild  //: "+childrenDataTwoModel.id.toString());
 
-            modelAgentSearch.childrenList[i].childrenList.add(childrenModelTwo);
+            modelAgentSearch.childrenList[j].childrenList.add(childrenModelTwo);
 
 
 
@@ -544,16 +545,16 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
                 if (childDataThree.length > 0) {
 
-                  for (var  j = 0; j < childDataThree.length; j++) {
+                  for (var  l = 0; l < childDataThree.length; l++) {
 
                     GETREPLYONHOTSPOT childrenModelThree = GETREPLYONHOTSPOT();
 
-                  childrenModelThree.id = childDataThree[j]["id"].toString();
-                  childrenModelThree.created_at = childDataThree[j]["created_at"].toString();
-                  childrenModelThree.review_id = childDataThree[j]["review_id"].toString();
-                  childrenModelThree.message = childDataThree[j]["message"].toString();
+                  childrenModelThree.id = childDataThree[l]["id"].toString();
+                  childrenModelThree.created_at = childDataThree[l]["created_at"].toString();
+                  childrenModelThree.review_id = childDataThree[l]["review_id"].toString();
+                  childrenModelThree.message = childDataThree[l]["message"].toString();
 
-                  childrenUserDataThree = childDataThree[j]['user'];
+                  childrenUserDataThree = childDataThree[l]['user'];
 
 
                   UserData childrenDataThreeModel = UserData();
@@ -563,11 +564,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
 
                    childrenModelThree.userProfile = childrenDataThreeModel;
-                  print("id Three....."+childDataThree[j]["id"].toString());
+                  print("id Three....."+childDataThree[l]["id"].toString());
 
                   print("namechild  Three //: "+childrenDataThreeModel.id.toString());
 
-                  modelAgentSearch.childrenList[i].childrenList[i].childrenList.add(childrenModelThree);
+                  modelAgentSearch.childrenList[j].childrenList[k].childrenList.add(childrenModelThree);
 
                   
 
@@ -740,8 +741,16 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                               Padding(
                                 padding: EdgeInsets.only(
                                     right: 4.w),
-                                child: InkWell(
-                                  onTap: () {},
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      viewVisible = true;
+                                      tabOne = getReplyOnHotspotList[i]
+                                          .childrenList[index].id
+                                          .toString();
+                                    });
+
+                                  },
                                   child: Text(
                                     "Reply",
                                     style: TextStyle(
@@ -855,8 +864,16 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             padding:
                                                 EdgeInsets.only(
                                                     right: 6.w),
-                                            child: InkWell(
-                                              onTap: () {},
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  viewVisible = true;
+                                                  tabOne = getReplyOnHotspotList[i]
+                                                      .childrenList[index].childrenList[k].id
+                                                      .toString();
+                                                });
+
+                                              },
                                               child: Text(
                                                 "Reply",
                                                 style: TextStyle(
@@ -971,19 +988,30 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                 kPrimaryColor,
                                           ),
                                         ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(
-                                                  right: 6.w),
-                                          child: InkWell(
-                                            onTap: () {},
-                                            child: Text(
-                                              "Reply",
-                                              style: TextStyle(
-                                                 fontSize: 10.sp,
-                                              color: Colors.white,
-                                                  fontFamily:
-                                                      "Roboto"),
+                                        Visibility(
+                                          visible: false,
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.only(
+                                                    right: 6.w),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                             /*   setState(() {
+                                                  viewVisible = true;
+                                                  tabOne = getReplyOnHotspotList[i]
+                                                      .childrenList[index].childrenList[k].childrenList[j].id
+                                                      .toString();
+                                                });
+*/
+                                              },
+                                              child: Text(
+                                                "Reply",
+                                                style: TextStyle(
+                                                   fontSize: 10.sp,
+                                                color: Colors.white,
+                                                    fontFamily:
+                                                        "Roboto"),
+                                              ),
                                             ),
                                           ),
                                         ),

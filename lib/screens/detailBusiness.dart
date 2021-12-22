@@ -58,8 +58,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   String ratting = "";
+  String rattingcheckin = "";
 
   TextEditingController reviewController = new TextEditingController();
+  TextEditingController reviewController2 = new TextEditingController();
   TextEditingController rattingController = new TextEditingController();
   TextEditingController messageController = new TextEditingController();
 
@@ -744,7 +746,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        Navigator.pop(context);
+        Navigator.of(context,rootNavigator: true).pop();
         communityReviewApi();
 
         // prefs.setString('phone', jsonRes["data"]["phone"].toString());
@@ -1467,9 +1469,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           ),
                           onRatingUpdate: (rating) {
                             print("Ratting :" + rating.toString());
-                            ratting = rating.toString();
+                            rattingcheckin = rating.toString();
                             //rat = rattingController.text.toString();
-                            print("Rat: " + ratting.toString());
+                            print("Rat: " + rattingcheckin.toString());
                           },
                         ),
                       ],
@@ -1551,6 +1553,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       color: Colors.grey.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(3.w)),
                   child: TextFormField(
+                    controller: reviewController2,
                     style: TextStyle(color: Color(0XFFCECECE)),
                     maxLines: 5,
                     decoration: InputDecoration(
@@ -1572,9 +1575,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     height: 6.h,
                     text: "Submit",
                     press: () {
-                      checkInApi(ratting.toString(), reviewController.text.toString(),
-                          check.toString());
-                    })
+                      if(check.toString()=="" || check.toString()=="null"){
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("Please select tag")));
+                      }
+                      else if(rattingcheckin.toString()=="" || rattingcheckin.toString()=="null"){
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("Please select rating")));
+                      }else if(reviewController2.text.toString()=="" || reviewController2.text.toString()=="null"){
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("Please enter review")));
+                      }else {
+                        checkInApi(rattingcheckin.toString(), reviewController2.text
+                            .toString(),
+                            check.toString());
+                      }
+                      })
               ],
             ),
           )),
@@ -1748,10 +1764,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 6.h,
                         text: "Submit",
                         press: () {
-                          businessReviewApi(ratting.toString(),
-                              reviewController.text.toString());
+                          if(ratting.toString()=="" || ratting.toString()=="null"){
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text("Please select rating")));
+                          }else if(reviewController.text.toString()=="" || reviewController.text.toString()=="null"){
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text("Please enter review")));
+                          }else {
+                            businessReviewApi(ratting.toString(),
+                                reviewController.text.toString());
+                          }
 
-                          print("ratting goes:" + ratting.toString());
                         })
               ],
             ),
