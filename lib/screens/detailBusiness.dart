@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/models/community_review_api_model.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -41,6 +42,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   //var ratting = "";
   var name = "";
+
   //var image = "";
   var review = "";
   var business_review_image = "";
@@ -73,11 +75,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
   File? file;
   bool isLoading = false;
   final picker = ImagePicker();
+
   //get kPrimaryColor => null;
 
   bool isloading = false;
   final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     print("business id: " + widget.nearBy.id.toString());
@@ -254,14 +258,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             Container(
                               width: 55.w,
                               child: Text(
-                                
                                 //"1230 Roosvelt Road, Wichita",
                                 widget.nearBy.location.toString() != "null"
                                     ? widget.nearBy.location.toString()
                                     : "",
 
-                                    maxLines:3,
-                                    textAlign: TextAlign.start,
+                                maxLines: 3,
+                                textAlign: TextAlign.start,
                                 style: TextStyle(
                                     fontSize: 11.sp,
                                     color: Colors.white,
@@ -421,7 +424,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
               ),
               InkWell(
                 onTap: () {
-                  print("hello");
                   customModelSheet(context);
                 },
                 child: Container(
@@ -535,13 +537,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
   }
 
-    Future<dynamic> likeApi( String comId, String likeStatus ) async {
-    
+  Future<dynamic> likeApi(String comId, String likeStatus) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community id: " + comId.toString());
-     print("business community id: " + widget.nearBy.id.toString());
+    print("business community id: " + widget.nearBy.id.toString());
     setState(() {
       isloading = true;
     });
@@ -553,10 +554,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
         body: {
           "user_id": id.toString(),
           "likedislike": likeStatus.toString(),
-          "business_id": widget.nearBy.id.toString() ,
+          "business_id": widget.nearBy.id.toString(),
           "businessreview_id": comId
-                                                                            
-          
         });
     String msg = "";
     var jsonArray;
@@ -582,9 +581,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
 
         communityReviewApi();
-
-     
-
       } else {
         setState(() {
           isloading = false;
@@ -645,9 +641,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
 
         communityReviewApi();
-
-      
-
       } else {
         setState(() {
           isloading = false;
@@ -722,15 +715,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
               jsonArray[i]["replies_count"].toString();
 
           print("name: " + modelAgentSearch.name.toString());
-           print("b id: " + modelAgentSearch.id.toString());
+          print("b id: " + modelAgentSearch.id.toString());
 
           communityReviewList.add(modelAgentSearch);
 
           setState(() {});
         }
-
-      
-
       } else {
         setState(() {
           // isloading = false;
@@ -755,6 +745,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
+      Navigator.of(context, rootNavigator: true).pop();
+      customDialog();
       isloading = true;
     });
 
@@ -778,15 +770,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
     request.fields["business_id"] = widget.nearBy.id.toString();
     request.fields["user_id"] = id.toString();
-    //request.files.add(await http.MultipartFile.fromPath(base64Image, fileName));
-    if (file != null) {
+    request.fields["type"] = "REVIEW";
+
+    request.files.add(await http.MultipartFile.fromPath("image", file!.path));
+
+    /*  if (file != null) {
       request.files.add(http.MultipartFile(
           'image',
           File(file!.path).readAsBytes().asStream(),
           File(file!.path).lengthSync(),
           filename: fileName));
       print("image: " + fileName.toString());
-    }
+    }*/
     var jsonRes;
     var res = await request.send();
     // print("ResponseJSON: " + respone.toString() + "_");
@@ -802,7 +797,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        Navigator.of(context,rootNavigator: true).pop();
+        Navigator.of(context, rootNavigator: true).pop();
         communityReviewApi();
 
         // prefs.setString('phone', jsonRes["data"]["phone"].toString());
@@ -877,512 +872,485 @@ class _DetailBussinessState extends State<DetailBussiness> {
         builder: (BuildContext context) => DraggableScrollableSheet(
               expand: false,
               maxChildSize: .95,
-              builder: (BuildContext context,
-                      ScrollController scrollController) =>
-                  SingleChildScrollView(
-                      controller: scrollController,
-                      child: Container(
-                        // height: double.infinity,
-                        decoration: BoxDecoration(
-                            color: kCyanColor,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10.w),
-                                topRight: Radius.circular(10.w))),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Container(
-                                height: 1.h,
-                                width: 25.w,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(3.w)),
-                              ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
-                              Text(
-                                "COMMUNITY REVIEWS",
-                                style: TextStyle(
-                                    fontSize: 16.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: "Segoepr"),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              isloading
-                                  ? Align(
-                                      alignment: Alignment.center,
-                                      child: Platform.isAndroid
-                                          ? CircularProgressIndicator()
-                                          : CupertinoActivityIndicator())
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      controller: scrollController,
-                                      itemCount: communityReviewList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        TextEditingController
-                                            messageTextController =
-                                            new TextEditingController();
-                                        return Column(
-                                          children: [
-                                            Card(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 4.w),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3.w)),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 1.5.h,
-                                                                  left: 5.w),
-                                                          child: Column(
-                                                            children: [
-                                                              CircleAvatar(
-                                                                radius: 7.w,
-                                                                backgroundImage:
-                                                                    NetworkImage(
-                                                                        //user image
-                                                                        communityReviewList[index]
-                                                                            .image
-                                                                            .toString()),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 0.5.h,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  Text(
-                                                                    //"3.5",
-                                                                    communityReviewList[
-                                                                            index]
-                                                                        .ratting
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        fontSize: 12
-                                                                            .sp,
-                                                                        color:
-                                                                            kPrimaryColor,
-                                                                        fontWeight:
-                                                                            FontWeight.w500
-                                                                        //fontFamily: "Segoepr"
-                                                                        ),
-                                                                  ),
-                                                                  SvgPicture
-                                                                      .asset(
-                                                                    "assets/icons/star.svg",
-                                                                    color:
-                                                                        kPrimaryColor,
-                                                                  )
-                                                                ],
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 3.w),
+              builder:
+                  (BuildContext context, ScrollController scrollController) =>
+                      SingleChildScrollView(
+                          controller: scrollController,
+                          child: Container(
+                            // height: double.infinity,
+                            decoration: BoxDecoration(
+                                color: kCyanColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10.w),
+                                    topRight: Radius.circular(10.w))),
+                            child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 1.h,
+                                        ),
+                                        Container(
+                                          height: 1.h,
+                                          width: 25.w,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(3.w)),
+                                        ),
+                                        SizedBox(
+                                          height: 1.h,
+                                        ),
+                                        Text(
+                                          "COMMUNITY REVIEWS",
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: "Segoepr"),
+                                        ),
+                                        SizedBox(
+                                          height: 2.h,
+                                        ),
+                                        isloading
+                                            ? Align(
+                                                alignment: Alignment.center,
+                                                child: Platform.isAndroid
+                                                    ? CircularProgressIndicator()
+                                                    : CupertinoActivityIndicator())
+                                            : ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                controller: scrollController,
+                                                itemCount:
+                                                    communityReviewList.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  TextEditingController
+                                                      messageTextController =
+                                                      new TextEditingController();
+                                                  return Column(
+                                                    children: [
+                                                      Card(
+                                                          margin: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      4.w),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3.w)),
                                                           child: Column(
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Text(
-                                                                // "Restaurant Name",
+                                                              Row(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        top: 1.5
+                                                                            .h,
+                                                                        left: 5
+                                                                            .w),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        CircleAvatar(
+                                                                          radius:
+                                                                              7.w,
+                                                                          backgroundImage: NetworkImage(
+                                                                              //user image
+                                                                              communityReviewList[index].image.toString()),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              0.5.h,
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              //"3.5",
+                                                                              communityReviewList[index].ratting.toString(),
+                                                                              style: TextStyle(fontSize: 12.sp, color: kPrimaryColor, fontWeight: FontWeight.w500
+                                                                                  //fontFamily: "Segoepr"
+                                                                                  ),
+                                                                            ),
+                                                                            SvgPicture.asset(
+                                                                              "assets/icons/star.svg",
+                                                                              color: kPrimaryColor,
+                                                                            )
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left: 3
+                                                                            .w),
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          // "Restaurant Name",
 
-                                                                communityReviewList[
-                                                                        index]
-                                                                    .name
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        13.sp,
-                                                                    color:
-                                                                        kCyanColor,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontFamily:
-                                                                        "Segoepr"),
+                                                                          communityReviewList[index]
+                                                                              .name
+                                                                              .toString(),
+                                                                          style: TextStyle(
+                                                                              fontSize: 13.sp,
+                                                                              color: kCyanColor,
+                                                                              fontWeight: FontWeight.w500,
+                                                                              fontFamily: "Segoepr"),
+                                                                        ),
+                                                                        Container(
+                                                                            height:
+                                                                                6.h,
+                                                                            width: 65.w,
+                                                                            child: Text(
+                                                                              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                                              communityReviewList[index].review.toString(),
+                                                                              style: TextStyle(
+                                                                                  fontSize: 11.sp,
+                                                                                  color: Colors.black,
+                                                                                  // fontWeight: FontWeight.w500,
+                                                                                  fontFamily: "Roboto"
+                                                                                  //fontFamily: "Segoepr"
+                                                                                  ),
+                                                                            ))
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                ],
                                                               ),
-                                                              Container(
-                                                                  height: 6.h,
-                                                                  width: 65.w,
-                                                                  child: Text(
-                                                                    // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                              SizedBox(
+                                                                height: 1.5.h,
+                                                              ),
+                                                              Visibility(
+                                                                visible: communityReviewList[index]
+                                                                            .business_review_image
+                                                                            .toString() !=
+                                                                        ""
+                                                                    ? true
+                                                                    : false,
+                                                                child:
+                                                                    Container(
+                                                                  height: 48.h,
+                                                                  width: double
+                                                                      .infinity,
+                                                                  child: Image
+                                                                      .network(
+                                                                    //  "assets/images/lighting.jpeg",
                                                                     communityReviewList[
                                                                             index]
-                                                                        .review
+                                                                        .business_review_image
                                                                         .toString(),
-                                                                    style: TextStyle(
-                                                                        fontSize: 11.sp,
-                                                                        color: Colors.black,
-                                                                        // fontWeight: FontWeight.w500,
-                                                                        fontFamily: "Roboto"
-                                                                        //fontFamily: "Segoepr"
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 1.5.h,
+                                                              ),
+                                                              Container(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          left: 17
+                                                                              .w),
+                                                                  width: double
+                                                                      .infinity,
+                                                                  //color: Colors.red,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceEvenly,
+                                                                    children: [
+                                                                      Container(
+                                                                        height:
+                                                                            3.h,
+                                                                        width:
+                                                                            30.w,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              Color(0XFF7C7474),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(3.w),
                                                                         ),
-                                                                  ))
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text(
+                                                                            "Staff wear mask",
+                                                                            style:
+                                                                                TextStyle(color: Colors.white, fontSize: 9.sp),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Container(
+                                                                        height:
+                                                                            3.h,
+                                                                        width:
+                                                                            30.w,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              Color(0XFF7C7474),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(3.w),
+                                                                        ),
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text(
+                                                                            "Mask Mandtory",
+                                                                            style:
+                                                                                TextStyle(color: Colors.white, fontSize: 9.sp),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  )),
+                                                              SizedBox(
+                                                                height: 2.5.h,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            6.w),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Container(
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (communityReviewList[index].like_status.toString() == "1") {
+                                                                          } else {
+                                                                            likeApi(communityReviewList[index].business_reviews_id.toString(), "1");
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            SvgPicture.asset(
+                                                                              "assets/icons/up.svg",
+                                                                              color: communityReviewList[index].like_status.toString() == "1" ? kPrimaryColor : Colors.black,
+                                                                              width: 4.5.w,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 1.w,
+                                                                            ),
+                                                                            Text(
+                                                                              "Like(" + communityReviewList[index].total_like.toString() + ")",
+                                                                              style: TextStyle(fontSize: 11.sp, color: communityReviewList[index].like_status.toString() == "1" ? kPrimaryColor : Colors.black),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (communityReviewList[index].like_status.toString() ==
+                                                                              "2") {
+                                                                          } else {
+                                                                            likeApi(communityReviewList[index].business_reviews_id.toString(),
+                                                                                "2");
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Row(
+                                                                          children: [
+                                                                            SvgPicture.asset(
+                                                                              "assets/icons/down.svg",
+                                                                              color: communityReviewList[index].like_status.toString() == "2" ? kPrimaryColor : Colors.black,
+                                                                              width: 4.5.w,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 1.w,
+                                                                            ),
+                                                                            Text(
+                                                                              "Dislike(" + communityReviewList[index].total_dislike.toString() + ")",
+                                                                              style: TextStyle(fontSize: 11.sp, color: communityReviewList[index].like_status.toString() == "2" ? kPrimaryColor : Colors.black),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {},
+                                                                      child:
+                                                                          Text(
+                                                                        "Report",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              11.sp,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {},
+                                                                      child: SvgPicture
+                                                                          .asset(
+                                                                        "assets/icons/share.svg",
+                                                                        width:
+                                                                            4.5.w,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 2.5.h,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left: 2
+                                                                            .w),
+                                                                child: Row(
+                                                                  children: [
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                                builder: (context) => CommunityReplies(
+                                                                                      review_id: communityReviewList[index].business_reviews_id.toString(),
+                                                                                    )));
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        "Replies (" +
+                                                                            communityReviewList[index].replies_count.toString() +
+                                                                            ")",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              11.sp,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width:
+                                                                          1.h,
+                                                                    ),
+                                                                    isloading
+                                                                        ? Align(
+                                                                            alignment: Alignment
+                                                                                .center,
+                                                                            child: Platform.isAndroid
+                                                                                ? CircularProgressIndicator()
+                                                                                : CupertinoActivityIndicator())
+                                                                        : SizedBox(
+                                                                            width:
+                                                                                65.w,
+                                                                            child:
+                                                                                TextField(
+                                                                              controller: messageTextController,
+                                                                              onChanged: (val) {
+                                                                                print(val);
+
+                                                                                communityReviewList[index].messageText = val.toString();
+                                                                              },
+                                                                              minLines: 1,
+                                                                              keyboardType: TextInputType.multiline,
+                                                                              style: TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontSize: 12.sp,
+                                                                              ),
+                                                                              maxLines: 50,
+                                                                              decoration: InputDecoration(
+                                                                                  contentPadding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 4.w),
+                                                                                  fillColor: Colors.black,
+                                                                                  filled: true,
+                                                                                  //suffixIconConstraints: BoxConstraints(minWidth: 5),
+
+                                                                                  hintText: "Reply",
+                                                                                  suffixIcon: InkWell(
+                                                                                      onTap: () {
+                                                                                        communityReplyOnReviewApi(communityReviewList[index].business_reviews_id.toString(), communityReviewList[index].messageText.toString());
+                                                                                      },
+                                                                                      child: Icon(Icons.send, color: kPrimaryColor)),
+                                                                                  hintStyle: TextStyle(fontSize: 9.sp, color: Colors.white)),
+                                                                            ),
+                                                                          )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 2.h,
+                                                              ),
                                                             ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 1.5.h,
-                                                    ),
-                                                    Visibility(
-                                                      visible: communityReviewList[
-                                                                      index]
-                                                                  .business_review_image
-                                                                  .toString() !=
-                                                              ""
-                                                          ? true
-                                                          : false,
-                                                      child: Container(
-                                                        height: 48.h,
-                                                        width: double.infinity,
-                                                        child: Image.network(
-                                                          //  "assets/images/lighting.jpeg",
-                                                          communityReviewList[
-                                                                  index]
-                                                              .business_review_image
-                                                              .toString(),
-                                                          fit: BoxFit.fill,
-                                                        ),
+                                                          )),
+                                                      SizedBox(
+                                                        height: 2.h,
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 1.5.h,
-                                                    ),
-                                                    Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 17.w),
-                                                        width: double.infinity,
-                                                        //color: Colors.red,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
-                                                          children: [
-                                                            Container(
-                                                              height: 3.h,
-                                                              width: 30.w,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Color(
-                                                                    0XFF7C7474),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            3.w),
-                                                              ),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  "Staff wear mask",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          9.sp),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              height: 3.h,
-                                                              width: 30.w,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Color(
-                                                                    0XFF7C7474),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            3.w),
-                                                              ),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  "Mask Mandtory",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          9.sp),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        )),
-                                                    SizedBox(
-                                                      height: 2.5.h,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 6.w),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            child: InkWell(
-                                                              onTap: () {
-
-                                                                
-                                                                            
-                                                                                                             if (communityReviewList[index]
-                                                                            .like_status.toString() == "1" ) {
-                                                                  
-                                                                }else{
-
-                                                                likeApi(communityReviewList[index]
-                                                                            .business_reviews_id
-                                                                            .toString(), "1");
-                                                                }
-
-                                                              
-                                                              },
-                                                              child: Row(
-                                                                children: [
-                                                                  SvgPicture
-                                                                      .asset(
-                                                                    "assets/icons/up.svg",
-                                                                    color: communityReviewList[index].like_status.toString() == "1"  ? kPrimaryColor : Colors.black,
-                                                                    width:
-                                                                        4.5.w,
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 1.w,
-                                                                  ),
-                                                                  Text(
-                                                                    "Like(" +
-                                                                        communityReviewList[index]
-                                                                            .total_like
-                                                                            .toString() +
-                                                                        ")",
-                                                                    style: TextStyle(
-                                                                        fontSize: 11
-                                                                            .sp,
-                                                                        color: communityReviewList[index].like_status.toString() == "1" ? kPrimaryColor : Colors.black),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            child: InkWell(
-                                                              onTap: () {
-
-                                                                if (communityReviewList[index]
-                                                                            .like_status.toString() == "2" ) {
-                                                                  
-                                                                }else{
-
-                                                                likeApi(communityReviewList[index]
-                                                                            .business_reviews_id
-                                                                            .toString(), "2");
-                                                                }
-
-                                                              },
-                                                              child: Row(
-                                                                children: [
-                                                                  SvgPicture
-                                                                      .asset(
-                                                                    "assets/icons/down.svg",
-                                                                    color: communityReviewList[index].like_status.toString() == "2"  ? kPrimaryColor : Colors.black,
-                                                                    width:
-                                                                        4.5.w,
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 1.w,
-                                                                  ),
-                                                                  Text(
-                                                                    "Dislike(" +
-                                                                        communityReviewList[index]
-                                                                            .total_dislike
-                                                                            .toString() +
-                                                                        ")",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          11.sp,
-                                                                      color: communityReviewList[index].like_status.toString() == "2"  ? kPrimaryColor : Colors.black
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          InkWell(
-                                                            onTap: () {},
-                                                            child: Text(
-                                                              "Report",
-                                                              style: TextStyle(
-                                                                fontSize: 11.sp,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          InkWell(
-                                                            onTap: () {},
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/share.svg",
-                                                              width: 4.5.w,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.5.h,
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 2.w),
-                                                      child: Row(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          CommunityReplies(
-                                                                            review_id:
-                                                                                communityReviewList[index].business_reviews_id.toString(),
-                                                                          )));
-                                                            },
-                                                            child: Text(
-                                                              "Replies (" +
-                                                                  communityReviewList[
-                                                                          index]
-                                                                      .replies_count
-                                                                      .toString() +
-                                                                  ")",
-                                                              style: TextStyle(
-                                                                fontSize: 11.sp,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 1.h,
-                                                          ),
-                                                          isloading
-                                                              ? Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Platform
-                                                                          .isAndroid
-                                                                      ? CircularProgressIndicator()
-                                                                      : CupertinoActivityIndicator())
-                                                              : SizedBox(
-                                                                  width: 65.w,
-                                                                  child:
-                                                                      TextField(
-                                                                    controller:
-                                                                        messageTextController,
-                                                                    onChanged:
-                                                                        (val) {
-                                                                      print(
-                                                                          val);
-
-                                                                      communityReviewList[index]
-                                                                              .messageText =
-                                                                          val.toString();
-                                                                    },
-                                                                    minLines: 1,
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .multiline,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.sp,
-                                                                    ),
-                                                                    maxLines:
-                                                                        50,
-                                                                    decoration: InputDecoration(
-                                                                        contentPadding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 4.w),
-                                                                        fillColor: Colors.black,
-                                                                        filled: true,
-                                                                        //suffixIconConstraints: BoxConstraints(minWidth: 5),
-
-                                                                        hintText: "Reply",
-                                                                        suffixIcon: InkWell(
-                                                                            onTap: () {
-                                                                              communityReplyOnReviewApi(communityReviewList[index].business_reviews_id.toString(), communityReviewList[index].messageText.toString());
-                                                                            },
-                                                                            child: Icon(Icons.send, color: kPrimaryColor)),
-                                                                        hintStyle: TextStyle(fontSize: 9.sp, color: Colors.white)),
-                                                                  ),
-                                                                )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.h,
-                                                    ),
-                                                  ],
-                                                )),
-                                            SizedBox(
-                                              height: 2.h,
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                              onTap: () {
+                                                customDialog();
+                                              },
+                                              child: buildMessageFormField()),
+                                        ),
+                                        SizedBox(
+                                          height: 2.h,
+                                        )
+                                      ],
                                     ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                    onTap: () {
-                                      customDialog();
-                                    },
-                                    child: buildMessageFormField()),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              )
-                            ],
-                          ),
-                        ),
-                      )),
+                                  ),
+                          )),
             ));
   }
 
   checkInDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
           backgroundColor: Colors.black,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-          title: SingleChildScrollView(
+          title:  isloading == true
+              ? Column(
+            children: [
+              Center(
+                  child: Platform.isIOS
+                      ? CupertinoActivityIndicator()
+                      : CircularProgressIndicator()),
+              Text("Please wait....", style: TextStyle(fontSize: 20, color: Colors.white),)
+            ],
+          )
+              :SingleChildScrollView(
               child: SizedBox(
             height: 51.h,
             width: 95.w,
@@ -1393,7 +1361,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.of(context, rootNavigator: true).pop();
                       },
                       child: SvgPicture.asset(
                         "assets/icons/cross.svg",
@@ -1608,10 +1576,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     allowCompression: false,
                                   );
                                   if (result != null) {
-                                    File file = File(result.files.single.path!);
+                                    file = File(result.files.single.path!);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                        return TrimmerView(file);
+                                        return TrimmerView(file!);
                                       }),
                                     );
                                   }
@@ -1656,22 +1624,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     height: 6.h,
                     text: "Submit",
                     press: () {
-                      if(check.toString()=="" || check.toString()=="null"){
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("Please select tag")));
-                      }
-                      else if(rattingcheckin.toString()=="" || rattingcheckin.toString()=="null"){
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("Please select rating")));
-                      }else if(reviewController2.text.toString()=="" || reviewController2.text.toString()=="null"){
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("Please enter review")));
-                      }else {
-                        checkInApi(rattingcheckin.toString(), reviewController2.text
-                            .toString(),
+                      if (check.toString() == "" ||
+                          check.toString() == "null") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please select tag")));
+                      } else if (rattingcheckin.toString() == "" ||
+                          rattingcheckin.toString() == "null") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please select rating")));
+                      } else if (reviewController2.text.toString() == "" ||
+                          reviewController2.text.toString() == "null") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please enter review")));
+                      } else {
+                        checkInApi(
+                            rattingcheckin.toString(),
+                            reviewController2.text.toString(),
                             check.toString());
                       }
-                      })
+                    })
               ],
             ),
           )),
@@ -1683,13 +1654,24 @@ class _DetailBussinessState extends State<DetailBussiness> {
   customDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           scrollable: true,
           backgroundColor: Colors.black,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-          title: SingleChildScrollView(
+          title:  isloading == true
+              ? Column(
+                children: [
+                  Center(
+                  child: Platform.isIOS
+                      ? CupertinoActivityIndicator()
+                      : CircularProgressIndicator()),
+                  Text("Please wait....", style: TextStyle(fontSize: 20, color: Colors.white),)
+                ],
+              )
+              :SingleChildScrollView(
               child: SizedBox(
             height: 31.h,
             width: 95.w,
@@ -1798,7 +1780,21 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               width: 3.w,
                             ),
                             InkWell(
-                                onTap: () {},
+                                onTap: () async {
+                                  FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                    type: FileType.video,
+                                    allowCompression: false,
+                                  );
+                                  if (result != null) {
+                                    file = File(result.files.single.path!);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                        return TrimmerView(file!);
+                                      }),
+                                    );
+                                  }
+                                },
                                 child:
                                     SvgPicture.asset("assets/icons/video.svg")),
                           ],
@@ -1845,17 +1841,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 6.h,
                         text: "Submit",
                         press: () {
-                          if(ratting.toString()=="" || ratting.toString()=="null"){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text("Please select rating")));
-                          }else if(reviewController.text.toString()=="" || reviewController.text.toString()=="null"){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text("Please enter review")));
-                          }else {
+                          if (ratting.toString() == "" ||
+                              ratting.toString() == "null") {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Please select rating")));
+                          } else if (reviewController.text.toString() == "" ||
+                              reviewController.text.toString() == "null") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Please enter review")));
+                          } else {
                             businessReviewApi(ratting.toString(),
                                 reviewController.text.toString());
                           }
-
                         })
               ],
             ),
@@ -1871,6 +1868,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     print("id Print: " + id.toString());
     setState(() {
       isloading = true;
+      Navigator.of(context, rootNavigator: true).pop();
+      checkInDialog();
     });
 
     print("id " + id.toString() + "");
@@ -1899,15 +1898,15 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = widget.nearBy.id.toString();
     request.fields["user_id"] = id.toString();
-    //request.files.add(await http.MultipartFile.fromPath(base64Image, fileName));
-    if (file != null) {
+    request.files.add(await http.MultipartFile.fromPath("image", file!.path));
+/*    if (file != null) {
       request.files.add(http.MultipartFile(
           'image',
           File(file!.path).readAsBytes().asStream(),
           File(file!.path).lengthSync(),
           filename: fileName));
       print("image: " + fileName.toString());
-    }
+    }*/
     var jsonRes;
     var res = await request.send();
     // print("ResponseJSON: " + respone.toString() + "_");
@@ -1923,7 +1922,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
         communityReviewApi();
 
         // prefs.setString('phone', jsonRes["data"]["phone"].toString());
@@ -1962,7 +1961,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
       //inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
-        fillColor: kPrimaryColor, filled: true,
+        fillColor: kPrimaryColor,
+        filled: true,
         //filled: true,
 
         hintText: "Leave a message...",

@@ -120,6 +120,7 @@ print("Path: "+_value.toString());
                             ScaffoldMessenger.of(context).showSnackBar(
                               snackBar,
                             );
+                            Navigator.of(context, rootNavigator: true).pop();
                           });
                         },
                   child: Text("SAVE"),
