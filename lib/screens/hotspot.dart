@@ -32,8 +32,6 @@ class _HotspotState extends State<Hotspot> {
 
   List<GetHotSpotClass> getHostSpotList = [];
 
-  
-
   @override
   void initState() {
     getHotspotApi();
@@ -42,7 +40,6 @@ class _HotspotState extends State<Hotspot> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -82,7 +79,12 @@ class _HotspotState extends State<Hotspot> {
                     borderRadius: BorderRadius.circular(3.w),
                     color: Colors.white),
                 child: TextFormField(
-                  onChanged: (val) {},
+                   onChanged: (value){
+                          searchData(value.toString());
+                        },
+                        validator: (val) {
+                          
+                        },
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -107,7 +109,8 @@ class _HotspotState extends State<Hotspot> {
                 controller: _controller,
                 itemCount: getHostSpotList.length,
                 itemBuilder: (BuildContext context, int index) {
-                   TextEditingController messageController = new TextEditingController();
+                  TextEditingController messageController =
+                      new TextEditingController();
                   return Column(
                     children: [
                       Card(
@@ -169,11 +172,14 @@ class _HotspotState extends State<Hotspot> {
                                   Container(
                                     child: Column(
                                       children: [
-                                        SizedBox(height: 1.h,),
+                                        SizedBox(
+                                          height: 1.h,
+                                        ),
                                         Container(
                                           width: 74.w,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
@@ -196,9 +202,7 @@ class _HotspotState extends State<Hotspot> {
                                                         fontFamily: "Segoepr"),
                                                   ),
                                                   Text(
-                                                   " @ ",
-
-                                                   
+                                                    " @ ",
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
@@ -206,7 +210,6 @@ class _HotspotState extends State<Hotspot> {
                                                         color: kCyanColor,
                                                         fontFamily: "Segoepr"),
                                                   ),
-
                                                   Text(
                                                     // "Person Name @ Bar Name",
 
@@ -227,13 +230,16 @@ class _HotspotState extends State<Hotspot> {
                                                   ),
                                                 ],
                                               ),
-                                             
                                               Padding(
-                                                padding: EdgeInsets.only(right: 3.w),
+                                                padding:
+                                                    EdgeInsets.only(right: 3.w),
                                                 child: Text(
-                                                //  "2m ago",
+                                                  //  "2m ago",
 
-                                                getHostSpotList[index].created_at.toString().substring(0,10),
+                                                  getHostSpotList[index]
+                                                      .created_at
+                                                      .toString()
+                                                      .substring(0, 10),
                                                   style: TextStyle(
                                                     fontSize: 8.sp,
                                                     color: kPrimaryColor,
@@ -249,8 +255,15 @@ class _HotspotState extends State<Hotspot> {
                                         Container(
                                           width: 74.w,
                                           child: Text(
-                                           // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
-                                           getHostSpotList[index].message.toString()!= "null" ? getHostSpotList[index].message.toString() : "",
+                                            // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                            getHostSpotList[index]
+                                                        .message
+                                                        .toString() !=
+                                                    "null"
+                                                ? getHostSpotList[index]
+                                                    .message
+                                                    .toString()
+                                                : "",
                                             style: TextStyle(
                                                 //overflow: TextOverflow.ellipsis,
                                                 fontSize: 10.2.sp,
@@ -275,10 +288,10 @@ class _HotspotState extends State<Hotspot> {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               HotSpotReply(
-                                                                id : getHostSpotList[index]
-                                                            .id
-                                                            .toString()
-                                                              )));
+                                                                  id: getHostSpotList[
+                                                                          index]
+                                                                      .id
+                                                                      .toString())));
                                                 },
                                                 child: Text(
                                                   "View Replies",
@@ -294,17 +307,15 @@ class _HotspotState extends State<Hotspot> {
                                                 child: SizedBox(
                                                   width: 50.w,
                                                   child: TextField(
-                                                     controller:
-                                                                        messageController,
-                                                                    onChanged:
-                                                                        (val) {
-                                                                      print(
-                                                                          val);
+                                                    controller:
+                                                        messageController,
+                                                    onChanged: (val) {
+                                                      print(val);
 
-                                                                      getHostSpotList[index]
-                                                                              .messageText =
-                                                                          val.toString();
-                                                                    },
+                                                      getHostSpotList[index]
+                                                              .messageText =
+                                                          val.toString();
+                                                    },
                                                     minLines: 1,
                                                     keyboardType:
                                                         TextInputType.multiline,
@@ -326,7 +337,15 @@ class _HotspotState extends State<Hotspot> {
                                                         hintText: "Reply",
                                                         suffixIcon: InkWell(
                                                             onTap: () {
-                                                              replyOnHotspotReviewApi(getHostSpotList[index].id.toString(), getHostSpotList[index].messageText.toString());
+                                                              replyOnHotspotReviewApi(
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .id
+                                                                      .toString(),
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .messageText
+                                                                      .toString());
                                                             },
                                                             child: Icon(
                                                                 Icons.send,
@@ -417,7 +436,91 @@ class _HotspotState extends State<Hotspot> {
   }
 
 
-    Future<dynamic> replyOnHotspotReviewApi(
+
+
+   Future<dynamic> searchData(String key ) async {
+
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+       var id = prefs.getString("id");
+       print("id Print: " +id.toString());
+       print("key Print: " +key.toString());
+
+
+
+
+    
+       var request = http.post(
+        Uri.parse(RestDatasource.SEARCHDATA_URL
+            // RestDatasource.SEND_OTP,
+            ),
+        body: {
+          "id": id.toString(),
+          "key": key.toString(),
+          
+        });
+      
+
+   
+    var jsonArray;
+    var jsonRes;
+    var res ;
+ await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      jsonArray = jsonRes['data'];
+    });
+
+     if (res!.statusCode == 200) {
+
+      if (jsonRes["status"] == true) {
+          getHostSpotList.clear();
+    
+
+
+        for (var i = 0; i < jsonArray.length; i++) {
+          GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.person_name = jsonArray[i]["person_name"].toString();
+          modelAgentSearch.user_image = jsonArray[i]["user_image"].toString();
+          modelAgentSearch.business_user_name =
+              jsonArray[i]["business_user_name"].toString();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
+          modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
+          modelAgentSearch.message = jsonArray[i]["message"].toString();
+          modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
+
+          print("id: " + modelAgentSearch.id.toString());
+          print("Bussiness: " + modelAgentSearch.person_name.toString());
+
+          getHostSpotList.add(modelAgentSearch);
+
+          setState(() {});
+        }
+
+     
+
+        setState(() {
+          isloading = false;
+        });
+      } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Please try later")));
+      
+      });
+    }
+  }
+  }
+  
+  
+  
+  
+  Future<dynamic> replyOnHotspotReviewApi(
       String review_id, String messageText) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
@@ -460,10 +563,10 @@ class _HotspotState extends State<Hotspot> {
           isloading = false;
         });
 
-         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Your reply added successfully")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Your reply added successfully")));
 
-       // getHotspotApi();
+        // getHotspotApi();
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
@@ -574,6 +677,7 @@ class _HotspotState extends State<Hotspot> {
 
       //inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
       decoration: InputDecoration(
+        suffixIcon: Icon(Icons.send, size: 9.w, color: Colors.white),
         fillColor: kPrimaryColor, filled: true,
         //filled: true,
 

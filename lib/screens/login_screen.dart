@@ -542,7 +542,7 @@ class _LoginScreenState extends State<LoginScreen> {
         prefs.commit();
 
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(),)));
 
         _handleRemeberme(remember);
         Navigator.pushAndRemoveUntil(
@@ -558,7 +558,7 @@ class _LoginScreenState extends State<LoginScreen> {
           isloading = false;
         });
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
+            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(),)));
 
       }
     } else {

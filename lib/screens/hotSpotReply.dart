@@ -355,8 +355,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
       if (jsonRes["status"].toString() == "true") {
         setState(() {
+           viewVisible = false;
           isloading = false;
         });
+
 
         getReplyOnHotspotApi();
 

@@ -81,8 +81,8 @@ class _HomeNavState extends State<HomeNav> {
                 label: ""),
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  'assets/icons/tab_feed1.svg',
-                  width: 6.w,
+                  'assets/icons/explore.svg',
+                  width: 7.w,
                   color: _index == 3 ? Color(0xFF1DC2C2) : Color(0xFF7A7A7A),
                 ),
 
