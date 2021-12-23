@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/models/community_review_api_model.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
-import 'package:path/path.dart' as p;
+import 'package:path/path.dart' as path;
 
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -75,7 +75,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   File? file;
   bool isLoading = false;
   final picker = ImagePicker();
-
+  bool isVisible = false;
   //get kPrimaryColor => null;
 
   bool isloading = false;
@@ -1352,7 +1352,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
           )
               :SingleChildScrollView(
               child: SizedBox(
-            height: 51.h,
+            height: 55.h,
             width: 95.w,
             child: Column(
               children: [
@@ -1577,11 +1577,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   );
                                   if (result != null) {
                                     file = File(result.files.single.path!);
+                                    fileName = path.basename(file!.path);
+                                    print("Filename "+fileName.toString()+"^");
+                                    if(fileName=="" || fileName == null){
+                                      fileName = "File:- ";
+                                      isVisible = false;
+                                    }else{
+                                      fileName = "File:- "+fileName;
+                                      isVisible = true;
+                                    }
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                         return TrimmerView(file!);
                                       }),
-                                    );
+                                    ).then((value) {
+                                      setState(() {
+                                       Navigator.of(context, rootNavigator: true).pop();
+                                       checkInDialog();
+                                      });
+                                    });
                                   }
                                 },
                                 child:
@@ -1617,7 +1631,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ),
                 ),
                 SizedBox(
-                  height: 1.7.h,
+                  height: 1.2.h,
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Visibility(visible: isVisible,child: Text(fileName, style: TextStyle(color: Colors.white, fontSize: 12),)),
                 ),
                 DefaultButton(
                     width: 35.w,
@@ -1673,7 +1692,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               )
               :SingleChildScrollView(
               child: SizedBox(
-            height: 31.h,
+            height: 35.h,
             width: 95.w,
             child: Column(
               children: [
@@ -1788,11 +1807,24 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   );
                                   if (result != null) {
                                     file = File(result.files.single.path!);
+                                    fileName = path.basename(file!.path);
+                                    print("Filename "+fileName.toString()+"^");
+                                    if(fileName=="" || fileName == null){
+                                      fileName = "File:- ";
+                                      isVisible = false;
+                                    }else{
+                                      fileName = "File:- "+fileName;
+                                      isVisible = true;
+                                    }
+
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
                                         return TrimmerView(file!);
                                       }),
-                                    );
+                                    ).then((value) {
+                                     Navigator.of(context, rootNavigator: true).pop();
+                                     customDialog();
+                                    });
                                   }
                                 },
                                 child:
@@ -1828,7 +1860,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ),
                 ),
                 SizedBox(
-                  height: 1.7.h,
+                  height: 1.2.h,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Visibility(visible: isVisible,child: Text(fileName, style: TextStyle(color: Colors.white, fontSize: 12),)),
                 ),
                 isloading
                     ? Align(
