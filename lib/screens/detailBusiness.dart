@@ -63,10 +63,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
   @override
   void initState() {
     communityReviewApi();
+     print("vi: "+videoLink.toString());
+
 
     _controllerr = VideoPlayerController.network(
-       //videoLink.toString()
-       'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'
+      //videoLink.toString()
+       'https://builtenance.com/development/wemarkthespot/public/images/a6c4435d106e22b3e28bffb426d3814b.mp4'
 
 
         
@@ -74,7 +76,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
-        print("vi: "+videoLink.toString());
+       
       });
 
     super.initState();
@@ -1336,7 +1338,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
           videoLink = jsonArray[i]["business_review_image"].toString();
 
-          print("video id: " + videoLink.toString());
+          print("video id: " + jsonArray[i]["business_review_image"].toString());
 
           communityReviewList.add(modelAgentSearch);
 
