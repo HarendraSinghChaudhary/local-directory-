@@ -36,6 +36,8 @@ class _ExploreState extends State<Explore> {
   var review_count = "";
   var location = "";
   var category_name = "";
+  var lat = "";
+  var long = "";
 
   List<NearBy> nearByRestaurantList = [];
 
@@ -280,12 +282,12 @@ class _ExploreState extends State<Explore> {
                                                         //"4.5",
                                                         nearByRestaurantList[
                                                                         index]
-                                                                    .ratting
+                                                                    .avgratting
                                                                     .toString() !=
                                                                 "null"
                                                             ? nearByRestaurantList[
                                                                     index]
-                                                                .ratting
+                                                                .avgratting
                                                                 .toString()
                                                             : "0",
                                                         style: TextStyle(
@@ -532,9 +534,12 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.category_name =
               jsonArray[i]["category_name"].toString();
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+          modelAgentSearch.long = jsonArray[i]["long"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
-          print("Bussiness: " + modelAgentSearch.business_name.toString());
+          print("ratting: " + modelAgentSearch.avgratting.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
 
@@ -582,6 +587,9 @@ class NearBy {
   var location = "";
   var category_name = "";
   var fav = "";
+  var lat = "";
+  var long = "";
+  var avgratting = "";
 }
 
 class CustomSliderWidget extends StatefulWidget {

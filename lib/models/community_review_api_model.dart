@@ -16,6 +16,7 @@ class CommunityReviewAPI{
   var replies_count = "";
   var id = "";
   var like_status = "";
+  var image_video_status = "";
 
   
 

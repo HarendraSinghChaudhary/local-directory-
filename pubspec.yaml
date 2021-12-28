@@ -49,6 +49,10 @@ dependencies:
   geolocator: ^8.0.1
   video_trimmer: ^1.0.0
   file_picker: ^4.2.8
+  google_fonts: ^2.1.1
+  select_dialog: ^2.0.0
+  video_player: ^2.2.10
+  chewie: ^1.2.2
  
 
   

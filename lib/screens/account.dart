@@ -17,7 +17,9 @@ import 'package:wemarkthespot/screens/reviews.dart';
 import 'package:wemarkthespot/screens/settings.dart';
 import 'package:wemarkthespot/screens/signup_Screen.dart';
 import 'package:wemarkthespot/screens/testing.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/updatePassword.dart';
+import 'package:wemarkthespot/screens/video_player.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -364,7 +366,7 @@ class _UserAccountState extends State<UserAccount> {
               ),
               InkWell(
                 onTap: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => IloginDashBoard()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => VideoApp()));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

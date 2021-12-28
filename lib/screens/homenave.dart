@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import 'package:wemarkthespot/screens/account.dart';
+import 'package:wemarkthespot/screens/explore.dart';
 
 import 'package:wemarkthespot/screens/home_screen.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
@@ -22,7 +23,7 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     // Scaffold(), Scaffold(), Scaffold(),
-    GoogleMapScreen(), Hotspot(), Scaffold(),
+    GoogleMapScreen(), Hotspot(), Explore(),
     Account()
   ];
 

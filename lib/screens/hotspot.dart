@@ -9,7 +9,9 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/hotSpotReply.dart';
 import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/screens/testing_overlay.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+import 'package:select_dialog/select_dialog.dart';
 
 class Hotspot extends StatefulWidget {
   const Hotspot({Key? key}) : super(key: key);
@@ -19,6 +21,7 @@ class Hotspot extends StatefulWidget {
 }
 
 class _HotspotState extends State<Hotspot> {
+  var selectedId = "";
   var person_name = "";
   var user_image = "";
   var business_user_name = "";
@@ -29,12 +32,21 @@ class _HotspotState extends State<Hotspot> {
   var created_at = "";
   bool isloading = false;
   ScrollController _controller = new ScrollController();
+  TextEditingController mesageTextController = new TextEditingController();
+  TextEditingController businessNameController = new TextEditingController();
+  TextEditingController reviewController = new TextEditingController();
+
 
   List<GetHotSpotClass> getHostSpotList = [];
 
+  List<GetAllBusiness> getAllBusinessList = [];
+
+  String selectedName = "";
+String selectedvalue = "";
   @override
   void initState() {
     getHotspotApi();
+    getallBusinessDataApi();
     super.initState();
   }
 
@@ -57,7 +69,9 @@ class _HotspotState extends State<Hotspot> {
           Padding(
             padding: EdgeInsets.only(right: 4.w),
             child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TestApp()));
+                },
                 child: SvgPicture.asset("assets/icons/message.svg")),
           )
         ],
@@ -79,6 +93,7 @@ class _HotspotState extends State<Hotspot> {
                     borderRadius: BorderRadius.circular(3.w),
                     color: Colors.white),
                 child: TextFormField(
+                  controller: mesageTextController ,
                    onChanged: (value){
                           searchData(value.toString());
                         },
@@ -97,7 +112,20 @@ class _HotspotState extends State<Hotspot> {
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700),
                       suffixIcon:
-                          SearchPrefixIcon(svgIcon: "assets/icons/cross.svg"),
+                          InkWell(
+                            onTap: () {
+                            mesageTextController.clear();
+                            getHostSpotList.clear();
+
+                            getHotspotApi();
+
+
+
+
+                              
+                            },
+
+                            child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")),
                       prefixIcon: Image.asset("assets/images/search.png")),
                 ),
               ),
@@ -119,55 +147,40 @@ class _HotspotState extends State<Hotspot> {
                           child: Column(
                             children: [
                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  CachedNetworkImage(
-                                    imageUrl: getHostSpotList[index]
-                                        .user_image
-                                        .toString(),
-                                    imageBuilder: (context, imageProvider) =>
-                                        Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 6.h, left: 2.w),
-                                      child: CircleAvatar(
-                                        radius: 7.w,
-                                        backgroundImage: NetworkImage(
-                                          getHostSpotList[index]
-                                              .user_image
-                                              .toString(),
-                                        ),
-                                      ),
-                                    ),
-                                    placeholder: (context, url) => Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 6.h, left: 2.w),
-                                      child: CircleAvatar(
+                                  Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: getHostSpotList[index]
+                                          .user_image
+                                          .toString(),
+                                      imageBuilder: (context, imageProvider) =>
+                                          CircleAvatar(
+                                            radius: 7.w,
+                                            backgroundImage: NetworkImage(
+                                              getHostSpotList[index]
+                                                  .user_image
+                                                  .toString(),
+                                            ),
+                                          ),
+                                      placeholder: (context, url) => CircleAvatar(
                                         radius: 7.w,
                                         backgroundImage: AssetImage(
                                             "assets/images/usericon.png"),
                                       ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 6.h, left: 2.w),
-                                      child: CircleAvatar(
-                                        radius: 7.w,
-                                        backgroundImage: AssetImage(
-                                            "assets/images/usericon.png"),
-                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          CircleAvatar(
+                                            radius: 7.w,
+                                            backgroundImage: AssetImage(
+                                                "assets/images/usericon.png"),
+                                          ),
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding:
-                                  //       EdgeInsets.only(bottom: 6.h, left: 2.w),
-                                  //   child: CircleAvatar(
-                                  //     radius: 7.w,
-                                  //     backgroundImage: AssetImage(
-                                  //         "assets/images/usericon.png"),
-                                  //   ),
-                                  // ),
+                               
                                   SizedBox(
-                                    width: 2.w,
+                                    width: 0.9.w,
                                   ),
                                   Container(
                                     child: Column(
@@ -517,7 +530,83 @@ class _HotspotState extends State<Hotspot> {
   }
   }
   
-  
+
+
+    Future<dynamic> addHotspotReviewApi(
+      String message) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    print("business_idPrint: " + selectedId.toString());
+    print("message Print: " + reviewController.text.toString());
+
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.ADDHOTSPOT_URL,
+        ),
+        body: {
+          "user_id": id.toString(),
+          "business_id": selectedId,
+          "message" : reviewController.text
+         
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        setState(() {
+          isloading = false;
+        });
+
+        getHotspotApi();
+        reviewController.clear();
+
+       ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+
+        // getHotspotApi();
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
   
   
   Future<dynamic> replyOnHotspotReviewApi(
@@ -567,6 +656,76 @@ class _HotspotState extends State<Hotspot> {
             SnackBar(content: Text("Your reply added successfully")));
 
         // getHotspotApi();
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try leter")));
+      });
+    }
+  }
+
+    Future<dynamic> getallBusinessDataApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.get(Uri.parse(RestDatasource.GETALLBUSINESS_URL));
+
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          GetAllBusiness modelAgentSearch = new GetAllBusiness();
+          modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
+          modelAgentSearch.business_name = jsonArray[i]["business_name"].toString();
+       
+
+          print("id: " + modelAgentSearch.business_id.toString());
+          print("Bussiness: " + modelAgentSearch.business_name.toString());
+
+          getAllBusinessList.add(modelAgentSearch);
+
+          setState(() {});
+        }
+
+        setState(() {
+          isloading = false;
+        });
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
@@ -670,14 +829,91 @@ class _HotspotState extends State<Hotspot> {
 
   TextFormField buildMessageFormField() {
     return TextFormField(
-      // controller: emailController,
+       controller: reviewController,
+      onChanged: (val) {
+        selectedvalue = val.toString();
+        if(val.toString().substring(val.toString().length-1)=="@"){
+         print("Hello: "+getAllBusinessList.length.toString());
+
+        //  _showOverlay(context);
+                        SelectDialog.showModal<GetAllBusiness>(
+                          
+                          
+                         
+                          context,
+                          label: "Please select a business",
+                         
+                        
+                          items: getAllBusinessList,
+                          showSearchBox: true,
+              
+                          itemBuilder: (BuildContext context,
+                              GetAllBusiness item, bool isSelected) {
+                            return Container(
+
+                              
+                              decoration: !isSelected
+                                  ? null
+                                  : BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                              child: InkWell(
+                                onTap: () {
+                                  print("lendth: "+getAllBusinessList.length.toString());
+                                  selectedId = item.business_id;
+
+                                  print("id selected" + selectedId.toString());
+
+                                    selectedName= item.business_name.toString();
+                                    reviewController. text = selectedvalue+selectedName;
+
+                                    
+
+                                    //   serviceController.text = "";
+                                   
+
+                                    // isLoading = true;
+                                    //  personalInfoPresenter.getSubCat(catId.toString());
+                                    Navigator.of(context, rootNavigator: true).pop();
+                                    reviewController.selection = TextSelection.fromPosition(TextPosition(offset: reviewController.text.length));
+                                
+                                },
+                                child: ListTile(
+                                  leading: item.business_name == "null"
+                                      ? null
+                                      : Text(
+                                          item.business_name.toString(),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+
+                                
+                                  selected: isSelected,
+                                ),
+                              ),
+                            );
+                          },
+                         
+                        );
+        }
+    
+      },
 
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
 
-      //inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+     
       decoration: InputDecoration(
-        suffixIcon: Icon(Icons.send, size: 9.w, color: Colors.white),
+        suffixIcon: InkWell(
+          onTap: () {
+            addHotspotReviewApi(reviewController.text.toString());
+          },
+          child: Icon(Icons.send, size: 9.w, color: Colors.white)),
         fillColor: kPrimaryColor, filled: true,
         //filled: true,
 
@@ -698,6 +934,93 @@ class _HotspotState extends State<Hotspot> {
       ),
     );
   }
+
+
+   void _showOverlay(BuildContext context) async {
+      
+    // Declaring and Initializing OverlayState
+    // and OverlayEntry objects
+    OverlayState? overlayState = Overlay.of(context);
+    OverlayEntry overlayEntry;
+    overlayEntry = OverlayEntry(builder: (context) {
+        
+      // You can return any widget you like here
+      // to be displayed on the Overlay
+      return Positioned(
+        left: MediaQuery.of(context).size.width * 0.2,
+        top: MediaQuery.of(context).size.height * 0.3,
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Stack(
+            children: [
+               Container(
+          margin: EdgeInsets.symmetric(horizontal: 4.w),
+          color: Colors.white,
+          height: 25.h,
+          width: double.infinity,
+          child: ListView.builder(
+            controller: _controller,
+            shrinkWrap: true,
+            itemCount: getAllBusinessList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+
+                 // overlayEntry.remove();
+
+                },
+                child: Text(getAllBusinessList[index].business_name.toString(),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 11.sp,
+                  
+                ),
+                ),
+              );
+            },
+          ),
+        ),
+             
+              // Positioned(
+              //   top: MediaQuery.of(context).size.height * 0.13,
+              //   left: MediaQuery.of(context).size.width * 0.13,
+              //   child: Row(
+              //     children: [
+              //       Material(
+              //         color: Colors.transparent,
+              //         child: Text(
+              //           'This is a button!',
+              //           style: TextStyle(
+              //               fontSize: MediaQuery.of(context).size.height * 0.03,
+              //               color: Colors.green),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         width: MediaQuery.of(context).size.width * 0.18,
+              //       ),
+              //       GestureDetector(
+              //         onTap: () {
+                          
+              //           // When the icon is pressed the OverlayEntry
+              //           // is removed from Overlay
+              //          // overlayEntry.remove();
+              //         },
+              //         child: Icon(Icons.close,
+              //             color: Colors.green,
+              //             size: MediaQuery.of(context).size.height * 0.025),
+              //       )
+              //     ],
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+      );
+    });
+  
+    // Inserting the OverlayEntry into the Overlay
+    overlayState!.insert(overlayEntry);
+  }
 }
 
 class GetHotSpotClass {
@@ -710,6 +1033,11 @@ class GetHotSpotClass {
   var message = "";
   var created_at = "";
   var messageText = "";
+}
+
+class GetAllBusiness {
+  var business_id = "";
+  var business_name = "";
 }
 
 class SearchSurffixIcon extends StatelessWidget {

@@ -28,6 +28,11 @@ class _OtpScreenState extends State<OtpScreen> {
   TextEditingController fourth = new TextEditingController();
   bool isloading = false;
 
+  var tap = 0;
+  var tap1 = 0;
+  var tap2 = 0;
+  var tap3 = 0;
+
   late FocusNode pin1FocusNode;
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
@@ -109,6 +114,7 @@ class _OtpScreenState extends State<OtpScreen> {
               textAlign: TextAlign.center,
               decoration: otpInputDecoration,
               onChanged: (value) {
+
                 nextField(value, pin2FocusNode);
                 //previousField(value, pin2FocusNode);
               },
@@ -126,8 +132,22 @@ class _OtpScreenState extends State<OtpScreen> {
                 textAlign: TextAlign.center,
                 decoration: otpInputDecoration,
                 onChanged: (value) {
-                  nextField(value, pin3FocusNode);
-                  previousField(value, pin2FocusNode);
+                 // nextField(value, pin3FocusNode);
+
+                   if (value.toString().length == 0 && tap2 == 0) {
+                     print("Print1");
+
+                          tap2 = 1;
+                        }
+                        if (value.toString().length > 0) {
+                           print("Print2");
+                          FocusScope.of(context).requestFocus(pin3FocusNode);
+                        }
+                        if (value.toString().length == 0 && tap2 == 1) {
+                           print("Print3");
+                          FocusScope.of(context).requestFocus(pin1FocusNode);
+                        }
+                  
                 }),
           ),
           SizedBox(
@@ -142,8 +162,17 @@ class _OtpScreenState extends State<OtpScreen> {
                 textAlign: TextAlign.center,
                 decoration: otpInputDecoration,
                 onChanged: (value) {
-                  nextField(value, pin4FocusNode);
-                  previousField(value, pin3FocusNode);
+                  //nextField(value, pin4FocusNode);
+                   if (value.toString().length == 0 && tap3 == 0) {
+                          tap3 = 1;
+                        }
+                        if (value.toString().length > 0) {
+                          FocusScope.of(context).requestFocus(pin4FocusNode);
+                        }
+                        if (value.toString().length == 0 && tap3 == 1) {
+                          FocusScope.of(context).requestFocus(pin2FocusNode);
+                        }
+                  
                 }),
           ),
           SizedBox(
@@ -158,10 +187,20 @@ class _OtpScreenState extends State<OtpScreen> {
               textAlign: TextAlign.center,
               decoration: otpInputDecoration,
               onChanged: (value) {
-                if (value.length == 1) {
-                  pin4FocusNode.unfocus();
+                // if (value.length == 1) {
+                //   pin4FocusNode.unfocus();
+
+                     if (value.toString().length == 0 && tap3 == 0) {
+                          tap3 = 1;
+                        }
+                        if (value.toString().length > 0) {
+                          FocusScope.of(context).unfocus();
+                        }
+                        if (value.toString().length == 0 && tap3 == 1) {
+                          FocusScope.of(context).requestFocus(pin3FocusNode);
+                        }
                   // Then you need to check is the code is correct or not
-                }
+                // }
               },
             ),
           ),
@@ -246,10 +285,16 @@ class _OtpScreenState extends State<OtpScreen> {
     });
     if (res!.statusCode == 200) {
       if (jsonRes["status"] == true) {
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('id', jsonRes["data"]["id"].toString());
-        // prefs.setString('email', jsonRes["data"]["email"].toString());
-        // prefs.commit();
+
+        first.clear();
+        second.clear();
+        third.clear();
+        fourth.clear();
+
+
+
+
+    
 
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));

@@ -26,6 +26,12 @@ class RestDatasource {
   static final REPLYONHOTSPOTREPLY_URL = BASE_URL + "replies_community_reviews";
   static final LIKECOMMUNITYREVIEW_URL = BASE_URL + "Businesslikedislike";
   static final SEARCHDATA_URL = BASE_URL + "Businesssearch";
+  static final GETREVIEW_URL = BASE_URL + "getreviewbyuserid";
+  static final GETALLBUSINESS_URL = BASE_URL + "getAllbusiness";
+  static final ADDREPORT_URL = BASE_URL + "addBuinessReports";
+  static final ADDHOTSPOT_URL = BASE_URL + "add_hotspots";
+  static final REVIEWDELETE_URL = BASE_URL + "deletereview";
+  static final EDITREVIEW_URL = BASE_URL + "editReview";
 
    
 

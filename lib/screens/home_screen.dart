@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
@@ -173,7 +173,7 @@ late Future gethomedata;
   }
 
 
-  static String videoID = 'mEZ74WnXGzw';
+  static String videoID = '2iHoeHVmw0Q';
 
   // YouTube Video Full URL : https://www.youtube.com/watch?v=dFKhWe2bBkM&feature=emb_title&ab_channel=BBKiVines
 
@@ -216,8 +216,8 @@ late Future gethomedata;
     
                   Text(
                     "WE MARK THE SPOT",
-                    style: TextStyle(
-                        fontSize: 18.sp, color: Colors.white, fontFamily: "Roboto"),
+                    style: GoogleFonts.gothicA1(
+                        fontSize: 18.sp, color: Colors.white, ),
                   )
                 ],
               ),
