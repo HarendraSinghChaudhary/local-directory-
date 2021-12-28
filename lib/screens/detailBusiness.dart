@@ -22,6 +22,7 @@ import 'package:path/path.dart' as path;
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wemarkthespot/screens/testing.dart';
+import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class DetailBussiness extends StatefulWidget {
@@ -66,18 +67,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
      print("vi: "+videoLink.toString());
 
 
-    _controllerr = VideoPlayerController.network(
-      //videoLink.toString()
-       'https://builtenance.com/development/wemarkthespot/public/images/a6c4435d106e22b3e28bffb426d3814b.mp4'
-
-
-        
-        )
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-       
-      });
 
     super.initState();
   }
@@ -532,6 +521,28 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   controller: scrollController,
                   itemCount: communityReviewList.length,
                   itemBuilder: (BuildContext context, int index) {
+                   // 'https://builtenance.com/development/wemarkthespot/public/images/a6c4435d106e22b3e28bffb426d3814b.mp4'
+                /*    if(communityReviewList[index]
+                        .image_video_status
+                        .toString() ==
+                        "2") {
+                      print("image At List "+communityReviewList[index]
+                          .business_review_image
+                          .toString());
+                      _controllerr = VideoPlayerController.network(
+                        //videoLink.toString()
+                          communityReviewList[index].business_review_image.toString()
+
+
+                      )
+                        ..initialize().then((_) {
+                          setState(() {
+
+                          });
+                          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+
+                        });
+                    }*/
                     TextEditingController messageTextController =
                         new TextEditingController();
                     return Column(
@@ -654,48 +665,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           "2"
                                       ? true
                                       : false,
-                                  child: Stack(
-                                    children: [
-                                      Center(
-                                        child: Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 0.w),
-                                          height: 25.h,
-                                          width: double.infinity,
-                                          child: _controllerr.value.isInitialized
-                                              ? AspectRatio(
-                                                  aspectRatio: _controllerr
-                                                      .value.aspectRatio,
-                                                  child:
-                                                      VideoPlayer(_controllerr),
-                                                )
-                                              : Container(),
-
-                                              
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 10.h,
-                                        left: 41.w,
-                                        child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              _controllerr.value.isPlaying
-                                                  ? _controllerr.pause()
-                                                  : _controllerr.play();
-                                            });
-                                          },
-                                          child: Icon(
-                                            _controllerr.value.isPlaying
-                                                ? Icons.pause
-                                                : Icons.play_arrow,
-                                            size: 40,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  child: SizedBox(
+                                      height:200,
+                                      child: VideoWidget(url: communityReviewList[index].business_review_image, play: true,))
                                 ),
 
                                 Visibility(
@@ -1278,6 +1250,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
+    print("buisness Id: " + widget.nearBy.id.toString());
     setState(() {
       isloading = false;
     });

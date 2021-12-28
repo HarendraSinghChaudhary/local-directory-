@@ -26,6 +26,7 @@ class _VideoAppState extends State<VideoApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Video Demo',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Stack(
           children: [
