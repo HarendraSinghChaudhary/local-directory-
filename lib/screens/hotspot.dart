@@ -142,7 +142,7 @@ String selectedvalue = "";
                   return Column(
                     children: [
                       Card(
-                          margin: EdgeInsets.symmetric(horizontal: 4.w),
+                          margin: EdgeInsets.symmetric(horizontal: 2.w),
                           color: kBackgroundColor,
                           child: Column(
                             children: [
@@ -603,7 +603,7 @@ String selectedvalue = "";
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -654,15 +654,6 @@ String selectedvalue = "";
 
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Your reply added successfully")));
-
-        // getHotspotApi();
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
 
       } else {
         setState(() {

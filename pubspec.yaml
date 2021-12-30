@@ -53,7 +53,7 @@ dependencies:
   select_dialog: ^2.0.0
   video_player: ^2.2.10
   chewie: ^1.2.2
- 
+  pull_to_refresh: ^2.0.0
 
   
   
@@ -61,9 +61,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_native_splash: ^1.1.8+4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_native_splash:
+  background_image: assets/images/bg.png
+  android: true
+  ios: true
 
 # The following section is specific to Flutter.
 flutter:

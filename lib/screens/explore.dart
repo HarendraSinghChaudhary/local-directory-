@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
@@ -38,8 +39,10 @@ class _ExploreState extends State<Explore> {
   var category_name = "";
   var lat = "";
   var long = "";
-
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: true);
   List<NearBy> nearByRestaurantList = [];
+  bool isRefresh = false;
 
   @override
   void initState() {
@@ -82,7 +85,15 @@ class _ExploreState extends State<Explore> {
           ),
         ),
       ),
-      body: isloading
+      body: SmartRefresher(
+    enablePullDown: true,
+    enablePullUp: false,
+    controller: _refreshController,
+    onRefresh: _onRefresh,
+    onLoading: (){
+    _refreshController.loadNoData();
+    },
+    child:isloading
           ? Align(
               alignment: Alignment.center,
               child: Platform.isAndroid
@@ -406,8 +417,16 @@ class _ExploreState extends State<Explore> {
                 )
               ],
             ),
+      ),
     );
   }
+
+
+  void _onRefresh() async{
+    isRefresh = true;
+    nearBy();
+  }
+
 
   Future<dynamic> businessFavApi(String business_id, String fav, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -513,7 +532,7 @@ class _ExploreState extends State<Explore> {
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
-
+      nearByRestaurantList.clear();
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
@@ -537,6 +556,7 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.countUserreview = jsonArray[i]["totalReviewusers"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
           print("ratting: " + modelAgentSearch.avgratting.toString());
@@ -590,6 +610,7 @@ class NearBy {
   var lat = "";
   var long = "";
   var avgratting = "";
+  var countUserreview = "";
 }
 
 class CustomSliderWidget extends StatefulWidget {

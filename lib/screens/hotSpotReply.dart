@@ -143,9 +143,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                           child: Text(
                                             //"2m ago",
                                             getReplyOnHotspotList[index]
-                                                .created_at
-                                                .toString()
-                                                .substring(0, 10),
+                                                .timedelay
+                                                .toString(),
                                             style: TextStyle(
                                               fontSize: 8.sp,
                                               color: kPrimaryColor,
@@ -479,7 +478,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
       getReplyOnHotspotList.clear();
-
+      final date2 = DateTime.now();
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           GETREPLYONHOTSPOT modelAgentSearch = new GETREPLYONHOTSPOT();
@@ -489,7 +488,21 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
+          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+          modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+          if(difference>60){
+            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+            modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
 
+            if(difference>60){
+              var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+              modelAgentSearch.timedelay = difference.toString()+" hours ago";
+
+              if(difference > 24){
+                modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+              }
+            }
+          }
           jsonErray = jsonRes['data'][i]['user'];
           UserData modelcheckIn = new UserData();
 
@@ -514,7 +527,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                 childModelOne.review_id =
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
+                var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inSeconds;
+                childModelOne.timedelay = difference.toString()+" seconds ago";
+                if(difference>60){
+                  var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inMinutes;
+                  childModelOne.timedelay = difference.toString()+ " minutes ago";
 
+                  if(difference>60){
+                    var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inHours;
+                    childModelOne.timedelay = difference.toString()+" hours ago";
+                    if(difference > 24){
+                      childModelOne.timedelay = childModelOne.created_at.toString().substring(0,10);
+                    }
+                  }
+                }
                 childrenOne = childDataOne[j]['user'];
                 UserData childrenDataOneModel = UserData();
                 childrenDataOneModel.id = childrenOne['id'].toString();
@@ -541,7 +567,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           childDataTwo[k]["message"].toString();
 
                       childrenUserDataTwo = childDataTwo[k]['user'];
+                      var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inSeconds;
+                      childrenModelTwo.timedelay = difference.toString()+" seconds ago";
+                      if(difference>60){
+                        var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inMinutes;
+                        childrenModelTwo.timedelay = difference.toString()+ " minutes ago";
 
+                        if(difference>60){
+                          var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inHours;
+                          childrenModelTwo.timedelay = difference.toString()+" hours ago";
+                          if(difference > 24){
+                            childrenModelTwo.timedelay = childrenModelTwo.created_at.toString().substring(0,10);
+                          }
+                        }
+                      }
                       UserData childrenDataTwoModel = UserData();
                       childrenDataTwoModel.id =
                           childrenUserDataTwo['id'].toString();
@@ -575,7 +614,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 childDataThree[l]["review_id"].toString();
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
+                            var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inSeconds;
+                            childrenModelThree.timedelay = difference.toString()+" seconds ago";
+                            if(difference>60){
+                              var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inMinutes;
+                              childrenModelThree.timedelay = difference.toString()+ " minutes ago";
 
+                              if(difference>60){
+                                var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inHours;
+                                childrenModelThree.timedelay = difference.toString()+" hours ago";
+                                if(difference > 24){
+                                  childrenModelThree.timedelay = childrenModelThree.created_at.toString().substring(0,10);
+                                }
+                              }
+                            }
                             childrenUserDataThree = childDataThree[l]['user'];
 
                             UserData childrenDataThreeModel = UserData();
@@ -722,9 +774,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
         
                                     getReplyOnHotspotList[i]
                                         .childrenList[index]
-                                        .created_at
-                                        .toString()
-                                        .substring(0, 10),
+                                        .timedelay
+                                        .toString(),
                                     style: TextStyle(
                                       fontSize: 8.sp,
                                       color: kPrimaryColor,
@@ -861,9 +912,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                 getReplyOnHotspotList[i]
                                                     .childrenList[index]
                                                     .childrenList[k]
-                                                    .created_at
-                                                    .toString()
-                                                    .substring(0, 10),
+                                                    .timedelay
+                                                    .toString(),
                                                 style: TextStyle(
                                                   fontSize: 8.sp,
                                                   color: kPrimaryColor,
@@ -1015,9 +1065,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                               .childrenList[index]
                                                               .childrenList[k]
                                                               .childrenList[j]
-                                                              .created_at
-                                                              .toString()
-                                                              .substring(0, 10),
+                                                              .timedelay
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontSize: 8.sp,
                                                             color: kPrimaryColor,
@@ -1085,7 +1134,7 @@ class GETREPLYONHOTSPOT {
   var review_id = "";
   var message = "";
   bool viewV = false;
-
+  var timedelay = "Secconds";
   List<GETREPLYONHOTSPOT> childrenList = [];
   List<GETREPLYONHOTSPOT> childrenSubList = [];
 }

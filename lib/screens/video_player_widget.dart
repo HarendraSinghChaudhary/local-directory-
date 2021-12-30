@@ -48,6 +48,7 @@ class _VideoWidgetState extends State<VideoWidget> {
       if (snapshot.connectionState == ConnectionState.done) {
         return MaterialApp(
           title: 'Video Demo',
+          debugShowCheckedModeBanner: false,
           home: Stack(
             children: [
               Center(

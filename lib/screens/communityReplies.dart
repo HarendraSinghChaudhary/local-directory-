@@ -71,193 +71,191 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                 return Column(
                   children: [
                     Card(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        margin: EdgeInsets.symmetric(horizontal: 2.w),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.w)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(6.0),
-                              child: CachedNetworkImage(
-                                imageUrl: getReplyOnCommunityList[index]
-                                    .userProfile!
-                                    .image
-                                    .toString(),
-                                imageBuilder: (context, imageProvider) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage: NetworkImage(
-                                      getReplyOnCommunityList[index]
-                                          .userProfile!
-                                          .image
-                                          .toString()),
-                                ),
-                                placeholder: (context, url) => CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.9.w,
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          //"Person Name",
-                                          getReplyOnCommunityList[index]
-                                                      .userProfile!
-                                                      .name
-                                                      .toString() !=
-                                                  "null"
-                                              ? getReplyOnCommunityList[index]
-                                                  .userProfile!
-                                                  .name
-                                                  .toString()
-                                              : "User Name",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 11.sp,
-                                              color: kCyanColor,
-                                              fontFamily: "Segoepr"),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 3.w),
-                                          child: Text(
-                                            //"2m ago",
-                                            getReplyOnCommunityList[index]
-                                                .created_at
-                                                .toString()
-                                                .substring(0, 10),
-                                            style: TextStyle(
-                                              fontSize: 8.sp,
-                                              color: kPrimaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 0.1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                      //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
-
-                                      getReplyOnCommunityList[index]
-                                                  .message
-                                                  .toString() !=
-                                              "null"
-                                          ? getReplyOnCommunityList[index]
-                                              .message
-                                              .toString()
-                                          : "",
-                                      style: TextStyle(
-                                          //overflow: TextOverflow.ellipsis,
-                                          fontSize: 10.2.sp,
-                                          color: Colors.black,
-                                          fontFamily: 'Roboto'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(6.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: getReplyOnCommunityList[index]
+                                      .userProfile!
+                                      .image
+                                      .toString(),
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage: NetworkImage(
                                         getReplyOnCommunityList[index]
-                                
-                                    .viewV
-                                            ? InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    getReplyOnCommunityList[index]
-                                
-                                    .viewV = false;
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "Hide Replies",
-                                                  style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Roboto"),
-                                                ),
-                                              )
-                                            : InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                   getReplyOnCommunityList[index]
-                                
-                                    .viewV = true;
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "View Replies",
-                                                  style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Roboto"),
-                                                ),
-                                              ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 4.w),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                viewVisible = true;
-                                                tabOne =
-                                                    getReplyOnCommunityList[
-                                                            index]
-                                                        .id
-                                                        .toString();
-                                              });
-                                            },
-                                            child: Text(
-                                              "Reply",
+                                            .userProfile!
+                                            .image
+                                            .toString()),
+                                  ),
+                                  placeholder: (context, url) => CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage:
+                                        AssetImage("assets/images/usericon.png"),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage:
+                                        AssetImage("assets/images/usericon.png"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 0.9.w,
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 74.w,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            //"Person Name",
+                                            getReplyOnCommunityList[index]
+                                                        .userProfile!
+                                                        .name
+                                                        .toString() !=
+                                                    "null"
+                                                ? getReplyOnCommunityList[index]
+                                                    .userProfile!
+                                                    .name
+                                                    .toString()
+                                                : "User Name",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: kCyanColor,
+                                                fontFamily: "Segoepr"),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 3.w),
+                                            child: Text(getReplyOnCommunityList[index].timedelay.toString(),
                                               style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: kPrimaryColor,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Roboto"),
+                                                fontSize: 10,
+                                                color: kPrimaryColor,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 3.h,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                                    SizedBox(
+                                      height: 0.1.h,
+                                    ),
+                                    Container(
+                                      width: 74.w,
+                                      child: Text(
+                                        //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+
+                                        getReplyOnCommunityList[index]
+                                                    .message
+                                                    .toString() !=
+                                                "null"
+                                            ? getReplyOnCommunityList[index]
+                                                .message
+                                                .toString()
+                                            : "",
+                                        style: TextStyle(
+                                            //overflow: TextOverflow.ellipsis,
+                                            fontSize: 10.2.sp,
+                                            color: Colors.black,
+                                            fontFamily: 'Roboto'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    Container(
+                                      width: 74.w,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          getReplyOnCommunityList[index]
+
+                                      .viewV
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      getReplyOnCommunityList[index]
+
+                                      .viewV = false;
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Hide Replies",
+                                                    style: TextStyle(
+                                                        fontSize: 11.sp,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily: "Roboto"),
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                     getReplyOnCommunityList[index]
+
+                                      .viewV = true;
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "View Replies",
+                                                    style: TextStyle(
+                                                        fontSize: 11.sp,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily: "Roboto"),
+                                                  ),
+                                                ),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 4.w),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  viewVisible = true;
+                                                  tabOne =
+                                                      getReplyOnCommunityList[
+                                                              index]
+                                                          .id
+                                                          .toString();
+                                                });
+                                              },
+                                              child: Text(
+                                                "Reply",
+                                                style: TextStyle(
+                                                    fontSize: 11.sp,
+                                                    color: kPrimaryColor,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: "Roboto"),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 3.h,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         )),
                     SizedBox(
                       height: 1.h,
@@ -394,15 +392,32 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       print(jsonRes["status"]);
       getReplyOnCommunityList.clear();
       if (jsonRes["status"].toString() == "true") {
+        final date2 = DateTime.now();
         for (var i = 0; i < jsonArray.length; i++) {
+
           GETREPLYONCOMMUNITY modelAgentSearch = new GETREPLYONCOMMUNITY();
 
           // NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
+          //modelAgentSearch.hour = jsonArray[i]["hour"];
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
+          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+          modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+          if(difference>60){
+            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+            modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
 
+            if(difference>60){
+              var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+              modelAgentSearch.timedelay = difference.toString()+" hours ago";
+              if(difference > 24){
+                modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+              }
+            }
+          }
+          print("difference is "+modelAgentSearch.timedelay.toString());
           jsonErray = jsonRes['data'][i]['user'];
           UserData modelcheckIn = new UserData();
 
@@ -421,13 +436,27 @@ class _CommunityRepliesState extends State<CommunityReplies> {
               for (var j = 0; j < childDataOne.length; j++) {
                 GETREPLYONCOMMUNITY childModelOne = GETREPLYONCOMMUNITY();
 
+
                 childModelOne.id = childDataOne[j]["id"].toString();
                 childModelOne.created_at =
                     childDataOne[j]["created_at"].toString();
                 childModelOne.review_id =
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
+                var difference = date2.difference(DateTime.parse(childDataOne[j]["created_at"])).inSeconds;
+                childModelOne.timedelay = difference.toString()+" seconds ago";
+                if(difference>60){
+                  var difference = date2.difference(DateTime.parse(childDataOne[j]["created_at"])).inMinutes;
+                  childModelOne.timedelay = difference.toString()+ " minutes ago";
 
+                  if(difference>60){
+                    var difference = date2.difference(DateTime.parse(childDataOne[j]["created_at"])).inHours;
+                    childModelOne.timedelay = difference.toString()+" hours ago";
+                    if(difference > 24){
+                      childModelOne.timedelay = childModelOne.created_at.toString().substring(0,10);
+                    }
+                  }
+                }
                 childrenOne = childDataOne[j]['user'];
                 UserData childrenDataOneModel = UserData();
                 childrenDataOneModel.id = childrenOne['id'].toString();
@@ -443,9 +472,12 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
                 if (childDataOne[j]['children'] != null) {
                   if (childDataTwo.length > 0) {
+
                     for (var k = 0; k < childDataTwo.length; k++) {
                       GETREPLYONCOMMUNITY childrenModelTwo =
-                          GETREPLYONCOMMUNITY();
+                      GETREPLYONCOMMUNITY();
+
+
                       childrenModelTwo.id = childDataTwo[k]["id"].toString();
                       childrenModelTwo.created_at =
                           childDataTwo[k]["created_at"].toString();
@@ -453,7 +485,20 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                           childDataTwo[k]["review_id"].toString();
                       childrenModelTwo.message =
                           childDataTwo[k]["message"].toString();
+                      var difference = date2.difference(DateTime.parse(childDataTwo[k]["created_at"])).inSeconds;
+                      childrenModelTwo.timedelay = difference.toString()+" seconds ago";
+                      if(difference>60){
+                        var difference = date2.difference(DateTime.parse(childDataTwo[k]["created_at"])).inMinutes;
+                        childrenModelTwo.timedelay = difference.toString()+ " minutes ago";
 
+                        if(difference>60){
+                          var difference = date2.difference(DateTime.parse(childDataTwo[k]["created_at"])).inHours;
+                          childrenModelTwo.timedelay = difference.toString()+" hours ago";
+                          if(difference > 24){
+                            childrenModelTwo.timedelay = childrenModelTwo.created_at.toString().substring(0,10);
+                          }
+                        }
+                      }
                       childrenUserDataTwo = childDataTwo[k]['user'];
 
                       UserData childrenDataTwoModel = UserData();
@@ -481,6 +526,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             GETREPLYONCOMMUNITY childrenModelThree =
                                 GETREPLYONCOMMUNITY();
 
+
                             childrenModelThree.id =
                                 childDataThree[l]["id"].toString();
                             childrenModelThree.created_at =
@@ -489,7 +535,20 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 childDataThree[l]["review_id"].toString();
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
+                            var difference = date2.difference(DateTime.parse(childDataThree[l]["created_at"])).inSeconds;
+                            childrenModelThree.timedelay = difference.toString()+" seconds ago";
+                            if(difference>60){
+                              var difference = date2.difference(DateTime.parse(childDataThree[l]["created_at"])).inMinutes;
+                              childrenModelThree.timedelay = difference.toString()+ " minutes ago";
 
+                              if(difference>60){
+                                var difference = date2.difference(DateTime.parse(childDataThree[l]["created_at"])).inHours;
+                                childrenModelThree.timedelay = difference.toString()+" hours ago";
+                                if(difference > 24){
+                                  childrenModelThree.timedelay = childrenModelThree.created_at.toString().substring(0,10);
+                                }
+                              }
+                            }
                             childrenUserDataThree = childDataThree[l]['user'];
 
                             UserData childrenDataThreeModel = UserData();
@@ -661,14 +720,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 children: [
                                   Text(
                                     // "2m ago",
-
-                                    getReplyOnCommunityList[i]
-                                        .childrenList[index]
-                                        .created_at
-                                        .toString()
-                                        .substring(0, 10),
+                                    getReplyOnCommunityList[i].childrenList[index].timedelay.toString(),
                                     style: TextStyle(
-                                      fontSize: 8.sp,
+                                      fontSize: 10,
                                       color: kPrimaryColor,
                                     ),
                                   ),
@@ -800,12 +854,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                             children: [
                                               Text(
                                                 //"2m ago",
-                                                getReplyOnCommunityList[i]
-                                                    .childrenList[index]
-                                                    .childrenList[k]
-                                                    .created_at
-                                                    .toString()
-                                                    .substring(0, 10),
+                                                getReplyOnCommunityList[i].childrenList[index].childrenList[k].timedelay.toString(),
                                                 style: TextStyle(
                                                   fontSize: 8.sp,
                                                   color: kPrimaryColor,
@@ -966,9 +1015,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                                   index]
                                                               .childrenList[k]
                                                               .childrenList[j]
-                                                              .created_at
-                                                              .toString()
-                                                              .substring(0, 10),
+                                                              .timedelay
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontSize: 8.sp,
                                                             color:
@@ -1100,6 +1148,8 @@ class GETREPLYONCOMMUNITY {
   var created_at = "";
   var review_id = "";
   var message = "";
+  var hour;
+  var timedelay = "Secconds";
    bool viewV = false;
   List<GETREPLYONCOMMUNITY> childrenList = [];
   List<GETREPLYONCOMMUNITY> childrenSubList = [];

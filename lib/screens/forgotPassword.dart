@@ -133,13 +133,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));
 
-        Navigator.pushAndRemoveUntil(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => OtpScreen(
                       email: email.toString(),
-                    )),
-            (route) => false);
+                    )));
 
         setState(() {
           isloading = false;

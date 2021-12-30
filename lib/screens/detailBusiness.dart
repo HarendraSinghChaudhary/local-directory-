@@ -97,7 +97,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   bool isloading = false;
   final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
-
+  var image_video_status = "0";
   @override
   Widget build(BuildContext context) {
     print("business id: " + widget.nearBy.id.toString());
@@ -227,8 +227,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             Row(
                               children: [
                                 Text(
-                                  widget.nearBy.review_count.toString() +
-                                      " Reviews ",
+                                  communityReviewList!=null && communityReviewList.length>0? communityReviewList.length.toString()+
+                                      " Reviews " : "0 Reviews",
                                   style: TextStyle(
                                       fontSize: 10.sp,
                                       color: kPrimaryColor,
@@ -468,17 +468,19 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   DraggableScrollableSheet _buildDraggableScrollableSheet() {
     return DraggableScrollableSheet(
-      initialChildSize: 0.1,
+      initialChildSize: 0.12,
       minChildSize: 0.1,
       maxChildSize: 0.95,
+
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
+          margin: EdgeInsets.all(0.0),
           decoration: const BoxDecoration(
             color: kCyanColor,
             // border: Border.all(color: Colors.blue, width: 2),
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
             ),
           ),
           child: Scrollbar(
@@ -521,28 +523,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   controller: scrollController,
                   itemCount: communityReviewList.length,
                   itemBuilder: (BuildContext context, int index) {
-                   // 'https://builtenance.com/development/wemarkthespot/public/images/a6c4435d106e22b3e28bffb426d3814b.mp4'
-                /*    if(communityReviewList[index]
-                        .image_video_status
-                        .toString() ==
-                        "2") {
-                      print("image At List "+communityReviewList[index]
-                          .business_review_image
-                          .toString());
-                      _controllerr = VideoPlayerController.network(
-                        //videoLink.toString()
-                          communityReviewList[index].business_review_image.toString()
-
-
-                      )
-                        ..initialize().then((_) {
-                          setState(() {
-
-                          });
-                          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-
-                        });
-                    }*/
                     TextEditingController messageTextController =
                         new TextEditingController();
                     return Column(
@@ -1714,6 +1694,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     InkWell(
                                       onTap: () {
                                         getCheckInImage();
+                                        image_video_status = "1";
                                       },
                                       child: file == null
                                           ? Container(
@@ -1739,6 +1720,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                     InkWell(
                                         onTap: () async {
+                                          image_video_status = "2";
                                           FilePickerResult? result =
                                               await FilePicker.platform
                                                   .pickFiles(
@@ -2162,6 +2144,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = widget.nearBy.id.toString();
     request.fields["user_id"] = id.toString();
+    request.fields["image_video_status"] = image_video_status.toString();
 
     if (file != null) {
       request.files.add(await http.MultipartFile.fromPath("image", file!.path));
@@ -2199,6 +2182,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       } else {
         setState(() {
           isloading = false;
+          Navigator.of(context, rootNavigator: true).pop();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
@@ -2206,6 +2190,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     } else {
       setState(() {
         isloading = false;
+        Navigator.of(context, rootNavigator: true).pop();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));
       });

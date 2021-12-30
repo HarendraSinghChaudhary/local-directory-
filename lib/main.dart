@@ -28,6 +28,7 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
   void initState() {
     super.initState();
     getUserList();
+    //getDiff();
   }
 
 
@@ -86,6 +87,15 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
     print("image: " + image.toString());
 
     setState(() {});
+  }
+
+  void getDiff() {
+    final birthday = DateTime(2021, 12, 29);
+    final date2 = DateTime.now();
+    final difference = date2.difference(birthday).inHours;
+    print("time1 "+birthday.toString());
+    print("time2 "+date2.toString());
+    print("time3 "+difference.toString());
   }
 
 

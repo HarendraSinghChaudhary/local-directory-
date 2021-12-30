@@ -366,13 +366,12 @@ class _OtpScreenState extends State<OtpScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(msg)));
 
-        Navigator.pushAndRemoveUntil(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => ResetPassword(
                       email: widget.email.toString(),
-                    )),
-            (route) => false);
+                    )),);
 
         setState(() {
           isloading = false;
