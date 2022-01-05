@@ -436,8 +436,7 @@ class _EditProfileState extends State<EditProfile> {
 
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Account()));
+        Navigator.of(context).pop();
       } else {
         setState(() {
           isloading = false;

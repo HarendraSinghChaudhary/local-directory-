@@ -17,6 +17,7 @@ import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/main.dart';
 import 'package:wemarkthespot/models/community_review_api_model.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
 import 'package:path/path.dart' as path;
@@ -38,6 +39,7 @@ class DetailBussiness extends StatefulWidget {
 
 class _DetailBussinessState extends State<DetailBussiness> {
   var ivStatus = "";
+
   // String fire = "Fire";
   // String okOk = "OkOk";
   // String notCool = "Not Cool";
@@ -77,8 +79,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     _controller.dispose();
   }
 
-  String ratting = "";
-  String rattingcheckin = "";
+  double ratting = 0;
+  double rattingcheckin = 0;
 
   TextEditingController reviewController = new TextEditingController();
   TextEditingController reviewController2 = new TextEditingController();
@@ -88,26 +90,25 @@ class _DetailBussinessState extends State<DetailBussiness> {
   String image = "";
   String base64Image = "";
   String fileName = "";
+  String trimFileName = "";
   File? file;
+  File? trimFile;
   bool isLoading = false;
   final picker = ImagePicker();
   bool isVisible = false;
+
   //get kPrimaryColor => null;
 
   bool isloading = false;
   final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
   var image_video_status = "0";
+
   @override
   Widget build(BuildContext context) {
     print("business id: " + widget.nearBy.id.toString());
     return Scaffold(
-      body: 
-
-      
-      
-      
-      Stack(
+      body: Stack(
         children: <Widget>[
           SizedBox.expand(
               child: SafeArea(
@@ -408,6 +409,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     children: [
                       InkWell(
                         onTap: () {
+                          ivStatus = "";
+                          fileName = "";
+                          file = null;
+
                           customDialog();
                         },
                         child: Container(
@@ -433,6 +438,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       ),
                       InkWell(
                         onTap: () {
+                          ivStatus = "";
+                          fileName = "";
+                          file = null;
+
                           checkInDialog();
                         },
                         child: Container(
@@ -522,7 +531,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 controller: scrollController,
                 itemCount: communityReviewList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  
                   TextEditingController messageTextController =
                       new TextEditingController();
                   return
@@ -829,52 +837,44 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-
                                         if (communityReviewList[index]
                                                 .replies_count
-                                                .toString() == "0") {
-                                                  ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(SnackBar(
-                                                                  content: Text(
-                                                                      "No reply available")));
-                                          
+                                                .toString() ==
+                                            "0") {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "No reply available")));
                                         } else {
-                                           Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CommunityReplies(
-                                                      review_id:
-                                                          communityReviewList[
-                                                                  index]
-                                                              .business_reviews_id
-                                                              .toString(),
-
-                                                              username: communityReviewList[
-                                                                  index]
-                                                              .name
-                                                              .toString(),
-
-
-                                                              message: communityReviewList[
-                                                                  index]
-                                                              .review
-                                                              .toString(),
-
-                                                              image: communityReviewList[
-                                                                  index]
-                                                              .image
-                                                              .toString(),
-
-                                                             
-                                                             
-                                                    )));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CommunityReplies(
+                                                        review_id:
+                                                            communityReviewList[
+                                                                    index]
+                                                                .business_reviews_id
+                                                                .toString(),
+                                                        username:
+                                                            communityReviewList[
+                                                                    index]
+                                                                .name
+                                                                .toString(),
+                                                        message:
+                                                            communityReviewList[
+                                                                    index]
+                                                                .review
+                                                                .toString(),
+                                                        image:
+                                                            communityReviewList[
+                                                                    index]
+                                                                .image
+                                                                .toString(),
+                                                      ))).then((value) {
+                                            communityReviewApi();
+                                          });
                                         }
-
-
-
-                                      
                                       },
                                       child: Text(
                                         "Replies (" +
@@ -897,79 +897,74 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     //         child: Platform.isAndroid
                                     //             ? CircularProgressIndicator()
                                     //             : CupertinoActivityIndicator())
-                                    //     : 
-                                        SizedBox(
-                                            width: 65.w,
-                                            child: TextField(
-                                              controller: messageTextController,
-                                              onChanged: (val) {
-                                                if(val.toString()==" "){
+                                    //     :
+                                    SizedBox(
+                                      width: 65.w,
+                                      child: TextField(
+                                        controller: messageTextController,
+                                        onChanged: (val) {
+                                          if (val.toString() == " ") {
+                                            messageTextController.text = "";
+                                          }
+                                          print(val);
 
-                                                  messageTextController.text = "";
+                                          communityReviewList[index]
+                                                  .messageText =
+                                              val.toString().trim();
+                                        },
+                                        minLines: 1,
+                                        keyboardType: TextInputType.multiline,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                        ),
+                                        maxLines: 50,
+                                        // inputFormatters: [
+                                        //   FilteringTextInputFormatter
+                                        //       .deny(RegExp('[  ]'))
+                                        // ],
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 0.h,
+                                                    horizontal: 4.w),
+                                            fillColor: Colors.black,
+                                            filled: true,
+                                            //suffixIconConstraints: BoxConstraints(minWidth: 5),
 
-                                                }
-                                                print(val);
+                                            hintText: "Reply",
+                                            suffixIcon: InkWell(
+                                                onTap: () {
+                                                  var mesage =
+                                                      messageTextController.text
+                                                          .toString();
 
-                                                communityReviewList[index]
-                                                        .messageText =
-                                                    val.toString().trim();
-                                              },
-                                              minLines: 1,
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.sp,
-                                              ),
-                                              maxLines: 50,
-                                              // inputFormatters: [
-                                              //   FilteringTextInputFormatter
-                                              //       .deny(RegExp('[  ]'))
-                                              // ],
-                                              decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 0.h,
-                                                          horizontal: 4.w),
-                                                  fillColor: Colors.black,
-                                                  filled: true,
-                                                  //suffixIconConstraints: BoxConstraints(minWidth: 5),
-
-                                                  hintText: "Reply",
-                                                  suffixIcon: InkWell(
-                                                      onTap: () {
-                                                        var mesage =
-                                                            messageTextController
-                                                                .text
-                                                                .toString();
-
-                                                        if (mesage == "" ||
-                                                            mesage == "null") {
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(SnackBar(
-                                                                  content: Text(
-                                                                      "Please enter message")));
-                                                        } else {
-                                                          communityReplyOnReviewApi(
-                                                              communityReviewList[
-                                                                      index]
-                                                                  .business_reviews_id
-                                                                  .toString(),
-                                                              communityReviewList[
-                                                                      index]
-                                                                  .messageText
-                                                                  .toString());
-                                                        }
-                                                      },
-                                                      child: Icon(Icons.send,
-                                                          color:
-                                                              kPrimaryColor)),
-                                                  hintStyle: TextStyle(
-                                                      fontSize: 9.sp,
-                                                      color: Colors.white)),
-                                            ),
-                                          )
+                                                  if (mesage == "" ||
+                                                      mesage == "null") {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                            content: Text(
+                                                                "Please enter message")));
+                                                  } else {
+                                                    communityReplyOnReviewApi(
+                                                        communityReviewList[
+                                                                index]
+                                                            .business_reviews_id
+                                                            .toString(),
+                                                        communityReviewList[
+                                                                index]
+                                                            .messageText
+                                                            .toString());
+                                                  }
+                                                },
+                                                child: Icon(Icons.send,
+                                                    color: kPrimaryColor)),
+                                            hintStyle: TextStyle(
+                                                fontSize: 9.sp,
+                                                color: Colors.white)),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -992,103 +987,83 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
-
-
-
-
   reportDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-      builder: (context, setState) {
-        return  AlertDialog(
-          backgroundColor: Colors.black,
-          scrollable: true,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-           title:  isloading == true
-              ? Column(
-                children: [
-                  Center(
-                  child: Platform.isIOS
-                      ? CupertinoActivityIndicator()
-                      : CircularProgressIndicator()),
-                  Text("Please wait....", style: TextStyle(fontSize: 20, color: Colors.white),)
-                ],
-              )
-              :
-          SingleChildScrollView(
-              child: SizedBox(
-            height: 18.h,
-            width: 95.w,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: SvgPicture.asset(
-                        "assets/icons/cross.svg",
-                        color: Colors.white,
-                        width: 4.w,
-                      ),
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            scrollable: true,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: isloading == true
+                ? Column(
+                    children: [
+                      Center(
+                          child: Platform.isIOS
+                              ? CupertinoActivityIndicator()
+                              : CircularProgressIndicator()),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      )
+                    ],
+                  )
+                : SingleChildScrollView(
+                    child: SizedBox(
+                    height: 18.h,
+                    width: 95.w,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: SvgPicture.asset(
+                                "assets/icons/cross.svg",
+                                color: Colors.white,
+                                width: 4.w,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Center(
+                            child: Text(
+                          "Your report has been submitted",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        )),
+                        SizedBox(
+                          height: 1.7.h,
+                        ),
+                        isloading
+                            ? Align(
+                                alignment: Alignment.center,
+                                child: Platform.isAndroid
+                                    ? CircularProgressIndicator()
+                                    : CupertinoActivityIndicator())
+                            : DefaultButton(
+                                width: 35.w,
+                                height: 6.h,
+                                text: "Thank you",
+                                press: () {
+                                  Navigator.pop(context);
+                                })
+                      ],
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-           
-                
-                Center(child: Text("Your report has been submitted",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  
-                  color: Colors.white
-                ),
-                )),
-                SizedBox(
-                  height: 1.7.h,
-                ),
-
-                 isloading
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator()
-                          : CupertinoActivityIndicator())
-                  :
-                DefaultButton(
-                    width: 35.w, height: 6.h, text: "Thank you", press: () {
-
-                     Navigator.pop(context);
-
-                      
-
-                      
-                    
-
-                    })
-              ],
-            ),
-          )),
-        );
-      }
-        );
-        
-        
-        
-       
+                  )),
+          );
+        });
       },
     );
   }
-
-
-
 
   Future<dynamic> addReportApi(
     String comId,
@@ -1474,6 +1449,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
         ivStatus.toString() != "" ? ivStatus.toString() : "0";
     print("ivStatus: " + ivStatus.toString());
     if (file != null) {
+      print("sendPath: " + file!.path.toString());
+
       request.files.add(await http.MultipartFile.fromPath("image", file!.path));
 
       clearFile = file.toString();
@@ -1483,6 +1460,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var res = await request.send();
 
     if (res.statusCode == 200) {
+      currentPath = "";
+      ivStatus = "";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1604,6 +1583,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 reviewController2.clear();
                                 file = null;
                                 fileName = "";
+                                image_video_status = "0";
+                                ivStatus = "";
+                                currentPath = "";
                               },
                               child: SvgPicture.asset(
                                 "assets/icons/cross.svg",
@@ -1773,7 +1755,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 RatingBar.builder(
                                   itemSize: 24,
                                   unratedColor: Color(0XFFCECECE),
-                                  initialRating: 0,
+                                  initialRating: rattingcheckin,
                                   minRating: 0,
                                   direction: Axis.horizontal,
                                   allowHalfRating: false,
@@ -1787,7 +1769,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   ),
                                   onRatingUpdate: (rating) {
                                     print("Ratting :" + rating.toString());
-                                    rattingcheckin = rating.toString();
+                                    rattingcheckin = rating;
                                     //rat = rattingController.text.toString();
                                     print("Rat: " + rattingcheckin.toString());
                                   },
@@ -1813,17 +1795,26 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        getCheckInImage();
-                                        image_video_status = "1";
-            //                              ScaffoldMessenger.of(context)
-            // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+                                        if (image_video_status == "2") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          getCheckInImage();
+                                          image_video_status = "1";
+                                        }
+                                        //                              ScaffoldMessenger.of(context)
+                                        // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
 
-            //                             if (fileName.toString() != "null" || fileName.toString() != "") {
-            //                               ScaffoldMessenger.of(context)
-            // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
-                                          
-            //                             }
-                                           
+                                        //                             if (fileName.toString() != "null" || fileName.toString() != "") {
+                                        //                               ScaffoldMessenger.of(context)
+                                        // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                        //                             }
                                       },
                                       child: file == null
                                           ? Container(
@@ -1849,45 +1840,52 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                     InkWell(
                                         onTap: () async {
-                                         
-
-
-                                          image_video_status = "2";
-                                          FilePickerResult? result =
-                                              await FilePicker.platform
-                                                  .pickFiles(
-                                            type: FileType.video,
-                                            allowCompression: false,
-                                          );
-                                          if (result != null) {
-                                            file =
-                                                File(result.files.single.path!);
-                                            fileName =
-                                                path.basename(file!.path);
-                                            print("Filename " +
-                                                fileName.toString() +
-                                                "^");
-                                            if (fileName == "" ||
-                                                fileName == null) {
-                                              fileName = "File:- ";
-                                              isVisible = false;
-                                            } else {
-                                              fileName = "File:- " + fileName;
-                                              isVisible = true;
-                                            }
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                                return TrimmerView(file!);
-                                              }),
-                                            ).then((value) {
-                                              setState(() {
-                                                Navigator.of(context,
-                                                        rootNavigator: true)
-                                                    .pop();
-                                                checkInDialog();
+                                          if (image_video_status == "1") {
+                                            final snackBar = SnackBar(
+                                                content: Text(
+                                                    'Either image or video can be post at a time'));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              snackBar,
+                                            );
+                                          } else {
+                                            image_video_status = "2";
+                                            FilePickerResult? result =
+                                                await FilePicker.platform
+                                                    .pickFiles(
+                                              type: FileType.video,
+                                              allowCompression: false,
+                                            );
+                                            if (result != null) {
+                                              file = File(
+                                                  result.files.single.path!);
+                                              fileName =
+                                                  path.basename(file!.path);
+                                              print("Filename " +
+                                                  fileName.toString() +
+                                                  "^");
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                                  return TrimmerView(file!);
+                                                }),
+                                              ).then((value) {
+                                                setState(() {
+                                                  Navigator.of(context,
+                                                          rootNavigator: true)
+                                                      .pop();
+                                                  checkInDialog();
+                                                });
                                               });
-                                            });
+                                            }
                                           }
                                         },
                                         child: SvgPicture.asset(
@@ -1933,6 +1931,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               visible: isVisible,
                               child: Text(
                                 fileName,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 12),
                               )),
@@ -1947,7 +1947,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text("Please select tag")));
-                              } else if (rattingcheckin.toString() == "" ||
+                              } else if (rattingcheckin.toString() == "0" ||
                                   rattingcheckin.toString() == "null") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -1959,6 +1959,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     SnackBar(
                                         content: Text("Please enter review")));
                               } else {
+                                if (currentPath != "") {
+                                  file = File(currentPath.toString());
+                                  fileName = path.basename(file!.path);
+                                  print("Filename " + fileName.toString());
+                                }
                                 checkInApi(
                                     rattingcheckin.toString(),
                                     reviewController2.text.toString(),
@@ -1966,7 +1971,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               }
                               reviewController2.clear();
                               fileName = "";
-                              rattingcheckin = "";
+                              rattingcheckin = 0;
                             })
                       ],
                     ),
@@ -2017,6 +2022,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 reviewController.clear();
                                 file = null;
                                 fileName = "";
+                                trimFile = null;
+                                trimFileName = "";
+                                ivStatus = "";
                               },
                               child: SvgPicture.asset(
                                 "assets/icons/cross.svg",
@@ -2050,7 +2058,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 RatingBar.builder(
                                   itemSize: 24,
                                   unratedColor: Color(0XFFCECECE),
-                                  initialRating: 0,
+                                  initialRating: ratting,
                                   minRating: 0,
                                   direction: Axis.horizontal,
                                   allowHalfRating: false,
@@ -2064,7 +2072,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   ),
                                   onRatingUpdate: (rating) {
                                     print("Ratting :" + rating.toString());
-                                    ratting = rating.toString();
+                                    ratting = rating;
                                     //rat = rattingController.text.toString();
                                     print("Rat: " + ratting.toString());
                                   },
@@ -2090,11 +2098,21 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        getImage();
+                                        if (ivStatus == "2") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          getImage();
 
-                                        setState(() {
-                                          ivStatus = "1";
-                                        });
+                                          setState(() {
+                                            ivStatus = "1";
+                                          });
+                                        }
                                       },
                                       child: file == null
                                           ? Container(
@@ -2120,44 +2138,54 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                     InkWell(
                                         onTap: () async {
-                                          setState(() {
-                                            ivStatus = "2";
-                                          });
-
-                                          FilePickerResult? result =
-                                              await FilePicker.platform
-                                                  .pickFiles(
-                                            type: FileType.video,
-                                            allowCompression: false,
-                                          );
-                                          if (result != null) {
-                                            file =
-                                                File(result.files.single.path!);
-                                            fileName =
-                                                path.basename(file!.path);
-                                            print("Filename " +
-                                                fileName.toString() +
-                                                "^");
-                                            if (fileName == "" ||
-                                                fileName == null) {
-                                              fileName = "File:- ";
-                                              isVisible = false;
-                                            } else {
-                                              fileName = "File:- " + fileName;
-                                              isVisible = true;
-                                            }
-
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                                return TrimmerView(file!);
-                                              }),
-                                            ).then((value) {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pop();
-                                              customDialog();
+                                          if (ivStatus == "1") {
+                                            final snackBar = SnackBar(
+                                                content: Text(
+                                                    'Either image or video can be post at a time'));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              snackBar,
+                                            );
+                                          } else {
+                                            setState(() {
+                                              ivStatus = "2";
                                             });
+
+                                            FilePickerResult? result =
+                                                await FilePicker.platform
+                                                    .pickFiles(
+                                              type: FileType.video,
+                                              allowCompression: false,
+                                            );
+                                            if (result != null) {
+                                              file = File(
+                                                  result.files.single.path!);
+                                              fileName =
+                                                  path.basename(file!.path);
+                                              print("Filename " +
+                                                  fileName.toString() +
+                                                  "^");
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                                  return TrimmerView(file!);
+                                                }),
+                                              ).then((value) async {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
+                                                customDialog();
+                                              });
+                                            }
                                           }
                                         },
                                         child: SvgPicture.asset(
@@ -2201,10 +2229,14 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           padding: const EdgeInsets.all(3.0),
                           child: Visibility(
                               visible: isVisible,
-                              child: Text(
-                                fileName,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                              child: Container(
+                                child: Text(
+                                  fileName,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
                               )),
                         ),
                         isloading
@@ -2218,7 +2250,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 height: 6.h,
                                 text: "Submit",
                                 press: () {
-                                  if (ratting.toString() == "" ||
+                                  if (ratting.toString() == "0" ||
                                       ratting.toString() == "null") {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
@@ -2233,11 +2265,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             content:
                                                 Text("Please enter review")));
                                   } else {
+                                    print("NowPath " + currentPath.toString());
+                                    if (currentPath != "") {
+                                      file = File(currentPath.toString());
+                                      fileName = path.basename(file!.path);
+                                    }
                                     businessReviewApi(ratting.toString(),
                                         reviewController.text.toString());
                                   }
                                   fileName = "";
-                                  ratting = "";
+                                  ratting = 0;
                                 })
                       ],
                     ),
@@ -2246,6 +2283,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
       },
     );
+  }
+
+  void setPath(String path) {
+    print("tis Path " + path.toString() + "^");
+    trimFile = File(path);
   }
 
   Future<dynamic> checkInApi(String ratting, String review, String tag) async {
@@ -2296,6 +2338,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var res = await request.send();
 
     if (res.statusCode == 200) {
+      currentPath = "";
+      ivStatus = "";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

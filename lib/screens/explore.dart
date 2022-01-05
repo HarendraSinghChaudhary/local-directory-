@@ -26,7 +26,9 @@ class Explore extends StatefulWidget {
 }
 
 class _ExploreState extends State<Explore> {
-  _getRequests() async {}
+  _getRequests() async {
+
+  }
 
   bool _hasBeenPressed = true;
   var ids = "";
@@ -238,8 +240,10 @@ class _ExploreState extends State<Explore> {
                           builder: (_) => new DetailBussiness(
                                 nearBy: nearByRestaurantList[index],
                               )),
-                    )
-                    .then((val) => val ? _getRequests() : null);
+                    ).then((value) {
+                      nearBy();
+                  });
+
 
                 // Navigator.push(
                 //     context,

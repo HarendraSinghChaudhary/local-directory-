@@ -9,7 +9,7 @@ import 'package:wemarkthespot/screens/splash.dart';
 
 
 import 'package:wemarkthespot/theme.dart';
-
+String currentPath = "";
 void main() {
   runApp(WeMarkTheSpot());
 }

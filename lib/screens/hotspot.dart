@@ -205,6 +205,8 @@ class _HotspotState extends State<Hotspot> {
                                                           fontSize: 11.sp,
                                                           color: kCyanColor,
                                                           fontFamily: "Segoepr"),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
                                                                 
                                                                 ),
                                                   ),
@@ -967,29 +969,32 @@ class _HotspotState extends State<Hotspot> {
       cursorColor: Colors.white,
       decoration: InputDecoration(
         suffixIcon: 
-        InkWell(
-            onTap: () {
+        Visibility(
+          visible: reviewController.text.toString()=="" || reviewController.text.toString()== "null"?true:false,
+          child: InkWell(
+              onTap: () {
 
-               var mesage  = reviewController.text.toString();
-
-
-              if (mesage == "" || mesage == "null") {
-                ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please write message")));
-                
-              } else {
-                addHotspotReviewApi(reviewController.text.toString(), selectedId.toString());
-              }
+                 var mesage  = reviewController.text.toString();
 
 
-              reviewController.text.toString() == "";
-              
-              
-              
-             
-            
-            },
-            child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+                if (mesage == "" || mesage == "null") {
+                  ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Please write message")));
+
+                } else {
+                  addHotspotReviewApi(reviewController.text.toString(), selectedId.toString());
+                }
+
+
+                reviewController.text.toString() == "";
+
+
+
+
+
+              },
+              child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+        ),
         fillColor: kPrimaryColor, filled: true,
         //filled: true,
 

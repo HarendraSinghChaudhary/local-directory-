@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_trimmer/video_trimmer.dart';
+import 'package:wemarkthespot/main.dart';
 
 class ChilPage extends StatelessWidget {
   @override
@@ -38,7 +40,7 @@ class ChilPage extends StatelessWidget {
 }
 
 class TrimmerView extends StatefulWidget {
-  final File file;
+  File file;
 
   TrimmerView(this.file);
 
@@ -63,17 +65,22 @@ class _TrimmerViewState extends State<TrimmerView> {
     String? _value;
 
     await _trimmer
-        .saveTrimmedVideo(startValue: _startValue, endValue: _endValue, onSave: (String? outputPath) { 
-          print("outputPath: "+outputPath.toString());
+        .saveTrimmedVideo(startValue: _startValue, endValue: _endValue, onSave: (String? outputPath) async {
+          print("outputPathh: "+outputPath.toString());
+          currentPath = outputPath.toString();
            _value = outputPath;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("currentPath", outputPath.toString());
+
          })
-        .then((value) {
-      setState(() {
+        .then((value) async{
+      setState(()  {
         _progressVisibility = false;
-       
+        widget.file = File(_value.toString());
+
       });
     });
-print("Path: "+_value.toString());
+    print("Pathh: "+widget.file.path.toString());
     return _value;
   }
 
@@ -114,12 +121,12 @@ print("Path: "+_value.toString());
                       ? null
                       : () async {
                           _saveVideo().then((outputPath) {
-                            print('OUTPUT PATH: '+widget.file.path.toString());
-                            final snackBar = SnackBar(
+                            print('OUTPUT PATH: '+outputPath.toString());
+                         /*   final snackBar = SnackBar(
                                 content: Text('Video Saved successfully'));
                             ScaffoldMessenger.of(context).showSnackBar(
                               snackBar,
-                            );
+                            );*/
                             Navigator.of(context, rootNavigator: true).pop();
                           });
                         },
