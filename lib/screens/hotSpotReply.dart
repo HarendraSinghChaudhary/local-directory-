@@ -70,9 +70,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
             ),
             Container(
                 color: kBackgroundColor,
-                margin: EdgeInsets.symmetric(horizontal: 0.w),
-                // shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.circular(3.w)),
+        
+               
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,6 +114,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                     //"Person Name",
                                     widget.username.toString() + " @ " +widget.businessname.toString(),
                                     overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                     style: TextStyle(
                                         fontSize: 11.sp,
                                         color: kCyanColor,
@@ -196,7 +196,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                   ],
                 )),
 
-                SizedBox(height: 1.h,),
+                SizedBox(height: 2.h,),
             ListView.builder(
               shrinkWrap: true,
               controller: _controller,
@@ -209,183 +209,188 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                         margin: EdgeInsets.symmetric(horizontal: 2.w),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.w)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 0.8.h, left: 2.w),
-                              child: CachedNetworkImage(
-                                imageUrl: getReplyOnHotspotList[index]
-                                    .userProfile!
-                                    .image
-                                    .toString(),
-                                imageBuilder: (context, imageProvider) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage: NetworkImage(
-                                      getReplyOnHotspotList[index]
-                                          .userProfile!
-                                          .image
-                                          .toString()),
-                                ),
-                                placeholder: (context, url) => CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.9.w,
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          //"Person Name",
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 0.8.h, left: 2.w),
+                                  child: CachedNetworkImage(
+                                    imageUrl: getReplyOnHotspotList[index]
+                                        .userProfile!
+                                        .image
+                                        .toString(),
+                                    imageBuilder: (context, imageProvider) =>
+                                        CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage: NetworkImage(
                                           getReplyOnHotspotList[index]
+                                              .userProfile!
+                                              .image
+                                              .toString()),
+                                    ),
+                                    placeholder: (context, url) => CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage:
+                                          AssetImage("assets/images/usericon.png"),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage:
+                                          AssetImage("assets/images/usericon.png"),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 0.9.w,
+                                ),
+                                Container(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 74.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              //"Person Name",
+                                              getReplyOnHotspotList[index]
+                                                          .userProfile!
+                                                          .name
+                                                          .toString() !=
+                                                      "null"
+                                                  ? getReplyOnHotspotList[index]
                                                       .userProfile!
                                                       .name
+                                                      .toString()
+                                                  : "User Name",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: kCyanColor,
+                                                  fontFamily: "Segoepr"),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 4.w),
+                                              child: Text(
+                                                //"2m ago",
+                                                getReplyOnHotspotList[index]
+                                                    .timedelay
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontSize: 8.sp,
+                                                  color: kPrimaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 0.1.h,
+                                      ),
+                                      Container(
+                                        width: 72.w,
+                                        child: Text(
+                                          // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+
+                                          getReplyOnHotspotList[index]
+                                                      .message
                                                       .toString() !=
                                                   "null"
                                               ? getReplyOnHotspotList[index]
-                                                  .userProfile!
-                                                  .name
-                                                  .toString()
-                                              : "User Name",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 11.sp,
-                                              color: kCyanColor,
-                                              fontFamily: "Segoepr"),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 4.w),
-                                          child: Text(
-                                            //"2m ago",
-                                            getReplyOnHotspotList[index]
-                                                .timedelay
-                                                .toString(),
-                                            style: TextStyle(
-                                              fontSize: 8.sp,
-                                              color: kPrimaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 0.1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                      // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
-
-                                      getReplyOnHotspotList[index]
                                                   .message
-                                                  .toString() !=
-                                              "null"
-                                          ? getReplyOnHotspotList[index]
-                                              .message
-                                              .toString()
-                                          : "",
-                                      style: TextStyle(
-                                          //overflow: TextOverflow.ellipsis,
-                                          fontSize: 10.2.sp,
-                                          color: Colors.white,
-                                          fontFamily: 'Roboto'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        getReplyOnHotspotList[index].viewV
-                                            ? InkWell(
+                                                  .toString()
+                                              : "",
+                                          style: TextStyle(
+                                              //overflow: TextOverflow.ellipsis,
+                                              fontSize: 10.2.sp,
+                                              color: Colors.white,
+                                              fontFamily: 'Roboto'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Container(
+                                        width: 74.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            getReplyOnHotspotList[index].viewV
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        getReplyOnHotspotList[index]
+                                                            .viewV = false;
+                                                      });
+                                                    },
+                                                    child: Text(
+                                                      "Hide Replies",
+                                                      style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontFamily: "Roboto"),
+                                                    ),
+                                                  )
+                                                : InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        getReplyOnHotspotList[index]
+                                                            .viewV = true;
+                                                      });
+                                                    },
+                                                    child: Text(
+                                                      "View Replies",
+                                                      style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontFamily: "Roboto"),
+                                                    ),
+                                                  ),
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 3.w),
+                                              child: InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                    getReplyOnHotspotList[index]
-                                                        .viewV = false;
+                                                    viewVisible = true;
+                                                    tabOne =
+                                                        getReplyOnHotspotList[index]
+                                                            .id
+                                                            .toString();
                                                   });
                                                 },
                                                 child: Text(
-                                                  "Hide Replies",
+                                                  "Reply",
                                                   style: TextStyle(
                                                       fontSize: 11.sp,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Roboto"),
-                                                ),
-                                              )
-                                            : InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    getReplyOnHotspotList[index]
-                                                        .viewV = true;
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "View Replies",
-                                                  style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w500,
                                                       fontFamily: "Roboto"),
                                                 ),
                                               ),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 3.w),
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                viewVisible = true;
-                                                tabOne =
-                                                    getReplyOnHotspotList[index]
-                                                        .id
-                                                        .toString();
-                                              });
-                                            },
-                                            child: Text(
-                                              "Reply",
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Roboto"),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(
+                                        height: 3.h,
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 3.h,
-                                  ),
-                                ],
-                              ),
-                            )
+                                )
+                              ],
+                            ),
+                            replyCard(index),
                           ],
                         )),
 
@@ -394,7 +399,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                     // ),
                     //replyWidget(controller: _controller),
 
-                    replyCard(index),
+                    
 
                     SizedBox(
                       height: 2.h,
@@ -410,78 +415,81 @@ class _HotSpotReplyState extends State<HotSpotReply> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Visibility(
-        visible: viewVisible,
-        child: Container(
-          width: double.infinity,
-          height: 8.h,
-          color: Colors.black,
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.add_circle_outline,
-                  size: 9.w,
-                  color: kPrimaryColor,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(top:8.0),
+        child: Visibility(
+          visible: viewVisible,
+          child: Container(
+            width: double.infinity,
+            height: 8.h,
+            color: Colors.black,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.add_circle_outline,
+                    size: 9.w,
+                    color: kPrimaryColor,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 1.w,
-              ),
-              SizedBox(
-                width: 74.w,
-                height: 6.h,
-                child: TextField(
-                  controller: messageController,
-                  style: TextStyle(color: Colors.white, fontSize: 12.sp),
-                  maxLines: 1,
-                  onChanged: (val) {},
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
-                    focusColor: Colors.white,
-                    hoverColor: Colors.white,
-                    fillColor: kCyanColor,
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: BorderSide(color: kCyanColor)),
-                    hintText: "Type..",
-                    hintStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
+                SizedBox(
+                  width: 1.w,
+                ),
+                SizedBox(
+                  width: 74.w,
+                  height: 6.h,
+                  child: TextField(
+                    controller: messageController,
+                    style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                    maxLines: 1,
+                    onChanged: (val) {},
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
+                      focusColor: Colors.white,
+                      hoverColor: Colors.white,
+                      fillColor: kCyanColor,
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(28),
+                          borderSide: BorderSide(color: kCyanColor)),
+                      hintText: "Type..",
+                      hintStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 3.w,
-              ),
-              InkWell(
-                  onTap: () {
-                    var messge = messageController.text.toString();
+                SizedBox(
+                  width: 3.w,
+                ),
+                InkWell(
+                    onTap: () {
+                      var messge = messageController.text.toString();
 
-                    if (messge == "" || messge == "null") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter reply")));
-                    } else {
-                      print("tab1");
-                      replyOnHotspotReplyApi(
-                          tabOne.toString(), messageController.text.toString());
+                      if (messge == "" || messge == "null") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please enter reply")));
+                      } else {
+                        print("tab1");
+                        replyOnHotspotReplyApi(
+                            tabOne.toString(), messageController.text.toString());
 
-                      setState(() {
-                        messageController.text = "";
-                        viewVisible = false;
-                      });
-                    }
-                  },
-                  child: SvgPicture.asset(
-                    "assets/icons/send1.svg",
-                    width: 8.w,
-                    color: kPrimaryColor,
-                  )),
-            ],
+                        setState(() {
+                          messageController.text = "";
+                          viewVisible = false;
+                        });
+                      }
+                    },
+                    child: SvgPicture.asset(
+                      "assets/icons/send1.svg",
+                      width: 8.w,
+                      color: kPrimaryColor,
+                    )),
+              ],
+            ),
           ),
         ),
       ),
@@ -878,9 +886,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           visible: getReplyOnHotspotList[i].viewV,
           child: Card(
             elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.w)),
-            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            
+            margin: EdgeInsets.symmetric(horizontal: 2.w),
             color: kBackgroundColor,
             child: Column(
               children: [
