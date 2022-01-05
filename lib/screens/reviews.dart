@@ -81,7 +81,7 @@ class _ReviewsState extends State<Reviews> {
                 int index,
               ) {
 
-               // final item = splashData[index];
+              
 
                 return cardList(index);
               },
@@ -139,85 +139,98 @@ class _ReviewsState extends State<Reviews> {
                       ],
                     ),
 
-                    child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        height: 11.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3.w),
-                            color: kBackgroundColor),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: 2.h, left: 2.w),
-                              child: CircleAvatar(
-                                radius: 7.w,
-                                backgroundImage: NetworkImage(reviewList[index].business_images.toString()
-                                      ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                            Container(
-                              child: Column(
+                    child: Column(
+                      children: [
+                        Card(
+                          color: kBackgroundColor,
+                           margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3.w)),
+                          child: Container(
+                             
+                             
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3.w),
+                                  color: kBackgroundColor),
+                              child: Row(
                                 children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(bottom: 0.h, left: 2.w),
+                                    child: CircleAvatar(
+                                      radius: 6.w,
+                                      backgroundImage: NetworkImage(reviewList[index].business_images.toString()
+                                            ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
                                   Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                    child: Column(
                                       children: [
-                                        Text(
-                                      busId=  reviewList[index].business_name.toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 11.sp,
-                                              color: kCyanColor,
-                                              fontFamily: "Segoepr"),
+                                        Container(
+                                          width: 74.w,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                            busId=  reviewList[index].business_name.toString(),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontSize: 11.sp,
+                                                    color: kCyanColor,
+                                                    fontFamily: "Segoepr"),
+                                              ),
+                                              SizedBox(
+                                                width: 12.w,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 3.w),
+                                                child: Text(
+                                                 reviewList[index].timedelay.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 8.sp,
+                                                    color: kPrimaryColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(
-                                          width: 12.w,
+                                          height: 0.1.h,
                                         ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(right: 3.w),
+                                        Container(
+                                          width: 74.w,
                                           child: Text(
-                                           reviewList[index].created_at.toString().substring(0,10),
+                                          reviewList[index].review.toString(),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              fontSize: 8.sp,
-                                              color: kPrimaryColor,
-                                            ),
+                                                //overflow: TextOverflow.ellipsis,
+                                                fontSize: 10.2.sp,
+                                                color: Color(0xFFCECECE),
+                                                fontFamily: 'Roboto'),
                                           ),
+                                        ),
+                                        SizedBox(
+                                          height: 2.h,
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 0.1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                    reviewList[index].review.toString(),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          //overflow: TextOverflow.ellipsis,
-                                          fontSize: 10.2.sp,
-                                          color: Color(0xFFCECECE),
-                                          fontFamily: 'Roboto'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
+                                  )
                                 ],
-                              ),
-                            )
-                          ],
-                        )),
+                              )),
+                        ),
+                  //       SizedBox(
+                  //   height: 1.h,
+                  // ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 2.h,
@@ -368,14 +381,7 @@ class _ReviewsState extends State<Reviews> {
        ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
 
-        // getHotspotApi();
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+     
 
         setState(() {
           isloading = false;
@@ -435,6 +441,7 @@ class _ReviewsState extends State<Reviews> {
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
+      final date2 = DateTime.now();
 
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
@@ -453,6 +460,22 @@ class _ReviewsState extends State<Reviews> {
           modelAgentSearch.business_review_image = jsonArray[i]["business_review_image"].toString();
           modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
+
+           var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+          modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+          if(difference>60){
+            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+            modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+
+            if(difference>60){
+              var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+              modelAgentSearch.timedelay = difference.toString()+" hours ago";
+
+              if(difference > 24){
+                modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+              }
+            }
+          }
         
 
          
@@ -759,6 +782,7 @@ class ReviewClass {
   var review = "";
   var business_review_image = "";
   var created_at = "";
+  var timedelay = "Secconds";
 
 }
 

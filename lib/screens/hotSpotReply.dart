@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
@@ -10,9 +11,9 @@ import 'package:wemarkthespot/services/api_client.dart';
 import 'package:http/http.dart' as http;
 
 class HotSpotReply extends StatefulWidget {
-  var id;
+  var id, image, username, businessname, time, message;
 
-  HotSpotReply({required this.id});
+  HotSpotReply({required this.id, required this.image, required this.username, required this.businessname, required this.time, required this.message});
 
   @override
   _HotSpotReplyState createState() => _HotSpotReplyState();
@@ -27,6 +28,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   var created_at = "";
   var review_id = "";
   var message = "";
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+  bool isRefresh = false;
 
   List<GETREPLYONHOTSPOT> getReplyOnHotspotList = [];
   bool isloading = false;
@@ -63,6 +68,135 @@ class _HotSpotReplyState extends State<HotSpotReply> {
             SizedBox(
               height: 2.h,
             ),
+            Container(
+                color: kBackgroundColor,
+                margin: EdgeInsets.symmetric(horizontal: 0.w),
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(3.w)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 0.8.h, left: 2.w),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.image.toString(),
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          radius: 7.w,
+                          backgroundImage: NetworkImage(
+                             widget.image.toString(),),
+                        ),
+                        placeholder: (context, url) => CircleAvatar(
+                          radius: 7.w,
+                          backgroundImage:
+                              AssetImage("assets/images/usericon.png"),
+                        ),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 7.w,
+                          backgroundImage:
+                              AssetImage("assets/images/usericon.png"),
+                        ),
+                      ),
+                    ),
+                    // SizedBox(
+                    //   width: 0.w,
+                    // ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 80.w,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    //"Person Name",
+                                    widget.username.toString() + " @ " +widget.businessname.toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 11.sp,
+                                        color: kCyanColor,
+                                        fontFamily: "Segoepr"),
+                                  ),
+                                ),
+                               
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.1.h,
+                          ),
+                          Container(
+                            width: 74.w,
+                            child: Text(
+                              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+
+                              widget.message.toString() !=
+                                      "null"
+                                  ? widget.message.toString()
+                                  : "",
+                              style: TextStyle(
+                                  //overflow: TextOverflow.ellipsis,
+                                  fontSize: 10.2.sp,
+                                  color: Colors.white,
+                                  fontFamily: 'Roboto'),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Container(
+                            width: 74.w,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // getReplyOnHotspotList[index].viewV
+                                //     ? 
+                                    Text(
+                                    //"2m ago",
+                                    widget.time.toString(),
+                                    style: TextStyle(
+                                      fontSize: 8.sp,
+                                      color: kPrimaryColor,
+                                    ),
+                                  ),
+                                  
+                                Padding(
+                                  padding: EdgeInsets.only(right: 2.w),
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        // viewVisible = true;
+                                        // tabOne = getReplyOnHotspotList[index]
+                                        //     .id
+                                        //     .toString();
+                                      });
+                                    },
+                                    child: Text(
+                                      "Reply",
+                                      style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Roboto"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 1.5.h,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                )),
+
+                SizedBox(height: 1.h,),
             ListView.builder(
               shrinkWrap: true,
               controller: _controller,
@@ -72,7 +206,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                   children: [
                     Card(
                         color: kBackgroundColor,
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        margin: EdgeInsets.symmetric(horizontal: 2.w),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.w)),
                         child: Row(
@@ -109,7 +243,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                               ),
                             ),
                             SizedBox(
-                              width: 2.w,
+                              width: 0.9.w,
                             ),
                             Container(
                               child: Column(
@@ -186,17 +320,12 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-
-
-                                          getReplyOnHotspotList[index]
-                                
-                                    .viewV
+                                        getReplyOnHotspotList[index].viewV
                                             ? InkWell(
                                                 onTap: () {
                                                   setState(() {
                                                     getReplyOnHotspotList[index]
-                                
-                                    .viewV = false;
+                                                        .viewV = false;
                                                   });
                                                 },
                                                 child: Text(
@@ -212,9 +341,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             : InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                   getReplyOnHotspotList[index]
-                                
-                                    .viewV = true;
+                                                    getReplyOnHotspotList[index]
+                                                        .viewV = true;
                                                   });
                                                 },
                                                 child: Text(
@@ -227,14 +355,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       fontFamily: "Roboto"),
                                                 ),
                                               ),
-
-
-
-
-
-                                     
                                         Padding(
-                                          padding: EdgeInsets.only(right: 4.w),
+                                          padding: EdgeInsets.only(right: 3.w),
                                           child: InkWell(
                                             onTap: () {
                                               setState(() {
@@ -266,9 +388,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                             )
                           ],
                         )),
-                    SizedBox(
-                      height: 0.2.h,
-                    ),
+
+                    // SizedBox(
+                    //   height: 0.2.h,
+                    // ),
                     //replyWidget(controller: _controller),
 
                     replyCard(index),
@@ -279,6 +402,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                   ],
                 );
               },
+            ),
+            SizedBox(
+              height: 3.h,
             ),
           ],
         ),
@@ -334,14 +460,21 @@ class _HotSpotReplyState extends State<HotSpotReply> {
               ),
               InkWell(
                   onTap: () {
-                    print("tab1");
-                    replyOnHotspotReplyApi(
-                        tabOne.toString(), messageController.text.toString());
+                    var messge = messageController.text.toString();
 
-                    setState(() {
-                      messageController.text = "";
-                      viewVisible = false;
-                    });
+                    if (messge == "" || messge == "null") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter reply")));
+                    } else {
+                      print("tab1");
+                      replyOnHotspotReplyApi(
+                          tabOne.toString(), messageController.text.toString());
+
+                      setState(() {
+                        messageController.text = "";
+                        viewVisible = false;
+                      });
+                    }
                   },
                   child: SvgPicture.asset(
                     "assets/icons/send1.svg",
@@ -353,6 +486,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
         ),
       ),
     );
+  }
+
+  void _onRefresh() async {
+    isRefresh = true;
+    getReplyOnHotspotApi();
   }
 
   Future<dynamic> replyOnHotspotReplyApi(
@@ -430,7 +568,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -442,7 +580,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+      isloading = false;
     });
 
     var request = http.get(
@@ -488,18 +626,25 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
-          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
-          modelAgentSearch.timedelay = difference.toString()+" seconds ago";
-          if(difference>60){
-            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
-            modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+          var difference = date2
+              .difference(DateTime.parse(modelAgentSearch.created_at))
+              .inSeconds;
+          modelAgentSearch.timedelay = difference.toString() + " seconds ago";
+          if (difference > 60) {
+            var difference = date2
+                .difference(DateTime.parse(modelAgentSearch.created_at))
+                .inMinutes;
+            modelAgentSearch.timedelay = difference.toString() + " minutes ago";
 
-            if(difference>60){
-              var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
-              modelAgentSearch.timedelay = difference.toString()+" hours ago";
+            if (difference > 60) {
+              var difference = date2
+                  .difference(DateTime.parse(modelAgentSearch.created_at))
+                  .inHours;
+              modelAgentSearch.timedelay = difference.toString() + " hours ago";
 
-              if(difference > 24){
-                modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+              if (difference > 24) {
+                modelAgentSearch.timedelay =
+                    modelAgentSearch.created_at.toString().substring(0, 10);
               }
             }
           }
@@ -527,17 +672,27 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                 childModelOne.review_id =
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
-                var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inSeconds;
-                childModelOne.timedelay = difference.toString()+" seconds ago";
-                if(difference>60){
-                  var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inMinutes;
-                  childModelOne.timedelay = difference.toString()+ " minutes ago";
+                var difference = date2
+                    .difference(DateTime.parse(childModelOne.created_at))
+                    .inSeconds;
+                childModelOne.timedelay =
+                    difference.toString() + " seconds ago";
+                if (difference > 60) {
+                  var difference = date2
+                      .difference(DateTime.parse(childModelOne.created_at))
+                      .inMinutes;
+                  childModelOne.timedelay =
+                      difference.toString() + " minutes ago";
 
-                  if(difference>60){
-                    var difference = date2.difference(DateTime.parse(childModelOne.created_at)).inHours;
-                    childModelOne.timedelay = difference.toString()+" hours ago";
-                    if(difference > 24){
-                      childModelOne.timedelay = childModelOne.created_at.toString().substring(0,10);
+                  if (difference > 60) {
+                    var difference = date2
+                        .difference(DateTime.parse(childModelOne.created_at))
+                        .inHours;
+                    childModelOne.timedelay =
+                        difference.toString() + " hours ago";
+                    if (difference > 24) {
+                      childModelOne.timedelay =
+                          childModelOne.created_at.toString().substring(0, 10);
                     }
                   }
                 }
@@ -567,17 +722,32 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           childDataTwo[k]["message"].toString();
 
                       childrenUserDataTwo = childDataTwo[k]['user'];
-                      var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inSeconds;
-                      childrenModelTwo.timedelay = difference.toString()+" seconds ago";
-                      if(difference>60){
-                        var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inMinutes;
-                        childrenModelTwo.timedelay = difference.toString()+ " minutes ago";
+                      var difference = date2
+                          .difference(
+                              DateTime.parse(childrenModelTwo.created_at))
+                          .inSeconds;
+                      childrenModelTwo.timedelay =
+                          difference.toString() + " seconds ago";
+                      if (difference > 60) {
+                        var difference = date2
+                            .difference(
+                                DateTime.parse(childrenModelTwo.created_at))
+                            .inMinutes;
+                        childrenModelTwo.timedelay =
+                            difference.toString() + " minutes ago";
 
-                        if(difference>60){
-                          var difference = date2.difference(DateTime.parse(childrenModelTwo.created_at)).inHours;
-                          childrenModelTwo.timedelay = difference.toString()+" hours ago";
-                          if(difference > 24){
-                            childrenModelTwo.timedelay = childrenModelTwo.created_at.toString().substring(0,10);
+                        if (difference > 60) {
+                          var difference = date2
+                              .difference(
+                                  DateTime.parse(childrenModelTwo.created_at))
+                              .inHours;
+                          childrenModelTwo.timedelay =
+                              difference.toString() + " hours ago";
+                          if (difference > 24) {
+                            childrenModelTwo.timedelay = childrenModelTwo
+                                .created_at
+                                .toString()
+                                .substring(0, 10);
                           }
                         }
                       }
@@ -614,17 +784,32 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 childDataThree[l]["review_id"].toString();
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
-                            var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inSeconds;
-                            childrenModelThree.timedelay = difference.toString()+" seconds ago";
-                            if(difference>60){
-                              var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inMinutes;
-                              childrenModelThree.timedelay = difference.toString()+ " minutes ago";
+                            var difference = date2
+                                .difference(DateTime.parse(
+                                    childrenModelThree.created_at))
+                                .inSeconds;
+                            childrenModelThree.timedelay =
+                                difference.toString() + " seconds ago";
+                            if (difference > 60) {
+                              var difference = date2
+                                  .difference(DateTime.parse(
+                                      childrenModelThree.created_at))
+                                  .inMinutes;
+                              childrenModelThree.timedelay =
+                                  difference.toString() + " minutes ago";
 
-                              if(difference>60){
-                                var difference = date2.difference(DateTime.parse(childrenModelThree.created_at)).inHours;
-                                childrenModelThree.timedelay = difference.toString()+" hours ago";
-                                if(difference > 24){
-                                  childrenModelThree.timedelay = childrenModelThree.created_at.toString().substring(0,10);
+                              if (difference > 60) {
+                                var difference = date2
+                                    .difference(DateTime.parse(
+                                        childrenModelThree.created_at))
+                                    .inHours;
+                                childrenModelThree.timedelay =
+                                    difference.toString() + " hours ago";
+                                if (difference > 24) {
+                                  childrenModelThree.timedelay =
+                                      childrenModelThree.created_at
+                                          .toString()
+                                          .substring(0, 10);
                                 }
                               }
                             }
@@ -661,7 +846,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
           getReplyOnHotspotList.add(modelAgentSearch);
 
-          setState(() {});
+          // setState(() {});
         }
 
         setState(() {
@@ -690,9 +875,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       itemCount: getReplyOnHotspotList[i].childrenList.length,
       itemBuilder: (BuildContext context, int index) {
         return Visibility(
-          visible: getReplyOnHotspotList[i]
-                                    .viewV ,
+          visible: getReplyOnHotspotList[i].viewV,
           child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
             margin: EdgeInsets.symmetric(horizontal: 4.w),
             color: kBackgroundColor,
             child: Column(
@@ -767,11 +954,12 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                             Container(
                               width: 74.w,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     // "2m ago",
-        
+
                                     getReplyOnHotspotList[i]
                                         .childrenList[index]
                                         .timedelay
@@ -805,9 +993,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: 1.h,
-                            ),
+                            // SizedBox(
+                            //   height: 1.h,
+                            // ),
                           ],
                         ),
                       ),
@@ -823,6 +1011,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       .length,
                   itemBuilder: (BuildContext context, int k) {
                     return Card(
+                       shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.w)),
+                      elevation: 0,
                         color: kBackgroundColor,
                         margin: EdgeInsets.symmetric(horizontal: 0.w),
                         child: Column(
@@ -921,14 +1112,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               ),
                                               Padding(
                                                 padding:
-                                                    EdgeInsets.only(right: 6.w),
+                                                    EdgeInsets.only(right: 5.w),
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     setState(() {
                                                       viewVisible = true;
                                                       tabOne =
                                                           getReplyOnHotspotList[i]
-                                                              .childrenList[index]
+                                                              .childrenList[
+                                                                  index]
                                                               .childrenList[k]
                                                               .id
                                                               .toString();
@@ -962,8 +1154,12 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                   .length,
                               itemBuilder: (BuildContext context, int j) {
                                 return Card(
+                                   shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.w)),
+                                   elevation: 0,
                                     color: kBackgroundColor,
-                                    margin: EdgeInsets.symmetric(horizontal: 0.w),
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 0.w),
                                     child: Container(
                                       padding: EdgeInsets.only(
                                         left: 16.w,
@@ -1008,7 +1204,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                         Text(
                                                           // "Person Name @ Bar Name",
                                                           getReplyOnHotspotList[i]
-                                                              .childrenList[index]
+                                                              .childrenList[
+                                                                  index]
                                                               .childrenList[k]
                                                               .childrenList[j]
                                                               .userProfile!
@@ -1045,7 +1242,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                             //overflow: TextOverflow.ellipsis,
                                                             fontSize: 8.5.sp,
                                                             color: Colors.white,
-                                                            fontFamily: 'Roboto'),
+                                                            fontFamily:
+                                                                'Roboto'),
                                                       ),
                                                     ),
                                                   ),
@@ -1062,14 +1260,16 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                         Text(
                                                           //"2m ago",
                                                           getReplyOnHotspotList[i]
-                                                              .childrenList[index]
+                                                              .childrenList[
+                                                                  index]
                                                               .childrenList[k]
                                                               .childrenList[j]
                                                               .timedelay
                                                               .toString(),
                                                           style: TextStyle(
                                                             fontSize: 8.sp,
-                                                            color: kPrimaryColor,
+                                                            color:
+                                                                kPrimaryColor,
                                                           ),
                                                         ),
                                                         Visibility(

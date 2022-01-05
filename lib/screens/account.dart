@@ -70,7 +70,8 @@ class _AccountState extends State<Account> {
                     : CupertinoActivityIndicator())
             : id.toString() != '72'
                 ? UserAccount()
-                : GuestAccount());
+                : GuestAccount()
+                );
   }
 
   Future<dynamic> getUserList() async {
@@ -336,55 +337,55 @@ class _UserAccountState extends State<UserAccount> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChilPage()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Add Close Friends",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => VideoApp()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Block Users",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
+              // SizedBox(
+              //   height: 3.h,
+              // ),
+              // InkWell(
+              //   onTap: () {
+              //     Navigator.push(context,
+              //         MaterialPageRoute(builder: (context) => ChilPage()));
+              //   },
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text(
+              //         "Add Close Friends",
+              //         style: TextStyle(
+              //             color: kCyanColor,
+              //             fontSize: 13.sp,
+              //             fontFamily: 'Roboto'),
+              //       ),
+              //       SvgPicture.asset(
+              //         "assets/icons/-right.svg",
+              //         width: 2.5.w,
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 3.h,
+              // ),
+              // InkWell(
+              //   onTap: () {
+              //    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApplication()));
+              //   },
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text(
+              //         "Block Users",
+              //         style: TextStyle(
+              //             color: kCyanColor,
+              //             fontSize: 13.sp,
+              //             fontFamily: 'Roboto'),
+              //       ),
+              //       SvgPicture.asset(
+              //         "assets/icons/-right.svg",
+              //         width: 2.5.w,
+              //       ),
+              //     ],
+              //   ),
+              // ),
               SizedBox(
                 height: 3.h,
               ),

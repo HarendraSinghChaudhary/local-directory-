@@ -54,8 +54,8 @@ class _VideoWidgetState extends State<VideoWidget> {
               Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 2.w),
-                  height: 25.h,
-                  width: double.infinity,
+                  
+                  
                   child: videoPlayerController.value.isInitialized
                       ? AspectRatio(
                     aspectRatio: videoPlayerController.value.aspectRatio,

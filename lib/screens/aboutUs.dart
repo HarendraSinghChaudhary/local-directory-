@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/services/api_client.dart';
 
 
 class AboutUs extends StatefulWidget {
@@ -11,6 +16,20 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
+  bool isloading = false;
+
+  List<Abouta> abtList = [];
+
+  @override
+  void initState() {
+
+    aboutApi();
+    super.initState();
+    
+
+  }
+
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,24 +52,17 @@ class _AboutUsState extends State<AboutUs> {
         child: Column(
           children: [
             SizedBox(height: 3.h,),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 3.w),
-              width: double.infinity,
-              child:  Text(
-                                        """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, 
-                  
-consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-                                                
-                                                
-At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-                                        """,
-                                        style: TextStyle(
-                                            //overflow: TextOverflow.ellipsis,
-                                            fontSize: 10.2.sp,
-                                            color: Color(0xFFCECECE),
-                                            fontFamily: 'Roboto'),
-                                      ),
-            )
+          Container(
+                  margin: EdgeInsets.symmetric(horizontal: 3.w),
+                  width: double.infinity,
+                  child:  Text(abtList[0].description.toString(),
+                                            style: TextStyle(
+                                                //overflow: TextOverflow.ellipsis,
+                                                fontSize: 10.2.sp,
+                                                color: Color(0xFFCECECE),
+                                                fontFamily: 'Roboto'),
+                                          ),
+                )
           ],
         ),
       ),
@@ -58,4 +70,81 @@ At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergr
       
     );
   }
+
+      Future<dynamic> aboutApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.get(Uri.parse(RestDatasource.ABOUT_US));
+
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          Abouta modelAgentSearch = new Abouta();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.description= jsonArray[i]["description"].toString();
+          
+          
+
+          print("id: " + modelAgentSearch.id.toString());
+          print("Bussiness: " + modelAgentSearch.description.toString());
+
+          abtList.add(modelAgentSearch);
+
+          
+        }
+
+       
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+
+    return abtList;
+
+  }
+}
+
+class Abouta{
+  String description = "";
+  String id = "";
 }

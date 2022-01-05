@@ -1,13 +1,94 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/components/guest_account.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/account.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+
+
+
+
+
+
+class BusFav extends StatefulWidget {
+  const BusFav({ Key? key }) : super(key: key);
+
+  @override
+  State<BusFav> createState() => _BusFavState();
+}
+
+class _BusFavState extends State<BusFav> {
+  var ids = "";
+   bool isloading = false;
+
+   @override
+   void initState() {
+     super.initState();
+     give();
+   }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+   
+    return Scaffold(
+
+      appBar: AppBar(
+        backgroundColor: kCyanColor,
+        centerTitle: true,
+        title: Text(
+          "Favorites",
+          style:
+              TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
+        ),
+      ),
+
+     body: isloading
+            ? Align(
+                alignment: Alignment.center,
+                child: Platform.isAndroid
+                    ? CircularProgressIndicator()
+                    : CupertinoActivityIndicator())
+            : ids.toString() != '72'
+                ? Favorites()
+                : FavGuest()
+                );
+
+
+      
+
+      
+    
+  }
+
+  give () async{
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    ids = id.toString();
+    print("idsss" +ids.toString());
+    setState(() {
+      
+    });
+
+  }
+}
+
+
+
+
+
+
+
 
 class Favorites extends StatefulWidget {
   const Favorites({Key? key}) : super(key: key);
@@ -45,19 +126,19 @@ class _FavoritesState extends State<Favorites> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kCyanColor,
-        title: Center(
-          child: Padding(
-            padding: EdgeInsets.only(right: 15.w),
-            child: Text(
-              "Favorites",
-              style:
-                  TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: kCyanColor,
+      //   title: Center(
+      //     child: Padding(
+      //       padding: EdgeInsets.only(right: 15.w),
+      //       child: Text(
+      //         "Favorites",
+      //         style:
+      //             TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
+      //       ),
+      //     ),
+      //   ),
+      // ),
       body: ListView.builder(
         padding: EdgeInsets.only(top: 1.h),
         // shrinkWrap: true,

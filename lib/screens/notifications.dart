@@ -46,7 +46,7 @@ class _NotificationsState extends State<Notifications> {
                     children: [
                       Container(
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
-                          height: 11.h,
+                          height: 9.5.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3.w),
@@ -71,7 +71,7 @@ class _NotificationsState extends State<Notifications> {
                                       ),
                                      
                                       Padding(
-                                        padding: EdgeInsets.only(right:3.w),
+                                        padding: EdgeInsets.only(right:2.w),
                                         child: Text(
                                           "2 hrs ago",
                                           style: TextStyle(
@@ -99,9 +99,9 @@ class _NotificationsState extends State<Notifications> {
                                       fontFamily: 'Roboto'),
                                 ),
                               ),
-                              SizedBox(
-                                height: 1.h,
-                              ),
+                              // SizedBox(
+                              //   height: 1.h,
+                              // ),
                             
                             ],
                           )),

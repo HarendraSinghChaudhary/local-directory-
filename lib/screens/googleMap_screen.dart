@@ -9,8 +9,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/Filter_screen.dart';
 import 'package:wemarkthespot/screens/explore.dart';
+import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class GoogleMapScreen extends StatefulWidget {
@@ -40,6 +42,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   List<NearBy> nearByRestaurantList = [];
 
+  
+
+  TextEditingController mesageTextController = new TextEditingController();
+
  
 
 
@@ -52,59 +58,80 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   late GoogleMapController newGoogleMapController;
  late Position currentPosition;
  List<Marker> markers = [];
+
+ late BitmapDescriptor mapMarker;
   // late Position position;
 
-  initilize () {
+  void setCustomMarker () async{
+    mapMarker = await BitmapDescriptor.fromAssetImage(ImageConfiguration(), "assets/images/fire.png");
+
+  }
+
+  initilize (List<NearBy> businessList) {
+
+ print("into the initalizer method");
+
+     for(final business in businessList){
+          Marker firstMarker = Marker(
+          markerId: MarkerId(business.id),
+          position: LatLng(double.parse(business.lat), double.parse(business.long)),
+          infoWindow: InfoWindow(title: business.business_name.toString()),
+          icon: 
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+
+        );
+      markers.add(firstMarker);
+     }
 
     //  Marker zeroMarker = Marker(
-    //   markerId: MarkerId(id.toString()),
-    //   position: LatLng(lat!, long!),
-    //   infoWindow: InfoWindow(title: business_name.toString()),
+    //   markerId: MarkerId(nearByRestaurantList[0].id.toString()),
+    //   position: LatLng(double.parse(nearByRestaurantList[0].lat), double.parse(nearByRestaurantList[0].long)),
+    //   infoWindow: InfoWindow(title: nearByRestaurantList[0].business_name.toString()),
     //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
     // );
-    Marker firstMarker = Marker(
-      markerId: MarkerId("1"),
-      position: LatLng(26.914326950753455, 75.73800626994411),
-      infoWindow: InfoWindow(title: "Statue Circle"),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
+    // Marker firstMarker = Marker(
+    //   markerId: MarkerId("1"),
+    //   position: LatLng(26.914326950753455, 75.73800626994411),
+    //   infoWindow: InfoWindow(title: "Statue Circle"),
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    // );
 
-     Marker secondMarker = Marker(
-      markerId: MarkerId("2"),
-      position: LatLng(26.941456714172595, 75.7711352263281),
-      infoWindow: InfoWindow(title: "Triton Mall"),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
+    //  Marker secondMarker = Marker(
+    //   markerId: MarkerId("2"),
+    //   position: LatLng(26.941456714172595, 75.7711352263281),
+    //   infoWindow: InfoWindow(title: "Triton Mall"),
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    // );
 
-     Marker thirdMarker = Marker(
-      markerId: MarkerId("3"),
-      position: LatLng(26.85479593167254, 75.76673806809387),
-      infoWindow: InfoWindow(title: "Mansarovar Plaza"),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
+    //  Marker thirdMarker = Marker(
+    //   markerId: MarkerId("3"),
+    //   position: LatLng(26.85479593167254, 75.76673806809387),
+    //   infoWindow: InfoWindow(title: "Mansarovar Plaza"),
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    // );
 
 
-     Marker fourthMarker = Marker(
-      markerId: MarkerId("4"),
-      position: LatLng(26.937360507037585, 75.81551516809603),
-      infoWindow: InfoWindow(title: "Nahargarh Fort"),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
+    //  Marker fourthMarker = Marker(
+    //   markerId: MarkerId("4"),
+    //   position: LatLng(26.937360507037585, 75.81551516809603),
+    //   infoWindow: InfoWindow(title: "Nahargarh Fort"),
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    // );
 
-     Marker fifthMarker = Marker(
-      markerId: MarkerId("5"),
-      position: LatLng(26.876925402578138, 75.7530057257655),
-      infoWindow: InfoWindow(title: "Appic Software"),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
+    //  Marker fifthMarker = Marker(
+    //   markerId: MarkerId("5"),
+    //   position: LatLng(26.876925402578138, 75.7530057257655),
+    //   infoWindow: InfoWindow(title: "Appic Software"),
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    // );
 
-    markers.add(firstMarker);
-    markers.add(secondMarker);
-    markers.add(thirdMarker);
-    markers.add(fourthMarker);
-    markers.add(fifthMarker);
+    // markers.add(firstMarker);
+    // markers.add(secondMarker);
+    // markers.add(thirdMarker);
+    // markers.add(fourthMarker);
+    // markers.add(fifthMarker);
 
-   // markers.add(zeroMarker);
+    // markers.add(zeroMarker);
 
     setState(() {
       
@@ -115,9 +142,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   @override
   void initState() {
     locatePosition();
-    initilize();
-     nearBy();
+    nearBy();
+    initilize(nearByRestaurantList);
+    
     super.initState();
+    setCustomMarker();
   }
 
   void locatePosition() async {
@@ -148,11 +177,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // CameraPosition initialCameraPosition = CameraPosition(
-    //     tilt: 80,
-    //     bearing: 30,
-    //     zoom: 14.0,
-    //     target: LatLng(position.latitude, position.longitude));
+
     return Scaffold(
         backgroundColor: Colors.white,
 
@@ -207,7 +232,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           ],
         ),
         body: SafeArea(
-            child: GoogleMap(
+            child: Stack(
+              children: [
+                GoogleMap(
           initialCameraPosition: _currentPosition,
           myLocationEnabled: true,
           zoomControlsEnabled: true,
@@ -224,9 +251,172 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             });
          
           },
-          markers: markers.map((e) => e).toSet(),
-        ))
+          markers: markers.map((e) => 
+          e).toSet(),
+        ),
+
+         Padding(
+           padding: EdgeInsets.only(right: 25.0, top: 8),
+           child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8.w),
+                  height: 6.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3.w),
+                      color: Colors.white,
+                       boxShadow: [
+                  BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(2, 3),
+                      blurRadius: 10,
+                      spreadRadius: 1)
+                ],
+                      ),
+                  child: TextFormField(
+                    controller: mesageTextController ,
+                     onChanged: (value){
+                             searchData(value.toString());
+                          },
+                          validator: (val) {
+                            
+                          },
+                          style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      
+                      suffixIconConstraints: BoxConstraints(minWidth: 50),
+                      prefixIconConstraints: BoxConstraints(minWidth: 60),
+                      contentPadding: EdgeInsets.only(top: 0.h),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Search",
+                        hintStyle: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700),
+                        suffixIcon:
+                            InkWell(
+                              onTap: () {
+                               mesageTextController.clear();
+                              // getHostSpotList.clear();
+           
+                              // getHotspotApi();
+           
+           
+           
+           
+                                
+                              },
+                              child: SvgPicture.asset("assets/icons/cross.svg", width: 15, color: kPrimaryColor,),
+
+
+           
+                              // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
+                              ),
+                        prefixIcon: SvgPicture.asset("assets/icons/search-.svg", width: 20, color: kPrimaryColor,), ),
+                  ),
+                ),
+         ),
+
+
+
+
+              ],
+            )
+        )
         );
+  }
+
+
+   Future<dynamic> searchData(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    print("key Print: " + key.toString());
+
+    var request = http.post(
+        Uri.parse(RestDatasource.SEARCHMAP_URL
+            // RestDatasource.SEND_OTP,
+            ),
+        body: {
+          "business_name": key.toString(),
+          "category_name": "",
+          "sub_category_name": ""
+        });
+
+    var jsonArray;
+    var jsonRes;
+    var res;
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res!.statusCode == 200) {
+      if (jsonRes["status"] == true) {
+        nearByRestaurantList.clear();
+
+     for (var i = 0; i < jsonArray.length; i++) {
+          NearBy modelAgentSearch = new NearBy();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+          modelAgentSearch.business_images =
+              jsonArray[i]["business_images"].toString();
+          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+          modelAgentSearch.description = jsonArray[i]["description"].toString();
+          modelAgentSearch.business_category =
+              jsonArray[i]["business_category "].toString();
+          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+          modelAgentSearch.review_count =
+              jsonArray[i]["review_count"].toString();
+          modelAgentSearch.location = jsonArray[i]["location"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
+          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+          modelAgentSearch.long = jsonArray[i]["long"].toString();
+
+          print("lat: " + modelAgentSearch.lat.toString());
+         
+
+          nearByRestaurantList.add(modelAgentSearch);
+          id = jsonArray[i]["id"].toString();
+          business_name = jsonArray[i]["business_name"].toString();
+           print("Bussiness: " + business_name.toString());
+          latlong_position = jsonArray[i]["lat"].toString()+","+" " + jsonArray[i]["long"].toString();
+          print("lay: "+latlong_position.toString());
+         
+
+         nearByRestaurantList.add(modelAgentSearch);
+
+
+         initilize(nearByRestaurantList);
+         print("object");
+
+         print("lattttttt: "+lat.toString());
+
+          setState(() {});
+        }
+
+        setState(() {
+          isloading = false;
+        });
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Please try later")));
+        });
+      }
+    }
   }
 
 
@@ -295,10 +485,15 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
            print("Bussiness: " + business_name.toString());
           latlong_position = jsonArray[i]["lat"].toString()+","+" " + jsonArray[i]["long"].toString();
           print("lay: "+latlong_position.toString());
-          lat = jsonArray[i]["lat"];
-          long = jsonArray[i]["long"];
+         
 
-         // markers.add(modelAgentSearch);
+         nearByRestaurantList.add(modelAgentSearch);
+
+
+         initilize(nearByRestaurantList);
+         print("object");
+
+         print("lattttttt: "+lat.toString());
 
           setState(() {});
         }
@@ -306,13 +501,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         setState(() {
           isloading = false;
         });
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+      
 
       } else {
         setState(() {

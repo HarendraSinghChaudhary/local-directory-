@@ -10,9 +10,12 @@ import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class CommunityReplies extends StatefulWidget {
-  String review_id;
+    var review_id, image, username, message;
 
-  CommunityReplies({required this.review_id});
+  CommunityReplies({required this.review_id, required this.image, required this.username, required this.message});
+  
+
+ 
 
   @override
   _CommunityRepliesState createState() => _CommunityRepliesState();
@@ -63,6 +66,185 @@ class _CommunityRepliesState extends State<CommunityReplies> {
             SizedBox(
               height: 2.h,
             ),
+
+
+            Card(
+                        margin: EdgeInsets.symmetric(horizontal: 2.w),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3.w)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(6.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.image
+                                      .toString(),
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage: NetworkImage(
+                                        widget.image
+                                      .toString(),),
+                                  ),
+                                  placeholder: (context, url) => CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage:
+                                        AssetImage("assets/images/usericon.png"),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      CircleAvatar(
+                                    radius: 7.w,
+                                    backgroundImage:
+                                        AssetImage("assets/images/usericon.png"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 0.9.w,
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 74.w,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            //"Person Name",
+                                            widget.username.toString() !=
+                                                    "null"
+                                                ? widget.username.toString()
+                                                : "User Name",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: kCyanColor,
+                                                fontFamily: "Segoepr"),
+                                          ),
+                                          // Padding(
+                                          //   padding: EdgeInsets.only(right: 3.w),
+                                          //   child: Text(getReplyOnCommunityList[index].timedelay.toString(),
+                                          //     style: TextStyle(
+                                          //       fontSize: 10,
+                                          //       color: kPrimaryColor,
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 0.1.h,
+                                    ),
+                                    Container(
+                                      width: 74.w,
+                                      child: Text(
+                                        //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+
+                                        widget.message.toString() !=
+                                                "null"
+                                            ?  widget.message.toString()
+                                            : "",
+                                        style: TextStyle(
+                                            //overflow: TextOverflow.ellipsis,
+                                            fontSize: 10.2.sp,
+                                            color: Colors.black,
+                                            fontFamily: 'Roboto'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    // Container(
+                                    //   width: 74.w,
+                                    //   child: Row(
+                                    //     mainAxisAlignment:
+                                    //         MainAxisAlignment.spaceBetween,
+                                    //     children: [
+                                    //       getReplyOnCommunityList[index]
+
+                                    //   .viewV
+                                    //           ? InkWell(
+                                    //               onTap: () {
+                                    //                 setState(() {
+                                    //                   getReplyOnCommunityList[index]
+
+                                    //   .viewV = false;
+                                    //                 });
+                                    //               },
+                                    //               child: Text(
+                                    //                 "Hide Replies",
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 11.sp,
+                                    //                     color: Colors.black,
+                                    //                     fontWeight:
+                                    //                         FontWeight.w500,
+                                    //                     fontFamily: "Roboto"),
+                                    //               ),
+                                    //             )
+                                    //           : InkWell(
+                                    //               onTap: () {
+                                    //                 setState(() {
+                                    //                  getReplyOnCommunityList[index]
+
+                                    //   .viewV = true;
+                                    //                 });
+                                    //               },
+                                    //               child: Text(
+                                    //                 "View Replies",
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 11.sp,
+                                    //                     color: Colors.black,
+                                    //                     fontWeight:
+                                    //                         FontWeight.w500,
+                                    //                     fontFamily: "Roboto"),
+                                    //               ),
+                                    //             ),
+                                    //       Padding(
+                                    //         padding: EdgeInsets.only(right: 4.w),
+                                    //         child: GestureDetector(
+                                    //           onTap: () {
+                                    //             setState(() {
+                                    //               viewVisible = true;
+                                    //               tabOne =
+                                    //                   getReplyOnCommunityList[
+                                    //                           index]
+                                    //                       .id
+                                    //                       .toString();
+                                    //             });
+                                    //           },
+                                    //           child: Text(
+                                    //             "Reply",
+                                    //             style: TextStyle(
+                                    //                 fontSize: 11.sp,
+                                    //                 color: kPrimaryColor,
+                                    //                 fontWeight: FontWeight.w500,
+                                    //                 fontFamily: "Roboto"),
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    SizedBox(
+                                      height: 0.h,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )),
+
+                         SizedBox(
+              height: 1.h,
+            ),
             ListView.builder(
               shrinkWrap: true,
               controller: _controller,
@@ -89,7 +271,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                       .toString(),
                                   imageBuilder: (context, imageProvider) =>
                                       CircleAvatar(
-                                    radius: 7.w,
+                                    radius: 6.5.w,
                                     backgroundImage: NetworkImage(
                                         getReplyOnCommunityList[index]
                                             .userProfile!
@@ -97,13 +279,13 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                             .toString()),
                                   ),
                                   placeholder: (context, url) => CircleAvatar(
-                                    radius: 7.w,
+                                    radius: 6.5.w,
                                     backgroundImage:
                                         AssetImage("assets/images/usericon.png"),
                                   ),
                                   errorWidget: (context, url, error) =>
                                       CircleAvatar(
-                                    radius: 7.w,
+                                    radius: 6.5.w,
                                     backgroundImage:
                                         AssetImage("assets/images/usericon.png"),
                                   ),
@@ -271,6 +453,17 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                 );
               },
             ),
+            
+
+            SizedBox(
+                      height: 5.h,
+                    ),
+
+
+            
+
+
+
           ],
         ),
       ),
@@ -278,6 +471,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       floatingActionButton: Visibility(
         visible: viewVisible,
         child: Container(
+         
           width: double.infinity,
           height: 8.h,
           color: Colors.white,
@@ -323,7 +517,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
               SizedBox(
                 width: 3.w,
               ),
-              InkWell(
+              InkWell( 
                   onTap: () {
                     if (messageController.text != "" &&
                         messageController.text != "null") {

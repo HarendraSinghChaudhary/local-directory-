@@ -7,7 +7,7 @@ import 'package:sizer/sizer.dart';
 ThemeData theme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.black,
-    fontFamily: "Muli",
+    //fontFamily: "Muli",
     appBarTheme: appBarTheme(),
     textTheme: textTheme(),
     inputDecorationTheme: inputDecorationTheme(),

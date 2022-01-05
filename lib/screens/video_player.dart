@@ -1,93 +1,198 @@
-import 'package:sizer/sizer.dart';
-import 'package:video_player/video_player.dart';
-import 'package:flutter/material.dart';
+// import 'package:dio/dio.dart';
+// import 'package:flutter/material.dart';
+// import 'package:select_dialog/select_dialog.dart';
+
+// import 'user_model.dart';
 
 
-class VideoApp extends StatefulWidget {
-  @override
-  _VideoAppState createState() => _VideoAppState();
-}
+// class MyHomePage extends StatefulWidget {
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
 
-class _VideoAppState extends State<VideoApp> {
- late VideoPlayerController _controller;
+// class _MyHomePageState extends State<MyHomePage> {
+//   String? ex1;
+//   String? ex2;
+//   UserModel? ex3;
+//   UserModel? ex4;
+//   List<String> ex5 = [];
+//   String? ex6;
+//   final ex6Controller = TextEditingController(text: "20");
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
+//   final modelItems = List.generate(
+//     50,
+//     (index) => UserModel(
+//       avatar: "https://i.imgur.com/lTy4hiN.jpg",
+//       name: "Deivão $index",
+//       id: "$index",
+//       createdAt: DateTime.now(),
+//     ),
+//   );
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Stack(
-          children: [
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text("Select Dialog Example")),
+//       body: SingleChildScrollView(
+//         child: Container(
+//           padding: EdgeInsets.all(25),
+//           width: double.infinity,
+//           child: Column(
+//             children: <Widget>[
+//               ElevatedButton(
+//                 child: Text(ex1 ?? "Simple Example"),
+//                 onPressed: () {
+//                   SelectDialog.showModal<String>(
+//                     context,
+//                     label: "Simple Example",
+//                     titleStyle: TextStyle(color: Colors.brown),
+//                     showSearchBox: false,
+//                     selectedValue: ex1,
+//                     backgroundColor: Colors.amber,
+//                     items: List.generate(50, (index) => "Item $index"),
+//                     onChange: (String selected) {
+//                       setState(() {
+//                         ex1 = selected;
+//                       });
+//                     },
+//                   );
+//                 },
+//               ),
+//               ElevatedButton(
+//                 child: Text(ex2 ?? "Model Example"),
+//                 onPressed: () {
+//                   SelectDialog.showModal<UserModel>(
+//                     context,
+//                     alwaysShowScrollBar: true,
+//                     label: "Model Example",
+//                     searchBoxDecoration: InputDecoration(hintText: "Example Hint"),
+//                     items: modelItems,
+//                     onChange: (UserModel selected) {
+//                       setState(() {
+//                         ex2 = selected.name;
+//                       });
+//                     },
+//                   );
+//                 },
+//               ),
+//               ElevatedButton(
+//                 child: Text(ex3?.name ?? "Item Builder Example"),
+//                 onPressed: () {
+//                   SelectDialog.showModal<UserModel>(
+//                     context,
+//                     label: "Item Builder Example",
+//                     items: modelItems,
+//                     selectedValue: ex3,
+//                     itemBuilder: (BuildContext context, UserModel item, bool isSelected) {
+//                       return Container(
+//                         decoration: !isSelected
+//                             ? null
+//                             : BoxDecoration(
+//                                 borderRadius: BorderRadius.circular(5),
+//                                 color: Colors.white,
+//                                 border: Border.all(color: Theme.of(context).primaryColor),
+//                               ),
+//                         child: ListTile(
+//                           leading: CircleAvatar(backgroundImage: item.avatar == null ? null : NetworkImage(item.avatar!)),
+//                           selected: isSelected,
+//                           title: Text(item.name),
+//                           subtitle: Text(item.createdAt.toString()),
+//                         ),
+//                       );
+//                     },
+//                     onChange: (selected) {
+//                       setState(() {
+//                         ex3 = selected;
+//                       });
+//                     },
+//                   );
+//                 },
+//               ),
+//               ElevatedButton(
+//                 child: Text(ex4?.name ?? "Online Example"),
+//                 onPressed: () {
+//                   SelectDialog.showModal<UserModel>(
+//                     context,
+//                     label: "Online Example",
+//                     selectedValue: ex4,
+//                     onFind: (String filter) => getData(filter),
+//                     onChange: (UserModel selected) {
+//                       setState(() {
+//                         ex4 = selected;
+//                       });
+//                     },
+//                   );
+//                 },
+//               ),
+//               ElevatedButton(
+//                 child: Text(
+//                   ex5.isEmpty ? "Multiple Items Example" : ex5.join(", "),
+//                 ),
+//                 onPressed: () {
+//                   SelectDialog.showModal<String>(
+//                     context,
+//                     label: "Multiple Items Example",
+//                     multipleSelectedValues: ex5,
+//                     items: List.generate(50, (index) => "Item $index"),
+//                     itemBuilder: (context, item, isSelected) {
+//                       return ListTile(
+//                         trailing: isSelected ? Icon(Icons.check) : null,
+//                         title: Text(item),
+//                         selected: isSelected,
+//                       );
+//                     },
+//                     onMultipleItemsChange: (List<String> selected) {
+//                       setState(() {
+//                         ex5 = selected;
+//                       });
+//                     },
+//                     okButtonBuilder: (context, onPressed) {
+//                       return Align(
+//                         alignment: Alignment.centerRight,
+//                         child: FloatingActionButton(
+//                           onPressed: onPressed,
+//                           child: Icon(Icons.check),
+//                           mini: true,
+//                         ),
+//                       );
+//                     },
+//                   );
+//                 },
+//               ),
+//               ElevatedButton(
+//                 child: Text(ex6 ?? "Find Controller Example"),
+//                 onPressed: () {
+//                   SelectDialog.showModal<UserModel>(
+//                     context,
+//                     findController: ex6Controller,
+//                     alwaysShowScrollBar: true,
+//                     label: "Scroll Controller Example",
+//                     searchBoxDecoration: InputDecoration(hintText: "Example Hint"),
+//                     items: modelItems,
+//                     onChange: (UserModel selected) {
+//                       setState(() {
+//                         ex6 = selected.name;
+//                       });
+//                     },
+//                   );
+//                 },
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-             Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 2.w),
-            height: 25.h,
-            width: double.infinity,
-            child: _controller.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  )
-                : Container(),
-          ),
-        ),
+//   Future<List<UserModel>> getData(String filter) async {
+//     var response = await Dio().get(
+//       "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+//       queryParameters: {
+//         "filter": filter
+//       },
+//     );
 
-         Center(
-           child: InkWell(
-             onTap: () {
-
-               setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            });
-
-             },
-             child: Visibility(
-               visible: true,
-               child: Icon(
-                         _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                         size: 40,
-                         color: Colors.white,
-                       ),
-             ),
-           ),
-         ),
-
-          ],
-        ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       _controller.value.isPlaying
-        //           ? _controller.pause()
-        //           : _controller.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //   ),
-        // ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-}
+//     var models = UserModel.fromJsonList(response.data);
+//     return models;
+//   }
+// }

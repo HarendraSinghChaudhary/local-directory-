@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,13 +38,12 @@ class _HotspotState extends State<Hotspot> {
   TextEditingController businessNameController = new TextEditingController();
   TextEditingController reviewController = new TextEditingController();
 
-
   List<GetHotSpotClass> getHostSpotList = [];
 
   List<GetAllBusiness> getAllBusinessList = [];
 
   String selectedName = "";
-String selectedvalue = "";
+  String selectedvalue = "";
   @override
   void initState() {
     getHotspotApi();
@@ -65,16 +66,17 @@ String selectedvalue = "";
             ),
           ),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 4.w),
-            child: InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TestApp()));
-                },
-                child: SvgPicture.asset("assets/icons/message.svg")),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 4.w),
+        //     child: InkWell(
+        //         onTap: () {
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (context) => TestApp()));
+        //         },
+        //         child: SvgPicture.asset("assets/icons/message.svg")),
+        //   )
+        // ],
       ),
       body: Stack(
         children: [
@@ -93,14 +95,15 @@ String selectedvalue = "";
                     borderRadius: BorderRadius.circular(3.w),
                     color: Colors.white),
                 child: TextFormField(
-                  controller: mesageTextController ,
-                   onChanged: (value){
-                          searchData(value.toString());
-                        },
-                        validator: (val) {
-                          
-                        },
+                  style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
+                  controller: mesageTextController,
+                  onChanged: (value) {
+                    searchData(value.toString());
+                  },
+                  validator: (val) {},
                   decoration: InputDecoration(
+                    prefixIconConstraints: BoxConstraints(minWidth: 60),
+                    suffixIconConstraints: BoxConstraints(minWidth: 60),
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -111,22 +114,15 @@ String selectedvalue = "";
                           color: kPrimaryColor,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700),
-                      suffixIcon:
-                          InkWell(
-                            onTap: () {
+                      suffixIcon: InkWell(
+                          onTap: () {
                             mesageTextController.clear();
                             getHostSpotList.clear();
 
                             getHotspotApi();
-
-
-
-
-                              
-                            },
-
-                            child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")),
-                      prefixIcon: Image.asset("assets/images/search.png")),
+                          },
+                          child: SvgPicture.asset("assets/icons/cross.svg", width: 4.w, color: kPrimaryColor,)),
+                      prefixIcon: SvgPicture.asset("assets/icons/-search.svg", width: 24, color: kPrimaryColor,), ),
                 ),
               ),
               SizedBox(
@@ -147,8 +143,8 @@ String selectedvalue = "";
                           child: Column(
                             children: [
                               Row(
-                                 mainAxisAlignment: MainAxisAlignment.start,
-                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.all(6.0),
@@ -158,27 +154,27 @@ String selectedvalue = "";
                                           .toString(),
                                       imageBuilder: (context, imageProvider) =>
                                           CircleAvatar(
-                                            radius: 7.w,
-                                            backgroundImage: NetworkImage(
-                                              getHostSpotList[index]
-                                                  .user_image
-                                                  .toString(),
-                                            ),
-                                          ),
-                                      placeholder: (context, url) => CircleAvatar(
+                                        radius: 7.w,
+                                        backgroundImage: NetworkImage(
+                                          getHostSpotList[index]
+                                              .user_image
+                                              .toString(),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) =>
+                                          CircleAvatar(
                                         radius: 7.w,
                                         backgroundImage: AssetImage(
                                             "assets/images/usericon.png"),
                                       ),
                                       errorWidget: (context, url, error) =>
                                           CircleAvatar(
-                                            radius: 7.w,
-                                            backgroundImage: AssetImage(
-                                                "assets/images/usericon.png"),
-                                          ),
+                                        radius: 7.w,
+                                        backgroundImage: AssetImage(
+                                            "assets/images/usericon.png"),
+                                      ),
                                     ),
                                   ),
-                               
                                   SizedBox(
                                     width: 0.9.w,
                                   ),
@@ -196,63 +192,89 @@ String selectedvalue = "";
                                             children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    // "Person Name @ Bar Name",
 
-                                                    getHostSpotList[index]
-                                                                .person_name
-                                                                .toString() !=
-                                                            "null"
-                                                        ? getHostSpotList[index]
-                                                            .person_name
-                                                            .toString()
-                                                        : "User Name",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 11.sp,
-                                                        color: kCyanColor,
-                                                        fontFamily: "Segoepr"),
-                                                  ),
-                                                  Text(
-                                                    " @ ",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 11.sp,
-                                                        color: kCyanColor,
-                                                        fontFamily: "Segoepr"),
-                                                  ),
-                                                  Text(
-                                                    // "Person Name @ Bar Name",
-
-                                                    getHostSpotList[index]
+                                                  Container(
+                                                    width: 53.w,
+                                                    child: Text(getHostSpotList[index]
+                                                              .person_name
+                                                              .toString() + " @ " +getHostSpotList[index]
                                                                 .business_user_name
-                                                                .toString() !=
-                                                            "null"
-                                                        ? getHostSpotList[index]
-                                                            .business_user_name
-                                                            .toString()
-                                                        : "User Name",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 11.sp,
-                                                        color: kCyanColor,
-                                                        fontFamily: "Segoepr"),
+                                                                .toString(),
+
+                                                                style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: kCyanColor,
+                                                          fontFamily: "Segoepr"),
+                                                                
+                                                                ),
                                                   ),
+
+
+
+
+                                                  // Text(
+                                                  //   // "Person Name @ Bar Name",
+
+                                                  //   getHostSpotList[index]
+                                                  //               .person_name
+                                                  //               .toString() !=
+                                                  //           "null"
+                                                  //       ? getHostSpotList[index]
+                                                  //           .person_name
+                                                  //           .toString()
+                                                  //       : "User Name",
+                                                  //   overflow:
+                                                  //       TextOverflow.ellipsis,
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 11.sp,
+                                                  //       color: kCyanColor,
+                                                  //       fontFamily: "Segoepr"),
+                                                  // ),
+                                                  // Text(
+                                                  //   " @ ",
+                                                  //   overflow:
+                                                  //       TextOverflow.ellipsis,
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 11.sp,
+                                                  //       color: kCyanColor,
+                                                  //       fontFamily: "Segoepr"),
+                                                  // ),
+                                                  // Container(
+                                                  //   width: 34.w,
+                                                  //   child: Text(
+                                                  //     // "Person Name @ Bar Name",
+                                                    
+                                                  //     getHostSpotList[index]
+                                                  //                 .business_user_name
+                                                  //                 .toString() !=
+                                                  //             "null"
+                                                  //         ? getHostSpotList[index]
+                                                  //             .business_user_name
+                                                  //             .toString()
+                                                  //         : "",
+                                                      
+                                                        
+                                                  //         maxLines: 2,
+                                                  //     style: TextStyle(
+                                                  //         fontSize: 11.sp,
+                                                  //         color: kCyanColor,
+                                                  //         fontFamily: "Segoepr"),
+                                                  //   ),
+                                                  // ),
                                                 ],
                                               ),
                                               Padding(
                                                 padding:
-                                                    EdgeInsets.only(right: 3.w),
+                                                    EdgeInsets.only(right: 2.w),
                                                 child: Text(
                                                   //  "2m ago",
 
                                                   getHostSpotList[index]
-                                                      .created_at
+                                                      .timedelay
                                                       .toString()
-                                                      .substring(0, 10),
+                                                      ,
+                                                      
+                                                      overflow: TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                     fontSize: 8.sp,
                                                     color: kPrimaryColor,
@@ -278,7 +300,7 @@ String selectedvalue = "";
                                                     .toString()
                                                 : "",
                                             style: TextStyle(
-                                                //overflow: TextOverflow.ellipsis,
+                                                // overflow: TextOverflow.ellipsis,
                                                 fontSize: 10.2.sp,
                                                 color: Color(0xFFCECECE),
                                                 fontFamily: 'Roboto'),
@@ -304,7 +326,37 @@ String selectedvalue = "";
                                                                   id: getHostSpotList[
                                                                           index]
                                                                       .id
-                                                                      .toString())));
+                                                                      .toString(),
+
+                                                                      username: getHostSpotList[
+                                                                          index]
+                                                                      .person_name
+                                                                      .toString(),
+
+                                                                      businessname: getHostSpotList[
+                                                                          index]
+                                                                      .business_user_name
+                                                                      .toString(),
+
+                                                                      image:getHostSpotList[
+                                                                          index]
+                                                                      .user_image
+                                                                      .toString(),
+
+                                                                      message: getHostSpotList[
+                                                                          index]
+                                                                      .message
+                                                                      .toString(),
+
+                                                                      time: getHostSpotList[
+                                                                          index]
+                                                                      .timedelay
+                                                                      .toString(),
+
+
+                                                                      ),
+                                                                      
+                                                                      ));
                                                 },
                                                 child: Text(
                                                   "View Replies",
@@ -350,7 +402,23 @@ String selectedvalue = "";
                                                         hintText: "Reply",
                                                         suffixIcon: InkWell(
                                                             onTap: () {
-                                                              replyOnHotspotReviewApi(
+                                                              var mesage =
+                                                                  messageController
+                                                                      .text
+                                                                      .toString();
+
+                                                              if (mesage ==
+                                                                      "" ||
+                                                                  mesage ==
+                                                                      "null") {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(SnackBar(
+                                                                        content:
+                                                                            Text("Please enter reply")));
+                                                              } else {
+
+                                                                replyOnHotspotReviewApi(
                                                                   getHostSpotList[
                                                                           index]
                                                                       .id
@@ -359,6 +427,13 @@ String selectedvalue = "";
                                                                           index]
                                                                       .messageText
                                                                       .toString());
+
+                                                              }
+
+                                                              
+
+                                                              messageController
+                                                                  .clear();
                                                             },
                                                             child: Icon(
                                                                 Icons.send,
@@ -398,14 +473,7 @@ String selectedvalue = "";
             ],
           ),
 
-          //  buildInput()
-
-          // Padding(
-          //   padding: EdgeInsets.only(top: 75.h),
-          //   child: buildMessageFormField(),
-          // ),
-
-          // buildMessageFormField()
+          
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
@@ -430,54 +498,32 @@ String selectedvalue = "";
           border: InputBorder.none,
           hintText: 'Type your message...',
           hintStyle: TextStyle(color: Colors.grey),
-          //  suffixIcon: Padding(
-          //    padding: const EdgeInsets.only(right: 20),
-          //    child: InkWell(
-          //      onTap: () {},
-          //      child: SvgPicture.asset(
-          //                "assets/attachment.svg",
-          //                width: 5,
-          //                color: Colors.grey,
-
-          //              ),
-          //    ),
-          //  ),
+         
         ),
         // focusNode: focusNode,
       ),
     );
   }
 
+  Future<dynamic> searchData(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    print("key Print: " + key.toString());
 
-
-
-   Future<dynamic> searchData(String key ) async {
-
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-       var id = prefs.getString("id");
-       print("id Print: " +id.toString());
-       print("key Print: " +key.toString());
-
-
-
-
-    
-       var request = http.post(
+    var request = http.post(
         Uri.parse(RestDatasource.SEARCHDATA_URL
             // RestDatasource.SEND_OTP,
             ),
         body: {
           "id": id.toString(),
           "key": key.toString(),
-          
         });
-      
 
-   
     var jsonArray;
     var jsonRes;
-    var res ;
- await request.then((http.Response response) {
+    var res;
+    await request.then((http.Response response) {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -486,12 +532,10 @@ String selectedvalue = "";
       jsonArray = jsonRes['data'];
     });
 
-     if (res!.statusCode == 200) {
-
+    if (res!.statusCode == 200) {
+      final date2 = DateTime.now();
       if (jsonRes["status"] == true) {
-          getHostSpotList.clear();
-    
-
+        getHostSpotList.clear();
 
         for (var i = 0; i < jsonArray.length; i++) {
           GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
@@ -505,6 +549,20 @@ String selectedvalue = "";
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
+           var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+                      modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+                      if(difference>60){
+                        var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+                        modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+
+                        if(difference>60){
+                          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+                          modelAgentSearch.timedelay = difference.toString()+" hours ago";
+                          if(difference > 24){
+                            modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+                          }
+                        }
+                      }
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.person_name.toString());
@@ -514,30 +572,24 @@ String selectedvalue = "";
           setState(() {});
         }
 
-     
-
         setState(() {
           isloading = false;
         });
       } else {
-      setState(() {
-        isloading = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please try later")));
-      
-      });
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Please try later")));
+        });
+      }
     }
   }
-  }
-  
 
-
-    Future<dynamic> addHotspotReviewApi(
-      String message) async {
+  Future<dynamic> addHotspotReviewApi(String message, [String? sec = '307']) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-    print("business_idPrint: " + selectedId.toString());
+    print("business_idPrint: " + sec.toString());
     print("message Print: " + reviewController.text.toString());
 
     setState(() {
@@ -550,9 +602,8 @@ String selectedvalue = "";
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": selectedId,
-          "message" : reviewController.text
-         
+          "business_id": sec != "" ? sec : "307",
+          "message": reviewController.text
         });
     String msg = "";
     var jsonArray;
@@ -577,11 +628,14 @@ String selectedvalue = "";
           isloading = false;
         });
 
+        getHostSpotList.clear();
         getHotspotApi();
         reviewController.clear();
+        reviewController.text.toString() == "";
+        
 
-       ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
 
         // getHotspotApi();
         //Navigator.pop(context);
@@ -607,8 +661,7 @@ String selectedvalue = "";
       });
     }
   }
-  
-  
+
   Future<dynamic> replyOnHotspotReviewApi(
       String review_id, String messageText) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -651,10 +704,12 @@ String selectedvalue = "";
         setState(() {
           isloading = false;
         });
+       
 
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Your reply added successfully")));
+         ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
 
+       
       } else {
         setState(() {
           isloading = false;
@@ -666,12 +721,12 @@ String selectedvalue = "";
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
 
-    Future<dynamic> getallBusinessDataApi() async {
+  Future<dynamic> getallBusinessDataApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -703,8 +758,8 @@ String selectedvalue = "";
         for (var i = 0; i < jsonArray.length; i++) {
           GetAllBusiness modelAgentSearch = new GetAllBusiness();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
-          modelAgentSearch.business_name = jsonArray[i]["business_name"].toString();
-       
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
 
           print("id: " + modelAgentSearch.business_id.toString());
           print("Bussiness: " + modelAgentSearch.business_name.toString());
@@ -736,7 +791,7 @@ String selectedvalue = "";
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -769,6 +824,8 @@ String selectedvalue = "";
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
 
+      final date2 = DateTime.now();
+
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
@@ -782,6 +839,22 @@ String selectedvalue = "";
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
+
+
+           var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+                      modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+                      if(difference>60){
+                        var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+                        modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+
+                        if(difference>60){
+                          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+                          modelAgentSearch.timedelay = difference.toString()+" hours ago";
+                          if(difference > 24){
+                            modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+                          }
+                        }
+                      }
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.person_name.toString());
@@ -820,91 +893,103 @@ String selectedvalue = "";
 
   TextFormField buildMessageFormField() {
     return TextFormField(
-       controller: reviewController,
+      controller: reviewController,
       onChanged: (val) {
         selectedvalue = val.toString();
-        if(val.toString().substring(val.toString().length-1)=="@"){
-         print("Hello: "+getAllBusinessList.length.toString());
 
-        //  _showOverlay(context);
-                        SelectDialog.showModal<GetAllBusiness>(
-                          
-                          
-                         
-                          context,
-                          label: "Please select a business",
-                         
-                        
-                          items: getAllBusinessList,
-                          showSearchBox: true,
+          if (val.toString().substring(val.toString().length - 1) == "@") {
+          print("Hello: " + getAllBusinessList.length.toString());
+
+          //  _showOverlay(context);
+          SelectDialog.showModal<GetAllBusiness>(
+            context,
+            label: " Please select a business",
+            titleStyle: TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600, fontSize: 16.sp),
+           
+            items: getAllBusinessList,
+            showSearchBox: true,
+            searchBoxDecoration: InputDecoration(
+              hintText: " Search Business...",
+              contentPadding: EdgeInsets.all(8)
               
-                          itemBuilder: (BuildContext context,
-                              GetAllBusiness item, bool isSelected) {
-                            return Container(
+            ),
+            // onFind: ,
+            itemBuilder:
+                (BuildContext context, GetAllBusiness item, bool isSelected) {
+              return Container(
+                decoration: !isSelected
+                    ? null
+                    : BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white,
+                        border:
+                            Border.all(color: Theme.of(context).primaryColor),
+                      ),
+                child: InkWell(
+                  onTap: () {
+                    print("lendth: " + getAllBusinessList.length.toString());
+                    selectedId = item.business_id;
 
-                              
-                              decoration: !isSelected
-                                  ? null
-                                  : BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                              child: InkWell(
-                                onTap: () {
-                                  print("lendth: "+getAllBusinessList.length.toString());
-                                  selectedId = item.business_id;
+                    print("id selected" + selectedId.toString());
 
-                                  print("id selected" + selectedId.toString());
+                    selectedName = item.business_name.toString();
+                    reviewController.text = selectedvalue + selectedName;
 
-                                    selectedName= item.business_name.toString();
-                                    reviewController. text = selectedvalue+selectedName;
+                    //   serviceController.text = "";
 
-                                    
-
-                                    //   serviceController.text = "";
-                                   
-
-                                    // isLoading = true;
-                                    //  personalInfoPresenter.getSubCat(catId.toString());
-                                    Navigator.of(context, rootNavigator: true).pop();
-                                    reviewController.selection = TextSelection.fromPosition(TextPosition(offset: reviewController.text.length));
-                                
-                                },
-                                child: ListTile(
-                                  leading: item.business_name == "null"
-                                      ? null
-                                      : Text(
-                                          item.business_name.toString(),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-
-                                
-                                  selected: isSelected,
-                                ),
-                              ),
-                            );
-                          },
-                         
-                        );
+                    // isLoading = true;
+                    //  personalInfoPresenter.getSubCat(catId.toString());
+                    Navigator.of(context, rootNavigator: true).pop();
+                    reviewController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: reviewController.text.length));
+                  },
+                  child: ListTile(
+                    leading: item.business_name == "null"
+                        ? null
+                        : Text(
+                            item.business_name.toString(),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                    selected: isSelected,
+                  ),
+                ),
+              );
+            },
+          );
         }
-    
-      },
 
+
+
+       
+      },
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-
-     
       decoration: InputDecoration(
-        suffixIcon: InkWell(
-          onTap: () {
-            addHotspotReviewApi(reviewController.text.toString());
-          },
-          child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+        suffixIcon: 
+        InkWell(
+            onTap: () {
+
+               var mesage  = reviewController.text.toString();
+
+
+              if (mesage == "" || mesage == "null") {
+                ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please write message")));
+                
+              } else {
+                addHotspotReviewApi(reviewController.text.toString(), selectedId.toString());
+              }
+
+
+              reviewController.text.toString() == "";
+              
+              
+              
+             
+            
+            },
+            child: Icon(Icons.send, size: 9.w, color: Colors.white)),
         fillColor: kPrimaryColor, filled: true,
         //filled: true,
 
@@ -926,15 +1011,12 @@ String selectedvalue = "";
     );
   }
 
-
-   void _showOverlay(BuildContext context) async {
-      
+  void _showOverlay(BuildContext context) async {
     // Declaring and Initializing OverlayState
     // and OverlayEntry objects
     OverlayState? overlayState = Overlay.of(context);
     OverlayEntry overlayEntry;
     overlayEntry = OverlayEntry(builder: (context) {
-        
       // You can return any widget you like here
       // to be displayed on the Overlay
       return Positioned(
@@ -944,34 +1026,32 @@ String selectedvalue = "";
           width: MediaQuery.of(context).size.width * 0.8,
           child: Stack(
             children: [
-               Container(
-          margin: EdgeInsets.symmetric(horizontal: 4.w),
-          color: Colors.white,
-          height: 25.h,
-          width: double.infinity,
-          child: ListView.builder(
-            controller: _controller,
-            shrinkWrap: true,
-            itemCount: getAllBusinessList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () {
-
-                 // overlayEntry.remove();
-
-                },
-                child: Text(getAllBusinessList[index].business_name.toString(),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 11.sp,
-                  
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                color: Colors.white,
+                height: 25.h,
+                width: double.infinity,
+                child: ListView.builder(
+                  controller: _controller,
+                  shrinkWrap: true,
+                  itemCount: getAllBusinessList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // overlayEntry.remove();
+                      },
+                      child: Text(
+                        getAllBusinessList[index].business_name.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 11.sp,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                ),
-              );
-            },
-          ),
-        ),
-             
+              ),
+
               // Positioned(
               //   top: MediaQuery.of(context).size.height * 0.13,
               //   left: MediaQuery.of(context).size.width * 0.13,
@@ -991,7 +1071,7 @@ String selectedvalue = "";
               //       ),
               //       GestureDetector(
               //         onTap: () {
-                          
+
               //           // When the icon is pressed the OverlayEntry
               //           // is removed from Overlay
               //          // overlayEntry.remove();
@@ -1008,7 +1088,7 @@ String selectedvalue = "";
         ),
       );
     });
-  
+
     // Inserting the OverlayEntry into the Overlay
     overlayState!.insert(overlayEntry);
   }
@@ -1024,6 +1104,7 @@ class GetHotSpotClass {
   var message = "";
   var created_at = "";
   var messageText = "";
+  var timedelay = "Secconds";
 }
 
 class GetAllBusiness {
@@ -1058,28 +1139,4 @@ class SearchSurffixIcon extends StatelessWidget {
   }
 }
 
-class SearchPrefixIcon extends StatelessWidget {
-  const SearchPrefixIcon({
-    Key? key,
-    required this.svgIcon,
-  }) : super(key: key);
 
-  final String svgIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        0,
-        20,
-        20,
-        20,
-      ),
-      child: SvgPicture.asset(
-        svgIcon,
-        color: kPrimaryColor,
-        width: 20,
-      ),
-    );
-  }
-}

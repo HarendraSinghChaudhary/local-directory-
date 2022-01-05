@@ -1,9 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_code_picker/country_codes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/services/api_client.dart';
 
 
 class ContactUs extends StatefulWidget {
@@ -14,7 +22,8 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
-  String? code = "+91";
+  String code = "+91";
+  bool isloading = false;
 
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
@@ -76,6 +85,7 @@ class _ContactUsState extends State<ContactUs> {
                       )),
                   child: Expanded(
                     child: TextFormField(
+                      controller: commentController,
                       style: TextStyle(color: Color(0XFFCECECE)),
                       maxLines: 5,
                       decoration: InputDecoration(
@@ -94,12 +104,26 @@ class _ContactUsState extends State<ContactUs> {
                 SizedBox(height: 3.h,),
 
 
+                isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator(color: kPrimaryColor,)
+                          : CupertinoActivityIndicator())
+                  :
+
+
 
                 DefaultButton(
                   width: 40.w, 
                   height: 7.h, 
                   text: "Send", 
-                  press: () {})
+                  press: () {
+                     contactusApi(code.toString());
+
+                       
+                 
+                  })
 
 
           ],
@@ -109,6 +133,90 @@ class _ContactUsState extends State<ContactUs> {
       
     );
   }
+
+    Future<dynamic> contactusApi(
+      [String? Codes = "+91"]
+   ) async {
+         SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+      print("code Print: " + code.toString());
+    setState(() {
+      isloading = true;
+    });
+    // print("username: " + username);
+    // print("useremail: " + email);
+    // print("userpassword: " + password);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(RestDatasource.CONTACTUS_URL
+            // RestDatasource.SEND_OTP,
+            ),
+        body: {
+          "user_id": id.toString(),
+          "name": nameController.text.toString(),
+          "email": emailController.text.toString(),
+          "country_code": codes.toString(),
+          "phone": phoneController.text.toString(),
+          "comment": commentController.text.toString(),
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      // msg = jsonRes["message"].toString();
+      // getotp = jsonRes["otp"];
+      // print(getotp.toString() + '123');
+    });
+    if (res!.statusCode == 200) {
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(res!.body.toString());
+      print("Response: " + res!.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["otp"].toString() + "_");
+
+      if (jsonRes["status"] == true) {
+
+
+        nameController.clear();
+        emailController.clear();
+        phoneController.clear();
+        commentController.clear();
+       
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"])),
+        );
+
+        // print('getotp1: ' + getotp.toString());
+       
+
+        setState(() {
+          isloading = false;
+        });
+      }
+      if (jsonRes["status"] == false) {
+        setState(() {
+          isloading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"].toString())),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+
+
 
   TextFormField builNameFormField() {
     return TextFormField(

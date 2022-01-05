@@ -140,15 +140,15 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: builNameFormField(),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: buildEmailFormField(),
             ),
              Padding(
-               padding: const EdgeInsets.all(8.0),
+               padding: EdgeInsets.all(8.0),
                child: buildPhoneFormField(),
              ),
             Padding(

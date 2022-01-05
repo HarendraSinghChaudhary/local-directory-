@@ -64,7 +64,7 @@ class _CheckInState extends State<CheckIn> {
                     children: [
                       Container(
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
-                          height: 11.h,
+                          height: 9.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3.w),
@@ -75,7 +75,7 @@ class _CheckInState extends State<CheckIn> {
                                 padding:
                                     EdgeInsets.only(bottom: 0.h, left: 2.w),
                                 child: CircleAvatar(
-                                  radius: 7.w,
+                                  radius: 6.w,
                                   backgroundImage: NetworkImage(
                                       userCheckInList[index].businessProfile!.image.toString(),),
                                 ),
@@ -139,7 +139,7 @@ class _CheckInState extends State<CheckIn> {
                                           Text(
                                             //"2 days ago",
 
-                                            userCheckInList[index].created_at.toString().substring(0,10),
+                                            userCheckInList[index].timedelay.toString(),
                                             style: TextStyle(
                                               fontSize: 10.sp,
                                               color: Color(0XFF979797),
@@ -209,6 +209,7 @@ class _CheckInState extends State<CheckIn> {
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
+       final date2 = DateTime.now();
 
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
@@ -222,6 +223,22 @@ class _CheckInState extends State<CheckIn> {
               jsonArray[i]["created_at"].toString();
           modelAgentSearch.business_id =
               jsonArray[i]["business_id"].toString();
+                 var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
+          modelAgentSearch.timedelay = difference.toString()+" seconds ago";
+          if(difference>60){
+            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
+            modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+
+            if(difference>60){
+              var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
+              modelAgentSearch.timedelay = difference.toString()+" hours ago";
+
+              if(difference > 24){
+                modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
+              }
+            }
+          }
+
 
 
               
@@ -284,6 +301,7 @@ class UserCheckInList {
   var id = "";
   var created_at = "";
   var business_id = "";
+  var timedelay = "Secconds";
   
 
 }

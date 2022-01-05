@@ -173,7 +173,7 @@ class _HomeState extends State<Home> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Favorites()));
+                      MaterialPageRoute(builder: (context) => BusFav()));
                 },
                 child: SvgPicture.asset(
                   "assets/icons/heart1.svg",
