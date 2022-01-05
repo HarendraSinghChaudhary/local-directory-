@@ -41,13 +41,16 @@ class _HotspotState extends State<Hotspot> {
   List<GetHotSpotClass> getHostSpotList = [];
 
   List<GetAllBusiness> getAllBusinessList = [];
-
+  List<String> coments=[];
+  var words = [];
+  String str = '';
   String selectedName = "";
   String selectedvalue = "";
   @override
   void initState() {
     getHotspotApi();
     getallBusinessDataApi();
+    reviewController.text = "Leave a message...";
     super.initState();
   }
 
@@ -888,13 +891,120 @@ class _HotspotState extends State<Hotspot> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
 
-  TextFormField buildMessageFormField() {
-    return TextFormField(
+  Column buildMessageFormField() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+
+        str.length > 1
+            ? ListView(
+            shrinkWrap: true,
+            children: getAllBusinessList.map((s){
+              if(('@' + s.business_name.toLowerCase()).contains(str.toLowerCase()))
+                return
+                  Container(
+                    color: Colors.white,
+                    child: ListTile(
+                        title:Text(s.business_name,style: TextStyle(color: Colors.black),),
+                        onTap:(){
+                          String tmp = str.substring(1,str.length);
+                          setState((){
+                            str ='';
+                            reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
+                            reviewController.selection = TextSelection.fromPosition(TextPosition(offset: reviewController.text.length));
+
+                          });
+                        }),
+                  );
+              else return SizedBox();
+            }).toList()
+        ):SizedBox(),
+        SizedBox(height:25),
+        coments.length>0 ?
+        ListView.builder(
+          shrinkWrap:true,
+          itemCount:coments.length,
+          itemBuilder:(con,ind){
+            return Text.rich(
+              TextSpan(
+                  text:'',
+                  children:coments[ind].split(' ').map((w){
+                    return w.startsWith('@')&&w.length>1 ?
+                    TextSpan(
+                      text:' '+w,
+                      style: TextStyle(color: Colors.blue),
+                    ): TextSpan(text:' '+w,style: TextStyle(color: Colors.black));
+                  }).toList()
+              ),
+            );
+          },
+        ):SizedBox(),
+        TextField(
+            controller: reviewController,
+
+            onChanged: (val) {
+              setState(() {
+                words = val.split(' ');
+                str = words.length > 0 &&
+                    words[words.length - 1].startsWith('@')
+                    ? words[words.length - 1]
+                    : '';
+              });
+            },
+          style: TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 3.w),
+            suffixIcon:
+            Visibility(
+              visible: reviewController.text.toString()=="" || reviewController.text.toString()== "null"?false:true,
+              child: InkWell(
+                  onTap: () {
+
+                    var mesage  = reviewController.text.toString();
+
+
+                    if (mesage == "" || mesage == "null") {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("Please write message")));
+
+                    } else {
+                      addHotspotReviewApi(reviewController.text.toString(), selectedId.toString());
+                    }
+
+
+                    reviewController.text.toString() == "";
+                  },
+                  child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+            ),
+            fillColor: kPrimaryColor, filled: true,
+            //filled: true,
+
+            hintText: "Leave a message...",
+            hintStyle: TextStyle(color: Colors.white),
+            focusColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: BorderSide(
+                color: kPrimaryColor,
+                width: 2.0,
+              ),
+            ),
+
+            // If  you are using latest version of flutter then lable text and hint text shown like this
+            // if you r using flutter less then 1.20.* then maybe this is not working properly
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),),
+
+      ],
+    );
+   /* return TextFormField(
       controller: reviewController,
       onChanged: (val) {
         selectedvalue = val.toString();
@@ -910,11 +1020,13 @@ class _HotspotState extends State<Hotspot> {
            
             items: getAllBusinessList,
             showSearchBox: true,
+            searchBoxMaxLines: 1,
             searchBoxDecoration: InputDecoration(
               hintText: " Search Business...",
               contentPadding: EdgeInsets.all(8)
               
             ),
+
             // onFind: ,
             itemBuilder:
                 (BuildContext context, GetAllBusiness item, bool isSelected) {
@@ -1013,7 +1125,7 @@ class _HotspotState extends State<Hotspot> {
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-    );
+    );*/
   }
 
   void _showOverlay(BuildContext context) async {
