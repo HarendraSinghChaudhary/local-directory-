@@ -33,6 +33,7 @@ class _HotspotState extends State<Hotspot> {
   var message = "";
   var created_at = "";
   bool isloading = false;
+  bool reviewEnable = true;
   ScrollController _controller = new ScrollController();
   TextEditingController mesageTextController = new TextEditingController();
   TextEditingController businessNameController = new TextEditingController();
@@ -50,7 +51,6 @@ class _HotspotState extends State<Hotspot> {
   void initState() {
     getHotspotApi();
     getallBusinessDataApi();
-    reviewController.text = "Leave a message...";
     super.initState();
   }
 
@@ -91,7 +91,7 @@ class _HotspotState extends State<Hotspot> {
                 height: 2.5.h,
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                margin: EdgeInsets.symmetric(horizontal: 2.w),
                 height: 7.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -112,6 +112,7 @@ class _HotspotState extends State<Hotspot> {
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.all(0.h),
                       hintText: "Search",
                       hintStyle: TextStyle(
                           color: kPrimaryColor,
@@ -200,7 +201,7 @@ class _HotspotState extends State<Hotspot> {
                                                     width: 53.w,
                                                     child: Text(getHostSpotList[index]
                                                               .person_name
-                                                              .toString() + " @ " +getHostSpotList[index]
+                                                              .toString() +getHostSpotList[index]
                                                                 .business_user_name
                                                                 .toString(),
 
@@ -341,7 +342,7 @@ class _HotspotState extends State<Hotspot> {
                                                                       businessname: getHostSpotList[
                                                                           index]
                                                                       .business_user_name
-                                                                      .toString(),
+                                                                      .toString().replaceAll("@", "").trim(),
 
                                                                       image:getHostSpotList[
                                                                           index]
@@ -399,7 +400,7 @@ class _HotspotState extends State<Hotspot> {
                                                             EdgeInsets
                                                                 .symmetric(
                                                                     vertical:
-                                                                        0.h,
+                                                                        2.h,
                                                                     horizontal:
                                                                         4.w),
                                                         fillColor: Colors.black,
@@ -547,8 +548,12 @@ class _HotspotState extends State<Hotspot> {
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.person_name = jsonArray[i]["person_name"].toString();
           modelAgentSearch.user_image = jsonArray[i]["user_image"].toString();
-          modelAgentSearch.business_user_name =
-              jsonArray[i]["business_user_name"].toString();
+          if(jsonArray[i]["business_id"].toString()=="312"){
+            modelAgentSearch.business_user_name ="";
+          }else{
+            modelAgentSearch.business_user_name =
+                " @ "+jsonArray[i]["business_user_name"].toString();
+          }
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
@@ -590,7 +595,8 @@ class _HotspotState extends State<Hotspot> {
     }
   }
 
-  Future<dynamic> addHotspotReviewApi(String message, [String? sec = '307']) async {
+  Future<dynamic> addHotspotReviewApi(String message, [String? sec = '312']) async {
+    reviewEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -607,7 +613,7 @@ class _HotspotState extends State<Hotspot> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": sec != "" ? sec : "307",
+          "business_id": sec != "" ? sec : "312",
           "message": reviewController.text
         });
     String msg = "";
@@ -616,6 +622,7 @@ class _HotspotState extends State<Hotspot> {
     var res;
 
     await request.then((http.Response response) {
+      reviewEnable = true;
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -837,8 +844,13 @@ class _HotspotState extends State<Hotspot> {
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.person_name = jsonArray[i]["person_name"].toString();
           modelAgentSearch.user_image = jsonArray[i]["user_image"].toString();
-          modelAgentSearch.business_user_name =
-              jsonArray[i]["business_user_name"].toString();
+          if(jsonArray[i]["business_id"].toString()=="312"){
+            modelAgentSearch.business_user_name ="";
+          }else{
+            modelAgentSearch.business_user_name =
+                " @ "+jsonArray[i]["business_user_name"].toString();
+          }
+
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
@@ -905,7 +917,7 @@ class _HotspotState extends State<Hotspot> {
             ? ListView(
             shrinkWrap: true,
             children: getAllBusinessList.map((s){
-              if(('@' + s.business_name.toLowerCase()).contains(str.toLowerCase()))
+              if(('@' + s.business_name.toString().toLowerCase()).contains(str.toString().toLowerCase()))
                 return
                   Container(
                     color: Colors.white,
@@ -913,11 +925,15 @@ class _HotspotState extends State<Hotspot> {
                         title:Text(s.business_name,style: TextStyle(color: Colors.black),),
                         onTap:(){
                           String tmp = str.substring(1,str.length);
+                          print("tmp "+tmp.toString()+"^");
+                          selectedId = s.business_id;
                           setState((){
-                            str ='';
-                            reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
-                            reviewController.selection = TextSelection.fromPosition(TextPosition(offset: reviewController.text.length));
+                            reviewController.text = reviewController.text.toString().substring(0,reviewController.text.toString().length-tmp.length);
+                            reviewController.text += s.business_name;
+                            //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
 
+                            reviewController.selection = TextSelection.fromPosition(TextPosition(offset: reviewController.text.length));
+                            str ='';
                           });
                         }),
                   );
@@ -969,15 +985,16 @@ class _HotspotState extends State<Hotspot> {
 
                     var mesage  = reviewController.text.toString();
 
-
-                    if (mesage == "" || mesage == "null") {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("Please write message")));
-
-                    } else {
-                      addHotspotReviewApi(reviewController.text.toString(), selectedId.toString());
+                    if(reviewEnable==true) {
+                      if (mesage == "" || mesage == "null") {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
+                            SnackBar(content: Text("Please write message")));
+                      } else {
+                        addHotspotReviewApi(reviewController.text.toString(),
+                            selectedId.toString());
+                      }
                     }
-
 
                     reviewController.text.toString() == "";
                   },

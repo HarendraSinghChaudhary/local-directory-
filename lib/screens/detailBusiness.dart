@@ -49,6 +49,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
   //var ratting = "";
   var name = "";
   var check = "";
+  bool likeEnable = true;
+  bool unlikeEnable = true;
+  bool reportEnable = true;
 
   //var image = "";
   var review = "";
@@ -79,8 +82,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     _controller.dispose();
   }
 
-  double ratting = 0;
-  double rattingcheckin = 0;
+  double ratting = 0.0;
+  double rattingcheckin = 0.0;
 
   TextEditingController reviewController = new TextEditingController();
   TextEditingController reviewController2 = new TextEditingController();
@@ -697,16 +700,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       return Container(
                                         child: InkWell(
                                           onTap: () {
-                                            if (communityReviewList[index]
-                                                    .like_status
-                                                    .toString() ==
-                                                "1") {
-                                            } else {
-                                              likeApi(
-                                                  communityReviewList[index]
-                                                      .business_reviews_id
-                                                      .toString(),
-                                                  "1");
+                                            if (likeEnable == true) {
+                                              if (communityReviewList[index]
+                                                      .like_status
+                                                      .toString() ==
+                                                  "1") {
+                                              } else {
+                                                likeApi(
+                                                    communityReviewList[index]
+                                                        .business_reviews_id
+                                                        .toString(),
+                                                    "1");
+                                              }
                                             }
                                           },
                                           child: Row(
@@ -751,16 +756,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           builder: (context, setState) {
                                         return InkWell(
                                           onTap: () {
-                                            if (communityReviewList[index]
-                                                    .like_status
-                                                    .toString() ==
-                                                "2") {
-                                            } else {
-                                              likeApi(
-                                                  communityReviewList[index]
-                                                      .business_reviews_id
-                                                      .toString(),
-                                                  "2");
+                                            if (likeEnable == true) {
+                                              if (communityReviewList[index]
+                                                      .like_status
+                                                      .toString() ==
+                                                  "2") {
+                                              } else {
+                                                likeApi(
+                                                    communityReviewList[index]
+                                                        .business_reviews_id
+                                                        .toString(),
+                                                    "2");
+                                              }
                                             }
                                           },
                                           child: Row(
@@ -802,9 +809,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        addReportApi(communityReviewList[index]
-                                            .business_reviews_id
-                                            .toString());
+                                        if(reportEnable==true) {
+                                          addReportApi(
+                                              communityReviewList[index]
+                                                  .business_reviews_id
+                                                  .toString());
+                                        }
                                       },
                                       child: Text(
                                         "Report",
@@ -816,9 +826,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Share.share(
-                                            'check out my website https://example.com',
-                                            subject: 'Look what I made!');
+                                        print(unlikeEnable);
+        if(unlikeEnable==true) {
+          unlikeEnable = false;
+          Share.share(
+              'check out my website https://example.com',
+              subject: 'Look what I made!').then((value) {
+            Future.delayed(Duration(seconds: 2), (){
+              unlikeEnable = true;
+            });
+          });
+        }
                                       },
                                       child: SvgPicture.asset(
                                         "assets/icons/share.svg",
@@ -926,7 +944,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                         decoration: InputDecoration(
                                             contentPadding:
                                                 EdgeInsets.symmetric(
-                                                    vertical: 0.h,
+                                                    vertical: 2.h,
                                                     horizontal: 4.w),
                                             fillColor: Colors.black,
                                             filled: true,
@@ -1068,6 +1086,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   Future<dynamic> addReportApi(
     String comId,
   ) async {
+    reportEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -1092,6 +1111,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var res;
 
     await request.then((http.Response response) {
+      reportEnable = true;
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -1197,6 +1217,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   Future<dynamic> likeApi(String comId, String likeStatus) async {
+    likeEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -1222,6 +1243,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var res;
 
     await request.then((http.Response response) {
+      likeEnable = true;
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -1509,10 +1531,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
     if (pickedFile != null) {
       setState(() {
         file = File(pickedFile.path);
+
+        ivStatus = "1";
       });
       base64Image = base64Encode(file!.readAsBytesSync());
     } else {
       print('No image selected.');
+      ivStatus = "";
     }
 
     fileName = file!.path.split("/").last;
@@ -1528,10 +1553,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
     if (pickedFile != null) {
       setState(() {
         file = File(pickedFile.path);
+        ivStatus = "1";
       });
       base64Image = base64Encode(file!.readAsBytesSync());
     } else {
       print('No image selected.');
+      ivStatus = "";
     }
 
     fileName = file!.path.split("/").last;
@@ -1586,6 +1613,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 image_video_status = "0";
                                 ivStatus = "";
                                 currentPath = "";
+                                rattingcheckin = 0.0;
                               },
                               child: SvgPicture.asset(
                                 "assets/icons/cross.svg",
@@ -1756,7 +1784,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   itemSize: 24,
                                   unratedColor: Color(0XFFCECECE),
                                   initialRating: rattingcheckin,
-                                  minRating: 0,
+                                  minRating: 1,
                                   direction: Axis.horizontal,
                                   allowHalfRating: false,
                                   itemCount: 5,
@@ -1947,7 +1975,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text("Please select tag")));
-                              } else if (rattingcheckin.toString() == "0" ||
+                              } else if (rattingcheckin.toString() == "0.0" ||
                                   rattingcheckin.toString() == "null") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -1971,7 +1999,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               }
                               reviewController2.clear();
                               fileName = "";
-                              rattingcheckin = 0;
+                              rattingcheckin = 0.0;
                             })
                       ],
                     ),
@@ -2025,6 +2053,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 trimFile = null;
                                 trimFileName = "";
                                 ivStatus = "";
+                                ratting = 0.0;
                               },
                               child: SvgPicture.asset(
                                 "assets/icons/cross.svg",
@@ -2059,7 +2088,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   itemSize: 24,
                                   unratedColor: Color(0XFFCECECE),
                                   initialRating: ratting,
-                                  minRating: 0,
+                                  minRating: 1,
                                   direction: Axis.horizontal,
                                   allowHalfRating: false,
                                   itemCount: 5,
@@ -2098,6 +2127,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
+                                        if (currentPath.toString() != "") {
+                                          ivStatus = "2";
+                                        }
                                         if (ivStatus == "2") {
                                           final snackBar = SnackBar(
                                               content: Text(
@@ -2108,10 +2140,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           );
                                         } else {
                                           getImage();
-
-                                          setState(() {
-                                            ivStatus = "1";
-                                          });
                                         }
                                       },
                                       child: file == null
@@ -2147,10 +2175,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               snackBar,
                                             );
                                           } else {
-                                            setState(() {
-                                              ivStatus = "2";
-                                            });
-
                                             FilePickerResult? result =
                                                 await FilePicker.platform
                                                     .pickFiles(
@@ -2183,6 +2207,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                 Navigator.of(context,
                                                         rootNavigator: true)
                                                     .pop();
+
+                                                if (currentPath.toString() !=
+                                                    "") {
+                                                  ivStatus = "2";
+                                                }
+
                                                 customDialog();
                                               });
                                             }
@@ -2250,7 +2280,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 height: 6.h,
                                 text: "Submit",
                                 press: () {
-                                  if (ratting.toString() == "0" ||
+                                  print("ratting "+ratting.toString());
+                                  if (ratting.toString() == "0.0" ||
                                       ratting.toString() == "null") {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
@@ -2274,7 +2305,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                         reviewController.text.toString());
                                   }
                                   fileName = "";
-                                  ratting = 0;
+                                  ratting = 0.0;
                                 })
                       ],
                     ),

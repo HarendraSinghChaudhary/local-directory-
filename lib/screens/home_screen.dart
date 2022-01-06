@@ -14,6 +14,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
+import 'package:wemarkthespot/screens/video_player_widget.dart';
+import 'package:wemarkthespot/screens/video_player_widgett.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -134,6 +136,8 @@ class _HomeState extends State<Home> {
       opeing_hour,
       closing_hour,
       description,
+      datavideo,
+      datavideo_status,
       ratting,
       business_name,
       category_name,
@@ -286,19 +290,24 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    Container(
+                    datavideo_status==0?Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       height: 23.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3.w),
-                          color: Colors.white),
-                      child: YoutubePlayer(
+                          color: Colors.black),
+                      child: VideoWidgett(
+                        url: datavideo,
+                        play: true,
+                      )):Container(),
+
+                     /* YoutubePlayer(
                         controller: _controller,
                         liveUIColor: Colors.amber,
                         showVideoProgressIndicator: true,
-                      ),
-                    ),
+                      ),*/
+
                     SizedBox(
                       height: 2.h,
                     ),
@@ -529,11 +538,14 @@ class _HomeState extends State<Home> {
         quoatesdescription = jsonRes["quoatesdata"]["description"].toString();
         quoatesimage = jsonRes["quoatesdata"]["image"].toString();
         quoatesvideo = jsonRes["quoatesdata"]["video"].toString();
+        datavideo = jsonRes["quoatesdata"]["video"].toString();
+        datavideo_status = jsonRes["quoatesdata"]["video_status"];
         dataid = jsonRes["data"]["id"].toString();
         name = jsonRes["data"]["name"].toString();
         opeing_hour = jsonRes["data"]["opeing_hour"].toString();
         closing_hour = jsonRes["data"]["closing_hour"].toString();
         description = jsonRes["data"]["description"].toString();
+
         image = jsonRes["data"]["image"].toString();
         distance = jsonRes["data"]["distance"].toString();
         print("distance: " + distance.toString());
