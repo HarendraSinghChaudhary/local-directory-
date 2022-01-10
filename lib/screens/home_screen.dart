@@ -15,6 +15,7 @@ import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
+import 'package:wemarkthespot/screens/video_player_widget4.dart';
 import 'package:wemarkthespot/screens/video_player_widgett.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -308,7 +309,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3.w),
                           color: Colors.black),
-                      child: VideoWidgett(
+                      child: VideoWidget4(
                         url: datavideo,
                         play: true,
                       )):Container(),

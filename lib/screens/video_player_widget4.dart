@@ -2,33 +2,38 @@ import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
 
-class VideoWidgettt extends StatefulWidget {
+
+class VideoWidget4 extends StatefulWidget {
 
   final play;
   final url;
 
-  const VideoWidgettt({Key? key, this.url, this.play})
+  const VideoWidget4({Key? key, this.url, this.play})
       : super(key: key);
 
   @override
-  _VideoWidgetttState createState() => _VideoWidgetttState();
+  _VideoWidget4State createState() => _VideoWidget4State();
 }
 
 
-class _VideoWidgetttState extends State<VideoWidgettt> {
+class _VideoWidget4State extends State<VideoWidget4> {
   late VideoPlayerController videoPlayerController ;
   late Future<void> _initializeVideoPlayerFuture;
-
   @override
   void initState() {
     super.initState();
-    videoPlayerController = new VideoPlayerController.file(widget.url);
 
+    videoPlayerController = new VideoPlayerController.network(widget.url);
 
     _initializeVideoPlayerFuture = videoPlayerController.initialize().then((_) {
       //       Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
+      setState(() {
+        videoPlayerController.value.isPlaying
+            ? videoPlayerController.pause()
+            : videoPlayerController.play();
+      });
     });
   } // This closing tag was missing
 
@@ -43,20 +48,26 @@ class _VideoWidgetttState extends State<VideoWidgettt> {
 
   @override
   Widget build(BuildContext context) {
+    checkisPlaying();
+    if(videoPlayerController.value.isPlaying){
+
+      isPlaying2= true;
+    }else{
+      isPlaying2 = false;
+    }
     return FutureBuilder(
       future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
         return MaterialApp(
-          title: 'Video Player',
+          title: 'Video Demo',
           debugShowCheckedModeBanner: false,
           home: Stack(
             children: [
               Center(
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 1.w),
-                  
-                  
+                  color: Colors.black,
+                  margin: EdgeInsets.symmetric(horizontal: 2.w),
                   child: videoPlayerController.value.isInitialized
                       ? AspectRatio(
                     aspectRatio: videoPlayerController.value.aspectRatio,
@@ -76,7 +87,7 @@ class _VideoWidgetttState extends State<VideoWidgettt> {
                     });
                   },
                   child: Icon(
-                    videoPlayerController.value.isPlaying
+                    isPlaying2
                         ? Icons.pause
                         : Icons.play_arrow,
                     size: 40,
@@ -94,6 +105,20 @@ class _VideoWidgetttState extends State<VideoWidgettt> {
       }
       }
     );
+  }
+
+  void checkisPlaying() {
+    Future.delayed(Duration(seconds: 1), (){
+
+    print("controllerplaying "+videoPlayerController.value.isPlaying.toString());
+    print("isPlaying2 "+isPlaying2.toString());
+    if(mounted) {
+      setState(() {
+
+      });
+    }
+    checkisPlaying();
+    });
   }
 
 }
