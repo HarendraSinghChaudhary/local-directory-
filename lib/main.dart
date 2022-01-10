@@ -12,6 +12,8 @@ import 'package:wemarkthespot/services/modelProvider.dart';
 
 import 'package:wemarkthespot/theme.dart';
 String currentPath = "";
+bool isPlaying1 = false;
+bool isPlaying2 = false;
 void main() {
 
   runApp(MultiProvider(
