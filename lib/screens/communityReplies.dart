@@ -475,6 +475,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
                         viewVisible = false;
                       });
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter reply")));
                     }
                   },
                   child: SvgPicture.asset(

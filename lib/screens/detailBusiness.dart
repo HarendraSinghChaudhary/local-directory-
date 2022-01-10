@@ -1324,6 +1324,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
 
         communityReviewApi();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
       } else {
         setState(() {
           isloading = false;
@@ -1488,6 +1490,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       ivStatus = "";
       fileName = "";
       ratting = 0.0;
+      image_video_status = "0";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2384,6 +2387,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       reviewController2.clear();
       fileName = "";
       rattingcheckin = 0.0;
+      image_video_status = "0";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

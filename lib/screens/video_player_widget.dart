@@ -30,6 +30,7 @@ class _VideoWidgetState extends State<VideoWidget> {
       //       Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
       setState(() {});
     });
+    videoPlayerController.addListener(() {checkVideo();});
   } // This closing tag was missing
 
   @override
@@ -98,5 +99,19 @@ class _VideoWidgetState extends State<VideoWidget> {
       }
     );
   }
+  void checkVideo(){
+    // Implement your calls inside these conditions' bodies :
+    if(videoPlayerController.value.position == Duration(seconds: 0, minutes: 0, hours: 0)) {
+      print('video Started');
+    }
 
+    if(videoPlayerController.value.position == videoPlayerController.value.duration) {
+      print('video Ended');
+    }
+
+
+    setState(() {
+
+    });
+  }
 }

@@ -374,6 +374,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                         )
                                       ],
                                     ),
+                                    SizedBox(
+                                      height: 1.h,
+                                    ),
                                     Visibility(
                                         visible: getReplyOnHotspotList[index]
                                             .video_image_status
@@ -1234,6 +1237,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       Visibility(
                           visible: getReplyOnHotspotList[i]
                               .childrenList[index]
@@ -1423,6 +1429,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                         ),
                                       )
                                     ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
                                   ),
                                   Visibility(
                                       visible: getReplyOnHotspotList[i]
@@ -1632,6 +1641,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                 ),
                                               )
                                             ],
+                                          ),
+                                          SizedBox(
+                                            height: 1.h,
                                           ),
                                           Visibility(
                                               visible:  getReplyOnHotspotList[i]

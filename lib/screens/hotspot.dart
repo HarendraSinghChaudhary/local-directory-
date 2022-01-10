@@ -550,132 +550,7 @@ class _HotspotState extends State<Hotspot> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Visibility(
-            visible: file == null ? false : true,
-            child: file != null
-                ? image_video_status == "1"
-                    ? Container(
-                        height: 150,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            color: kBackgroundColor),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: 5.h,
-                            ),
-                            Flexible(
-                              flex: 8,
-                              child: Center(
-                                child: Container(
-                                    height: 150,
-                                    child: Image.file(
-                                      file!,
-                                      height: 80,
-                                    )),
-                              ),
-                            ),
-                            Flexible(
-                              flex: 2,
-                              child: Column(
-                                children: [
-                                  Flexible(
-                                    flex: 8,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            file = null;
-                                            fileName = "";
-                                            base64Image = "";
-                                            image_video_status = "0";
-                                            currentPath = "";
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5.0),
-                                          child: SvgPicture.asset(
-                                            "assets/icons/cross.svg",
-                                            color: Colors.white,
-                                            width: 4.w,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Flexible(flex: 2, child: Container())
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Container(
-                        height: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            color: kBackgroundColor),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        file = null;
-                                        fileName = "";
-                                        base64Image = "";
-                                        image_video_status = "0";
-                                        currentPath = "";
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 5.0),
-                                      child: SvgPicture.asset(
-                                        "assets/icons/cross.svg",
-                                        color: Colors.white,
-                                        width: 4.w,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 1.5.h,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  fileName,
-                                  maxLines: 3,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                : Container(
-                    color: Colors.white,
-                    height: 100,
-                  )),
+
 
                           str.length > 1
             ? ListView(
@@ -738,6 +613,132 @@ class _HotspotState extends State<Hotspot> {
                 },
               )
             : Visibility(visible: false, child: SizedBox()),
+              Visibility(
+                  visible: file == null ? false : true,
+                  child: file != null
+                      ? image_video_status == "1"
+                      ? Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: kBackgroundColor),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 5.h,
+                        ),
+                        Flexible(
+                          flex: 8,
+                          child: Center(
+                            child: Container(
+                                height: 150,
+                                child: Image.file(
+                                  file!,
+                                  height: 80,
+                                )),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              Flexible(
+                                flex: 8,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        file = null;
+                                        fileName = "";
+                                        base64Image = "";
+                                        image_video_status = "0";
+                                        currentPath = "";
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding:
+                                      const EdgeInsets.only(right: 5.0),
+                                      child: SvgPicture.asset(
+                                        "assets/icons/cross.svg",
+                                        color: Colors.white,
+                                        width: 4.w,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Flexible(flex: 2, child: Container())
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      : Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: kBackgroundColor),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    file = null;
+                                    fileName = "";
+                                    base64Image = "";
+                                    image_video_status = "0";
+                                    currentPath = "";
+                                  });
+                                },
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 5.0),
+                                  child: SvgPicture.asset(
+                                    "assets/icons/cross.svg",
+                                    color: Colors.white,
+                                    width: 4.w,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.5.h,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              fileName,
+                              maxLines: 3,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      : Container(
+                    color: Colors.white,
+                    height: 100,
+                  )),
               Container(
                 width: double.infinity,
                 height: 8.h,
@@ -765,7 +766,7 @@ class _HotspotState extends State<Hotspot> {
                       width: 1.w,
                     ),
                     SizedBox(
-                      width: 74.w,
+                      width: 80.w,
                       height: 6.h,
                       child: TextField(
                         controller: reviewController,
@@ -795,39 +796,40 @@ class _HotspotState extends State<Hotspot> {
                             color: Colors.white,
                             fontSize: 12.sp,
                           ),
+                          suffixIcon:  Visibility(
+                            visible: reviewController.text.toString() == "" ||
+                                reviewController.text.toString() == "null"
+                                ? false
+                                : true,
+                            child: InkWell(
+                                onTap: () {
+                                  var mesage = reviewController.text.toString();
+
+                                  if (reviewEnable == true) {
+                                    if (mesage == "" || mesage == "null") {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: Text("Please write message")));
+                                    } else {
+                                      FocusScope.of(context).unfocus();
+                                      print(image_video_status);
+                                      addHotspotReviewApi(
+                                          reviewController.text.toString(),
+                                          selectedId.toString());
+                                    }
+                                  }
+
+                                  reviewController.text.toString() == "";
+                                },
+
+                                child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
                       width: 3.w,
                     ),
-                     Visibility(
-                visible: reviewController.text.toString() == "" ||
-                        reviewController.text.toString() == "null"
-                    ? false
-                    : true,
-                child: InkWell(
-                    onTap: () {
-                     var mesage = reviewController.text.toString();
 
-                        if (reviewEnable == true) {
-                          if (mesage == "" || mesage == "null") {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Please write message")));
-                          } else {
-                            FocusScope.of(context).unfocus();
-                            print(image_video_status);
-                            addHotspotReviewApi(
-                                reviewController.text.toString(),
-                                selectedId.toString());
-                          }
-                        }
-
-                        reviewController.text.toString() == "";
-                      },
-                    
-                    child: Icon(Icons.send, size: 9.w, color: kPrimaryColor)),
-              ),
                   ],
                 ),
               ),
