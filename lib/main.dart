@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 
 
 import 'package:wemarkthespot/screens/splash.dart';
+import 'package:wemarkthespot/services/modelProvider.dart';
 
 
 
 import 'package:wemarkthespot/theme.dart';
 String currentPath = "";
 void main() {
-  runApp(WeMarkTheSpot());
+
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Counter()),
+      ],
+      child:WeMarkTheSpot()));
 }
 
 class WeMarkTheSpot extends StatefulWidget {

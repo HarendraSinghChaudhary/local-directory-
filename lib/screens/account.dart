@@ -242,7 +242,9 @@ class _UserAccountState extends State<UserAccount> {
                                 phone: phone.toString(),
                                 dob: dob.toString(),
                                 image: image.toString(),
-                              )));
+                              ))).then((value) {
+                    getUserList();
+                  });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Please Login First")));

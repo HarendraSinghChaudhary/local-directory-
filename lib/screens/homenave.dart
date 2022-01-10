@@ -23,8 +23,9 @@ class _HomeNavState extends State<HomeNav> {
   List widgets = <Widget>[
     Home(),
     Scaffold(),
-    //GoogleMapScreen(), 
-    Hotspot(), Explore(),
+    //GoogleMapScreen(),
+    Hotspot(),
+    Explore(),
     Account()
   ];
 

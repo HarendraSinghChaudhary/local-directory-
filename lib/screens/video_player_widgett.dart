@@ -23,6 +23,7 @@ class _VideoWidgettState extends State<VideoWidgett> {
   @override
   void initState() {
     super.initState();
+
     videoPlayerController = new VideoPlayerController.network(widget.url);
 
     _initializeVideoPlayerFuture = videoPlayerController.initialize().then((_) {
@@ -73,15 +74,12 @@ class _VideoWidgettState extends State<VideoWidgett> {
                           : videoPlayerController.play();
                     });
                   },
-                  child: Visibility(
-                    visible: true,
-                    child: Icon(
-                      videoPlayerController.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      size: 40,
-                      color: Colors.white,
-                    ),
+                  child: Icon(
+                    videoPlayerController.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                    size: 40,
+                    color: Colors.white,
                   ),
                 ),
               ),

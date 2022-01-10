@@ -19,7 +19,7 @@ class _AboutUsState extends State<AboutUs> {
   bool isloading = false;
 
   List<Abouta> abtList = [];
-
+  var description = "";
   @override
   void initState() {
 
@@ -55,7 +55,7 @@ class _AboutUsState extends State<AboutUs> {
           Container(
                   margin: EdgeInsets.symmetric(horizontal: 3.w),
                   width: double.infinity,
-                  child:  Text(abtList[0].description.toString(),
+                  child:  Text(description.toString(),
                                             style: TextStyle(
                                                 //overflow: TextOverflow.ellipsis,
                                                 fontSize: 10.2.sp,
@@ -100,22 +100,11 @@ class _AboutUsState extends State<AboutUs> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        for (var i = 0; i < jsonArray.length; i++) {
-          Abouta modelAgentSearch = new Abouta();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.description= jsonArray[i]["description"].toString();
-          
-          
+        description = jsonRes["data"].toString();
 
-          print("id: " + modelAgentSearch.id.toString());
-          print("Bussiness: " + modelAgentSearch.description.toString());
+        setState(() {
 
-          abtList.add(modelAgentSearch);
-
-          
-        }
-
-       
+        });
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));

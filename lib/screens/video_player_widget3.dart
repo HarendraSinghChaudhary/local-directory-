@@ -3,27 +3,27 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
 
-class VideoWidget extends StatefulWidget {
+class VideoWidgettt extends StatefulWidget {
 
   final play;
   final url;
 
-  const VideoWidget({Key? key, this.url, this.play})
+  const VideoWidgettt({Key? key, this.url, this.play})
       : super(key: key);
 
   @override
-  _VideoWidgetState createState() => _VideoWidgetState();
+  _VideoWidgetttState createState() => _VideoWidgetttState();
 }
 
 
-class _VideoWidgetState extends State<VideoWidget> {
+class _VideoWidgetttState extends State<VideoWidgettt> {
   late VideoPlayerController videoPlayerController ;
   late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController = new VideoPlayerController.network(widget.url);
+    videoPlayerController = new VideoPlayerController.file(widget.url);
 
 
     _initializeVideoPlayerFuture = videoPlayerController.initialize().then((_) {

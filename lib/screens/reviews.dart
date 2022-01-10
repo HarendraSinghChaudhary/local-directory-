@@ -104,9 +104,9 @@ class _ReviewsState extends State<Reviews> {
                       motion: ScrollMotion(),
 
                       // A pane can dismiss the Slidable.
-                      dismissible: DismissiblePane(onDismissed: () {
+                   /*   dismissible: DismissiblePane(onDismissed: () {
                         reviewList.removeAt(index);
-                      }),
+                      }),*/
 
                       // All actions are defined in the children parameter.
                       children: [
@@ -147,8 +147,6 @@ class _ReviewsState extends State<Reviews> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(3.w)),
                           child: Container(
-                             
-                             
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3.w),
@@ -286,7 +284,7 @@ class _ReviewsState extends State<Reviews> {
           isloading = false;
         });
         reviewList.clear();
-
+        reviewController.text = "";
         reviewListApi();
           Navigator.of(context, rootNavigator: true).pop();
         
@@ -579,21 +577,20 @@ class _ReviewsState extends State<Reviews> {
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(3.w)),
-                  child: Expanded(
-                    child: TextFormField(
-                      controller: reviewController,
-                      style: TextStyle(color: Color(0XFFCECECE)),
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: "Type a Review...",
-                          hintStyle: TextStyle(
-                              fontSize: 12.sp, color: Color(0XFFCECECE))),
-                    ),
+                  child: TextFormField(
+                    controller: reviewController,
+                    style: TextStyle(color: Color(0XFFCECECE)),
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(5.0),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Type a Review...",
+                        hintStyle: TextStyle(
+                            fontSize: 12.sp, color: Color(0XFFCECECE))),
                   ),
                 ),
                 SizedBox(

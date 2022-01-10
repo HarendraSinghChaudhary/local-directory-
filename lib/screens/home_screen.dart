@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   late Position currentPosition;
 
   fetchLocation() async {
+    isloading = true;
     await Geolocator.checkPermission().then((value) async {
       print("Check Permission " + value.toString() + "__");
 
@@ -127,6 +128,7 @@ class _HomeState extends State<Home> {
       quoatesimage,
       quoatestitle,
       quoatesvideo,
+      imgvideostatus,
       quoatesdescription;
   var dataid,
       name,
@@ -142,6 +144,7 @@ class _HomeState extends State<Home> {
       business_name,
       category_name,
       distance;
+  var giveawayDesc;
 
   @override
   void initState() {
@@ -166,9 +169,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print("lat1: " + latPosition.toString());
-    print("long1 " + longPosition.toString());
-    return Scaffold(
+   return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Row(
@@ -230,7 +231,17 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 1.5.h,
                     ),
-                    CachedNetworkImage(
+                    imgvideostatus==1?Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        height: 23.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3.w),
+                            color: Colors.black),
+                        child: VideoWidgett(
+                          url: quoatesimage.toString(),
+                          play: true,
+                        )):CachedNetworkImage(
                       imageUrl: quoatesimage.toString(),
                       imageBuilder: (context, imageProvider) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -469,7 +480,7 @@ class _HomeState extends State<Home> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus euismod. Dictum fusce ut",
+                          giveawayDesc.toString(),
                         style: TextStyle(
                             fontSize: 11.sp,
                             color: Color(0xFFCECECE),
@@ -537,21 +548,23 @@ class _HomeState extends State<Home> {
         quoatestitle = jsonRes["quoatesdata"]["title"].toString();
         quoatesdescription = jsonRes["quoatesdata"]["description"].toString();
         quoatesimage = jsonRes["quoatesdata"]["image"].toString();
-        quoatesvideo = jsonRes["quoatesdata"]["video"].toString();
+        imgvideostatus = jsonRes["quoatesdata"]["quote_video_image_status"];
         datavideo = jsonRes["quoatesdata"]["video"].toString();
         datavideo_status = jsonRes["quoatesdata"]["video_status"];
-        dataid = jsonRes["data"]["id"].toString();
+        //dataid = jsonRes["data"]["id"].toString();
         name = jsonRes["data"]["name"].toString();
         opeing_hour = jsonRes["data"]["opeing_hour"].toString();
         closing_hour = jsonRes["data"]["closing_hour"].toString();
         description = jsonRes["data"]["description"].toString();
 
-        image = jsonRes["data"]["image"].toString();
+        image = jsonRes["data"]["business_images"].toString();
         distance = jsonRes["data"]["distance"].toString();
         print("distance: " + distance.toString());
         ratting = jsonRes["data"]["ratting"].toString();
         business_name = jsonRes["data"]["business_name"].toString();
         category_name = jsonRes["data"]["category_name"].toString();
+
+        giveawayDesc = jsonRes["giweaways"]["description"].toString();
 
         setState(() {
           isloading = false;

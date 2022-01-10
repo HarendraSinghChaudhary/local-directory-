@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:country_code_picker/country_codes.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,21 +84,19 @@ class _ContactUsState extends State<ContactUs> {
                         color: Colors.grey.withOpacity(0.8)
 
                       )),
-                  child: Expanded(
-                    child: TextFormField(
-                      controller: commentController,
-                      style: TextStyle(color: Color(0XFFCECECE)),
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: "Comment",
-                          hintStyle: TextStyle(
-                              fontSize: 14.sp, color: Colors.white)),
-                    ),
+                  child: TextFormField(
+                    controller: commentController,
+                    style: TextStyle(color: Color(0XFFCECECE)),
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Comment",
+                        hintStyle: TextStyle(
+                            fontSize: 14.sp, color: Colors.white)),
                   ),
                 ),
 
@@ -119,7 +118,27 @@ class _ContactUsState extends State<ContactUs> {
                   height: 7.h, 
                   text: "Send", 
                   press: () {
-                     contactusApi(code.toString());
+                    if(nameController.text.toString()=="" || nameController.text.toString() == "null"){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter your name")));
+                    } else if(emailController.text.toString()=="" || emailController.text.toString() == "null"){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter your email")));
+                    }else if(phoneController.text.toString()=="" || phoneController.text.toString() == "null"){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter your Phone number")));
+                    }else if(commentController.text.toString()=="" || commentController.text.toString() == "null"){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please enter your Query")));
+                    }else{
+                      if(EmailValidator.validate(emailController.text.toString())){
+                        contactusApi(code.toString());
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please enter a valid email")));
+                      }
+                    }
+
 
                        
                  

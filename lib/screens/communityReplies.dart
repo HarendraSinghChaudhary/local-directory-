@@ -35,6 +35,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
   bool viewVisible = false;
 
   var tabOne = "";
+  var selectedIndex = -1;
+
   @override
   void initState() {
     getReplyOnCommunityApi();
@@ -353,6 +355,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                         onTap: () {
                                                           setState(() {
                                                             viewVisible = true;
+                                                            selectedIndex = index;
+
                                                             tabOne =
                                                                 getReplyOnCommunityList[
                                                                         index]
@@ -761,7 +765,11 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
           getReplyOnCommunityList.add(modelAgentSearch);
 
-          setState(() {});
+          setState(() {
+            if(selectedIndex>-1) {
+              getReplyOnCommunityList[selectedIndex].viewV = true;
+            }
+          });
         }
 
         setState(() {
@@ -911,6 +919,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                       onTap: () {
                                         setState(() {
                                           viewVisible = true;
+                                          selectedIndex = index;
                                           tabOne = getReplyOnCommunityList[i]
                                               .childrenList[index]
                                               .id
@@ -1050,6 +1059,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                   onTap: () {
                                                     setState(() {
                                                       viewVisible = true;
+                                                      selectedIndex = index;
                                                       tabOne =
                                                           getReplyOnCommunityList[i]
                                                               .childrenList[
@@ -1279,7 +1289,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           "review_id": widget.review_id.toString(),
           "reply_id": reply_id,
           "type": "REVIEW",
-          "message": messageText
+          "message": messageText,
+          "video_image_status":"0",
         });
     String msg = "";
     var jsonArray;

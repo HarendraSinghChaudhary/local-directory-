@@ -476,7 +476,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               )
             ],
           ))),
-          _buildDraggableScrollableSheet(),
+          communityReviewList.length>0?_buildDraggableScrollableSheet():Container(),
         ],
       ),
     );
@@ -487,6 +487,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       initialChildSize: 0.12,
       minChildSize: 0.12,
       maxChildSize: 0.95,
+
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           padding: EdgeInsets.zero,
@@ -686,9 +687,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               SizedBox(
                                 height: 1.5.h,
                               ),
-                              SizedBox(
-                                height: 2.5.h,
-                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 6.w),
                                 child: Row(
@@ -706,6 +704,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                       .toString() ==
                                                   "1") {
                                               } else {
+
                                                 likeApi(
                                                     communityReviewList[index]
                                                         .business_reviews_id
@@ -762,6 +761,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                       .toString() ==
                                                   "2") {
                                               } else {
+
                                                 likeApi(
                                                     communityReviewList[index]
                                                         .business_reviews_id
@@ -965,6 +965,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                             content: Text(
                                                                 "Please enter message")));
                                                   } else {
+                                                    FocusScope.of(context).unfocus();
                                                     communityReplyOnReviewApi(
                                                         communityReviewList[
                                                                 index]
@@ -1265,15 +1266,15 @@ class _DetailBussinessState extends State<DetailBussiness> {
       } else {
         setState(() {
           isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
+  /*        ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));*/
         });
       }
     } else {
       setState(() {
         isloading = false;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try later")));
+   /*     ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));*/
       });
     }
   }
@@ -1296,7 +1297,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
           "review_id": review_id,
           "reply_id": "0",
           "type": "REVIEW",
-          "message": messageText
+          "message": messageText,
+          "video_image_status":"0"
         });
     String msg = "";
     var jsonArray;
@@ -1427,7 +1429,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   Future<dynamic> businessReviewApi(
-    String ratting,
+    String rattingg,
     String review,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1447,9 +1449,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
         RestDatasource.BUSINESSREVIEW_URL,
       ),
     );
-    if (ratting.toString() != "null" || ratting.toString() != "") {
-      request.fields["ratting"] = ratting;
-      print("ratting1: " + ratting.toString());
+    if (rattingg.toString() != "null" || rattingg.toString() != "") {
+      request.fields["ratting"] = rattingg;
+      print("ratting1: " + rattingg.toString());
     }
 
     if (review.toString() != "null" || review.toString() != "") {
@@ -1484,6 +1486,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
     if (res.statusCode == 200) {
       currentPath = "";
       ivStatus = "";
+      fileName = "";
+      ratting = 0.0;
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1554,11 +1558,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
       setState(() {
         file = File(pickedFile.path);
         ivStatus = "1";
+        image_video_status = "1";
       });
       base64Image = base64Encode(file!.readAsBytesSync());
     } else {
       print('No image selected.');
       ivStatus = "";
+      image_video_status = "0";
     }
 
     fileName = file!.path.split("/").last;
@@ -1614,6 +1620,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ivStatus = "";
                                 currentPath = "";
                                 rattingcheckin = 0.0;
+                                check = "";
                               },
                               child: SvgPicture.asset(
                                 "assets/icons/cross.svg",
@@ -1833,7 +1840,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           );
                                         } else {
                                           getCheckInImage();
-                                          image_video_status = "1";
+
                                         }
                                         //                              ScaffoldMessenger.of(context)
                                         // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
@@ -1877,7 +1884,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               snackBar,
                                             );
                                           } else {
-                                            image_video_status = "2";
+
                                             FilePickerResult? result =
                                                 await FilePicker.platform
                                                     .pickFiles(
@@ -1892,6 +1899,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               print("Filename " +
                                                   fileName.toString() +
                                                   "^");
+
                                               if (fileName == "" ||
                                                   fileName == null) {
                                                 fileName = "File:- ";
@@ -1910,6 +1918,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                   Navigator.of(context,
                                                           rootNavigator: true)
                                                       .pop();
+                                                  image_video_status = "2";
                                                   checkInDialog();
                                                 });
                                               });
@@ -1997,9 +2006,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     reviewController2.text.toString(),
                                     check.toString());
                               }
-                              reviewController2.clear();
-                              fileName = "";
-                              rattingcheckin = 0.0;
+
                             })
                       ],
                     ),
@@ -2182,6 +2189,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               allowCompression: false,
                                             );
                                             if (result != null) {
+                                              ivStatus = "2";
                                               file = File(
                                                   result.files.single.path!);
                                               fileName =
@@ -2297,15 +2305,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                 Text("Please enter review")));
                                   } else {
                                     print("NowPath " + currentPath.toString());
+                                    print("statussss " + ivStatus.toString());
                                     if (currentPath != "") {
                                       file = File(currentPath.toString());
                                       fileName = path.basename(file!.path);
                                     }
+
                                     businessReviewApi(ratting.toString(),
                                         reviewController.text.toString());
                                   }
-                                  fileName = "";
-                                  ratting = 0.0;
+
                                 })
                       ],
                     ),
@@ -2369,8 +2378,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var res = await request.send();
 
     if (res.statusCode == 200) {
+      check = "";
       currentPath = "";
       ivStatus = "";
+      reviewController2.clear();
+      fileName = "";
+      rattingcheckin = 0.0;
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2405,6 +2418,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     } else {
       setState(() {
         isloading = false;
+
         Navigator.of(context, rootNavigator: true).pop();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));

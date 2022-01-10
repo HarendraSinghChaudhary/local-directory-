@@ -45,6 +45,7 @@ class _ExploreState extends State<Explore> {
   var category_name = "";
   var lat = "";
   var long = "";
+  bool favEnable = true;
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
   List<NearBy> nearByRestaurantList = [];
@@ -226,9 +227,6 @@ class _ExploreState extends State<Explore> {
         print("name : " + business_name.toString());
         return Column(
           children: [
-
-
-
 
             InkWell(
               onTap: () {
@@ -430,20 +428,22 @@ class _ExploreState extends State<Explore> {
                       child: ids.toString() != '72'
                           ? InkWell(
                               onTap: () {
-                                var favv = nearByRestaurantList[index]
-                                            .fav
-                                            .toString() ==
-                                        "1"
-                                    ? "0"
-                                    : "1";
-                                setState(() {
-                                  nearByRestaurantList[index].fav = favv;
-                                });
+                                if(favEnable == true) {
+                                  var favv = nearByRestaurantList[index]
+                                      .fav
+                                      .toString() ==
+                                      "1"
+                                      ? "0"
+                                      : "1";
+                                  setState(() {
+                                    nearByRestaurantList[index].fav = favv;
+                                  });
 
-                                businessFavApi(
-                                    nearByRestaurantList[index].id.toString(),
-                                    favv,
-                                    index);
+                                  businessFavApi(
+                                      nearByRestaurantList[index].id.toString(),
+                                      favv,
+                                      index);
+                                }
                               },
                               child:
                                   nearByRestaurantList[index].fav.toString() ==
@@ -511,6 +511,7 @@ class _ExploreState extends State<Explore> {
     print("id Print: " + id.toString());
     setState(() {
       // isloading = true;
+      favEnable = false;
     });
 
     var request = http.post(
@@ -529,6 +530,7 @@ class _ExploreState extends State<Explore> {
 
     await request.then((http.Response response) {
       res = response;
+      favEnable = true;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
@@ -701,7 +703,6 @@ class _ExploreState extends State<Explore> {
 
           nearByRestaurantList.add(modelAgentSearch);
 
-          setState(() {});
         }
 
         setState(() {

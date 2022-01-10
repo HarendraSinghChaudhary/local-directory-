@@ -110,7 +110,7 @@ class _FavoritesState extends State<Favorites> {
   var review_count = "";
   var location = "";
   var category_name = "";
-
+  bool clicked = true;
   bool isloading = false;
 
   List<NearBy> favouriteRestaurantList = [];
@@ -139,7 +139,7 @@ class _FavoritesState extends State<Favorites> {
       //     ),
       //   ),
       // ),
-      body: ListView.builder(
+      body: isloading==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),): ListView.builder(
         padding: EdgeInsets.only(top: 1.h),
         // shrinkWrap: true,
         // controller: _controller,
@@ -319,9 +319,13 @@ class _FavoritesState extends State<Favorites> {
                       top: 0.2.h,
                       child: InkWell(
                           onTap: () {
-                            businessFavApi(favouriteRestaurantList[index]
-                                                .id
-                                                .toString(), index);
+                            if (clicked) {
+                              isloading = true;
+                              businessFavApi(favouriteRestaurantList[index]
+                                  .id
+                                  .toString(), index);
+                            }
+
                           },
                           child: SvgPicture.asset(
                             "assets/icons/-heart.svg",
@@ -347,7 +351,8 @@ class _FavoritesState extends State<Favorites> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-     // isloading = true;
+      isloading = true;
+     // clicked = false;
     });
    
 
@@ -366,6 +371,7 @@ class _FavoritesState extends State<Favorites> {
     var res;
 
     await request.then((http.Response response) {
+
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
@@ -404,13 +410,16 @@ class _FavoritesState extends State<Favorites> {
         //   nearByRestaurantList[index].fav = "1";
         // }
         setState(() {
+          clicked = true;
           isloading = false;
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
+
     } else {
       setState(() {
+        clicked = true;
         isloading = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try leter")));
