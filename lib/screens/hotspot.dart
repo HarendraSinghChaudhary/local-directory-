@@ -70,8 +70,22 @@ class _HotspotState extends State<Hotspot> {
     super.initState();
   }
 
+  late var size;
+
+  late var _height;
+
+
+    void _scrollToIndex(index) {
+    _controller.animateTo(_height * index,
+        duration: Duration(seconds: 2), curve: Curves.easeIn);
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    size = MediaQuery.of(context).size;
+    _height = size.height;
+   
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -97,452 +111,483 @@ class _HotspotState extends State<Hotspot> {
         //   )
         // ],
       ),
-      body:  isloading
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator()
-                          : CupertinoActivityIndicator())
-                  :
-       Stack(
-        children: [
-          ListView(
-            shrinkWrap: true,
-            controller: _controller,
-            children: [
-              SizedBox(
-                height: 2.h,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 2.w),
-                height: 7.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.w),
-                    color: Colors.white),
-                child: Center(
-                  child: TextFormField(
-                    style: TextStyle(
-                        color: kPrimaryColor, fontWeight: FontWeight.bold),
-                    controller: mesageTextController,
-                    onChanged: (value) {
-                      if (value.length > 0) {
-                        getHostSpotList.clear();
-                        searchData(value.toString());
-                      } else {
-                        getHostSpotList.clear();
-                        getHotspotApi();
-                      }
-                    },
-                    validator: (val) {},
-                    decoration: InputDecoration(
-                      prefixIconConstraints: BoxConstraints(minWidth: 60),
-                      suffixIconConstraints: BoxConstraints(minWidth: 60),
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(0.h),
-                      hintText: "Search",
-                      hintStyle: TextStyle(
-                          color: kPrimaryColor,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w700),
-                      suffixIcon: InkWell(
-                          onTap: () {
-                            mesageTextController.clear();
-                            getHostSpotList.clear();
-                            print("Clicked");
-                            getHotspotApi();
+      body: isloading
+          ? Align(
+              alignment: Alignment.center,
+              child: Platform.isAndroid
+                  ? CircularProgressIndicator()
+                  : CupertinoActivityIndicator())
+          : Stack(
+              children: [
+                ListView(
+                  shrinkWrap: true,
+                  controller: _controller,
+                  children: [
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      height: 7.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3.w),
+                          color: Colors.white),
+                      child: Center(
+                        child: TextFormField(
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold),
+                          controller: mesageTextController,
+                          onChanged: (value) {
+                            if (value.length > 0) {
+                              getHostSpotList.clear();
+                              searchData(value.toString());
+                            } else {
+                              getHostSpotList.clear();
+                              getHotspotApi();
+                            }
                           },
-                          child: SvgPicture.asset(
-                            "assets/icons/cross.svg",
-                            width: 4.w,
-                            color: kPrimaryColor,
-                          )),
-                      prefixIcon: SvgPicture.asset(
-                        "assets/icons/-search.svg",
-                        width: 24,
-                        color: kPrimaryColor,
+                          validator: (val) {},
+                          decoration: InputDecoration(
+                            prefixIconConstraints: BoxConstraints(minWidth: 60),
+                            suffixIconConstraints: BoxConstraints(minWidth: 60),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.all(0.h),
+                            hintText: "Search",
+                            hintStyle: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700),
+                            suffixIcon: InkWell(
+                                onTap: () {
+                                  mesageTextController.clear();
+                                  getHostSpotList.clear();
+                                  print("Clicked");
+                                  getHotspotApi();
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  width: 4.w,
+                                  color: kPrimaryColor,
+                                )),
+                            prefixIcon: SvgPicture.asset(
+                              "assets/icons/-search.svg",
+                              width: 24,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 3.5.h,
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                controller: _controller,
-                itemCount: getHostSpotList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  TextEditingController messageController =
-                      new TextEditingController();
-                  return Column(
-                    children: [
-                      Card(
-                          margin: EdgeInsets.symmetric(horizontal: 2.w),
-                          color: kBackgroundColor,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(6.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: getHostSpotList[index]
-                                          .user_image
-                                          .toString(),
-                                      imageBuilder: (context, imageProvider) =>
-                                          CircleAvatar(
-                                        radius: 7.w,
-                                        backgroundImage: NetworkImage(
-                                          getHostSpotList[index]
-                                              .user_image
-                                              .toString(),
-                                        ),
-                                      ),
-                                      placeholder: (context, url) =>
-                                          CircleAvatar(
-                                        radius: 7.w,
-                                        backgroundImage: AssetImage(
-                                            "assets/images/usericon.png"),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          CircleAvatar(
-                                        radius: 7.w,
-                                        backgroundImage: AssetImage(
-                                            "assets/images/usericon.png"),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 0.9.w,
-                                  ),
-                                  Container(
-                                    child: Column(
+                    SizedBox(
+                      height: 3.5.h,
+                    ),
+
+                    ListView.builder(
+                      shrinkWrap: true,
+                      controller: _controller,
+                      itemCount: getHostSpotList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        TextEditingController messageController =
+                            new TextEditingController();
+                        return Column(
+                          children: [
+                            Card(
+                                margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                color: kBackgroundColor,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
                                       mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(6.0),
+                                          child: CachedNetworkImage(
+                                            imageUrl: getHostSpotList[index]
+                                                .user_image
+                                                .toString(),
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    CircleAvatar(
+                                              radius: 7.w,
+                                              backgroundImage: NetworkImage(
+                                                getHostSpotList[index]
+                                                    .user_image
+                                                    .toString(),
+                                              ),
+                                            ),
+                                            placeholder: (context, url) =>
+                                                CircleAvatar(
+                                              radius: 7.w,
+                                              backgroundImage: AssetImage(
+                                                  "assets/images/usericon.png"),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    CircleAvatar(
+                                              radius: 7.w,
+                                              backgroundImage: AssetImage(
+                                                  "assets/images/usericon.png"),
+                                            ),
+                                          ),
+                                        ),
                                         SizedBox(
-                                          height: 1.h,
+                                          width: 0.9.w,
                                         ),
                                         Container(
-                                          width: 74.w,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 53.w,
-                                                    child: Text(
-                                                      getHostSpotList[index]
-                                                              .person_name
-                                                              .toString() +
-                                                          getHostSpotList[index]
-                                                              .business_user_name
-                                                              .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 11.sp,
-                                                          color: kCyanColor,
-                                                          fontFamily:
-                                                              "Segoepr"),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-
-                                                  // Text(
-                                                  //   // "Person Name @ Bar Name",
-
-                                                  //   getHostSpotList[index]
-                                                  //               .person_name
-                                                  //               .toString() !=
-                                                  //           "null"
-                                                  //       ? getHostSpotList[index]
-                                                  //           .person_name
-                                                  //           .toString()
-                                                  //       : "User Name",
-                                                  //   overflow:
-                                                  //       TextOverflow.ellipsis,
-                                                  //   style: TextStyle(
-                                                  //       fontSize: 11.sp,
-                                                  //       color: kCyanColor,
-                                                  //       fontFamily: "Segoepr"),
-                                                  // ),
-                                                  // Text(
-                                                  //   " @ ",
-                                                  //   overflow:
-                                                  //       TextOverflow.ellipsis,
-                                                  //   style: TextStyle(
-                                                  //       fontSize: 11.sp,
-                                                  //       color: kCyanColor,
-                                                  //       fontFamily: "Segoepr"),
-                                                  // ),
-                                                  // Container(
-                                                  //   width: 34.w,
-                                                  //   child: Text(
-                                                  //     // "Person Name @ Bar Name",
-
-                                                  //     getHostSpotList[index]
-                                                  //                 .business_user_name
-                                                  //                 .toString() !=
-                                                  //             "null"
-                                                  //         ? getHostSpotList[index]
-                                                  //             .business_user_name
-                                                  //             .toString()
-                                                  //         : "",
-
-                                                  //         maxLines: 2,
-                                                  //     style: TextStyle(
-                                                  //         fontSize: 11.sp,
-                                                  //         color: kCyanColor,
-                                                  //         fontFamily: "Segoepr"),
-                                                  //   ),
-                                                  // ),
-                                                ],
+                                              SizedBox(
+                                                height: 1.h,
                                               ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(right: 2.w),
-                                                child: Text(
-                                                  //  "2m ago",
+                                              Container(
+                                                width: 74.w,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 53.w,
+                                                          child: Text(
+                                                            getHostSpotList[
+                                                                        index]
+                                                                    .person_name
+                                                                    .toString() +
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .business_user_name
+                                                                    .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 11.sp,
+                                                                color:
+                                                                    kCyanColor,
+                                                                fontFamily:
+                                                                    "Segoepr"),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
 
-                                                  getHostSpotList[index]
-                                                      .timedelay
-                                                      .toString(),
+                                                        // Text(
+                                                        //   // "Person Name @ Bar Name",
 
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 8.sp,
-                                                    color: kPrimaryColor,
-                                                  ),
+                                                        //   getHostSpotList[index]
+                                                        //               .person_name
+                                                        //               .toString() !=
+                                                        //           "null"
+                                                        //       ? getHostSpotList[index]
+                                                        //           .person_name
+                                                        //           .toString()
+                                                        //       : "User Name",
+                                                        //   overflow:
+                                                        //       TextOverflow.ellipsis,
+                                                        //   style: TextStyle(
+                                                        //       fontSize: 11.sp,
+                                                        //       color: kCyanColor,
+                                                        //       fontFamily: "Segoepr"),
+                                                        // ),
+                                                        // Text(
+                                                        //   " @ ",
+                                                        //   overflow:
+                                                        //       TextOverflow.ellipsis,
+                                                        //   style: TextStyle(
+                                                        //       fontSize: 11.sp,
+                                                        //       color: kCyanColor,
+                                                        //       fontFamily: "Segoepr"),
+                                                        // ),
+                                                        // Container(
+                                                        //   width: 34.w,
+                                                        //   child: Text(
+                                                        //     // "Person Name @ Bar Name",
+
+                                                        //     getHostSpotList[index]
+                                                        //                 .business_user_name
+                                                        //                 .toString() !=
+                                                        //             "null"
+                                                        //         ? getHostSpotList[index]
+                                                        //             .business_user_name
+                                                        //             .toString()
+                                                        //         : "",
+
+                                                        //         maxLines: 2,
+                                                        //     style: TextStyle(
+                                                        //         fontSize: 11.sp,
+                                                        //         color: kCyanColor,
+                                                        //         fontFamily: "Segoepr"),
+                                                        //   ),
+                                                        // ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 2.w),
+                                                      child: Text(
+                                                        //  "2m ago",
+
+                                                        getHostSpotList[index]
+                                                            .timedelay
+                                                            .toString(),
+
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 8.sp,
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                              ),
+                                              SizedBox(
+                                                height: 0.1.h,
+                                              ),
+                                              Container(
+                                                width: 74.w,
+                                                child: Text(
+                                                  // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                                  getHostSpotList[index]
+                                                              .message
+                                                              .toString() !=
+                                                          "null"
+                                                      ? getHostSpotList[index]
+                                                          .message
+                                                          .toString()
+                                                      : "",
+                                                  style: TextStyle(
+                                                      // overflow: TextOverflow.ellipsis,
+                                                      fontSize: 10.2.sp,
+                                                      color: Color(0xFFCECECE),
+                                                      fontFamily: 'Roboto'),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 1.h,
                                               ),
                                             ],
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 0.1.h,
-                                        ),
-                                        Container(
-                                          width: 74.w,
-                                          child: Text(
-                                            // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
-                                            getHostSpotList[index]
-                                                        .message
-                                                        .toString() !=
-                                                    "null"
-                                                ? getHostSpotList[index]
-                                                    .message
-                                                    .toString()
-                                                : "",
-                                            style: TextStyle(
-                                                // overflow: TextOverflow.ellipsis,
-                                                fontSize: 10.2.sp,
-                                                color: Color(0xFFCECECE),
-                                                fontFamily: 'Roboto'),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              Visibility(
-                                  visible: getHostSpotList[index]
-                                              .video_image_status
-                                              .toString() ==
-                                          "2"
-                                      ? true
-                                      : false,
-                                  child: SizedBox(
-                                      height: 200,
-                                      child: VideoWidget(
-                                        url: getHostSpotList[index].image,
-                                        play: true,
-                                      ))),
-                              Visibility(
-                                visible: getHostSpotList[index]
-                                            .video_image_status
-                                            .toString() ==
-                                        "1"
-                                    ? true
-                                    : false,
-                                child: Container(
-                                  // height: 48.h,
-                                  child: Image.network(
-                                    //  "assets/images/lighting.jpeg",
-                                    getHostSpotList[index].image.toString(),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HotSpotReply(
-                                                id: getHostSpotList[index]
-                                                    .id
-                                                    .toString(),
-                                                username: getHostSpotList[index]
-                                                    .person_name
-                                                    .toString(),
-                                                businessname:
-                                                    getHostSpotList[index]
-                                                        .business_user_name
-                                                        .toString()
-                                                        .replaceAll("@", "")
-                                                        .trim(),
-                                                image: getHostSpotList[index]
-                                                    .user_image
-                                                    .toString(),
-                                                message: getHostSpotList[index]
-                                                    .message
-                                                    .toString(),
-                                                time: getHostSpotList[index]
-                                                    .timedelay
-                                                    .toString(),
-                                              ),
-                                            ));
-                                      },
-                                      child: Text(
-                                        "View Replies",
-                                        style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: Colors.white,
-                                            fontFamily: "Roboto"),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    Visibility(
+                                        visible: getHostSpotList[index]
+                                                    .video_image_status
+                                                    .toString() ==
+                                                "2"
+                                            ? true
+                                            : false,
+                                        child: SizedBox(
+                                            height: 200,
+                                            child: VideoWidget(
+                                              url: getHostSpotList[index].image,
+                                              play: true,
+                                            ))),
+                                    Visibility(
+                                      visible: getHostSpotList[index]
+                                                  .video_image_status
+                                                  .toString() ==
+                                              "1"
+                                          ? true
+                                          : false,
+                                      child: Container(
+                                        // height: 48.h,
+                                        child: Image.network(
+                                          //  "assets/images/lighting.jpeg",
+                                          getHostSpotList[index]
+                                              .image
+                                              .toString(),
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 2.0),
-                                    child: SizedBox(
-                                      width: 60.w,
-                                      child: TextField(
-                                        controller: messageController,
-                                        onChanged: (val) {
-                                          print(val);
-
-                                          getHostSpotList[index].messageText =
-                                              val.toString();
-                                        },
-                                        minLines: 1,
-                                        keyboardType: TextInputType.multiline,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HotSpotReply(
+                                                      id: getHostSpotList[index]
+                                                          .id
+                                                          .toString(),
+                                                      username:
+                                                          getHostSpotList[index]
+                                                              .person_name
+                                                              .toString(),
+                                                      businessname:
+                                                          getHostSpotList[index]
+                                                              .business_user_name
+                                                              .toString()
+                                                              .replaceAll(
+                                                                  "@", "")
+                                                              .trim(),
+                                                      image:
+                                                          getHostSpotList[index]
+                                                              .user_image
+                                                              .toString(),
+                                                      message:
+                                                          getHostSpotList[index]
+                                                              .message
+                                                              .toString(),
+                                                      time:
+                                                          getHostSpotList[index]
+                                                              .timedelay
+                                                              .toString(),
+                                                    ),
+                                                  ));
+                                            },
+                                            child: Text(
+                                              "View Replies",
+                                              style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  color: Colors.white,
+                                                  fontFamily: "Roboto"),
+                                            ),
+                                          ),
                                         ),
-                                        maxLines: 50,
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 2.h,
-                                                    horizontal: 4.w),
-                                            fillColor: Colors.black,
-                                            filled: true,
-                                            hintText: "Reply",
-                                            suffixIcon: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                /* GestureDetector(
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 2.0),
+                                          child: SizedBox(
+                                            width: 60.w,
+                                            child: TextField(
+                                              controller: messageController,
+                                              onChanged: (val) {
+                                                print(val);
+
+                                                getHostSpotList[index]
+                                                        .messageText =
+                                                    val.toString();
+                                              },
+                                              minLines: 1,
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                              maxLines: 50,
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 2.h,
+                                                          horizontal: 4.w),
+                                                  fillColor: Colors.black,
+                                                  filled: true,
+                                                  hintText: "Reply",
+                                                  suffixIcon: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      /* GestureDetector(
                                                     onTap: (){
                                                       getFileDialog();
 
                                                     },
                                                     child: SvgPicture.asset("assets/icons/attach.svg", height: 20,width: 20, color: kPrimaryColor,)),
                                                 SizedBox(width: 1.h,),*/
-                                                InkWell(
-                                                    onTap: () {
-                                                      var mesage =
-                                                          messageController.text
-                                                              .toString();
+                                                      InkWell(
+                                                          onTap: () {
+                                                            var mesage =
+                                                                messageController
+                                                                    .text
+                                                                    .toString();
 
-                                                      if (mesage == "" ||
-                                                          mesage == "null") {
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(SnackBar(
-                                                                content: Text(
-                                                                    "Please enter reply")));
-                                                      } else {
-                                                        FocusScope.of(context)
-                                                            .unfocus();
-                                                        replyOnHotspotReviewApi(
-                                                            getHostSpotList[
-                                                                    index]
-                                                                .id
-                                                                .toString(),
-                                                            getHostSpotList[
-                                                                    index]
-                                                                .messageText
-                                                                .toString());
-                                                      }
+                                                            if (mesage == "" ||
+                                                                mesage ==
+                                                                    "null") {
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                          content:
+                                                                              Text("Please enter reply")));
+                                                            } else {
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus();
+                                                              replyOnHotspotReviewApi(
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .id
+                                                                      .toString(),
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .messageText
+                                                                      .toString(),
+                                                                  index);
+                                                            }
 
-                                                      messageController.clear();
-                                                    },
-                                                    child: Icon(Icons.send,
-                                                        color: kPrimaryColor)),
-                                                //  SizedBox(width: 1.h,),
-                                              ],
+                                                            messageController
+                                                                .clear();
+                                                          },
+                                                          child: Icon(
+                                                              Icons.send,
+                                                              color:
+                                                                  kPrimaryColor)),
+                                                      //  SizedBox(width: 1.h,),
+                                                    ],
+                                                  ),
+                                                  hintStyle: TextStyle(
+                                                      fontSize: 9.sp,
+                                                      color: Colors.white)),
                                             ),
-                                            hintStyle: TextStyle(
-                                                fontSize: 9.sp,
-                                                color: Colors.white)),
-                                      ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                            ],
-                          )),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-                      //replyWidget(controller: _controller),
-                    ],
-                  );
-                },
-              ),
-              SizedBox(
-                height: 5.h,
-              ),
-            ],
-          ),
-        ],
-      ),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                  ],
+                                )),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            //replyWidget(controller: _controller),
+                          ],
+                        );
+                      },
+                    ),
+                   
+                  
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                  ],
+                ),
+              ],
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(top: 8.0),
@@ -550,195 +595,197 @@ class _HotspotState extends State<Hotspot> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              str.length > 1
+                  ? ListView(
+                      shrinkWrap: true,
+                      children: getAllBusinessList.map((s) {
+                        if (('@' + s.business_name.toString().toLowerCase())
+                            .contains(str.toString().toLowerCase()))
+                          return Container(
+                            color: Colors.white,
+                            child: ListTile(
+                                title: Text(
+                                  s.business_name,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onTap: () {
+                                  String tmp = str.substring(1, str.length);
+                                  print("tmp " + tmp.toString() + "^");
+                                  selectedId = s.business_id;
+                                  setState(() {
+                                    reviewController.text = reviewController
+                                        .text
+                                        .toString()
+                                        .substring(
+                                            0,
+                                            reviewController.text
+                                                    .toString()
+                                                    .length -
+                                                tmp.length);
+                                    reviewController.text += s.business_name;
+                                    //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
 
-
-                          str.length > 1
-            ? ListView(
-                shrinkWrap: true,
-                children: getAllBusinessList.map((s) {
-                  if (('@' + s.business_name.toString().toLowerCase())
-                      .contains(str.toString().toLowerCase()))
-                    return Container(
-                      color: Colors.white,
-                      child: ListTile(
-                          title: Text(
-                            s.business_name,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onTap: () {
-                            String tmp = str.substring(1, str.length);
-                            print("tmp " + tmp.toString() + "^");
-                            selectedId = s.business_id;
-                            setState(() {
-                              reviewController.text = reviewController.text
-                                  .toString()
-                                  .substring(
-                                      0,
-                                      reviewController.text.toString().length -
-                                          tmp.length);
-                              reviewController.text += s.business_name;
-                              //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
-
-                              reviewController.selection =
-                                  TextSelection.fromPosition(TextPosition(
-                                      offset: reviewController.text.length));
-                              str = '';
-                            });
-                          }),
-                    );
-                  else
-                    return SizedBox();
-                }).toList())
-            : Visibility(visible: false, child: SizedBox()),
-        SizedBox(height: 25),
-        coments.length > 0
-            ? ListView.builder(
-                shrinkWrap: true,
-                itemCount: coments.length,
-                itemBuilder: (con, ind) {
-                  return Text.rich(
-                    TextSpan(
-                        text: '',
-                        children: coments[ind].split(' ').map((w) {
-                          return w.startsWith('@') && w.length > 1
-                              ? TextSpan(
-                                  text: ' ' + w,
-                                  style: TextStyle(color: Colors.blue),
-                                )
-                              : TextSpan(
-                                  text: ' ' + w,
-                                  style: TextStyle(color: Colors.black));
-                        }).toList()),
-                  );
-                },
-              )
-            : Visibility(visible: false, child: SizedBox()),
+                                    reviewController.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset:
+                                                reviewController.text.length));
+                                    str = '';
+                                  });
+                                }),
+                          );
+                        else
+                          return SizedBox();
+                      }).toList())
+                  : Visibility(visible: false, child: SizedBox()),
+              SizedBox(height: 25),
+              coments.length > 0
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: coments.length,
+                      itemBuilder: (con, ind) {
+                        return Text.rich(
+                          TextSpan(
+                              text: '',
+                              children: coments[ind].split(' ').map((w) {
+                                return w.startsWith('@') && w.length > 1
+                                    ? TextSpan(
+                                        text: ' ' + w,
+                                        style: TextStyle(color: Colors.blue),
+                                      )
+                                    : TextSpan(
+                                        text: ' ' + w,
+                                        style: TextStyle(color: Colors.black));
+                              }).toList()),
+                        );
+                      },
+                    )
+                  : Visibility(visible: false, child: SizedBox()),
               Visibility(
                   visible: file == null ? false : true,
                   child: file != null
                       ? image_video_status == "1"
-                      ? Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        color: kBackgroundColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 5.h,
-                        ),
-                        Flexible(
-                          flex: 8,
-                          child: Center(
-                            child: Container(
-                                height: 150,
-                                child: Image.file(
-                                  file!,
-                                  height: 80,
-                                )),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                flex: 8,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        file = null;
-                                        fileName = "";
-                                        base64Image = "";
-                                        image_video_status = "0";
-                                        currentPath = "";
-                                      });
-                                    },
+                          ? Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  color: kBackgroundColor),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 5.h,
+                                  ),
+                                  Flexible(
+                                    flex: 8,
+                                    child: Center(
+                                      child: Container(
+                                          height: 150,
+                                          child: Image.file(
+                                            file!,
+                                            height: 80,
+                                          )),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 2,
+                                    child: Column(
+                                      children: [
+                                        Flexible(
+                                          flex: 8,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  file = null;
+                                                  fileName = "";
+                                                  base64Image = "";
+                                                  image_video_status = "0";
+                                                  currentPath = "";
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5.0),
+                                                child: SvgPicture.asset(
+                                                  "assets/icons/cross.svg",
+                                                  color: Colors.white,
+                                                  width: 4.w,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Flexible(flex: 2, child: Container())
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  color: kBackgroundColor),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              file = null;
+                                              fileName = "";
+                                              base64Image = "";
+                                              image_video_status = "0";
+                                              currentPath = "";
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 5.0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/cross.svg",
+                                              color: Colors.white,
+                                              width: 4.w,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.5.h,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
                                     child: Padding(
-                                      padding:
-                                      const EdgeInsets.only(right: 5.0),
-                                      child: SvgPicture.asset(
-                                        "assets/icons/cross.svg",
-                                        color: Colors.white,
-                                        width: 4.w,
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        fileName,
+                                        maxLines: 3,
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                              Flexible(flex: 2, child: Container())
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                            )
                       : Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        color: kBackgroundColor),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    file = null;
-                                    fileName = "";
-                                    base64Image = "";
-                                    image_video_status = "0";
-                                    currentPath = "";
-                                  });
-                                },
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(right: 5.0),
-                                  child: SvgPicture.asset(
-                                    "assets/icons/cross.svg",
-                                    color: Colors.white,
-                                    width: 4.w,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 1.5.h,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              fileName,
-                              maxLines: 3,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                      : Container(
-                    color: Colors.white,
-                    height: 100,
-                  )),
+                          color: Colors.white,
+                          height: 100,
+                        )),
               Container(
                 width: double.infinity,
                 height: 8.h,
@@ -747,15 +794,12 @@ class _HotspotState extends State<Hotspot> {
                   children: [
                     IconButton(
                       onPressed: () {
-                         
-                    
-                      image_video_status = "0";
-                      file = null;
-                      fileName = "";
-                      currentPath = "";
-                      getFileDialog();
-                    
-                  },
+                        image_video_status = "0";
+                        file = null;
+                        fileName = "";
+                        currentPath = "";
+                        getFileDialog();
+                      },
                       icon: Icon(
                         Icons.add_circle_outline,
                         size: 9.w,
@@ -770,16 +814,16 @@ class _HotspotState extends State<Hotspot> {
                       height: 6.h,
                       child: TextField(
                         controller: reviewController,
-          onChanged: (val) {
-            setState(() {
-              words = val.split(' ');
-              str = words.length > 0 && words[words.length - 1].startsWith('@')
-                  ? words[words.length - 1]
-                  : '';
-            });
-          },
-                        style:
-                            TextStyle(color: Colors.white, fontSize: 12.sp),
+                        onChanged: (val) {
+                          setState(() {
+                            words = val.split(' ');
+                            str = words.length > 0 &&
+                                    words[words.length - 1].startsWith('@')
+                                ? words[words.length - 1]
+                                : '';
+                          });
+                        },
+                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
                         maxLines: 1,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -796,9 +840,9 @@ class _HotspotState extends State<Hotspot> {
                             color: Colors.white,
                             fontSize: 12.sp,
                           ),
-                          suffixIcon:  Visibility(
+                          suffixIcon: Visibility(
                             visible: reviewController.text.toString() == "" ||
-                                reviewController.text.toString() == "null"
+                                    reviewController.text.toString() == "null"
                                 ? false
                                 : true,
                             child: InkWell(
@@ -807,8 +851,10 @@ class _HotspotState extends State<Hotspot> {
 
                                   if (reviewEnable == true) {
                                     if (mesage == "" || mesage == "null") {
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: Text("Please write message")));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Please write message")));
                                     } else {
                                       FocusScope.of(context).unfocus();
                                       print(image_video_status);
@@ -820,8 +866,8 @@ class _HotspotState extends State<Hotspot> {
 
                                   reviewController.text.toString() == "";
                                 },
-
-                                child: Icon(Icons.send, size: 9.w, color: Colors.white)),
+                                child: Icon(Icons.send,
+                                    size: 9.w, color: Colors.white)),
                           ),
                         ),
                       ),
@@ -829,7 +875,6 @@ class _HotspotState extends State<Hotspot> {
                     SizedBox(
                       width: 3.w,
                     ),
-
                   ],
                 ),
               ),
@@ -845,7 +890,7 @@ class _HotspotState extends State<Hotspot> {
     );
   }
 
-      Column buildMessageFormField() {
+  Column buildMessageFormField() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1244,10 +1289,6 @@ class _HotspotState extends State<Hotspot> {
     );*/
   }
 
-
-
-
-
   Widget buildInput() {
     return Container(
       height: 7.h,
@@ -1453,7 +1494,7 @@ class _HotspotState extends State<Hotspot> {
   }
 
   Future<dynamic> replyOnHotspotReviewApi(
-      String review_id, String messageText) async {
+      String review_id, String messageText, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     setState(() {
@@ -1508,6 +1549,8 @@ class _HotspotState extends State<Hotspot> {
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
+
+      _scrollToIndex(index);
     } else {
       setState(() {
         isloading = false;
@@ -1688,8 +1731,6 @@ class _HotspotState extends State<Hotspot> {
       });
     }
   }
-
-
 
   getFileDialog() {
     showDialog(

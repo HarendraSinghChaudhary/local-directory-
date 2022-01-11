@@ -1,10 +1,11 @@
-
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
@@ -16,12 +17,13 @@ class FliterScreen extends StatefulWidget {
 }
 
 class _FliterScreenState extends State<FliterScreen> {
+  ScrollController _controller = new ScrollController();
 
-   bool remember = false;
-   bool isloading = false;
-
-
-
+  bool remember = false;
+  bool isloading = false;
+  bool statusOnly = false;
+  bool statusCp = false;
+  bool statusHe = false;
 
   List data = [];
   List areas = [];
@@ -29,90 +31,12 @@ class _FliterScreenState extends State<FliterScreen> {
   bool arecheckbox = false;
   bool val = false;
 
-  List<ABC> stringList = [];
-
   @override
   void initState() {
     liefeStyleApi();
-    
+
     super.initState();
-    
   }
-
-  // void listText() {
-  //   FilterList1 obj = FilterList1();
-  //   obj.lifestyle = "Show Friends";
-  //   List<Reslist> listres1 = [];
-
-  //   Reslist reslist = Reslist(); // creating object of class
-  //   reslist.name = "Happy Hour";
-
-  //   listres1.add(reslist);
-
-  //   Reslist reslist1 = Reslist(); // creating object of class
-  //   reslist1.name = "Breakfast";
-
-  //   listres1.add(reslist1);
-
-  //   obj.area = listres1;
-
-  //   FilterList1 obj1 = FilterList1();
-  //   obj1.lifestyle = "Current Promotion";
-
-  //   FilterList1 obj2 = FilterList1();
-  //   obj2.lifestyle = "Online Only";
-
-  //   FilterList1 obj3 = FilterList1();
-  //   obj3.lifestyle = "Nightlife";
-
-  
-  //   FilterList1 obj4 = FilterList1();
-  //   obj4.lifestyle = "Lit";
-
-
-  //   FilterList1 obj5 = FilterList1();
-  //   obj5.lifestyle = "Hit or Miss";
-
-  //   FilterList1 obj6 = FilterList1();
-  //   obj6.lifestyle = "Chill";
-
-  //   FilterList1 obj7 = FilterList1();
-  //   obj7.lifestyle = "Restaurants & Bars";
-    
-
-  //   FilterList1 obj8 = FilterList1();
-  //   obj8.lifestyle = "Trades / Professional Services";
-
-  //   FilterList1 obj9 = FilterList1();
-  //   obj9.lifestyle = "Health / Medical";
-
-  //   FilterList1 obj10 = FilterList1();
-  //   obj10.lifestyle = "Health / Medical";
-
-  //   FilterList1 obj11 = FilterList1();
-  //   obj11.lifestyle = "Arts / Crafts";
-
-  //   locList1.add(obj);
-  //   locList1.add(obj1);
-  //   locList1.add(obj2);
-  //   locList1.add(obj3);
-  //   locList1.add(obj4);
-  //   locList1.add(obj5);
-  //   locList1.add(obj6);
-  //   locList1.add(obj7);
-  //   locList1.add(obj8);
-  //   locList1.add(obj9);
-  //   locList1.add(obj10);
-  //   locList1.add(obj11);
-
-  //   locList1.forEach((element) {
-  //     print(element.lifestyle);
-  //     element.area.forEach((element) {
-  //       print(element.name);
-  //     });
-  //     // print(element.name);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -123,95 +47,264 @@ class _FliterScreenState extends State<FliterScreen> {
           child: Text("Filter"),
         ),
       ),
-      body: ListView.builder(
-        itemCount: lifeStyleList.length,
-        itemBuilder: (BuildContext context, int index) {
-          // areas = data[index]['areas'];
-          //  print(data[0]['areas'][0]['name']);
-          return ExpansionTile(
-            onExpansionChanged: (val) {
-              // setState(() {
-              //   if (locList1[index].area.length == 0) {
-              //     locList1[index].isSelected = !locList1[index].isSelected;
-              //   }
-              // });
-            },
-            trailing: lifeStyleList[index].name.length == 0
-                ? Container(
-                    width: 50,
-                    child: Center(
-                      child: lifeStyleList[index].isSelected
-                          ? Checkbox(
-                              // fillColor: MaterialStateProperty.,
-                              activeColor: Color(0xffFFBA00),
-                              value: lifeStyleList[index].isSelected,
-                              onChanged: (value) {
-                                setState(() {
-                                  lifeStyleList[index].isSelected =
-                                      !lifeStyleList[index].isSelected;
-                                });
-                              },
-                            )
-                          : Container(),
-                    ),
-                  )
-                : Container(
-                    width: 50,
-                    child: Center(
-                      child: Icon(Icons.keyboard_arrow_down_sharp,
-                      size: 30,
-                      color: Colors.white,
-                      )
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              controller: _controller,
+              itemCount: lifeStyleList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ExpansionTile(
+                  onExpansionChanged: (val) {},
+                  trailing: lifeStyleList[index].name.length == 0
+                      ? Container(
+                          width: 50,
+                          child: Center(
+                            child: lifeStyleList[index].isSelected
+                                ? Checkbox(
+                                    // fillColor: MaterialStateProperty.,
+                                    activeColor: Color(0xffFFBA00),
+                                    value: lifeStyleList[index].isSelected,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        lifeStyleList[index].isSelected =
+                                            !lifeStyleList[index].isSelected;
+                                      });
+                                    },
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      : Container(
+                          width: 50,
+                          child: Center(
+                              child: Icon(
+                            Icons.keyboard_arrow_down_sharp,
+                            size: 30,
+                            color: Colors.white,
+                          )),
+                        ),
+                  title: Text(
+                    lifeStyleList[index].name.toString(),
+                    style: TextStyle(color: kCyanColor),
+                  ),
+                  children: [
+                    lifeStyleList[index].name.length == 0
+                        ? Container()
+                        : ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: lifeStyleList[index].subLifeStyle.length,
+                            itemBuilder: (BuildContext context, int j) {
+                              return ListTile(
+                                leading: Checkbox(
+                                    activeColor: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                          bottomLeft: Radius.circular(5),
+                                          bottomRight: Radius.circular(5)),
+                                    ),
+                                    fillColor:
+                                        MaterialStateProperty.resolveWith(
+                                            (states) {
+                                      if (states
+                                          .contains(MaterialState.selected)) {
+                                        return kPrimaryColor;
+                                      }
+                                      return Colors.white60;
+                                    }),
+                                    value: lifeStyleList[index]
+                                        .subLifeStyle[j]
+                                        .isSelected,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        lifeStyleList[index]
+                                            .subLifeStyle[j]
+                                            .isSelected = val!;
+                                      });
+                                    }),
+                                // onTap: () {
+                                //   setState(() {
+                                //     locList1[index].area[i].isSelected =
+                                //         !locList1[index].area[i].isSelected;
+                                //   });
+                                // },
+                                title: Text(
+                                  lifeStyleList[index]
+                                      .subLifeStyle[j]
+                                      .name
+                                      .toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              );
+                            },
+                          )
+                  ],
+                );
+              },
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Online Only",
+                    style: TextStyle(
+                        color: kCyanColor,
+                        fontSize: 13.sp,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Center(
+                    child: Container(
+                      child: FlutterSwitch(
+                        activeColor: kPrimaryColor,
+                        width: 12.w,
+                        height: 3.h,
+                        valueFontSize: 0.0,
+                        toggleSize: 20.0,
+                        toggleColor: Colors.black,
+                        value: statusOnly,
+                        borderRadius: 30.0,
+                        //padding: 8.0,
+                        showOnOff: true,
+                        onToggle: (val) {
+                          setState(() {
+                            statusOnly = val;
+                          });
+                        },
+                      ),
                     ),
                   ),
-            title: Text(
-              lifeStyleList[index].name.toString(),
-              style: TextStyle(color: kCyanColor),
+                ],
+              ),
             ),
-            children: [
-              lifeStyleList[index].name.length == 0
-                  ? Container()
-                  : ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: lifeStyleList[index].name.length,
-                      itemBuilder: (BuildContext context, int i) {
-                        return ListTile(
-                          leading: Checkbox(
-                              activeColor: kPrimaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(5),
-                                    topRight: Radius.circular(5),
-                                    bottomLeft: Radius.circular(5),
-                                    bottomRight: Radius.circular(5)),
-                              ),
-                              fillColor:
-                                  MaterialStateProperty.resolveWith((states) {
-                                if (states.contains(MaterialState.selected)) {
-                                  return kPrimaryColor;
-                                }
-                                return Colors.white60;
-                              }),
-                              value: remember,
-                              onChanged: (val )  {
-                                setState(() {
-                                  remember = val!;
-                                });
-                              }),
-                          // onTap: () {
-                          //   setState(() {
-                          //     locList1[index].area[i].isSelected =
-                          //         !locList1[index].area[i].isSelected;
-                          //   });
-                          // },
-                          //title: Text(locList1[index].area[i].name, style: TextStyle(color: Colors.white),), 
-                        );
-                      },
-                    )
-            ],
-          );
-        },
+            SizedBox(
+              height: 3.h,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Current Promotion",
+                    style: TextStyle(
+                        color: kCyanColor,
+                        fontSize: 13.sp,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Center(
+                    child: Container(
+                      child: FlutterSwitch(
+                        activeColor: kPrimaryColor,
+                        width: 12.w,
+                        height: 3.h,
+                        valueFontSize: 0.0,
+                        toggleSize: 20.0,
+                        toggleColor: Colors.black,
+                        value: statusCp,
+                        borderRadius: 30.0,
+                        //padding: 8.0,
+                        showOnOff: true,
+                        onToggle: (val) {
+                          setState(() {
+                            statusCp = val;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 3.h,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Hablamos Espanol ",
+                    style: TextStyle(
+                        color: kCyanColor,
+                        fontSize: 13.sp,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Center(
+                    child: Container(
+                      child: FlutterSwitch(
+                        activeColor: kPrimaryColor,
+                        width: 12.w,
+                        height: 3.h,
+                        valueFontSize: 0.0,
+                        toggleSize: 20.0,
+                        toggleColor: Colors.black,
+                        value: statusHe,
+                        borderRadius: 30.0,
+                        //padding: 8.0,
+                        showOnOff: true,
+                        onToggle: (val) {
+                          setState(() {
+                            statusHe = val;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 3.h,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 45.w,
+                    height: 7.h,
+
+                    decoration: BoxDecoration(
+                     borderRadius: BorderRadius.circular(30),
+                     color: Colors.black,
+                     border: Border.all(
+                       color: kPrimaryColor
+                     )
+                    ),
+                    child: FlatButton(
+                     
+                     
+                      onPressed: () {},
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            color: kPrimaryColor,
+                            fontFamily: 'Roboto'),
+                      ),
+                    ),
+                  ),
+                  DefaultButton(
+                      width: 45.w, height: 7.h, text: "Apply", press: () {})
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 3.h,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -250,25 +343,18 @@ class _FliterScreenState extends State<FliterScreen> {
           LifeStyle modelAgentSearch = new LifeStyle();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.name = jsonArray[i]["name"].toString();
+          modelAgentSearch.subcategory = jsonArray[i]["subcategory"].toString();
 
-          // jsonErray = jsonRes['data'][i]['name'];
-          // for (var j = 0; j < jsonErray.length; j++) {
-          //   SubLifeStyle modelFilter = new SubLifeStyle();
-          //   modelFilter.id = jsonErray[j]["id"].toString();
-          //   modelFilter.name = jsonErray[j]["name"].toString();
-          //   modelFilter.category_id = jsonErray[j]["category_id"].toString();
-          //   print("id sub: " + modelFilter.name.toString());
-            
+          jsonErray = jsonRes['data'][i]['subcategory'];
+          for (var j = 0; j < jsonErray.length; j++) {
+            SubLifeStyle modelFilter = new SubLifeStyle();
+            modelFilter.id = jsonErray[j]["id"].toString();
+            modelFilter.name = jsonErray[j]["name"].toString();
+            modelFilter.category_id = jsonErray[j]["category_id"].toString();
+            print("id sub: " + modelFilter.name.toString());
 
-            
-          // }
-
-          
-
-
-          
-
-          
+            modelAgentSearch.subLifeStyle.add(modelFilter);
+          }
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.name.toString());
@@ -281,14 +367,6 @@ class _FliterScreenState extends State<FliterScreen> {
         setState(() {
           isloading = false;
         });
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
-
       } else {
         setState(() {
           isloading = false;
@@ -306,11 +384,11 @@ class _FliterScreenState extends State<FliterScreen> {
   }
 }
 
-
 class LifeStyle {
   String id = "";
   String name = "";
   bool isSelected = false;
+  var subcategory = "";
   List<SubLifeStyle> subLifeStyle = [];
 }
 
@@ -318,23 +396,5 @@ class SubLifeStyle {
   String id = "";
   String category_id = "";
   String name = "";
-  bool isSelected = false;
-
-}
-
-class ABC {
-  String? name;
-  String? id;
-}
-
-class FilterList1 {
-  String lifestyle = "";
-  bool isSelected = false;
-  List<Reslist> area = [];
-}
-
-class Reslist {
-  String name = "";
-  String namee = "";
   bool isSelected = false;
 }

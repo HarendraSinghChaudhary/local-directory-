@@ -6,6 +6,8 @@ const kPrimaryLightColor = Color(0xFFFFECDF);
 const kIconColor = Color(0xFF7A7A7A);
 const kBackgroundColor = Color(0xFF262626);
 const kIconBackgroundColor = Color(0XFFAAAAAA);
+const kokokColor = Color(0XFF62C15E);
+const kNotCoolColor = Color(0XFF67EDFF);
 
 const kPrimaryGradientColor = LinearGradient(
   begin: Alignment.topLeft,

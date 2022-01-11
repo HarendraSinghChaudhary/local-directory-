@@ -16,10 +16,11 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
+  var description = "";
   bool isloading = false;
 
   List<Abouta> abtList = [];
-  var description = "";
+
   @override
   void initState() {
 
@@ -55,7 +56,7 @@ class _AboutUsState extends State<AboutUs> {
           Container(
                   margin: EdgeInsets.symmetric(horizontal: 3.w),
                   width: double.infinity,
-                  child:  Text(description.toString(),
+                  child:   Text(description.toString(),
                                             style: TextStyle(
                                                 //overflow: TextOverflow.ellipsis,
                                                 fontSize: 10.2.sp,
@@ -71,7 +72,7 @@ class _AboutUsState extends State<AboutUs> {
     );
   }
 
-      Future<dynamic> aboutApi() async {
+        Future<dynamic> aboutApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -131,6 +132,9 @@ class _AboutUsState extends State<AboutUs> {
     return abtList;
 
   }
+
+   
+   
 }
 
 class Abouta{

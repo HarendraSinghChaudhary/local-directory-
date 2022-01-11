@@ -695,7 +695,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     StatefulBuilder(
                                         builder: (context, setState) {
-                                      return Container(
+                                      return 
+                                      Container(
                                         child: InkWell(
                                           onTap: () {
                                             if (likeEnable == true) {
@@ -1625,10 +1626,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 rattingcheckin = 0.0;
                                 check = "";
                               },
-                              child: SvgPicture.asset(
-                                "assets/icons/cross.svg",
-                                color: Colors.white,
-                                width: 4.w,
+                              child: Container(
+                                height:10.w,
+                                width:10.w,
+                                color: Colors.transparent,
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    "assets/icons/cross.svg",
+                                    color: Colors.white,
+                                    width: 4.w,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -2065,10 +2073,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ivStatus = "";
                                 ratting = 0.0;
                               },
-                              child: SvgPicture.asset(
-                                "assets/icons/cross.svg",
-                                color: Colors.white,
-                                width: 4.w,
+                              child: Container(
+                                 height:10.w,
+                                width:10.w,
+                                color: Colors.transparent,
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    "assets/icons/cross.svg",
+                                    color: Colors.white,
+                                    width: 4.w,
+                                  ),
+                                ),
                               ),
                             ),
                           ],

@@ -22,8 +22,10 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
+  bool viewVisible = false;
+  var check = "";
 
-   bool _hasBeenPressed = true;
+  bool _hasBeenPressed = true;
   var id = "";
   var fav = "";
   var business_name = "";
@@ -42,46 +44,45 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   List<NearBy> nearByRestaurantList = [];
 
-  
-
   TextEditingController mesageTextController = new TextEditingController();
-
- 
-
 
   LatLng sourceLocation = LatLng(26.862471, 75.762413);
   bool isloading = false;
 
-  Completer <GoogleMapController> _controllerGoogleMap = Completer();
-
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
 
   late GoogleMapController newGoogleMapController;
- late Position currentPosition;
- List<Marker> markers = [];
+  late Position currentPosition;
+  List<Marker> markers = [];
 
- late BitmapDescriptor mapMarker;
+  late BitmapDescriptor mapMarker;
   // late Position position;
 
-  void setCustomMarker () async{
-    mapMarker = await BitmapDescriptor.fromAssetImage(ImageConfiguration(), "assets/images/fire.png");
-
+  void setCustomMarker() async {
+    mapMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), "assets/images/fire.png");
   }
 
-  initilize (List<NearBy> businessList) {
+  initilize(List<NearBy> businessList) {
+    print("into the initalizer method");
 
- print("into the initalizer method");
-
-     for(final business in businessList){
-          Marker firstMarker = Marker(
-          markerId: MarkerId(business.id),
-          position: LatLng(double.parse(business.lat), double.parse(business.long)),
-          infoWindow: InfoWindow(title: business.business_name.toString()),
-          icon: 
-          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-
-        );
+    for (final business in businessList) {
+      Marker firstMarker = Marker(
+        onTap: () {
+          setState(() {
+            viewVisible = true;
+          });
+        },
+        markerId: MarkerId(business.id),
+        position:
+            LatLng(double.parse(business.lat), double.parse(business.long)),
+        infoWindow: InfoWindow(
+          title: business_name = business.business_name.toString(),
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      );
       markers.add(firstMarker);
-     }
+    }
 
     //  Marker zeroMarker = Marker(
     //   markerId: MarkerId(nearByRestaurantList[0].id.toString()),
@@ -110,7 +111,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
     // );
 
-
     //  Marker fourthMarker = Marker(
     //   markerId: MarkerId("4"),
     //   position: LatLng(26.937360507037585, 75.81551516809603),
@@ -133,10 +133,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     // markers.add(zeroMarker);
 
-    setState(() {
-      
-    });
-
+    setState(() {});
   }
 
   @override
@@ -144,7 +141,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     locatePosition();
     nearBy();
     initilize(nearByRestaurantList);
-    
+
     super.initState();
     setCustomMarker();
   }
@@ -153,35 +150,27 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+    currentPosition = position;
 
-        currentPosition = position;
+    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    print("lat: " + position.latitude.toString());
+    print("long " + position.longitude.toString());
 
-        LatLng latLngPosition = LatLng(position.latitude, position.longitude);
-        print("lat: "+position.latitude.toString());
-        print("long "+position.longitude.toString());
+    CameraPosition cameraPosition =
+        new CameraPosition(target: latLngPosition, zoom: 15);
 
-        CameraPosition cameraPosition = new CameraPosition(target: latLngPosition, zoom: 15);
-
-        newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-
-  
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-
-
-  static final CameraPosition _currentPosition  = CameraPosition(
-    target:LatLng(26.862471, 75.762413),
-    zoom: 16
-  );
+  static final CameraPosition _currentPosition =
+      CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 16);
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: Colors.white,
-
-         appBar: AppBar(
+        appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -211,126 +200,296 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               )
             ],
           ),
-
           actions: [
-
-             Padding(
-               padding: EdgeInsets.only(right: 3.w),
-               child: InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => FliterScreen()));
-                  },
-                  child: SvgPicture.asset(
-                    "assets/icons/filter-list.svg",
-                    width: 26,
-                    color: Colors.white,
-                  ),
+            Padding(
+              padding: EdgeInsets.only(right: 3.w),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FliterScreen()));
+                },
+                child: SvgPicture.asset(
+                  "assets/icons/filter-list.svg",
+                  width: 26,
+                  color: Colors.white,
                 ),
-             ),
-
+              ),
+            ),
           ],
         ),
         body: SafeArea(
             child: Stack(
-              children: [
-                GoogleMap(
-          initialCameraPosition: _currentPosition,
-          myLocationEnabled: true,
-          zoomControlsEnabled: true,
-          zoomGesturesEnabled: true,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
+          children: [
+            GoogleMap(
+              initialCameraPosition: _currentPosition,
+              myLocationEnabled: true,
+              zoomControlsEnabled: true,
+              zoomGesturesEnabled: true,
+              mapType: MapType.normal,
+              onMapCreated: (GoogleMapController controller) {
+                _controllerGoogleMap.complete(controller);
+                newGoogleMapController = controller;
 
-            _controllerGoogleMap.complete(controller);
-            newGoogleMapController = controller;
+                locatePosition();
+                setState(() {});
+              },
+              markers: markers.map((e) => e).toSet(),
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 25.0, top: 8),
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.w),
+                height: 6.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3.w),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(2, 3),
+                        blurRadius: 10,
+                        spreadRadius: 1)
+                  ],
+                ),
+                child: TextFormField(
+                  controller: mesageTextController,
+                  onChanged: (value) {
+                    searchData(value.toString());
+                  },
+                  validator: (val) {},
+                  style: TextStyle(
+                      color: kPrimaryColor, fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    suffixIconConstraints: BoxConstraints(minWidth: 50),
+                    prefixIconConstraints: BoxConstraints(minWidth: 60),
+                    contentPadding: EdgeInsets.only(top: 0.h),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    hintText: "Search",
+                    hintStyle: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        mesageTextController.clear();
+                        // getHostSpotList.clear();
 
-            locatePosition();
-            setState(() {
-              
-            });
-         
-          },
-          markers: markers.map((e) => 
-          e).toSet(),
-        ),
-
-         Padding(
-           padding: EdgeInsets.only(right: 25.0, top: 8),
-           child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 8.w),
-                  height: 6.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3.w),
-                      color: Colors.white,
-                       boxShadow: [
-                  BoxShadow(
-                      color: Colors.black54,
-                      offset: Offset(2, 3),
-                      blurRadius: 10,
-                      spreadRadius: 1)
-                ],
+                        // getHotspotApi();
+                      },
+                      child: SvgPicture.asset(
+                        "assets/icons/cross.svg",
+                        width: 15,
+                        color: kPrimaryColor,
                       ),
-                  child: TextFormField(
-                    controller: mesageTextController ,
-                     onChanged: (value){
-                             searchData(value.toString());
-                          },
-                          validator: (val) {
-                            
-                          },
-                          style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),
-                    decoration: InputDecoration(
-                      
-                      suffixIconConstraints: BoxConstraints(minWidth: 50),
-                      prefixIconConstraints: BoxConstraints(minWidth: 60),
-                      contentPadding: EdgeInsets.only(top: 0.h),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        hintText: "Search",
-                        hintStyle: TextStyle(
-                            color: kPrimaryColor,
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w700),
-                        suffixIcon:
-                            InkWell(
-                              onTap: () {
-                               mesageTextController.clear();
-                              // getHostSpotList.clear();
-           
-                              // getHotspotApi();
-           
-           
-           
-           
-                                
-                              },
-                              child: SvgPicture.asset("assets/icons/cross.svg", width: 15, color: kPrimaryColor,),
 
-
-           
-                              // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
-                              ),
-                        prefixIcon: SvgPicture.asset("assets/icons/search-.svg", width: 20, color: kPrimaryColor,), ),
+                      // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
+                    ),
+                    prefixIcon: SvgPicture.asset(
+                      "assets/icons/search-.svg",
+                      width: 20,
+                      color: kPrimaryColor,
+                    ),
                   ),
                 ),
-         ),
+              ),
+            ),
+            Visibility(
+              visible: viewVisible,
+              child: Padding(
+                padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
+                child: Container(
+                  height: 18.h,
+                  width: 70.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3.w),
+                    color: kBackgroundColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset("assets/icons/file.svg",
+                                      color: kPrimaryColor, width: 5.w),
+                                  SizedBox(
+                                    height: 0.6.h,
+                                  ),
+                                  Text(
+                                    "Fire(20)",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset("assets/icons/bakance.svg",
+                                      color: kokokColor, width: 10.w),
+                                  Text(
+                                    "Ok Ok(5)",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset("assets/icons/snow.svg",
+                                      color: kNotCoolColor, width: 8.w),
+                                  Text(
+                                    "Not Cool(2)",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset("assets/icons/star.svg",
+                                      color: kPrimaryColor, width: 6.w),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    "3.5",
+                                    style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 16.w,
+                                width: 18.w,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3.w),
+                                    color: Colors.red,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/restaurant.jpeg"),
+                                        fit: BoxFit.fill)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0, bottom: 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      //"Bar Name",
+                                      business_name.toString(),
+                                      // widget.nearBy.business_name.toString() != "null"
+                                      //     ? widget.nearBy.business_name.toString()
+                                      //     : "Bar Name",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: kCyanColor,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Segoepr"),
+                                    ),
+
+                                    SizedBox(height: 0.5.h,),
 
 
-
-
-              ],
+                                    Row(
+                                      children: [
+                                        Text(
+                                          // communityReviewList != null &&
+                                          //         communityReviewList.length > 0
+                                          //     ? communityReviewList.length.toString() +
+                                          //         " Reviews "
+                                          "1200 Reviews",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                        Text(
+                                          " | ",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                        Text(
+                                          // widget.nearBy.user_count.toString() +
+                                          "25 People",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             )
-        )
-        );
+          ],
+        )));
   }
 
-
-   Future<dynamic> searchData(String key) async {
+  Future<dynamic> searchData(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -342,8 +501,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             ),
         body: {
           "business_name": key.toString(),
-          "category_name": "",
-          "sub_category_name": ""
+         
         });
 
     var jsonArray;
@@ -362,7 +520,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       if (jsonRes["status"] == true) {
         nearByRestaurantList.clear();
 
-     for (var i = 0; i < jsonArray.length; i++) {
+        for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.business_name =
@@ -385,23 +543,23 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           modelAgentSearch.long = jsonArray[i]["long"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
-         
 
           nearByRestaurantList.add(modelAgentSearch);
           id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
-           print("Bussiness: " + business_name.toString());
-          latlong_position = jsonArray[i]["lat"].toString()+","+" " + jsonArray[i]["long"].toString();
-          print("lay: "+latlong_position.toString());
-         
+          print("Bussiness: " + business_name.toString());
+          latlong_position = jsonArray[i]["lat"].toString() +
+              "," +
+              " " +
+              jsonArray[i]["long"].toString();
+          print("lay: " + latlong_position.toString());
 
-         nearByRestaurantList.add(modelAgentSearch);
+          nearByRestaurantList.add(modelAgentSearch);
 
+          initilize(nearByRestaurantList);
+          print("object");
 
-         initilize(nearByRestaurantList);
-         print("object");
-
-         print("lattttttt: "+lat.toString());
+          print("lattttttt: " + lat.toString());
 
           setState(() {});
         }
@@ -419,8 +577,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     }
   }
 
-
-    Future<dynamic> nearBy() async {
+  Future<dynamic> nearBy() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -477,23 +634,23 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           modelAgentSearch.long = jsonArray[i]["long"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
-         
 
           nearByRestaurantList.add(modelAgentSearch);
           id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
-           print("Bussiness: " + business_name.toString());
-          latlong_position = jsonArray[i]["lat"].toString()+","+" " + jsonArray[i]["long"].toString();
-          print("lay: "+latlong_position.toString());
-         
+          print("Bussiness: " + business_name.toString());
+          latlong_position = jsonArray[i]["lat"].toString() +
+              "," +
+              " " +
+              jsonArray[i]["long"].toString();
+          print("lay: " + latlong_position.toString());
 
-         nearByRestaurantList.add(modelAgentSearch);
+          nearByRestaurantList.add(modelAgentSearch);
 
+          initilize(nearByRestaurantList);
+          print("object");
 
-         initilize(nearByRestaurantList);
-         print("object");
-
-         print("lattttttt: "+lat.toString());
+          print("lattttttt: " + lat.toString());
 
           setState(() {});
         }
@@ -501,8 +658,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         setState(() {
           isloading = false;
         });
-      
-
       } else {
         setState(() {
           isloading = false;
@@ -518,8 +673,4 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       });
     }
   }
-
-
 }
-
-

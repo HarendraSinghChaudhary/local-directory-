@@ -26,9 +26,7 @@ class Explore extends StatefulWidget {
 }
 
 class _ExploreState extends State<Explore> {
-  _getRequests() async {
-
-  }
+  _getRequests() async {}
 
   bool _hasBeenPressed = true;
   var ids = "";
@@ -59,23 +57,6 @@ class _ExploreState extends State<Explore> {
   }
 
   bool isloading = false;
-  List<Map<String, String>> sliderImages = [
-    {
-      "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/11.jpeg"
-    },
-    {
-      "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/11.jpeg.jpg"
-    },
-    {
-      "text":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada.",
-      "image": "assets/images/11.jpeg.jpg"
-    },
-  ];
 
   ScrollController _controller = new ScrollController();
   @override
@@ -227,36 +208,31 @@ class _ExploreState extends State<Explore> {
         print("name : " + business_name.toString());
         return Column(
           children: [
-
             InkWell(
               onTap: () {
-
                 if (ids.toString() != '72') {
                   Navigator.of(context)
-                    .push(
-                      new MaterialPageRoute(
-                          builder: (_) => new DetailBussiness(
-                                nearBy: nearByRestaurantList[index],
-                              )),
-                    ).then((value) {
-                      nearBy();
+                      .push(
+                    new MaterialPageRoute(
+                        builder: (_) => new DetailBussiness(
+                              nearBy: nearByRestaurantList[index],
+                            )),
+                  )
+                      .then((value) {
+                    nearBy();
                   });
 
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => ));
 
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => ));
-
-                visitApi(nearByRestaurantList[index].id.toString(), index);
-                  
+                  visitApi(nearByRestaurantList[index].id.toString(), index);
                 } else {
-
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Please login or signup first to view business profile")));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "Please login or signup first to view business profile")));
                 }
-             
               },
               child: Container(
                 height: 16.h,
@@ -428,11 +404,11 @@ class _ExploreState extends State<Explore> {
                       child: ids.toString() != '72'
                           ? InkWell(
                               onTap: () {
-                                if(favEnable == true) {
+                                if (favEnable == true) {
                                   var favv = nearByRestaurantList[index]
-                                      .fav
-                                      .toString() ==
-                                      "1"
+                                              .fav
+                                              .toString() ==
+                                          "1"
                                       ? "0"
                                       : "1";
                                   setState(() {
@@ -702,7 +678,6 @@ class _ExploreState extends State<Explore> {
           print("ratting: " + modelAgentSearch.avgratting.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
-
         }
 
         setState(() {
@@ -763,6 +738,18 @@ class CustomSliderWidget extends StatefulWidget {
 }
 
 class _CustomSliderWidgetState extends State<CustomSliderWidget> {
+  bool isloading = false;
+
+  List<NearBy> featuresBusinessList = [];
+  var ids = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    featuredBusinessApi();
+  }
+
   int activeIndex = 0;
   setActiveDot(index) {
     setState(() {
@@ -789,75 +776,93 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
               // autoPlay: true,
               viewportFraction: 1.0,
             ),
-            items: widget.items.map((item) {
+            items: featuresBusinessList.map((featuresBusinessList) {
               return Builder(
                 builder: (BuildContext context) {
-                  return Stack(children: [
-                    Container(
-                      height: 20.h,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.w),
-                        color: Colors.white,
-                        image: DecorationImage(
-                          image: AssetImage(item),
-                          fit: BoxFit.fill,
+                  return InkWell(
+                    onTap: () {
+                      if (ids.toString() != '72') {
+                        Navigator.of(context)
+                            .push(
+                          new MaterialPageRoute(
+                              builder: (_) => new DetailBussiness(
+                                    nearBy: featuresBusinessList,
+                                  )),
+                        )
+                            .then((value) {
+                          featuredBusinessApi();
+                        });
+
+
+       
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "Please login or signup first to view business profile")));
+                      }
+                    },
+                    child: Stack(children: [
+                      Container(
+                        height: 20.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3.w),
+                          color: Colors.white,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                featuresBusinessList.business_images),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        // child: Image.asset(),
+                      ),
+                      Positioned(
+                        bottom: 6.h,
+                        left: 8.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              // "Restaurant Name",
+                              featuresBusinessList.business_name.toString(),
+
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: Colors.white,
+                                //fontWeight: FontWeight.w700
+                                //fontFamily: "Segoepr"
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      // child: Image.asset(),
-                    ),
-                    Positioned(
-                      bottom: 6.h,
-                      left: 8.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text(
-                          //   "Business",
-                          //   style: TextStyle(
-                          //       fontSize: 21.sp,
-                          //       color: Colors.white,
-                          //       fontWeight: FontWeight.w700
-                          //       //fontFamily: "Segoepr"
-                          //       ),
-                          // ),
-                          Text(
-                            "Restaurant Name",
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white,
-                              //fontWeight: FontWeight.w700
-                              //fontFamily: "Segoepr"
+                      Positioned(
+                        bottom: 6.h,
+                        right: 6.w,
+                        child: Row(
+                          children: [
+                            Text(
+                              //"4.5",
+                              featuresBusinessList.avgratting.toString(),
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: Colors.white,
+                                //fontWeight: FontWeight.w700
+                                //fontFamily: "Segoepr"
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 6.h,
-                      right: 6.w,
-                      child: Row(
-                        children: [
-                          Text(
-                            "4.5",
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white,
-                              //fontWeight: FontWeight.w700
-                              //fontFamily: "Segoepr"
+                            SizedBox(
+                              width: 1.w,
                             ),
-                          ),
-                          SizedBox(
-                            width: 1.w,
-                          ),
-                          SvgPicture.asset(
-                            "assets/icons/star.svg",
-                            color: kPrimaryColor,
-                          )
-                        ],
+                            SvgPicture.asset(
+                              "assets/icons/star.svg",
+                              color: kPrimaryColor,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ]);
+                    ]),
+                  );
                 },
               );
             }).toList(),
@@ -869,12 +874,113 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
           bottom: 20,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(widget.items.length, (idx) {
+              children: List.generate(featuresBusinessList.length, (idx) {
                 return activeIndex == idx ? ActiveDot() : InactiveDot();
               })),
         )
       ],
     );
+  }
+
+   give() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    ids = id.toString();
+    print("idsss" + ids.toString());
+    setState(() {});
+  }
+
+  Future<dynamic> featuredBusinessApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.FEATUREDBUSINESS_URL,
+        ),
+        body: {
+          "id": id.toString(),
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+      //nearByRestaurantList.clear();
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          NearBy modelAgentSearch = new NearBy();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+          modelAgentSearch.business_images =
+              jsonArray[i]["business_images"].toString();
+          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+          modelAgentSearch.description = jsonArray[i]["description"].toString();
+          modelAgentSearch.business_category =
+              jsonArray[i]["business_category "].toString();
+          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+          modelAgentSearch.review_count =
+              jsonArray[i]["review_count"].toString();
+          modelAgentSearch.location = jsonArray[i]["location"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
+          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+          modelAgentSearch.long = jsonArray[i]["long"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.countUserreview =
+              jsonArray[i]["totalReviewusers"].toString();
+
+          print("id: " + modelAgentSearch.id.toString());
+          print("ratting: " + modelAgentSearch.avgratting.toString());
+
+          featuresBusinessList.add(modelAgentSearch);
+        }
+
+        setState(() {
+          isloading = false;
+        });
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
   }
 }
 
