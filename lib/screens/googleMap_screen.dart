@@ -45,7 +45,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   List<NearBy> nearByRestaurantList = [];
 
   TextEditingController mesageTextController = new TextEditingController();
-
+  String searchText = "";
   LatLng sourceLocation = LatLng(26.862471, 75.762413);
   bool isloading = false;
 
@@ -57,6 +57,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   late BitmapDescriptor mapMarker;
   // late Position position;
+  Timer? debounce;
 
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
@@ -67,21 +68,23 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     print("into the initalizer method");
 
     for (final business in businessList) {
-      Marker firstMarker = Marker(
-        onTap: () {
-          setState(() {
-            viewVisible = true;
-          });
-        },
-        markerId: MarkerId(business.id),
-        position:
-            LatLng(double.parse(business.lat), double.parse(business.long)),
-        infoWindow: InfoWindow(
-          title: business_name = business.business_name.toString(),
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      );
-      markers.add(firstMarker);
+      if(business.lat!=null && business.long!=null) {
+        Marker firstMarker = Marker(
+          onTap: () {
+            setState(() {
+              viewVisible = true;
+            });
+          },
+          markerId: MarkerId(business.id),
+          position:
+          LatLng(double.parse(business.lat), double.parse(business.long)),
+          infoWindow: InfoWindow(
+            title: business_name = business.business_name.toString(),
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        );
+        markers.add(firstMarker);
+      }
     }
 
     //  Marker zeroMarker = Marker(
@@ -144,8 +147,18 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     super.initState();
     setCustomMarker();
-  }
 
+    this.mesageTextController.addListener(_onSearchChanged);
+
+  }
+@override
+  void dispose() {
+    this.mesageTextController.removeListener(_onSearchChanged);
+    this.mesageTextController.dispose();
+    debounce?.cancel();
+
+    super.dispose();
+  }
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -255,7 +268,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 child: TextFormField(
                   controller: mesageTextController,
                   onChanged: (value) {
-                    searchData(value.toString());
+                    if(value.length==0){
+                      nearBy();
+                    }
                   },
                   validator: (val) {},
                   style: TextStyle(
@@ -489,6 +504,20 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         )));
   }
 
+  _onSearchChanged(){
+    if(debounce?.isActive ?? false) debounce?.cancel();
+
+    debounce = Timer(const Duration(milliseconds: 500), (){
+      if(mesageTextController.text.toString().length==0){
+        nearBy();
+      }else if(searchText != mesageTextController.text){
+
+        searchData(mesageTextController.text);
+
+      }
+    });
+  }
+
   Future<dynamic> searchData(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
@@ -501,7 +530,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             ),
         body: {
           "business_name": key.toString(),
-         
+          "user_id": id.toString(),
+
         });
 
     var jsonArray;
@@ -519,7 +549,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     if (res!.statusCode == 200) {
       if (jsonRes["status"] == true) {
         nearByRestaurantList.clear();
-
+        markers.clear();
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
@@ -556,25 +586,34 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
           nearByRestaurantList.add(modelAgentSearch);
 
-          initilize(nearByRestaurantList);
+
           print("object");
 
           print("lattttttt: " + lat.toString());
 
-          setState(() {});
+          setState(() {
+
+          });
         }
 
+
         setState(() {
+          newGoogleMapController.setMapStyle("[]");
+          initilize(nearByRestaurantList);
+          print("lengthis "+nearByRestaurantList.length.toString()+"^");
           isloading = false;
         });
       } else {
         setState(() {
           isloading = false;
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Please try later")));
+              .showSnackBar(SnackBar(content: Text(jsonRes["message"])));
         });
       }
     }
+
+    searchText = mesageTextController.text;
+
   }
 
   Future<dynamic> nearBy() async {
@@ -611,6 +650,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
+        nearByRestaurantList.clear();
+        markers.clear();
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
@@ -647,15 +688,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
           nearByRestaurantList.add(modelAgentSearch);
 
-          initilize(nearByRestaurantList);
-          print("object");
 
           print("lattttttt: " + lat.toString());
 
-          setState(() {});
         }
 
         setState(() {
+          initilize(nearByRestaurantList);
           isloading = false;
         });
       } else {

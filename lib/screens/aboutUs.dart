@@ -23,7 +23,6 @@ class _AboutUsState extends State<AboutUs> {
 
   @override
   void initState() {
-
     aboutApi();
     super.initState();
     

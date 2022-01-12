@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:wemarkthespot/screens/hotSpotReply.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/screens/testing.dart';
@@ -22,6 +24,7 @@ import 'package:select_dialog/select_dialog.dart';
 import 'package:path/path.dart' as path;
 
 import '../main.dart';
+import 'detailBusinessdynamic.dart';
 
 class Hotspot extends StatefulWidget {
   const Hotspot({Key? key}) : super(key: key);
@@ -258,81 +261,31 @@ class _HotspotState extends State<Hotspot> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 53.w,
-                                                          child: Text(
-                                                            getHostSpotList[
-                                                                        index]
-                                                                    .person_name
-                                                                    .toString() +
-                                                                getHostSpotList[
-                                                                        index]
-                                                                    .business_user_name
-                                                                    .toString(),
-                                                            style: TextStyle(
-                                                                fontSize: 11.sp,
-                                                                color:
-                                                                    kCyanColor,
-                                                                fontFamily:
-                                                                    "Segoepr"),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-
-                                                        // Text(
-                                                        //   // "Person Name @ Bar Name",
-
-                                                        //   getHostSpotList[index]
-                                                        //               .person_name
-                                                        //               .toString() !=
-                                                        //           "null"
-                                                        //       ? getHostSpotList[index]
-                                                        //           .person_name
-                                                        //           .toString()
-                                                        //       : "User Name",
-                                                        //   overflow:
-                                                        //       TextOverflow.ellipsis,
-                                                        //   style: TextStyle(
-                                                        //       fontSize: 11.sp,
-                                                        //       color: kCyanColor,
-                                                        //       fontFamily: "Segoepr"),
-                                                        // ),
-                                                        // Text(
-                                                        //   " @ ",
-                                                        //   overflow:
-                                                        //       TextOverflow.ellipsis,
-                                                        //   style: TextStyle(
-                                                        //       fontSize: 11.sp,
-                                                        //       color: kCyanColor,
-                                                        //       fontFamily: "Segoepr"),
-                                                        // ),
-                                                        // Container(
-                                                        //   width: 34.w,
-                                                        //   child: Text(
-                                                        //     // "Person Name @ Bar Name",
-
-                                                        //     getHostSpotList[index]
-                                                        //                 .business_user_name
-                                                        //                 .toString() !=
-                                                        //             "null"
-                                                        //         ? getHostSpotList[index]
-                                                        //             .business_user_name
-                                                        //             .toString()
-                                                        //         : "",
-
-                                                        //         maxLines: 2,
-                                                        //     style: TextStyle(
-                                                        //         fontSize: 11.sp,
-                                                        //         color: kCyanColor,
-                                                        //         fontFamily: "Segoepr"),
-                                                        //   ),
-                                                        // ),
-                                                      ],
+                                                    Expanded(
+                                                      child: RichText(
+                                                          text: TextSpan(
+                                                        style: TextStyle(
+                                                            fontSize: 11.sp,
+                                                            color:
+                                                            kCyanColor,
+                                                            fontFamily:
+                                                            "Segoepr"),
+                                                        children: [
+                                                          TextSpan(text: getHostSpotList[
+                                                          index]
+                                                              .person_name
+                                                              .toString()),
+                                                          TextSpan(
+                                                              text: getHostSpotList[
+                                                              index]
+                                                                  .business_user_name
+                                                                  .toString(),
+                                                              recognizer: TapGestureRecognizer()
+                                                                ..onTap = () {
+                                                                  Navigator.of(context).push(new MaterialPageRoute(builder: (builder)=> DetailBussinessDynamic(id: getHostSpotList[index].business_id)));
+                                                                }),
+                                                        ]
+                                                      )),
                                                     ),
                                                     Padding(
                                                       padding: EdgeInsets.only(
@@ -1497,9 +1450,7 @@ class _HotspotState extends State<Hotspot> {
       String review_id, String messageText, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
-    setState(() {
-      isloading = true;
-    });
+
     print("id: " + id.toString());
     print("review_id: " + review_id.toString());
     print("type: " + "HOTSPOT");

@@ -199,7 +199,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                         ),
 
                                         Padding(
-                                          padding: EdgeInsets.only(right: 2.w),
+                                          padding: EdgeInsets.only(right: 9.w),
                                           child: InkWell(
                                             onTap: () {
                                               setState(() {
@@ -366,9 +366,6 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               SizedBox(
                                                 height: 2.h,
                                               ),
-
-
-
                                             ],
                                           ),
                                         )

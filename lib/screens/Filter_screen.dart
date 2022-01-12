@@ -30,7 +30,7 @@ class _FliterScreenState extends State<FliterScreen> {
   List<LifeStyle> lifeStyleList = [];
   bool arecheckbox = false;
   bool val = false;
-
+  Map<String, String> mapSelection = Map();
   @override
   void initState() {
     liefeStyleApi();
@@ -56,7 +56,9 @@ class _FliterScreenState extends State<FliterScreen> {
               itemCount: lifeStyleList.length,
               itemBuilder: (BuildContext context, int index) {
                 return ExpansionTile(
-                  onExpansionChanged: (val) {},
+                  onExpansionChanged: (val) {
+
+                  },
                   trailing: lifeStyleList[index].name.length == 0
                       ? Container(
                           width: 50,

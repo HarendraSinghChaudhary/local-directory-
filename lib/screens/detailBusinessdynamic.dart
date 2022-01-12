@@ -28,16 +28,16 @@ import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
-class DetailBussiness extends StatefulWidget {
-  NearBy nearBy;
+class DetailBussinessDynamic extends StatefulWidget {
+  var id;
 
-  DetailBussiness({required this.nearBy});
+  DetailBussinessDynamic({required this.id});
 
   @override
-  _DetailBussinessState createState() => _DetailBussinessState();
+  _DetailBussinessDynamicState createState() => _DetailBussinessDynamicState();
 }
 
-class _DetailBussinessState extends State<DetailBussiness> {
+class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   var ivStatus = "";
 
   // String fire = "Fire";
@@ -45,7 +45,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   // String notCool = "Not Cool";
 
   var communityId = "";
-
+  NearBy? nearby;
   //var ratting = "";
   var name = "";
   var check = "";
@@ -70,6 +70,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   @override
   void initState() {
+    isloading = true;
+    nearBy();
     communityReviewApi();
     print("vi: " + videoLink.toString());
 
@@ -109,9 +111,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   @override
   Widget build(BuildContext context) {
-    print("business id: " + widget.nearBy.id.toString());
     return Scaffold(
-      body: Stack(
+      body: isloading==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
+      nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
         children: <Widget>[
           SizedBox.expand(
               child: SafeArea(
@@ -131,7 +133,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: NetworkImage(
-                                      widget.nearBy.business_images.toString()),
+                                      nearby!.business_images.toString()),
                                   fit: BoxFit.fill)),
                         ),
                         Positioned(
@@ -151,16 +153,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           left: 85.w,
                           child: InkWell(
                             onTap: () {
-                              var favv = widget.nearBy.fav.toString() == "1"
+                              var favv = nearby!.fav.toString() == "1"
                                   ? "0"
                                   : "1";
                               setState(() {
-                                widget.nearBy.fav = favv;
+                                nearby!.fav = favv;
                               });
 
-                              businessFavApi(widget.nearBy.id.toString(), favv);
+                              businessFavApi(nearby!.id.toString(), favv);
                             },
-                            child: widget.nearBy.fav.toString() == "1"
+                            child: nearby!.fav.toString() == "1"
                                 ? SvgPicture.asset(
                                     "assets/icons/active-hear.svg",
 
@@ -179,43 +181,43 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          width: 85.h,
+                          child: Text(
+                            //"Bar Name",
+                            nearby!.business_name.toString() != "null"
+                                ? nearby!.business_name.toString()
+                                : "Business Name",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color: kCyanColor,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Segoepr"),
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Spacer(),
                             Text(
-                              //"Bar Name",
-                              widget.nearBy.business_name.toString() != "null"
-                                  ? widget.nearBy.business_name.toString()
-                                  : "Business Name",
-                              overflow: TextOverflow.ellipsis,
+                              // "3.5",
+                              nearby!.avgratting.toString() != "null"
+                                  ? nearby!.avgratting.toString()
+                                  : "0",
                               style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: kCyanColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Segoepr"),
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  // "3.5",
-                                  widget.nearBy.avgratting.toString() != "null"
-                                      ? widget.nearBy.avgratting.toString()
-                                      : "0",
-                                  style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.w500
-                                      //fontFamily: "Segoepr"
-                                      ),
-                                ),
-                                SizedBox(
-                                  width: 1.w,
-                                ),
-                                SvgPicture.asset(
-                                  "assets/icons/star.svg",
+                                  fontSize: 12.sp,
                                   color: kPrimaryColor,
-                                )
-                              ],
+                                  fontWeight: FontWeight.w500
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                            SizedBox(
+                              width: 1.w,
+                            ),
+                            SvgPicture.asset(
+                              "assets/icons/star.svg",
+                              color: kPrimaryColor,
                             ),
                           ],
                         ),
@@ -224,8 +226,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           children: [
                             Text(
                               //"Bar",
-                              widget.nearBy.category_name.toString() != "null"
-                                  ? widget.nearBy.category_name.toString()
+                              nearby!.category_name.toString() != "null"
+                                  ? nearby!.category_name.toString()
                                   : "",
                               style: TextStyle(
                                   fontSize: 14.sp,
@@ -260,7 +262,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       ),
                                 ),
                                 Text(
-                                  widget.nearBy.user_count.toString() +
+                                  nearby!.user_count.toString() +
                                       " People",
                                   style: TextStyle(
                                       fontSize: 10.sp,
@@ -299,9 +301,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     width: 55.w,
                                     child: Text(
                                       //"1230 Roosvelt Road, Wichita",
-                                      widget.nearBy.location.toString() !=
+                                      nearby!.location.toString() !=
                                               "null"
-                                          ? widget.nearBy.location.toString()
+                                          ? nearby!.location.toString()
                                           : "",
 
                                       maxLines: 3,
@@ -319,7 +321,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             Text(
                               //Distance
                               "Distance: " +
-                                  widget.nearBy.distance.toString() +
+                                  nearby!.distance.toString() +
                                   " mi",
                               style: TextStyle(
                                   fontSize: 11.sp,
@@ -1093,7 +1095,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community sdfdfsd id: " + comId.toString());
-    print("business community id: " + widget.nearBy.id.toString());
+    print("business community id: " + nearby!.id.toString());
     setState(() {
       isloading = true;
     });
@@ -1104,7 +1106,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.nearBy.id.toString(),
+          "business_id": nearby!.id.toString(),
           "review_id": comId
         });
     String msg = "";
@@ -1199,9 +1201,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
             SnackBar(content: Text(jsonRes["message"].toString())));
       } else {
         if (fav == "1") {
-          widget.nearBy.fav = "0";
+          nearby!.fav = "0";
         } else {
-          widget.nearBy.fav = "1";
+          nearby!.fav = "1";
         }
         setState(() {
           isloading = false;
@@ -1224,7 +1226,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community id: " + comId.toString());
-    print("business community id: " + widget.nearBy.id.toString());
+    print("business community id: " + nearby!.id.toString());
     setState(() {
       isloading = true;
     });
@@ -1236,7 +1238,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         body: {
           "user_id": id.toString(),
           "likedislike": likeStatus.toString(),
-          "business_id": widget.nearBy.id.toString(),
+          "business_id": nearby!.id.toString(),
           "businessreview_id": comId
         });
     String msg = "";
@@ -1347,9 +1349,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-    print("buisness Id: " + widget.nearBy.id.toString());
+    print("buisness Id: " + widget.id.toString());
     setState(() {
-      isloading = false;
+     // isloading = false;
     });
 
     var request = http.post(
@@ -1358,7 +1360,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.nearBy.id.toString()
+          "business_id": widget.id.toString()
         });
     String msg = "";
     var jsonArray;
@@ -1431,6 +1433,90 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
   }
 
+
+  Future<dynamic> nearBy() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("widgetid Print: " + widget.id.toString());
+    print("id Print: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.GETBUISNESSDETAIL_URL,
+        ),
+        body: {
+          "id": widget.id.toString(),
+          "user_id": id
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+      if (jsonRes["status"].toString() == "true") {
+          nearby = new NearBy();
+          nearby?.id = jsonArray["id"].toString();
+          nearby?.business_name =
+              jsonArray["business_name"].toString();
+          nearby?.business_images =
+              jsonArray["business_images"].toString();
+          nearby?.ratting = jsonArray["ratting"].toString();
+          nearby?.description = jsonArray["description"].toString();
+          nearby?.business_category =
+              jsonArray["business_category "].toString();
+          nearby?.user_count = jsonArray["user_count"].toString();
+          nearby?.review_count =
+              jsonArray["review_count"].toString();
+          nearby?.location = jsonArray["location"].toString();
+          nearby?.category_name =
+              jsonArray["category_name"].toString();
+          nearby?.fav = jsonArray["fav"].toString();
+          nearby?.lat = jsonArray["lat"].toString();
+          nearby?.long = jsonArray["long"].toString();
+          nearby?.avgratting = jsonArray["avgratting"].toString();
+          nearby?.countUserreview =
+              jsonArray["totalReviewusers"].toString();
+
+          print("id: " + nearby!.id.toString());
+          print("ratting: " + nearby!.avgratting.toString());
+
+
+
+        setState(() {
+          isloading = false;
+        });
+ 
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
   Future<dynamic> businessReviewApi(
     String rattingg,
     String review,
@@ -1469,7 +1555,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     //   request.fields["image_video_status"] = "0";
     // }
 
-    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["type"] = "REVIEW";
     request.fields["image_video_status"] =
@@ -2054,7 +2140,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   )
                 : SingleChildScrollView(
                     child: SizedBox(
-                    height: 38.h,
+                    height: 35.h,
                     width: 95.w,
                     child: Column(
                       children: [
@@ -2071,9 +2157,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 trimFile = null;
                                 trimFileName = "";
                                 ivStatus = "";
-                                image_video_status = "";
                                 ratting = 0.0;
-                                currentPath = "";
                               },
                               child: Container(
                                  height:10.w,
@@ -2154,7 +2238,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-
+                                        if (currentPath.toString() != "") {
+                                          ivStatus = "2";
+                                        }
                                         if (ivStatus == "2") {
                                           final snackBar = SnackBar(
                                               content: Text(
@@ -2286,8 +2372,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           child: Visibility(
                               visible: isVisible,
                               child: Container(
-                                height: 40,
-                                width: 85.w,
                                 child: Text(
                                   fileName,
                                   overflow: TextOverflow.ellipsis,
@@ -2384,7 +2468,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
     request.fields["check_status"] = "1";
     request.fields["type"] = "CHECK_IN";
-    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
 
