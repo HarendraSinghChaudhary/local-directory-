@@ -1398,6 +1398,7 @@ class _HotspotState extends State<Hotspot> {
       fileName = "";
       base64Image = "";
       image_video_status = "0";
+      selectedId = "";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
