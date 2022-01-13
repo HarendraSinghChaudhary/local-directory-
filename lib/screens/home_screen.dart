@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
@@ -106,7 +107,9 @@ class _HomeState extends State<Home> {
       print("Long "+long.toString()+"")
     });*/
   }
-
+  var isPlaying = false;
+  var isInitialized = false;
+  var isInitialized2 = false;
   void locatePosition() async {
     await Geolocator.checkPermission();
     Position position = await Geolocator.getCurrentPosition(
@@ -146,14 +149,21 @@ class _HomeState extends State<Home> {
       category_name,
       distance;
   var giveawayDesc;
+  VideoPlayerController? videoPlayerController ;
+  Future<void>? _initializeVideoPlayerFuture;
 
+  VideoPlayerController? videoPlayerController2 ;
+  Future<void>? _initializeVideoPlayerFuture2;
   @override
   void initState() {
     //locatePosition();
     fetchLocation();
+    isPlaying = true;
+
 
     super.initState();
   }
+
 
   static String videoID = '2iHoeHVmw0Q';
 
@@ -178,6 +188,17 @@ class _HomeState extends State<Home> {
             children: [
               InkWell(
                 onTap: () {
+                  if(videoPlayerController!=null) {
+                    if (videoPlayerController!.value.isInitialized) {
+                      videoPlayerController?.pause();
+                    }
+                  }
+
+        if(videoPlayerController2!=null) {
+          if (videoPlayerController2!.value.isInitialized) {
+            videoPlayerController2?.pause();
+          }
+        }
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => BusFav()));
                 },
@@ -239,10 +260,7 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3.w),
                             color: Colors.black),
-                        child: VideoWidgett(
-                          url: quoatesimage.toString(),
-                          play: true,
-                        )):CachedNetworkImage(
+                        child: VideoPlayWidget2(context)):CachedNetworkImage(
                       imageUrl: quoatesimage.toString(),
                       imageBuilder: (context, imageProvider) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -309,10 +327,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3.w),
                           color: Colors.black),
-                      child: VideoWidget4(
-                        url: datavideo,
-                        play: true,
-                      )):Container(),
+                      child: VideoPlayWidget(context)):Container(),
 
                      /* YoutubePlayer(
                         controller: _controller,
@@ -496,6 +511,156 @@ class _HomeState extends State<Home> {
               ));
   }
 
+
+
+  @override
+  Widget VideoPlayWidget(BuildContext context) {
+
+    return FutureBuilder(
+        future: _initializeVideoPlayerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: 'Video Player',
+              debugShowCheckedModeBanner: false,
+              home: Stack(
+                children: [
+                  Center(
+                    child: Container(
+                      color: Colors.black,
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      child: videoPlayerController!.value.isInitialized
+                          ? AspectRatio(
+                        aspectRatio: videoPlayerController!.value.aspectRatio,
+                        child: VideoPlayer(videoPlayerController!),
+                      )
+                          : Container(),
+                    ),
+                  ),
+
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          if(videoPlayerController!=null) {
+                            if (videoPlayerController!.value.isPlaying) {
+                              videoPlayerController?.pause();
+                            } else {
+                              videoPlayerController?.play();
+                            }
+                          }
+                        });
+                      },
+                      child: Icon(
+                        videoPlayerController!.value.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                ],
+              ),
+            );
+          }else{
+            return Center(
+              child: CircularProgressIndicator(),);
+          }
+        }
+    );
+  }
+
+
+  @override
+  Widget VideoPlayWidget2(BuildContext context) {
+
+    return FutureBuilder(
+        future: _initializeVideoPlayerFuture2,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: 'Video Player',
+              debugShowCheckedModeBanner: false,
+              home: Stack(
+                children: [
+                  Center(
+                    child: Container(
+                      color: Colors.black,
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      child: videoPlayerController2!.value.isInitialized
+                          ? AspectRatio(
+                        aspectRatio: videoPlayerController2!.value.aspectRatio,
+                        child: VideoPlayer(videoPlayerController!),
+                      )
+                          : Container(),
+                    ),
+                  ),
+
+                  Center(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+
+                          if(videoPlayerController2!.value.isPlaying){
+                            videoPlayerController2!.pause();
+
+                          }else{
+                            videoPlayerController2!.play();
+
+                          }
+                        });
+                      },
+                      child: Icon(
+                        videoPlayerController2!.value.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                ],
+              ),
+            );
+          }else{
+            return Center(
+              child: CircularProgressIndicator(),);
+          }
+        }
+    );
+  }
+
+  @override
+  void dispose() {
+    isPlaying = false;
+
+    if(videoPlayerController!=null) {
+      if (videoPlayerController!.value.isInitialized) {
+        videoPlayerController!.pause();
+        videoPlayerController?.removeListener(() {
+          checkVideo();
+        });
+        videoPlayerController?.dispose();
+      }
+    }
+
+    if(videoPlayerController2!=null) {
+      if (videoPlayerController2!.value.isInitialized) {
+        videoPlayerController2?.pause();
+        videoPlayerController?.removeListener(() {
+          checkVideo2();
+        });
+        videoPlayerController2?.dispose();
+      }
+    }
+
+    super.dispose();
+  }
+
+
   Future<dynamic> homeApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -554,6 +719,32 @@ class _HomeState extends State<Home> {
 
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
 
+
+      if(datavideo!=null) {
+        videoPlayerController = new VideoPlayerController.network(datavideo);
+
+        _initializeVideoPlayerFuture =
+            videoPlayerController!.initialize().then((_) {
+              isInitialized = true;
+
+            });
+        videoPlayerController!.addListener(() {
+          checkVideo();
+        });
+      }
+
+
+        if(imgvideostatus.toString()=="1") {
+          videoPlayerController2 = new VideoPlayerController.network(quoatesimage);
+
+          _initializeVideoPlayerFuture2 =
+              videoPlayerController2!.initialize().then((_) {
+                isInitialized2 = true;
+              });
+          videoPlayerController2!.addListener(() {
+            checkVideo2();
+          });
+        }
         setState(() {
           isloading = false;
         });
@@ -568,8 +759,41 @@ class _HomeState extends State<Home> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
+  }
+
+
+  void checkVideo(){
+    // Implement your calls inside these conditions' bodies :
+    if(videoPlayerController!.value.position == Duration(seconds: 0, minutes: 0, hours: 0)) {
+      print('video Started');
+    }
+
+    if(videoPlayerController!.value.position == videoPlayerController!.value.duration) {
+      print('video Ended');
+    }
+
+    setState(() {
+
+    });
+  }
+
+
+
+  void checkVideo2(){
+    // Implement your calls inside these conditions' bodies :
+    if(videoPlayerController2!.value.position == Duration(seconds: 0, minutes: 0, hours: 0)) {
+      print('video Started');
+    }
+
+    if(videoPlayerController2!.value.position == videoPlayerController2!.value.duration) {
+      print('video Ended');
+    }
+
+    setState(() {
+
+    });
   }
 }
