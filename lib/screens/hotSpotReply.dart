@@ -1124,6 +1124,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           isloading = false;
           if(selectedIndex>-1){
             getReplyOnHotspotList[selectedIndex].viewV = true;
+
           }
 
         });

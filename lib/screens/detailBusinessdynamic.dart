@@ -70,7 +70,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
   @override
   void initState() {
-    isloading = true;
+    isloadingNew = true;
     nearBy();
     communityReviewApi();
     print("vi: " + videoLink.toString());
@@ -105,6 +105,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   //get kPrimaryColor => null;
 
   bool isloading = false;
+  bool isloadingNew = false;
   final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
   var image_video_status = "0";
@@ -112,7 +113,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isloading==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
+      body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
         children: <Widget>[
           SizedBox.expand(
@@ -478,7 +479,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
               )
             ],
           ))),
-          communityReviewList.length>0?_buildDraggableScrollableSheet():Container(),
+          _buildDraggableScrollableSheet(),
         ],
       ),
     );
@@ -531,6 +532,10 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                   ),
                 ],
               ),
+              communityReviewList.length.toString() == "0" || communityReviewList.length.toString() == "null" ? Padding(
+                padding: EdgeInsets.only(top: 13.h),
+                child: Center(child: Image.asset("assets/images/nodata.jpg")),
+              ):
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -763,6 +768,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                       .like_status
                                                       .toString() ==
                                                   "2") {
+
                                               } else {
 
                                                 likeApi(
@@ -810,23 +816,36 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         );
                                       }),
                                     ),
-                                    InkWell(
+        StatefulBuilder(
+        builder: (context, setState) {
+          print("stattsts "+communityReviewList[index]
+              .report_status.toString());
+          return InkWell(
                                       onTap: () {
                                         if(reportEnable==true) {
-                                          addReportApi(
-                                              communityReviewList[index]
-                                                  .business_reviews_id
-                                                  .toString());
+                                          if(communityReviewList[index]
+                                              .report_status
+                                              .toString()!="1") {
+
+
+
+                                            addReportApi(
+                                                communityReviewList[index]
+                                                    .business_reviews_id
+                                                    .toString());
+                                          }
                                         }
                                       },
                                       child: Text(
-                                        "Report",
+                                        communityReviewList[index]
+                                            .report_status == "1"?"Reported":"Report",
                                         style: TextStyle(
                                           fontSize: 11.sp,
-                                          color: Colors.black,
+                                          color: communityReviewList[index]
+                                              .report_status == "1"?kPrimaryColor:Colors.black,
                                         ),
                                       ),
-                                    ),
+                                    ); }),
                                     InkWell(
                                       onTap: () {
                                         print(unlikeEnable);
@@ -1088,7 +1107,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   }
 
   Future<dynamic> addReportApi(
-    String comId,
+    String comId
   ) async {
     reportEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1097,7 +1116,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     print("id community sdfdfsd id: " + comId.toString());
     print("business community id: " + nearby!.id.toString());
     setState(() {
-      isloading = true;
+     // isloading = true;
     });
 
     var request = http.post(
@@ -1228,7 +1247,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     print("id community id: " + comId.toString());
     print("business community id: " + nearby!.id.toString());
     setState(() {
-      isloading = true;
+     // isloading = true;
     });
 
     var request = http.post(
@@ -1288,7 +1307,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+     // isloading = true;
     });
 
     var request = http.post(
@@ -1404,7 +1423,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
               jsonArray[i]["replies_count"].toString();
           modelAgentSearch.image_video_status =
               jsonArray[i]["image_video_status"].toString();
-
+          modelAgentSearch.report_status =
+              jsonArray[i]["report_status"].toString();
           print(": " + modelAgentSearch.image_video_status.toString());
           print("b id: " + modelAgentSearch.id.toString());
 
@@ -1440,7 +1460,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     print("widgetid Print: " + widget.id.toString());
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+      isloadingNew = true;
     });
 
     var request = http.post(
@@ -1490,8 +1510,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           nearby?.lat = jsonArray["lat"].toString();
           nearby?.long = jsonArray["long"].toString();
           nearby?.avgratting = jsonArray["avgratting"].toString();
-          nearby?.countUserreview =
-              jsonArray["totalReviewusers"].toString();
+          nearby?.countUserreview = jsonArray["totalReviewusers"].toString();
 
           print("id: " + nearby!.id.toString());
           print("favvvv: " + jsonArray["fav"].toString());
@@ -1500,19 +1519,19 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
 
         setState(() {
-          isloading = false;
+          isloadingNew = false;
         });
  
       } else {
         setState(() {
-          isloading = false;
+          isloadingNew = false;
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {
       setState(() {
-        isloading = false;
+        isloadingNew = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));
       });

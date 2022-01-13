@@ -728,9 +728,11 @@ class _HomeState extends State<Home> {
               isInitialized = true;
 
             });
-        videoPlayerController!.addListener(() {
-          checkVideo();
-        });
+        if(mounted) {
+          videoPlayerController!.addListener(() {
+            checkVideo();
+          });
+        }
       }
 
 
@@ -774,10 +776,11 @@ class _HomeState extends State<Home> {
     if(videoPlayerController!.value.position == videoPlayerController!.value.duration) {
       print('video Ended');
     }
+    if(mounted) {
+      setState(() {
 
-    setState(() {
-
-    });
+      });
+    }
   }
 
 

@@ -476,7 +476,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               )
             ],
           ))),
-          communityReviewList.length>0?_buildDraggableScrollableSheet():Container(),
+          _buildDraggableScrollableSheet(),
         ],
       ),
     );
@@ -529,6 +529,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ),
                 ],
               ),
+              communityReviewList.length.toString() == "0" || communityReviewList.length.toString() == "null" ? Padding(
+                padding: EdgeInsets.only(top: 13.h),
+                child: Center(child: Image.asset("assets/images/nodata.jpg")),
+              ):
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -811,17 +815,28 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     InkWell(
                                       onTap: () {
                                         if(reportEnable==true) {
-                                          addReportApi(
+                                          if(communityReviewList[index]
+                                              .report_status
+                                              .toString()!="1") {
+
+                                            setState(() {
                                               communityReviewList[index]
-                                                  .business_reviews_id
-                                                  .toString());
+                                                  .report_status = "1";
+                                            });
+                                            addReportApi(
+                                                communityReviewList[index]
+                                                    .business_reviews_id
+                                                    .toString(), index);
+                                          }
                                         }
                                       },
                                       child: Text(
-                                        "Report",
+                                        communityReviewList[index]
+                                            .report_status == "1"?"Reported":"Report",
                                         style: TextStyle(
                                           fontSize: 11.sp,
-                                          color: Colors.black,
+                                          color: communityReviewList[index]
+                                              .report_status == "1"?kPrimaryColor:Colors.black,
                                         ),
                                       ),
                                     ),
@@ -1086,7 +1101,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   Future<dynamic> addReportApi(
-    String comId,
+    String comId, int index
   ) async {
     reportEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1095,7 +1110,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     print("id community sdfdfsd id: " + comId.toString());
     print("business community id: " + widget.nearBy.id.toString());
     setState(() {
-      isloading = true;
+     // isloading = true;
     });
 
     var request = http.post(
@@ -1127,6 +1142,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
+        communityReviewList[index].report_status = "1";
         setState(() {
           isloading = false;
         });
@@ -1402,7 +1418,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
               jsonArray[i]["replies_count"].toString();
           modelAgentSearch.image_video_status =
               jsonArray[i]["image_video_status"].toString();
-
+          modelAgentSearch.report_status =
+              jsonArray[i]["report_status"].toString();
           print(": " + modelAgentSearch.image_video_status.toString());
           print("b id: " + modelAgentSearch.id.toString());
 
