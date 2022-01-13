@@ -425,7 +425,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeNav()),
+            MaterialPageRoute(builder: (context) => HomeNav(index:0)),
             (route) => false);
 
         setState(() {
@@ -547,7 +547,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _handleRemeberme(remember);
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeNav()),
+            MaterialPageRoute(builder: (context) => HomeNav(index:0)),
             (route) => false);
 
         setState(() {
