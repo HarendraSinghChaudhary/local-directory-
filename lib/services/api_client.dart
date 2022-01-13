@@ -40,6 +40,7 @@ class RestDatasource {
   static final SEARCHMAP_URL = BASE_URL + "searchBybusinessNameCategoryNameSubCategoryName";
   static final FEATUREDBUSINESS_URL = BASE_URL + "featuredBusiness";
   static final GETBUISNESSDETAIL_URL = BASE_URL + "getbusinessDetails";
+  static final FILTER = BASE_URL + "filter";
 
    
 

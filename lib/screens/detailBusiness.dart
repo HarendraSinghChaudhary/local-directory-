@@ -2054,7 +2054,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   )
                 : SingleChildScrollView(
                     child: SizedBox(
-                    height: 38.h,
+                    height: 40.h,
                     width: 95.w,
                     child: Column(
                       children: [

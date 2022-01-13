@@ -16,6 +16,9 @@ import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class GoogleMapScreen extends StatefulWidget {
+  var list;
+
+  GoogleMapScreen({Key? key, this.list}):super(key:key);
   @override
   _GoogleMapLocationTestingState createState() =>
       _GoogleMapLocationTestingState();
@@ -69,21 +72,25 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     for (final business in businessList) {
       if(business.lat!=null && business.long!=null) {
-        Marker firstMarker = Marker(
-          onTap: () {
-            setState(() {
-              viewVisible = true;
-            });
-          },
-          markerId: MarkerId(business.id),
-          position:
-          LatLng(double.parse(business.lat), double.parse(business.long)),
-          infoWindow: InfoWindow(
-            title: business_name = business.business_name.toString(),
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        );
-        markers.add(firstMarker);
+        if (business.lat.toString() != "null" &&
+            business.long.toString() != "null") {
+          Marker firstMarker = Marker(
+            onTap: () {
+              setState(() {
+                viewVisible = true;
+              });
+            },
+            markerId: MarkerId(business.id),
+            position:
+            LatLng(double.parse(business.lat), double.parse(business.long)),
+            infoWindow: InfoWindow(
+              title: business_name = business.business_name.toString(),
+            ),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),
+          );
+          markers.add(firstMarker);
+        }
       }
     }
 
@@ -141,15 +148,20 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   @override
   void initState() {
-    locatePosition();
-    nearBy();
-    initilize(nearByRestaurantList);
+
 
     super.initState();
     setCustomMarker();
 
     this.mesageTextController.addListener(_onSearchChanged);
-
+    if(widget.list!=null){
+      locatePosition();
+      filterData(widget.list);
+    }else{
+      locatePosition();
+      nearBy();
+      initilize(nearByRestaurantList);
+    }
   }
 @override
   void dispose() {
@@ -218,6 +230,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               padding: EdgeInsets.only(right: 3.w),
               child: InkWell(
                 onTap: () {
+                  debounce?.cancel();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FliterScreen()));
                 },
@@ -575,7 +588,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           print("lat: " + modelAgentSearch.lat.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
-          id = jsonArray[i]["id"].toString();
+/*          id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
           latlong_position = jsonArray[i]["lat"].toString() +
@@ -584,7 +597,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               jsonArray[i]["long"].toString();
           print("lay: " + latlong_position.toString());
 
-          nearByRestaurantList.add(modelAgentSearch);
+          nearByRestaurantList.add(modelAgentSearch);*/
 
 
           print("object");
@@ -677,7 +690,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           print("lat: " + modelAgentSearch.lat.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
-          id = jsonArray[i]["id"].toString();
+   /*       id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
           latlong_position = jsonArray[i]["lat"].toString() +
@@ -686,7 +699,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               jsonArray[i]["long"].toString();
           print("lay: " + latlong_position.toString());
 
-          nearByRestaurantList.add(modelAgentSearch);
+          nearByRestaurantList.add(modelAgentSearch);*/
 
 
           print("lattttttt: " + lat.toString());
@@ -712,4 +725,105 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       });
     }
   }
+
+
+
+  Future<dynamic> filterData(List<String> key) async {
+    print("Filter");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + widget.list.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.FILTER,
+        ),
+        body: {
+          "key": widget.list.toString(),
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        nearByRestaurantList.clear();
+        markers.clear();
+        for (var i = 0; i < jsonArray.length; i++) {
+          NearBy modelAgentSearch = new NearBy();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+          modelAgentSearch.business_images =
+              jsonArray[i]["business_images"].toString();
+          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+          modelAgentSearch.description = jsonArray[i]["description"].toString();
+          modelAgentSearch.business_category =
+              jsonArray[i]["business_category "].toString();
+          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+          modelAgentSearch.review_count =
+              jsonArray[i]["review_count"].toString();
+          modelAgentSearch.location = jsonArray[i]["location"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
+          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+          modelAgentSearch.long = jsonArray[i]["long"].toString();
+
+          print("lat: " + modelAgentSearch.lat.toString());
+
+          nearByRestaurantList.add(modelAgentSearch);
+/*          id = jsonArray[i]["id"].toString();
+          business_name = jsonArray[i]["business_name"].toString();
+          print("Bussiness: " + business_name.toString());
+          latlong_position = jsonArray[i]["lat"].toString() +
+              "," +
+              " " +
+              jsonArray[i]["long"].toString();
+          print("lay: " + latlong_position.toString());
+
+          nearByRestaurantList.add(modelAgentSearch);*/
+
+
+          print("lattttttt: " + lat.toString());
+
+        }
+        print("FilterListLength "+nearByRestaurantList.length.toString()+"^^");
+        setState(() {
+          initilize(nearByRestaurantList);
+          isloading = false;
+        });
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
 }

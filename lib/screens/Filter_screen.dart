@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/googleMap_screen.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class FliterScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _FliterScreenState extends State<FliterScreen> {
   List<LifeStyle> lifeStyleList = [];
   bool arecheckbox = false;
   bool val = false;
-  Map<String, String> mapSelection = Map();
+  List<String> selectedCat = [];
   @override
   void initState() {
     liefeStyleApi();
@@ -72,6 +73,7 @@ class _FliterScreenState extends State<FliterScreen> {
                                       setState(() {
                                         lifeStyleList[index].isSelected =
                                             !lifeStyleList[index].isSelected;
+
                                       });
                                     },
                                   )
@@ -298,7 +300,24 @@ class _FliterScreenState extends State<FliterScreen> {
                     ),
                   ),
                   DefaultButton(
-                      width: 45.w, height: 7.h, text: "Apply", press: () {})
+                      width: 45.w, height: 7.h, text: "Apply", press: () {
+                     lifeStyleList.forEach((element) {
+                      if(element.subLifeStyle!=null){
+                        if(element.subLifeStyle.length>0){
+                          for(var j=0; j<element.subLifeStyle.length; j++){
+                            if(element.subLifeStyle[j].isSelected){
+                              selectedCat.add(element.subLifeStyle[j].id);
+                            }
+                          }
+                        }
+                      }
+                    });
+
+                    String s = selectedCat.join(', ');
+                    print(selectedCat.toString());
+                     Navigator.pushReplacement(context,
+                         MaterialPageRoute(builder: (context) => GoogleMapScreen(list: selectedCat,)));
+                  })
                 ],
               ),
             ),

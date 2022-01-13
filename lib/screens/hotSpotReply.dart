@@ -205,7 +205,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               setState(() {
                                                 viewVisible = true;
                                                 tabOne ="0";
-                                                selectedIndex = 0;
+                                                selectedIndex = -1;
                                               });
                                             },
                                             child: Text(
@@ -673,6 +673,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           file = null;
                           fileName = "";
                           currentPath = "";
+                          setState(() {
+
+                          });
                           getFileDialog();
                         },
                         icon: Icon(
@@ -1836,6 +1839,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 snackBar,
                               );
                             } else {
+
                               getCheckInImage();
 
                             }
