@@ -125,7 +125,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     this.mesageTextController.removeListener(_onSearchChanged);
     this.mesageTextController.dispose();
     debounce?.cancel();
-
+    widget.list = null;
     super.dispose();
   }
   void locatePosition() async {

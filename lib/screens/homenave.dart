@@ -24,7 +24,7 @@ class HomeNav extends StatefulWidget {
 
 class _HomeNavState extends State<HomeNav> {
   int _index = 0;
-  var list ;
+  var list;
   List widgets = [];
 
   //LanguageChange languageChange = new LanguageChange();
@@ -44,6 +44,7 @@ class _HomeNavState extends State<HomeNav> {
     ];
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +64,7 @@ class _HomeNavState extends State<HomeNav> {
           unselectedItemColor: Color(0xFF7A7A7A),
           onTap: (page) {
             setState(() {
+              list = null;
               _index = page;
             });
           },
