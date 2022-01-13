@@ -78,6 +78,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             onTap: () {
               setState(() {
                 viewVisible = true;
+                business_name = business.business_name.toString();
               });
             },
             markerId: MarkerId(business.id),
@@ -90,60 +91,16 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 BitmapDescriptor.hueRed),
           );
           markers.add(firstMarker);
+          print("business_name: "+business_name.toString());
         }
       }
     }
 
-    //  Marker zeroMarker = Marker(
-    //   markerId: MarkerId(nearByRestaurantList[0].id.toString()),
-    //   position: LatLng(double.parse(nearByRestaurantList[0].lat), double.parse(nearByRestaurantList[0].long)),
-    //   infoWindow: InfoWindow(title: nearByRestaurantList[0].business_name.toString()),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
-    // Marker firstMarker = Marker(
-    //   markerId: MarkerId("1"),
-    //   position: LatLng(26.914326950753455, 75.73800626994411),
-    //   infoWindow: InfoWindow(title: "Statue Circle"),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
+ 
 
-    //  Marker secondMarker = Marker(
-    //   markerId: MarkerId("2"),
-    //   position: LatLng(26.941456714172595, 75.7711352263281),
-    //   infoWindow: InfoWindow(title: "Triton Mall"),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
-
-    //  Marker thirdMarker = Marker(
-    //   markerId: MarkerId("3"),
-    //   position: LatLng(26.85479593167254, 75.76673806809387),
-    //   infoWindow: InfoWindow(title: "Mansarovar Plaza"),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
-
-    //  Marker fourthMarker = Marker(
-    //   markerId: MarkerId("4"),
-    //   position: LatLng(26.937360507037585, 75.81551516809603),
-    //   infoWindow: InfoWindow(title: "Nahargarh Fort"),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
-
-    //  Marker fifthMarker = Marker(
-    //   markerId: MarkerId("5"),
-    //   position: LatLng(26.876925402578138, 75.7530057257655),
-    //   infoWindow: InfoWindow(title: "Appic Software"),
-    //   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    // );
-
-    // markers.add(firstMarker);
-    // markers.add(secondMarker);
-    // markers.add(thirdMarker);
-    // markers.add(fourthMarker);
-    // markers.add(fifthMarker);
-
-    // markers.add(zeroMarker);
-
-    setState(() {});
+    setState(() {
+       print("business_name2: "+ business_name.toString(),);
+    });
   }
 
   @override
@@ -191,8 +148,12 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   static final CameraPosition _currentPosition =
       CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 16);
 
+     
+
   @override
   Widget build(BuildContext context) {
+
+      print("business_name1: "+business_name.toString());
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
