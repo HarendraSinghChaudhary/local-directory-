@@ -28,6 +28,8 @@ import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
+import 'detailBusiness.dart';
+
 class DetailBussinessDynamic extends StatefulWidget {
   var id;
 
@@ -1608,6 +1610,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
       if (jsonRes["status"].toString() == "true") {
         Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussinessDynamic(id: widget.id)));
 
         reviewController.clear();
         file = null;
@@ -2519,6 +2522,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
       if (jsonRes["status"].toString() == "true") {
         Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussinessDynamic(id: widget.id)));
+
         communityReviewApi();
         reviewController.clear();
         file = null;

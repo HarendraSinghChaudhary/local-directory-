@@ -1518,6 +1518,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
       if (jsonRes["status"].toString() == "true") {
         Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: widget.nearBy)));
 
         reviewController.clear();
         file = null;
@@ -1622,7 +1623,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   )
                 : SingleChildScrollView(
                     child: SizedBox(
-                    height: 55.h,
+                    height: 58.h,
                     width: 95.w,
                     child: Column(
                       children: [
@@ -1883,7 +1884,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
-                                          : Container(
+                                          : file!.path.toString().endsWith("mp4")?Container(
+                                          child: SvgPicture.asset(
+                                              "assets/icons/image.svg")):Container(
                                               height: 3.h,
                                               width: 3.h,
                                               decoration: BoxDecoration(
@@ -1991,7 +1994,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           height: 1.2.h,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(3.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 3.0),
                           child: Visibility(
                               visible: isVisible,
                               child: Text(
@@ -2001,6 +2004,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 12),
                               )),
+                        ),
+                        SizedBox(
+                          height: 1.h,
                         ),
                         DefaultButton(
                             width: 35.w,
@@ -2188,7 +2194,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
-                                          : Container(
+                                          : file!.path.toString().endsWith("mp4")?Container(
+                                          child: SvgPicture.asset(
+                                              "assets/icons/image.svg")):Container(
                                               height: 3.h,
                                               width: 3.h,
                                               decoration: BoxDecoration(
@@ -2430,13 +2438,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        Navigator.of(context, rootNavigator: true).pop();
+
         communityReviewApi();
         reviewController.clear();
         file = null;
-
-        // prefs.setString('phone', jsonRes["data"]["phone"].toString());
-        prefs.commit();
+        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: widget.nearBy)));
         setState(() {
           isloading = false;
         });

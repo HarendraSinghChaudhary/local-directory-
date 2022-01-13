@@ -751,6 +751,9 @@ class _HotspotState extends State<Hotspot> {
                         file = null;
                         fileName = "";
                         currentPath = "";
+                        setState(() {
+
+                        });
                         getFileDialog();
                       },
                       icon: Icon(
