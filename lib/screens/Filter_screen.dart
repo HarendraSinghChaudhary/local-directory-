@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
+import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class FliterScreen extends StatefulWidget {
@@ -315,8 +316,8 @@ class _FliterScreenState extends State<FliterScreen> {
 
                     String s = selectedCat.join(', ');
                     print(selectedCat.toString());
-                     Navigator.pushReplacement(context,
-                         MaterialPageRoute(builder: (context) => GoogleMapScreen(list: selectedCat,)));
+                     Navigator.pushAndRemoveUntil(context,
+                         MaterialPageRoute(builder: (context) => HomeNav.one(1,selectedCat)), (r)=> false);
                   })
                 ],
               ),

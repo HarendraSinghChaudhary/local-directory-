@@ -287,7 +287,7 @@ class _OTPSignUpState extends State<OTPSignUp> {
 
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeNav()),
+            MaterialPageRoute(builder: (context) => HomeNav(index:0)),
             (route) => false);
 
         setState(() {

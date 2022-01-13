@@ -14,24 +14,36 @@ import 'package:wemarkthespot/screens/mapScreen.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
 
 class HomeNav extends StatefulWidget {
+  int index;
+  var selectedList;
+  HomeNav({Key? key, required this.index}):super(key:key);
+  HomeNav.one(this.index,this.selectedList);
   @override
   _HomeNavState createState() => _HomeNavState();
 }
 
 class _HomeNavState extends State<HomeNav> {
   int _index = 0;
-  List widgets = <Widget>[
-    Home(),
-    // Scaffold(),
-    GoogleMapScreen(),
-    Hotspot(),
-    Explore(),
-    Account()
-  ];
+  var list ;
+  List widgets = [];
 
   //LanguageChange languageChange = new LanguageChange();
   GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 
+  @override
+  void initState() {
+    _index = widget.index;
+    list = widget.selectedList;
+    widgets = <Widget>[
+      Home(),
+      //Scaffold(),
+      GoogleMapScreen(list: list,),
+      Hotspot(),
+      Explore(),
+      Account()
+    ];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
