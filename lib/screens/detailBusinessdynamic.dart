@@ -1486,6 +1486,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           nearby?.category_name =
               jsonArray["category_name"].toString();
           nearby?.fav = jsonArray["fav"].toString();
+
           nearby?.lat = jsonArray["lat"].toString();
           nearby?.long = jsonArray["long"].toString();
           nearby?.avgratting = jsonArray["avgratting"].toString();
@@ -1493,6 +1494,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
               jsonArray["totalReviewusers"].toString();
 
           print("id: " + nearby!.id.toString());
+          print("favvvv: " + jsonArray["fav"].toString());
           print("ratting: " + nearby!.avgratting.toString());
 
 

@@ -675,6 +675,8 @@ class _ExploreState extends State<Explore> {
               jsonArray[i]["totalReviewusers"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
+
+          print("favvvv: " + jsonArray[i]["fav"].toString());
           print("ratting: " + modelAgentSearch.avgratting.toString());
 
           nearByRestaurantList.add(modelAgentSearch);

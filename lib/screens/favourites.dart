@@ -126,19 +126,7 @@ class _FavoritesState extends State<Favorites> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: kCyanColor,
-      //   title: Center(
-      //     child: Padding(
-      //       padding: EdgeInsets.only(right: 15.w),
-      //       child: Text(
-      //         "Favorites",
-      //         style:
-      //             TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
-      //       ),
-      //     ),
-      //   ),
-      // ),
+    
       body: isloading==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),): ListView.builder(
         padding: EdgeInsets.only(top: 1.h),
         // shrinkWrap: true,
@@ -160,7 +148,7 @@ class _FavoritesState extends State<Favorites> {
                     Positioned(
                       top: 2.h,
                       child: Container(
-                        margin: EdgeInsets.only(left: 2.5.w),
+                        margin: EdgeInsets.only(left: 0.w),
                         height: 13.h,
                         // width: double.infinity,
                         decoration: BoxDecoration(
@@ -215,21 +203,25 @@ class _FavoritesState extends State<Favorites> {
                                 SizedBox(
                                   height: 0.3.h,
                                 ),
-                                Text(
-                                  // "Restaurant Name ",
-                                  favouriteRestaurantList[index]
-                                              .business_name
-                                              .toString() !=
-                                          "null"
-                                      ? favouriteRestaurantList[index]
-                                          .business_name
-                                          .toString()
-                                      : "Business Name",
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: kCyanColor,
-                                      fontWeight: FontWeight.w700,
-                                      fontFamily: "Segoepr"),
+                                Container(
+                                  width: 60.w,
+                                  child: Text(
+                                    // "Restaurant Name ",
+                                    favouriteRestaurantList[index]
+                                                .business_name
+                                                .toString() !=
+                                            "null"
+                                        ? favouriteRestaurantList[index]
+                                            .business_name
+                                            .toString()
+                                        : "Business Name",
+                                        overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: kCyanColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: "Segoepr"),
+                                  ),
                                 ),
                                 Row(
                                   children: [

@@ -666,7 +666,7 @@ class _ReviewsState extends State<Reviews> {
                 ),
                 Text(
                   "Are you sure you\n"
-                  "want to delete this review",
+                  "want to delete this review?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
