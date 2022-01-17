@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/Filter_screen.dart';
+import 'package:wemarkthespot/screens/detailBusiness.dart';
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
@@ -42,6 +44,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var location = "";
   var category_name = "";
   var latlong_position = "";
+ 
+ 
+  var avgratting = "";
+  var countUserreview = "";
+  var firecount = "";
+  var okcount = "";
+  var notcool_count = "";
   double? lat;
   double? long;
 
@@ -79,6 +88,17 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               setState(() {
                 viewVisible = true;
                 business_name = business.business_name.toString();
+                avgratting = business.avgratting.toString();
+                firecount = business.firecount.toString();
+                notcool_count = business.notcool_count.toString();
+                user_count = business.user_count.toString();
+                review_count = business.review_count.toString();
+                business_images = business.business_images.toString();
+                id = business.id.toString();
+
+                okcount = business.okcount.toString();
+                print("okok: "+okcount.toString());
+
               });
             },
             markerId: MarkerId(business.id),
@@ -125,7 +145,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     this.mesageTextController.removeListener(_onSearchChanged);
     this.mesageTextController.dispose();
     debounce?.cancel();
-    widget.list = null;
+
     super.dispose();
   }
   void locatePosition() async {
@@ -291,185 +311,193 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               visible: viewVisible,
               child: Padding(
                 padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
-                child: Container(
-                  height: 18.h,
-                  width: 70.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.w),
-                    color: kBackgroundColor,
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 14),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset("assets/icons/file.svg",
-                                      color: kPrimaryColor, width: 5.w),
-                                  SizedBox(
-                                    height: 0.6.h,
-                                  ),
-                                  Text(
-                                    "Fire(20)",
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset("assets/icons/bakance.svg",
-                                      color: kokokColor, width: 10.w),
-                                  Text(
-                                    "Ok Ok(5)",
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset("assets/icons/snow.svg",
-                                      color: kNotCoolColor, width: 8.w),
-                                  Text(
-                                    "Not Cool(2)",
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SvgPicture.asset("assets/icons/star.svg",
-                                      color: kPrimaryColor, width: 6.w),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  Text(
-                                    "3.5",
-                                    style: TextStyle(
-                                      fontSize: 11.sp,
-                                      color: Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
-                        child: Container(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
+                  },
+                  child: Container(
+                    height: 18.h,
+                    width: 70.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3.w),
+                      color: kBackgroundColor,
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 14),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Container(
-                                height: 16.w,
-                                width: 18.w,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3.w),
-                                    color: Colors.red,
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/restaurant.jpeg"),
-                                        fit: BoxFit.fill)),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0, bottom: 10),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      //"Bar Name",
-                                      business_name.toString(),
-                                      // widget.nearBy.business_name.toString() != "null"
-                                      //     ? widget.nearBy.business_name.toString()
-                                      //     : "Bar Name",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          color: kCyanColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Segoepr"),
+                                    SvgPicture.asset("assets/icons/file.svg",
+                                        color: kPrimaryColor, width: 5.w),
+                                    SizedBox(
+                                      height: 0.6.h,
                                     ),
-
-                                    SizedBox(height: 0.5.h,),
-
-
-                                    Row(
-                                      children: [
-                                        Text(
-                                          // communityReviewList != null &&
-                                          //         communityReviewList.length > 0
-                                          //     ? communityReviewList.length.toString() +
-                                          //         " Reviews "
-                                          "1200 Reviews",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
-                                        ),
-                                        Text(
-                                          " | ",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
-                                        ),
-                                        Text(
-                                          // widget.nearBy.user_count.toString() +
-                                          "25 People",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
-                                        ),
-                                      ],
+                                    Text(
+                                      "Fire(" +firecount.toString()+")",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                
+                                        //fontFamily: "Roboto"
+                                      ),
                                     ),
                                   ],
                                 ),
-                              )
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    SvgPicture.asset("assets/icons/bakance.svg",
+                                        color: kokokColor, width: 10.w),
+                                    Text(
+                                      "Ok Ok("+okcount.toString()+")",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                
+                                        //fontFamily: "Roboto"
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    SvgPicture.asset("assets/icons/snow.svg",
+                                        color: kNotCoolColor, width: 8.w),
+                                    Text(
+                                      "Not Cool("+notcool_count.toString()+")",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                
+                                        //fontFamily: "Roboto"
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset("assets/icons/star.svg",
+                                        color: kPrimaryColor, width: 6.w),
+                                    SizedBox(
+                                      height: 1.h,
+                                    ),
+                                    Text(
+                                      //"3.5",
+                                      avgratting.toString(),
+                                      style: TextStyle(
+                                        fontSize: 11.sp,
+                                        color: Colors.white,
+                
+                                        //fontFamily: "Roboto"
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 16.w,
+                                  width: 18.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3.w),
+                                      color: Colors.red,
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              //"assets/images/restaurant.jpeg"
+                                              business_images
+                                              ),
+                                          fit: BoxFit.fill)),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0, bottom: 10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        //"Bar Name",
+                                        business_name.toString(),
+                                        // widget.nearBy.business_name.toString() != "null"
+                                        //     ? widget.nearBy.business_name.toString()
+                                        //     : "Bar Name",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: kCyanColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Segoepr"),
+                                      ),
+                
+                                      SizedBox(height: 0.5.h,),
+                
+                
+                                      Row(
+                                        children: [
+                                          Text(
+                                            // communityReviewList != null &&
+                                            //         communityReviewList.length > 0
+                                            //     ? communityReviewList.length.toString() +
+                                            //         " Reviews "
+                                            review_count.toString()+" Reviews",
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: kPrimaryColor,
+                                                // fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto"
+                                                //fontFamily: "Segoepr"
+                                                ),
+                                          ),
+                                          Text(
+                                            " | ",
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: kPrimaryColor,
+                                                // fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto"
+                                                //fontFamily: "Segoepr"
+                                                ),
+                                          ),
+                                          Text(
+                                            // widget.nearBy.user_count.toString() +
+                                            user_count.toString()+" People",
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: kPrimaryColor,
+                                                // fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto"
+                                                //fontFamily: "Segoepr"
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -647,6 +675,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.firecount = jsonArray[i]["firecount"].toString();
+          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"].toString();
+          modelAgentSearch.okcount = jsonArray[i]["okcount"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
 

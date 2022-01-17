@@ -727,6 +727,9 @@ class NearBy {
   var long = "";
   var avgratting = "";
   var countUserreview = "";
+  var firecount = "";
+  var okcount = "";
+  var notcool_count = "";
 }
 
 class CustomSliderWidget extends StatefulWidget {
