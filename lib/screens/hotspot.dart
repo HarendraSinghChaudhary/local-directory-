@@ -77,18 +77,16 @@ class _HotspotState extends State<Hotspot> {
 
   late var _height;
 
-
-    void _scrollToIndex(index) {
+  void _scrollToIndex(index) {
     _controller.animateTo(_height * index,
         duration: Duration(seconds: 2), curve: Curves.easeIn);
   }
 
   @override
   Widget build(BuildContext context) {
-
     size = MediaQuery.of(context).size;
     _height = size.height;
-   
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -190,7 +188,6 @@ class _HotspotState extends State<Hotspot> {
                     SizedBox(
                       height: 3.5.h,
                     ),
-
                     ListView.builder(
                       shrinkWrap: true,
                       controller: _controller,
@@ -264,28 +261,33 @@ class _HotspotState extends State<Hotspot> {
                                                     Expanded(
                                                       child: RichText(
                                                           text: TextSpan(
-                                                        style: TextStyle(
-                                                            fontSize: 11.sp,
-                                                            color:
-                                                            kCyanColor,
-                                                            fontFamily:
-                                                            "Segoepr"),
-                                                        children: [
-                                                          TextSpan(text: getHostSpotList[
-                                                          index]
-                                                              .person_name
-                                                              .toString()),
-                                                          TextSpan(
-                                                              text: getHostSpotList[
-                                                              index]
-                                                                  .business_user_name
-                                                                  .toString(),
-                                                              recognizer: TapGestureRecognizer()
-                                                                ..onTap = () {
-                                                                  Navigator.of(context).push(new MaterialPageRoute(builder: (builder)=> DetailBussinessDynamic(id: getHostSpotList[index].business_id)));
-                                                                }),
-                                                        ]
-                                                      )),
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      11.sp,
+                                                                  color:
+                                                                      kCyanColor,
+                                                                  fontFamily:
+                                                                      "Segoepr"),
+                                                              children: [
+                                                            TextSpan(
+                                                                text: getHostSpotList[
+                                                                        index]
+                                                                    .person_name
+                                                                    .toString()),
+                                                            TextSpan(
+                                                                text: getHostSpotList[
+                                                                        index]
+                                                                    .business_user_name
+                                                                    .toString(),
+                                                                recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getHostSpotList[index].business_id)));
+                                                                      }),
+                                                          ])),
                                                     ),
                                                     Padding(
                                                       padding: EdgeInsets.only(
@@ -457,59 +459,73 @@ class _HotspotState extends State<Hotspot> {
                                                   fillColor: Colors.black,
                                                   filled: true,
                                                   hintText: "Reply",
-                                                  suffixIcon: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      /* GestureDetector(
-                                                    onTap: (){
-                                                      getFileDialog();
+                                                  suffixIcon: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 8.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        InkWell(
+                                                            onTap: () {
+                                                              image_video_status =
+                                                                  "0";
+                                                              file = null;
+                                                              fileName = "";
+                                                              currentPath = "";
+                                                              setState(() {});
+                                                              getFileDialog();
+                                                            },
+                                                            child: Icon(
+                                                                Icons
+                                                                    .add_circle_outline,
+                                                                color:
+                                                                    kPrimaryColor)),
 
-                                                    },
-                                                    child: SvgPicture.asset("assets/icons/attach.svg", height: 20,width: 20, color: kPrimaryColor,)),
-                                                SizedBox(width: 1.h,),*/
-                                                      InkWell(
-                                                          onTap: () {
-                                                            var mesage =
-                                                                messageController
-                                                                    .text
-                                                                    .toString();
+                                                        SizedBox(width: 2.w),
 
-                                                            if (mesage == "" ||
-                                                                mesage ==
-                                                                    "null") {
-                                                              ScaffoldMessenger
-                                                                      .of(
-                                                                          context)
-                                                                  .showSnackBar(
-                                                                      SnackBar(
-                                                                          content:
-                                                                              Text("Please enter reply")));
-                                                            } else {
-                                                              FocusScope.of(
-                                                                      context)
-                                                                  .unfocus();
-                                                              replyOnHotspotReviewApi(
-                                                                  getHostSpotList[
-                                                                          index]
-                                                                      .id
-                                                                      .toString(),
-                                                                  getHostSpotList[
-                                                                          index]
-                                                                      .messageText
-                                                                      .toString(),
-                                                                  index);
-                                                            }
+                                                        InkWell(
+                                                            onTap: () {
+                                                              var mesage =
+                                                                  messageController
+                                                                      .text
+                                                                      .toString();
 
-                                                            messageController
-                                                                .clear();
-                                                          },
-                                                          child: Icon(
-                                                              Icons.send,
-                                                              color:
-                                                                  kPrimaryColor)),
-                                                      //  SizedBox(width: 1.h,),
-                                                    ],
+                                                              if (mesage ==
+                                                                      "" ||
+                                                                  mesage ==
+                                                                      "null") {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(SnackBar(
+                                                                        content:
+                                                                            Text("Please enter reply")));
+                                                              } else {
+                                                                FocusScope.of(
+                                                                        context)
+                                                                    .unfocus();
+                                                                replyOnHotspotReviewApi(
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .id
+                                                                        .toString(),
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .messageText
+                                                                        .toString(),
+                                                                    index);
+                                                              }
+
+                                                              messageController
+                                                                  .clear();
+                                                            },
+                                                            child: Icon(
+                                                                Icons.send,
+                                                                color:
+                                                                    kPrimaryColor)),
+                                                        //  SizedBox(width: 1.h,),
+                                                      ],
+                                                    ),
                                                   ),
                                                   hintStyle: TextStyle(
                                                       fontSize: 9.sp,
@@ -532,8 +548,6 @@ class _HotspotState extends State<Hotspot> {
                         );
                       },
                     ),
-                   
-                  
                     SizedBox(
                       height: 5.h,
                     ),
@@ -751,9 +765,7 @@ class _HotspotState extends State<Hotspot> {
                         file = null;
                         fileName = "";
                         currentPath = "";
-                        setState(() {
-
-                        });
+                        setState(() {});
                         getFileDialog();
                       },
                       icon: Icon(

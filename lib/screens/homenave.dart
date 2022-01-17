@@ -12,6 +12,7 @@ import 'package:wemarkthespot/screens/inTheKnow.dart';
 
 import 'package:wemarkthespot/screens/mapScreen.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 
 class HomeNav extends StatefulWidget {
   int index;
@@ -37,7 +38,8 @@ class _HomeNavState extends State<HomeNav> {
     widgets = <Widget>[
       Home(),
       //Scaffold(),
-      GoogleMapScreen(list: list,),
+      //GoogleMapScreen(list: list,),
+      AApp(),
       Hotspot(),
       Explore(),
       Account()
