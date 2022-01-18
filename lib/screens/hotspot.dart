@@ -59,14 +59,20 @@ class _HotspotState extends State<Hotspot> {
   List<Asset> images = [];
   List<File> fileList = [];
 
+
+
+
   List<GetHotSpotClass> getHostSpotList = [];
   List<GetHotSpotClass> getHostSpotList2 = [];
   List<GetHotSpotClass> searchList = [];
   var image_video_status = "0";
+  var reply_image_video_status = "0";
   final picker = ImagePicker();
   File? file;
+  File? replyfile;
   String base64Image = "";
   String fileName = "";
+  String replyfileName = "";
 
   List<GetAllBusiness> getAllBusinessList = [];
   List<String> coments = [];
@@ -486,13 +492,13 @@ class _HotspotState extends State<Hotspot> {
                                                       children: [
                                                         InkWell(
                                                             onTap: () {
-                                                              image_video_status =
+                                                              getHostSpotList[index].reply_image_video_status =
                                                                   "0";
-                                                              file = null;
-                                                              fileName = "";
+                                                              getHostSpotList[index].replyfile = null;
+                                                              getHostSpotList[index].replyfileName = "";
                                                               currentPath = "";
                                                               setState(() {});
-                                                              getFileDialog();
+                                                              getFileDialogReply(index);
                                                             },
                                                             child: Icon(
                                                                 Icons
@@ -557,7 +563,7 @@ class _HotspotState extends State<Hotspot> {
                                       height: 1.h,
                                     ),
                                     Visibility(
-                                      visible: true,
+                                      visible: getHostSpotList[index].replyfileList!=null?getHostSpotList[index].replyfileList.length>0?true:false:false,
                                       child: Container(
                                         height: 8.h,
                                         width: 80.w,
@@ -565,9 +571,9 @@ class _HotspotState extends State<Hotspot> {
                                           shrinkWrap: true,
                                           controller: _controller,
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: 3,
+                                          itemCount: getHostSpotList[index].replyfileList.length==0?0:getHostSpotList[index].replyfileList.length,
                                           itemBuilder: (BuildContext context,
-                                              int index) {
+                                              int i) {
                                             return Row(
                                               children: [
                                                 Stack(
@@ -581,8 +587,7 @@ class _HotspotState extends State<Hotspot> {
                                                                   .circular(
                                                                       2.w),
                                                           image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                                              image: FileImage(getHostSpotList[index].replyfileList[i]),
                                                               fit:
                                                                   BoxFit.fill)),
                                                     ),
@@ -1633,38 +1638,57 @@ class _HotspotState extends State<Hotspot> {
     print("review_id: " + review_id.toString());
     print("type: " + "HOTSPOT");
     print("message: " + messageText.toString());
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.COMMUNITYREPLYONREVIEW_URL,
+      ),
+    );
+    request.fields["user_id"] = id.toString();
+    request.fields["review_id"] = review_id.toString();
+    request.fields["reply_id"] = "0";
+    request.fields["type"] = "HOTSPOT";
+    request.fields["message"] = messageText;
+    request.fields["video_image_status"] = getHostSpotList[index].reply_image_video_status;
 
-    var request = http.post(
-        Uri.parse(
-          RestDatasource.COMMUNITYREPLYONREVIEW_URL,
-        ),
-        body: {
-          "user_id": id.toString(),
-          "review_id": review_id,
-          "reply_id": "0",
-          "type": "HOTSPOT",
-          "message": messageText,
-          "video_image_status": image_video_status
-        });
+
+    if(getHostSpotList[index].reply_image_video_status=="2"){
+      request.files.add(await http.MultipartFile.fromPath("image[]", getHostSpotList[index].replyfile!.path));
+
+    }else if(getHostSpotList[index].reply_image_video_status=="1"){
+      getHostSpotList[index].replyimages.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("ImagePath " + path.toString());
+        request.files.add(http.MultipartFile(
+            'image[]',
+            File(path.toString()).readAsBytes().asStream(),
+            File(path.toString()).lengthSync(),
+            filename: path.toString().split("/").last));
+      });
+    }
     String msg = "";
-    var jsonArray;
     var jsonRes;
-    var res;
-
-    await request.then((http.Response response) {
-      res = response;
-      final JsonDecoder _decoder = new JsonDecoder();
-      jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
-    });
+    var jsonArray;
+    var res = await request.send();
 
     if (res.statusCode == 200) {
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
       print(jsonRes["status"]);
 
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+
       if (jsonRes["status"].toString() == "true") {
+        getHostSpotList[index].reply_image_video_status = "0";
+        getHostSpotList[index].replyimages.clear();
+        getHostSpotList[index].replyfile = null;
+        getHostSpotList[index].replyfileName = "";
+        getHostSpotList[index].replyfileList.clear();
         setState(() {
           isloading = false;
         });
@@ -1930,7 +1954,9 @@ class _HotspotState extends State<Hotspot> {
                           );
                         } else {
                           //getCheckInImage();
-                          pickImages();
+
+                            pickImagesss();
+
                         }
                       }),
                   SizedBox(
@@ -1994,6 +2020,148 @@ class _HotspotState extends State<Hotspot> {
                 ],
               ),
             )));
+      },
+    );
+  }
+
+
+  getFileDialogReply(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: SingleChildScrollView(
+                child: SizedBox(
+                  height: 25.h,
+                  width: 95.w,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              file = null;
+                              fileName = "";
+                              currentPath = "";
+                              getHostSpotList[index].replyimages.clear();
+                              getHostSpotList[index].replyfileList.clear();
+                              getHostSpotList[index].replyfile = null;
+                              getHostSpotList[index].reply_image_video_status = "0";
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            child: SvgPicture.asset(
+                              "assets/icons/cross.svg",
+                              color: Colors.white,
+                              width: 4.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.h,
+                      ),
+                      Text(
+                        "What do you want to upload?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"
+                          //fontFamily: "Segoepr"
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Image",
+                          press: () {
+                            if (getHostSpotList[index].reply_image_video_status == "2") {
+                              final snackBar = SnackBar(
+                                  content: Text(
+                                      'Either image or video can be post at a time'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                snackBar,
+                              );
+                            } else {
+                              //getCheckInImage();
+
+                                pickImagess(index);
+
+
+                            }
+                          }),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Video",
+                          press: () async {
+                            if (getHostSpotList[index].reply_image_video_status == "1") {
+                              final snackBar = SnackBar(
+                                  content: Text(
+                                      'Either image or video can be post at a time'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                snackBar,
+                              );
+                            } else {
+                              FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                                type: FileType.video,
+                                allowCompression: false,
+                              );
+                              if (result != null) {
+                                getHostSpotList[index].replyfile = File(result.files.single.path!);
+                                getHostSpotList[index].replyfileName = path.basename(getHostSpotList[index].replyfile!.path);
+                                print("Filename " + getHostSpotList[index].replyfileName.toString() + "^");
+
+                                if (getHostSpotList[index].replyfileName == "" || getHostSpotList[index].replyfileName == null) {
+                                  getHostSpotList[index].replyfileName = "File:- ";
+                                } else {
+                                  getHostSpotList[index].replyfileName = "File:- " + getHostSpotList[index].replyfileName;
+                                }
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) {
+                                    return TrimmerView(file!);
+                                  }),
+                                ).then((value) {
+                                  Navigator.of(context, rootNavigator: true).pop();
+                                  setState(() {
+                                    getHostSpotList[index].reply_image_video_status = "2";
+                                  });
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    if (currentPath != "") {
+                                      getHostSpotList[index].replyfile = File(currentPath.toString());
+                                      fileName = path.basename(getHostSpotList[index].replyfile!.path);
+                                      print("Filename " + getHostSpotList[index].replyfileName.toString());
+                                      setState(() {});
+                                    } else {
+                                      getHostSpotList[index].replyfile = null;
+                                      getHostSpotList[index].replyfileName = "";
+                                      getHostSpotList[index].reply_image_video_status = "0";
+                                      setState(() {});
+                                    }
+                                  });
+                                });
+                              }
+                            }
+                          })
+                    ],
+                  ),
+                )));
       },
     );
   }
@@ -2105,7 +2273,7 @@ class _HotspotState extends State<Hotspot> {
     id = prefs.getString("id").toString();
   }
 
-  Future<void> pickImages() async {
+  Future<void> pickImagesss() async {
     List<Asset> resultList = [];
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -2139,6 +2307,39 @@ class _HotspotState extends State<Hotspot> {
     });
     print("pathhh " + fileName.toString() + "*");
   }
+
+  Future<void> pickImagess(int index) async {
+    await pickImages().then((value) {
+      getHostSpotList[index].replyimages = value;
+      print("lengthhhhhh "+getHostSpotList[index].replyimages.length.toString()+"*");
+
+    });
+    if(getHostSpotList[index].replyimages.length>0){
+      getHostSpotList[index].reply_image_video_status = "1";
+      getHostSpotList[index].replyimages.forEach((element) async{
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+        print("pathhh "+path.toString()+"*");
+
+        getHostSpotList[index].replyfile = File(path.toString());
+        getHostSpotList[index].replyfileName = getHostSpotList[index].replyfile!.path.split("/").last;
+        getHostSpotList[index].replyfileList.add(getHostSpotList[index].replyfile!);
+      });
+
+      setState(() {
+        print("lengthhhhhhnewImages "+getHostSpotList[index].replyimages.length.toString()+"*");
+        print("lengthhhhhhnew "+getHostSpotList[index].replyfileList.length.toString()+"*");
+
+      });
+    }else{
+      getHostSpotList[index].reply_image_video_status = "0";
+      getHostSpotList[index].replyimages.clear();
+    }
+    Navigator.pop(context);
+
+
+
+  }
 }
 
 class GetHotSpotClass {
@@ -2154,6 +2355,11 @@ class GetHotSpotClass {
   List<dynamic> image = [];
   var video_image_status = "";
   var timedelay = "Secconds";
+ var reply_image_video_status = "0";
+  File? replyfile ;
+  var replyfileName = "";
+  List<Asset> replyimages = [];
+  List<File> replyfileList = [];
 }
 
 class GetAllBusiness {
