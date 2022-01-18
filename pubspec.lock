@@ -188,6 +188,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_absolute_path:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: dbfabda6d2bbefd317960ad53363d28bc8e6ac21
+      url: "https://github.com/canewsin/flutter_absolute_path.git"
+    source: git
+    version: "0.0.1"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -408,6 +417,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  multi_image_picker:
+    dependency: "direct main"
+    description:
+      name: multi_image_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.8.01"
   nested:
     dependency: transitive
     description:
