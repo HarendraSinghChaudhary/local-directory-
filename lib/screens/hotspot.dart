@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:path/path.dart' as path;
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../main.dart';
 import 'detailBusinessdynamic.dart';
@@ -49,6 +51,7 @@ class _HotspotState extends State<Hotspot> {
   TextEditingController mesageTextController = new TextEditingController();
   TextEditingController businessNameController = new TextEditingController();
   TextEditingController reviewController = new TextEditingController();
+  List<Asset> images = [];
 
   List<GetHotSpotClass> getHostSpotList = [];
   List<GetHotSpotClass> getHostSpotList2 = [];
@@ -1397,9 +1400,16 @@ class _HotspotState extends State<Hotspot> {
     request.fields["message"] = reviewController.text;
     request.fields["video_image_status"] = image_video_status;
 
-    if (file != null) {
-      request.files.add(await http.MultipartFile.fromPath("image", file!.path));
-    }
+    images.forEach((element) async{
+      var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+      print("ImagePath "+ path.toString());
+      request.files.add(http.MultipartFile(
+          'image[]',
+          File(path.toString()).readAsBytes().asStream(),
+          File(path.toString()).lengthSync(),
+          filename: path.toString().split("/").last
+      ));
+    });
 
     String msg = "";
     var jsonArray;
@@ -1724,6 +1734,7 @@ class _HotspotState extends State<Hotspot> {
                           file = null;
                           fileName = "";
                           currentPath = "";
+                          images.clear();
                           Navigator.of(context, rootNavigator: true).pop();
                         },
                         child: SvgPicture.asset(
@@ -1764,7 +1775,8 @@ class _HotspotState extends State<Hotspot> {
                             snackBar,
                           );
                         } else {
-                          getCheckInImage();
+                          //getCheckInImage();
+                          pickImages();
                         }
                       }),
                   SizedBox(
@@ -1937,6 +1949,46 @@ class _HotspotState extends State<Hotspot> {
   void getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     id = prefs.getString("id").toString();
+  }
+
+
+
+
+
+
+  Future<void> pickImages() async {
+    List<Asset> resultList = [];
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 5,
+        enableCamera: false,
+        selectedAssets: images,
+        materialOptions: MaterialOptions(
+          actionBarTitle: "Select Image",
+        ),
+      );
+      images = resultList;
+      if(images.length>0){
+        image_video_status = "1";
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(images.first.identifier.toString());
+
+        file = File(path.toString());
+        fileName = file!.path.split("/").last;
+
+      }
+      Navigator.pop(context);
+    } on Exception catch (e) {
+      print(e);
+      image_video_status = "0";
+    }
+
+    setState(() {
+      print("length "+images.length.toString()+"*");
+
+
+    });
+      print("pathhh "+fileName.toString()+"*");
   }
 }
 
