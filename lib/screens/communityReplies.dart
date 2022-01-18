@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
@@ -33,9 +36,15 @@ class _CommunityRepliesState extends State<CommunityReplies> {
   bool isloading = false;
   ScrollController _controller = new ScrollController();
   bool viewVisible = false;
+  var image_video_status = "0";
+  File? file;
+  String base64Image = "";
+  String fileName = "";
 
   var tabOne = "";
   var selectedIndex = -1;
+  List<Asset> images = [];
+  List<File> fileList = [];
 
   @override
   void initState() {
@@ -1337,6 +1346,41 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       });
     }
   }
+
+
+
+  Future<void> pickImagess() async {
+    await pickImages().then((value) {
+      images = value;
+      print("lengthhhhhh "+images.length.toString()+"*");
+
+    });
+    if(images.length>0){
+      image_video_status = "1";
+      images.forEach((element) async{
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+        print("pathhh "+path.toString()+"*");
+
+        file = File(path.toString());
+        fileName = file!.path.split("/").last;
+        fileList.add(file!);
+      });
+
+      setState(() {
+        print("pathhh "+fileName.toString()+"*");
+
+      });
+    }else{
+      image_video_status = "0";
+      images.clear();
+    }
+    Navigator.pop(context);
+
+
+
+  }
+
 }
 
 class GETREPLYONCOMMUNITY {
