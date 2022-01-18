@@ -8,8 +8,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_player/video_player.dart';
+import 'package:wemarkthespot/components/slider_image.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class CommunityReplies extends StatefulWidget {
@@ -188,10 +191,11 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -219,8 +223,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               backgroundImage: AssetImage(
                                                   "assets/images/usericon.png"),
                                             ),
-                                            errorWidget: (context, url, error) =>
-                                                CircleAvatar(
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    CircleAvatar(
                                               radius: 6.5.w,
                                               backgroundImage: AssetImage(
                                                   "assets/images/usericon.png"),
@@ -259,7 +264,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                       style: TextStyle(
                                                           fontSize: 11.sp,
                                                           color: kCyanColor,
-                                                          fontFamily: "Segoepr"),
+                                                          fontFamily:
+                                                              "Segoepr"),
                                                     ),
                                                     Padding(
                                                       padding: EdgeInsets.only(
@@ -303,6 +309,39 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                 ),
                                               ),
                                               SizedBox(
+                                                height: 1.h,
+                                              ),
+                                              Visibility(
+                                                  visible: getReplyOnCommunityList[
+                                                                  index]
+                                                              .video_image_status
+                                                              .toString() ==
+                                                          "2"
+                                                      ? true
+                                                      : false,
+                                                  child: SizedBox(
+                                                      height: 200,
+                                                      child: VideoItems(
+                                                        videoPlayerController:
+                                                            VideoPlayerController.network(
+                                                                getReplyOnCommunityList[
+                                                                        index]
+                                                                    .image[0]),
+                                                      ))),
+                                              Visibility(
+                                                  visible: getReplyOnCommunityList[
+                                                                  index]
+                                                              .video_image_status
+                                                              .toString() ==
+                                                          "1"
+                                                      ? true
+                                                      : false,
+                                                  child: HotspotImageSlider(
+                                                      items:
+                                                          getReplyOnCommunityList[
+                                                                  index]
+                                                              .image)),
+                                              SizedBox(
                                                 height: 2.h,
                                               ),
                                               Container(
@@ -312,7 +351,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    getReplyOnCommunityList[index]
+                                                    getReplyOnCommunityList[
+                                                                index]
                                                             .viewV
                                                         ? InkWell(
                                                             onTap: () {
@@ -326,7 +366,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                             child: Text(
                                                               "Hide Replies",
                                                               style: TextStyle(
-                                                                  fontSize: 11.sp,
+                                                                  fontSize:
+                                                                      11.sp,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -347,7 +388,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                             child: Text(
                                                               "View Replies",
                                                               style: TextStyle(
-                                                                  fontSize: 11.sp,
+                                                                  fontSize:
+                                                                      11.sp,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -364,7 +406,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                         onTap: () {
                                                           setState(() {
                                                             viewVisible = true;
-                                                            selectedIndex = index;
+                                                            selectedIndex =
+                                                                index;
 
                                                             tabOne =
                                                                 getReplyOnCommunityList[
@@ -380,7 +423,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                               color:
                                                                   kPrimaryColor,
                                                               fontWeight:
-                                                                  FontWeight.w500,
+                                                                  FontWeight
+                                                                      .w500,
                                                               fontFamily:
                                                                   "Roboto"),
                                                         ),
@@ -398,15 +442,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                       ],
                                     ),
                                   ),
-                                   replyWidget(index),
+                                  replyWidget(index),
                                 ],
-                              )
-                              ),
-
-                          
-
-                         
-
+                              )),
                           SizedBox(
                             height: 2.h,
                           ),
@@ -484,7 +522,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
 
                         viewVisible = false;
                       });
-                    }else{
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Please enter reply")));
                     }
@@ -554,6 +592,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           //modelAgentSearch.hour = jsonArray[i]["hour"];
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
+          modelAgentSearch.video_image_status = jsonArray[i]["video_image_status"].toString();
+          modelAgentSearch.image = jsonArray[i]["image"];
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
               .inSeconds;
@@ -600,6 +640,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                 childModelOne.review_id =
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
+                childModelOne.image = childDataOne[j]["image"];
+                childModelOne.video_image_status= childDataOne[j]["video_image_status"].toString();
+
                 var difference = date2
                     .difference(DateTime.parse(childDataOne[j]["created_at"]))
                     .inSeconds;
@@ -651,6 +694,9 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                           childDataTwo[k]["review_id"].toString();
                       childrenModelTwo.message =
                           childDataTwo[k]["message"].toString();
+                          childrenModelTwo.image = childDataTwo[k]["image"];
+                          childrenModelTwo.video_image_status = childDataTwo[k]["video_image_status"].toString();
+                          
                       var difference = date2
                           .difference(
                               DateTime.parse(childDataTwo[k]["created_at"]))
@@ -715,6 +761,11 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 childDataThree[l]["review_id"].toString();
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
+
+                                childrenModelThree.image = childDataThree[l]["image"];
+
+                                 childrenModelThree.video_image_status =childDataThree[l]["video_image_status"].toString();
+                                
                             var difference = date2
                                 .difference(DateTime.parse(
                                     childDataThree[l]["created_at"]))
@@ -778,7 +829,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           getReplyOnCommunityList.add(modelAgentSearch);
 
           setState(() {
-            if(selectedIndex>-1) {
+            if (selectedIndex > -1) {
               getReplyOnCommunityList[selectedIndex].viewV = true;
             }
           });
@@ -908,6 +959,60 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             SizedBox(
                               height: 1.h,
                             ),
+
+
+                             Visibility(
+                          visible: getReplyOnCommunityList[i]
+                              .childrenList[index]
+                              .video_image_status
+                              .toString() ==
+                              "2"
+                              ? true
+                              : false,
+                          child: SizedBox(
+                            height: 200,
+                            child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
+                                  .childrenList[index]
+                                  .image[0]),
+                                            
+                                            )
+                            
+                            
+                            //  VideoWidget(
+                            //   url: getReplyOnHotspotList[i]
+                            //       .childrenList[index]
+                            //       .image,
+                            //   play: true,
+                            // ),
+                          )),
+                      Visibility(
+                        visible: getReplyOnCommunityList[i]
+                            .childrenList[index]
+                            .video_image_status
+                            .toString() ==
+                            "1"
+                            ? true
+                            : false,
+                        child:  HotspotImageSlider(
+                                         items: getReplyOnCommunityList[i]
+                                .childrenList[index]
+                                .image,
+                                              
+                                        
+                                        )
+                        
+                        
+                        
+                     
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+
+
+
+
                             Container(
                               width: 74.w,
                               child: Row(
@@ -1046,6 +1151,55 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                         SizedBox(
                                           height: 1.h,
                                         ),
+
+
+                                          Visibility(
+                                      visible: getReplyOnCommunityList[i]
+                                          .childrenList[index]
+                                          .childrenList[k]
+                                          .video_image_status
+                                          .toString() ==
+                                          "2"
+                                          ? true
+                                          : false,
+                                      child: SizedBox(
+                                          height: 200,
+                                          width: 35.h,
+                                          child:VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
+                                                .childrenList[index]
+                                                .childrenList[k]
+                                                .image[0]),
+                                              
+                                            )
+                                          
+                                          
+                                          
+                                        
+                                          )),
+                                  Visibility(
+                                    visible: getReplyOnCommunityList[i]
+                                        .childrenList[index]
+                                        .childrenList[k]
+                                        .video_image_status
+                                        .toString() ==
+                                        "1"
+                                        ? true
+                                        : false,
+                                    child:  HotspotImageSlider(
+                                         items: getReplyOnCommunityList[i]
+                                            .childrenList[index]
+                                            .childrenList[k]
+                                            .image
+                                              
+                                        
+                                        )
+                                    
+                                 
+                                  ),
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
                                         Container(
                                           width: 74.w,
                                           child: Row(
@@ -1206,6 +1360,61 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                   SizedBox(
                                                     height: 1.h,
                                                   ),
+
+                                                  Visibility(
+                                              visible:  getReplyOnCommunityList[i]
+                                                  .childrenList[index]
+                                                  .childrenList[k]
+                                                  .childrenList[j]
+                                                  .video_image_status
+                                                  .toString() ==
+                                                  "2"
+                                                  ? true
+                                                  : false,
+                                              child: SizedBox(
+                                                  height: 200,
+                                                  width: 35.h,
+                                                  child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
+                                                        .childrenList[index]
+                                                        .childrenList[k]
+                                                        .childrenList[j]
+                                                        .image[0]
+                                                  ),
+                                              
+                                            )
+                                                  
+                                                  
+                                                 
+                                                  )),
+                                          Visibility(
+                                            visible: getReplyOnCommunityList[i]
+                                                .childrenList[index]
+                                                .childrenList[k]
+                                                .childrenList[j]
+                                                .video_image_status
+                                                .toString() ==
+                                                "1"
+                                                ? true
+                                                : false,
+                                            child: HotspotImageSlider(
+                                          items:getReplyOnCommunityList[i]
+                                                    .childrenList[index]
+                                                    .childrenList[k]
+                                                    .childrenList[j]
+                                                    .image
+                                                    ,
+                                              
+                                        
+                                        )
+                                            
+                                            
+                                            
+                                          
+                                          ),
+                                          SizedBox(
+                                            height: 2.h,
+                                          ),
                                                   Container(
                                                     width: 74.w,
                                                     child: Row(
@@ -1302,7 +1511,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           "reply_id": reply_id,
           "type": "REVIEW",
           "message": messageText,
-          "video_image_status":"0",
+          "video_image_status": "0",
         });
     String msg = "";
     var jsonArray;
@@ -1347,20 +1556,17 @@ class _CommunityRepliesState extends State<CommunityReplies> {
     }
   }
 
-
-
   Future<void> pickImagess() async {
     await pickImages().then((value) {
       images = value;
-      print("lengthhhhhh "+images.length.toString()+"*");
-
+      print("lengthhhhhh " + images.length.toString() + "*");
     });
-    if(images.length>0){
+    if (images.length > 0) {
       image_video_status = "1";
-      images.forEach((element) async{
-
-        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
-        print("pathhh "+path.toString()+"*");
+      images.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("pathhh " + path.toString() + "*");
 
         file = File(path.toString());
         fileName = file!.path.split("/").last;
@@ -1368,19 +1574,14 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       });
 
       setState(() {
-        print("pathhh "+fileName.toString()+"*");
-
+        print("pathhh " + fileName.toString() + "*");
       });
-    }else{
+    } else {
       image_video_status = "0";
       images.clear();
     }
     Navigator.pop(context);
-
-
-
   }
-
 }
 
 class GETREPLYONCOMMUNITY {
@@ -1390,6 +1591,8 @@ class GETREPLYONCOMMUNITY {
   var review_id = "";
   var message = "";
   var hour;
+  List<dynamic>image = [];
+  var video_image_status = "";
   var timedelay = "Secconds";
   bool viewV = false;
   List<GETREPLYONCOMMUNITY> childrenList = [];

@@ -80,7 +80,7 @@ void initState() {
     showControlsOnInitialize: true,
     allowedScreenSleep: false,
     fullScreenByDefault: false,
-    aspectRatio: widget.videoPlayerController.value.aspectRatio,
+   
  
     
      

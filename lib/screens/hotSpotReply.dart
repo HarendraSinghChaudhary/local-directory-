@@ -13,9 +13,12 @@ import 'package:provider/src/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/default_button.dart';
+import 'package:wemarkthespot/components/slider_image.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/testing.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/screens/video_player_widget3.dart';
 import 'package:wemarkthespot/services/api_client.dart';
@@ -398,10 +401,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             : false,
                                         child: SizedBox(
                                             height: 200,
-                                            child: VideoWidget(
-                                              url: getReplyOnHotspotList[index]
-                                                  .image,
-                                              play: true,
+                                            child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[index]
+                                                  .image[0]),
+                                              
                                             ))),
                                     Visibility(
                                       visible: getReplyOnHotspotList[index]
@@ -410,16 +413,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                           "1"
                                           ? true
                                           : false,
-                                      child: Container(
-                                        // height: 48.h,
-                                        child: Image.network(
-                                          //  "assets/images/lighting.jpeg",
-                                          getReplyOnHotspotList[index]
+                                      child:  HotspotImageSlider(
+                                          items:getReplyOnHotspotList[index]
                                               .image
-                                              .toString(),
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
+                                              
+                                        
+                                        )
+                                      
+                                      
+                                      
                                     ),
                                     SizedBox(
                                       height: 2.h,
@@ -884,11 +886,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     request.fields["video_image_status"] = image_video_status;
     request.fields["business_id"] = sec != "" ? sec.toString() : "312";
 
-    if (fileList != null) {
-      fileList.forEach((element) async {
-        request.files.add(await http.MultipartFile.fromPath("image[]", element.path));
+     if(image_video_status=="2"){
+      request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
 
-      });
+    }else if(image_video_status=="1"){
+    images.forEach((element) async {
+      var path = await FlutterAbsolutePath.getAbsolutePath(
+          element.identifier.toString());
+      print("ImagePath " + path.toString());
+      request.files.add(http.MultipartFile(
+          'image[]',
+          File(path.toString()).readAsBytes().asStream(),
+          File(path.toString()).lengthSync(),
+          filename: path.toString().split("/").last));
+    });
     }
     String msg = "";
     var jsonArray;
@@ -1359,12 +1370,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                               : false,
                           child: SizedBox(
                             height: 200,
-                            child: VideoWidget(
-                              url: getReplyOnHotspotList[i]
+                            child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
                                   .childrenList[index]
-                                  .image,
-                              play: true,
-                            ),
+                                  .image[0]),
+                                            
+                                            )
+                            
+                            
+                            //  VideoWidget(
+                            //   url: getReplyOnHotspotList[i]
+                            //       .childrenList[index]
+                            //       .image,
+                            //   play: true,
+                            // ),
                           )),
                       Visibility(
                         visible: getReplyOnHotspotList[i]
@@ -1374,17 +1393,17 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                             "1"
                             ? true
                             : false,
-                        child: Container(
-                          // height: 48.h,
-                          child: Image.network(
-                            //  "assets/images/lighting.jpeg",
-                            getReplyOnHotspotList[i]
+                        child:  HotspotImageSlider(
+                                         items: getReplyOnHotspotList[i]
                                 .childrenList[index]
-                                .image
-                                .toString(),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
+                                .image,
+                                              
+                                        
+                                        )
+                        
+                        
+                        
+                     
                       ),
                       SizedBox(
                         height: 2.h,
@@ -1554,13 +1573,18 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                       child: SizedBox(
                                           height: 200,
                                           width: 35.h,
-                                          child: VideoWidget(
-                                            url: getReplyOnHotspotList[i]
+                                          child:VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
                                                 .childrenList[index]
                                                 .childrenList[k]
-                                                .image,
-                                            play: true,
-                                          ))),
+                                                .image[0]),
+                                              
+                                            )
+                                          
+                                          
+                                          
+                                        
+                                          )),
                                   Visibility(
                                     visible: getReplyOnHotspotList[i]
                                         .childrenList[index]
@@ -1570,18 +1594,16 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                         "1"
                                         ? true
                                         : false,
-                                    child: Container(
-                                      // height: 48.h,
-                                      child: Image.network(
-                                        //  "assets/images/lighting.jpeg",
-                                        getReplyOnHotspotList[i]
+                                    child:  HotspotImageSlider(
+                                         items: getReplyOnHotspotList[i]
                                             .childrenList[index]
                                             .childrenList[k]
                                             .image
-                                            .toString(),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
+                                              
+                                        
+                                        )
+                                    
+                                 
                                   ),
                                   SizedBox(
                                     height: 2.h,
@@ -1767,14 +1789,19 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               child: SizedBox(
                                                   height: 200,
                                                   width: 35.h,
-                                                  child: VideoWidget(
-                                                    url: getReplyOnHotspotList[i]
+                                                  child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
                                                         .childrenList[index]
                                                         .childrenList[k]
                                                         .childrenList[j]
-                                                        .image,
-                                                    play: true,
-                                                  ))),
+                                                        .image[0]
+                                                  ),
+                                              
+                                            )
+                                                  
+                                                  
+                                                 
+                                                  )),
                                           Visibility(
                                             visible: getReplyOnHotspotList[i]
                                                 .childrenList[index]
@@ -1785,19 +1812,20 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                 "1"
                                                 ? true
                                                 : false,
-                                            child: Container(
-                                              // height: 48.h,
-                                              child: Image.network(
-                                                //  "assets/images/lighting.jpeg",
-                                                getReplyOnHotspotList[i]
+                                            child: HotspotImageSlider(
+                                          items:getReplyOnHotspotList[i]
                                                     .childrenList[index]
                                                     .childrenList[k]
                                                     .childrenList[j]
                                                     .image
-                                                    .toString(),
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
+                                                    ,
+                                              
+                                        
+                                        )
+                                            
+                                            
+                                            
+                                          
                                           ),
                                           SizedBox(
                                             height: 1.h,
