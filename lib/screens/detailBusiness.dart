@@ -444,9 +444,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           fileName = "";
                           file = null;
 
-                          if(widget.nearBy.checkIn_status =="1"){
+                          if (widget.nearBy.checkIn_status == "1") {
                             checkInDialog();
-                          }else {
+                          } else {
                             checkInApi();
                           }
                         },
@@ -458,7 +458,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               borderRadius: BorderRadius.circular(12.w)),
                           child: Center(
                             child: Text(
-                              widget.nearBy.checkIn_status =="1"? "Check Out":"Check In",
+                              widget.nearBy.checkIn_status == "1"
+                                  ? "Check Out"
+                                  : "Check In",
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   color: Colors.white,
@@ -490,7 +492,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
       initialChildSize: 0.12,
       minChildSize: 0.12,
       maxChildSize: 0.95,
-
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           padding: EdgeInsets.zero,
@@ -532,492 +533,518 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ),
                 ],
               ),
-              communityReviewList.length.toString() == "0" || communityReviewList.length.toString() == "null" ? Padding(
-                padding: EdgeInsets.only(top: 13.h),
-                child: Center(child: Image.asset("assets/images/nodata.jpg")),
-              ):
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                controller: scrollController,
-                itemCount: communityReviewList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  TextEditingController messageTextController =
-                      new TextEditingController();
-                  return
-                      // communityReviewList.length == "0" ? Center(child: Text("Please type a message", style: TextStyle(color: Colors.white, fontSize: 20), ))
-                      // :
-                      Column(
-                    children: [
-                      Card(
-                          margin: EdgeInsets.symmetric(horizontal: 4.w),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(3.w)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 1.5.h, left: 5.w),
-                                    child: Column(
+              communityReviewList.length.toString() == "0" ||
+                      communityReviewList.length.toString() == "null"
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 13.h),
+                      child: Center(
+                          child: Image.asset("assets/images/nodata.jpg")),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: scrollController,
+                      itemCount: communityReviewList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        TextEditingController messageTextController =
+                            new TextEditingController();
+                        return
+                            // communityReviewList.length == "0" ? Center(child: Text("Please type a message", style: TextStyle(color: Colors.white, fontSize: 20), ))
+                            // :
+                            Column(
+                          children: [
+                            Card(
+                                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(3.w)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       children: [
-                                        CachedNetworkImage(
-                                          imageUrl: communityReviewList[index]
-                                              .image
-                                              .toString(),
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  CircleAvatar(
-                                            radius: 7.w,
-                                            backgroundImage: NetworkImage(
-                                                //user image
-                                                communityReviewList[index]
-                                                    .image
-                                                    .toString()),
-                                          ),
-                                          placeholder: (context, url) =>
-                                              CircleAvatar(
-                                            radius: 7.w,
-                                            backgroundImage: AssetImage(
-                                                "assets/images/usericon.png"),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              CircleAvatar(
-                                            radius: 7.w,
-                                            backgroundImage: AssetImage(
-                                                "assets/images/usericon.png"),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 0.5.h,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              //"3.5",
-                                              communityReviewList[index]
-                                                  .ratting
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  color: kPrimaryColor,
-                                                  fontWeight: FontWeight.w500
-                                                  //fontFamily: "Segoepr"
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 1.5.h, left: 5.w),
+                                          child: Column(
+                                            children: [
+                                              CachedNetworkImage(
+                                                imageUrl:
+                                                    communityReviewList[index]
+                                                        .image
+                                                        .toString(),
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        CircleAvatar(
+                                                  radius: 7.w,
+                                                  backgroundImage: NetworkImage(
+                                                      //user image
+                                                      communityReviewList[index]
+                                                          .image
+                                                          .toString()),
+                                                ),
+                                                placeholder: (context, url) =>
+                                                    CircleAvatar(
+                                                  radius: 7.w,
+                                                  backgroundImage: AssetImage(
+                                                      "assets/images/usericon.png"),
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        CircleAvatar(
+                                                  radius: 7.w,
+                                                  backgroundImage: AssetImage(
+                                                      "assets/images/usericon.png"),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 0.5.h,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    //"3.5",
+                                                    communityReviewList[index]
+                                                        .ratting
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        color: kPrimaryColor,
+                                                        fontWeight:
+                                                            FontWeight.w500
+                                                        //fontFamily: "Segoepr"
+                                                        ),
                                                   ),
-                                            ),
-                                            SvgPicture.asset(
-                                              "assets/icons/star.svg",
-                                              color: kPrimaryColor,
-                                            )
-                                          ],
+                                                  SvgPicture.asset(
+                                                    "assets/icons/star.svg",
+                                                    color: kPrimaryColor,
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 3.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                // "Restaurant Name",
+
+                                                communityReviewList[index]
+                                                    .name
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 13.sp,
+                                                    color: kCyanColor,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: "Segoepr"),
+                                              ),
+                                              Container(
+                                                  height: 6.h,
+                                                  width: 65.w,
+                                                  child: Text(
+                                                    // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                                    communityReviewList[index]
+                                                        .review
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 11.sp,
+                                                        color: Colors.black,
+                                                        // fontWeight: FontWeight.w500,
+                                                        fontFamily: "Roboto"
+                                                        //fontFamily: "Segoepr"
+                                                        ),
+                                                  ))
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 3.w),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          // "Restaurant Name",
-
+                                    SizedBox(
+                                      height: 1.5.h,
+                                    ),
+                                    Visibility(
+                                        visible: communityReviewList[index]
+                                                    .image_video_status
+                                                    .toString() ==
+                                                "2"
+                                            ? true
+                                            : false,
+                                        child: SizedBox(
+                                            height: 200,
+                                            child: VideoWidget(
+                                              url: communityReviewList[index]
+                                                  .business_review_image,
+                                              play: true,
+                                            ))),
+                                    Visibility(
+                                      visible: communityReviewList[index]
+                                                  .image_video_status
+                                                  .toString() ==
+                                              "1"
+                                          ? true
+                                          : false,
+                                      child: Container(
+                                        // height: 48.h,
+                                        // width: double.infinity,
+                                        child: Image.network(
+                                          //  "assets/images/lighting.jpeg",
                                           communityReviewList[index]
-                                              .name
+                                              .business_review_image
                                               .toString(),
-                                          style: TextStyle(
-                                              fontSize: 13.sp,
-                                              color: kCyanColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Segoepr"),
-                                        ),
-                                        Container(
-                                            height: 6.h,
-                                            width: 65.w,
-                                            child: Text(
-                                              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                              communityReviewList[index]
-                                                  .review
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Colors.black,
-                                                  // fontWeight: FontWeight.w500,
-                                                  fontFamily: "Roboto"
-                                                  //fontFamily: "Segoepr"
-                                                  ),
-                                            ))
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 1.5.h,
-                              ),
-                              Visibility(
-                                  visible: communityReviewList[index]
-                                              .image_video_status
-                                              .toString() ==
-                                          "2"
-                                      ? true
-                                      : false,
-                                  child: SizedBox(
-                                      height: 200,
-                                      child: VideoWidget(
-                                        url: communityReviewList[index]
-                                            .business_review_image,
-                                        play: true,
-                                      ))),
-                              Visibility(
-                                visible: communityReviewList[index]
-                                            .image_video_status
-                                            .toString() ==
-                                        "1"
-                                    ? true
-                                    : false,
-                                child: Container(
-                                  // height: 48.h,
-                                  // width: double.infinity,
-                                  child: Image.network(
-                                    //  "assets/images/lighting.jpeg",
-                                    communityReviewList[index]
-                                        .business_review_image
-                                        .toString(),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 1.5.h,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    StatefulBuilder(
-                                        builder: (context, setState) {
-                                      return 
-                                      Container(
-                                        child: InkWell(
-                                          onTap: () {
-                                            if (likeEnable == true) {
-                                              if (communityReviewList[index]
-                                                      .like_status
-                                                      .toString() ==
-                                                  "1") {
-                                              } else {
-
-                                                likeApi(
-                                                    communityReviewList[index]
-                                                        .business_reviews_id
-                                                        .toString(),
-                                                    "1");
-                                              }
-                                            }
-                                          },
-                                          child: Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/up.svg",
-                                                color:
-                                                    communityReviewList[index]
-                                                                .like_status
-                                                                .toString() ==
-                                                            "1"
-                                                        ? kPrimaryColor
-                                                        : Colors.black,
-                                                width: 4.5.w,
-                                              ),
-                                              SizedBox(
-                                                width: 1.w,
-                                              ),
-                                              Text(
-                                                "Like(" +
-                                                    communityReviewList[index]
-                                                        .total_like
-                                                        .toString() +
-                                                    ")",
-                                                style: TextStyle(
-                                                    fontSize: 11.sp,
-                                                    color: communityReviewList[
-                                                                    index]
-                                                                .like_status
-                                                                .toString() ==
-                                                            "1"
-                                                        ? kPrimaryColor
-                                                        : Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                                    Container(
-                                      child: StatefulBuilder(
-                                          builder: (context, setState) {
-                                        return InkWell(
-                                          onTap: () {
-                                            if (likeEnable == true) {
-                                              if (communityReviewList[index]
-                                                      .like_status
-                                                      .toString() ==
-                                                  "2") {
-                                              } else {
-
-                                                likeApi(
-                                                    communityReviewList[index]
-                                                        .business_reviews_id
-                                                        .toString(),
-                                                    "2");
-                                              }
-                                            }
-                                          },
-                                          child: Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/down.svg",
-                                                color:
-                                                    communityReviewList[index]
-                                                                .like_status
-                                                                .toString() ==
-                                                            "2"
-                                                        ? kPrimaryColor
-                                                        : Colors.black,
-                                                width: 4.5.w,
-                                              ),
-                                              SizedBox(
-                                                width: 1.w,
-                                              ),
-                                              Text(
-                                                "Dislike(" +
-                                                    communityReviewList[index]
-                                                        .total_dislike
-                                                        .toString() +
-                                                    ")",
-                                                style: TextStyle(
-                                                    fontSize: 11.sp,
-                                                    color: communityReviewList[
-                                                                    index]
-                                                                .like_status
-                                                                .toString() ==
-                                                            "2"
-                                                        ? kPrimaryColor
-                                                        : Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        if(reportEnable==true) {
-                                          if(communityReviewList[index]
-                                              .report_status
-                                              .toString()!="1") {
-
-                                            setState(() {
-                                              communityReviewList[index]
-                                                  .report_status = "1";
-                                            });
-                                            addReportApi(
-                                                communityReviewList[index]
-                                                    .business_reviews_id
-                                                    .toString(), index);
-                                          }
-                                        }
-                                      },
-                                      child: Text(
-                                        communityReviewList[index]
-                                            .report_status == "1"?"Reported":"Report",
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: communityReviewList[index]
-                                              .report_status == "1"?kPrimaryColor:Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        print(unlikeEnable);
-        if(unlikeEnable==true) {
-          unlikeEnable = false;
-          Share.share(
-              'check out my website https://example.com',
-              subject: 'Look what I made!').then((value) {
-            Future.delayed(Duration(seconds: 2), (){
-              unlikeEnable = true;
-            });
-          });
-        }
-                                      },
-                                      child: SvgPicture.asset(
-                                        "assets/icons/share.svg",
-                                        width: 4.5.w,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 2.5.h,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 2.w),
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        if (communityReviewList[index]
-                                                .replies_count
-                                                .toString() ==
-                                            "0") {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      "No reply available")));
-                                        } else {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CommunityReplies(
-                                                        review_id:
-                                                            communityReviewList[
-                                                                    index]
-                                                                .business_reviews_id
-                                                                .toString(),
-                                                        username:
-                                                            communityReviewList[
-                                                                    index]
-                                                                .name
-                                                                .toString(),
-                                                        message:
-                                                            communityReviewList[
-                                                                    index]
-                                                                .review
-                                                                .toString(),
-                                                        image:
-                                                            communityReviewList[
-                                                                    index]
-                                                                .image
-                                                                .toString(),
-                                                      ))).then((value) {
-                                            communityReviewApi();
-                                          });
-                                        }
-                                      },
-                                      child: Text(
-                                        "Replies (" +
-                                            communityReviewList[index]
-                                                .replies_count
-                                                .toString() +
-                                            ")",
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.black,
+                                          fit: BoxFit.fill,
                                         ),
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 1.h,
+                                      height: 1.5.h,
                                     ),
-                                    // isloading
-                                    //     ? Align(
-                                    //         alignment: Alignment.center,
-                                    //         child: Platform.isAndroid
-                                    //             ? CircularProgressIndicator()
-                                    //             : CupertinoActivityIndicator())
-                                    //     :
-                                    SizedBox(
-                                      width: 65.w,
-                                      child: TextField(
-                                        controller: messageTextController,
-                                        onChanged: (val) {
-                                          if (val.toString() == " ") {
-                                            messageTextController.text = "";
-                                          }
-                                          print(val);
-
-                                          communityReviewList[index]
-                                                  .messageText =
-                                              val.toString().trim();
-                                        },
-                                        minLines: 1,
-                                        keyboardType: TextInputType.multiline,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                        ),
-                                        maxLines: 50,
-                                        // inputFormatters: [
-                                        //   FilteringTextInputFormatter
-                                        //       .deny(RegExp('[  ]'))
-                                        // ],
-                                        decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 2.h,
-                                                    horizontal: 4.w),
-                                            fillColor: Colors.black,
-                                            filled: true,
-                                            //suffixIconConstraints: BoxConstraints(minWidth: 5),
-
-                                            hintText: "Reply",
-                                            suffixIcon: InkWell(
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 6.w),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          StatefulBuilder(
+                                              builder: (context, setState) {
+                                            return Container(
+                                              child: InkWell(
                                                 onTap: () {
-                                                  var mesage =
-                                                      messageTextController.text
-                                                          .toString();
-
-                                                  if (mesage == "" ||
-                                                      mesage == "null") {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(
-                                                                "Please enter message")));
-                                                  } else {
-                                                    FocusScope.of(context).unfocus();
-                                                    communityReplyOnReviewApi(
-                                                        communityReviewList[
+                                                  if (likeEnable == true) {
+                                                    if (communityReviewList[
                                                                 index]
-                                                            .business_reviews_id
-                                                            .toString(),
-                                                        communityReviewList[
-                                                                index]
-                                                            .messageText
-                                                            .toString());
+                                                            .like_status
+                                                            .toString() ==
+                                                        "1") {
+                                                    } else {
+                                                      likeApi(
+                                                          communityReviewList[
+                                                                  index]
+                                                              .business_reviews_id
+                                                              .toString(),
+                                                          "1");
+                                                    }
                                                   }
                                                 },
-                                                child: Icon(Icons.send,
-                                                    color: kPrimaryColor)),
-                                            hintStyle: TextStyle(
-                                                fontSize: 9.sp,
-                                                color: Colors.white)),
+                                                child: Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/icons/up.svg",
+                                                      color: communityReviewList[
+                                                                      index]
+                                                                  .like_status
+                                                                  .toString() ==
+                                                              "1"
+                                                          ? kPrimaryColor
+                                                          : Colors.black,
+                                                      width: 4.5.w,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 1.w,
+                                                    ),
+                                                    Text(
+                                                      "Like(" +
+                                                          communityReviewList[
+                                                                  index]
+                                                              .total_like
+                                                              .toString() +
+                                                          ")",
+                                                      style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: communityReviewList[
+                                                                          index]
+                                                                      .like_status
+                                                                      .toString() ==
+                                                                  "1"
+                                                              ? kPrimaryColor
+                                                              : Colors.black),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                          Container(
+                                            child: StatefulBuilder(
+                                                builder: (context, setState) {
+                                              return InkWell(
+                                                onTap: () {
+                                                  if (likeEnable == true) {
+                                                    if (communityReviewList[
+                                                                index]
+                                                            .like_status
+                                                            .toString() ==
+                                                        "2") {
+                                                    } else {
+                                                      likeApi(
+                                                          communityReviewList[
+                                                                  index]
+                                                              .business_reviews_id
+                                                              .toString(),
+                                                          "2");
+                                                    }
+                                                  }
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/icons/down.svg",
+                                                      color: communityReviewList[
+                                                                      index]
+                                                                  .like_status
+                                                                  .toString() ==
+                                                              "2"
+                                                          ? kPrimaryColor
+                                                          : Colors.black,
+                                                      width: 4.5.w,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 1.w,
+                                                    ),
+                                                    Text(
+                                                      "Dislike(" +
+                                                          communityReviewList[
+                                                                  index]
+                                                              .total_dislike
+                                                              .toString() +
+                                                          ")",
+                                                      style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: communityReviewList[
+                                                                          index]
+                                                                      .like_status
+                                                                      .toString() ==
+                                                                  "2"
+                                                              ? kPrimaryColor
+                                                              : Colors.black),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              if (reportEnable == true) {
+                                                if (communityReviewList[index]
+                                                        .report_status
+                                                        .toString() !=
+                                                    "1") {
+                                                  setState(() {
+                                                    communityReviewList[index]
+                                                        .report_status = "1";
+                                                  });
+                                                  addReportApi(
+                                                      communityReviewList[index]
+                                                          .business_reviews_id
+                                                          .toString(),
+                                                      index);
+                                                }
+                                              }
+                                            },
+                                            child: Text(
+                                              communityReviewList[index]
+                                                          .report_status ==
+                                                      "1"
+                                                  ? "Reported"
+                                                  : "Report",
+                                              style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: communityReviewList[
+                                                                index]
+                                                            .report_status ==
+                                                        "1"
+                                                    ? kPrimaryColor
+                                                    : Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              print(unlikeEnable);
+                                              if (unlikeEnable == true) {
+                                                unlikeEnable = false;
+                                                Share.share(
+                                                        'check out my website https://example.com',
+                                                        subject:
+                                                            'Look what I made!')
+                                                    .then((value) {
+                                                  Future.delayed(
+                                                      Duration(seconds: 2), () {
+                                                    unlikeEnable = true;
+                                                  });
+                                                });
+                                              }
+                                            },
+                                            child: SvgPicture.asset(
+                                              "assets/icons/share.svg",
+                                              width: 4.5.w,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    )
+                                    ),
+                                    SizedBox(
+                                      height: 2.5.h,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 2.w),
+                                      child: Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              if (communityReviewList[index]
+                                                      .replies_count
+                                                      .toString() ==
+                                                  "0") {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "No reply available")));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CommunityReplies(
+                                                              review_id:
+                                                                  communityReviewList[
+                                                                          index]
+                                                                      .business_reviews_id
+                                                                      .toString(),
+                                                              username:
+                                                                  communityReviewList[
+                                                                          index]
+                                                                      .name
+                                                                      .toString(),
+                                                              message:
+                                                                  communityReviewList[
+                                                                          index]
+                                                                      .review
+                                                                      .toString(),
+                                                              image:
+                                                                  communityReviewList[
+                                                                          index]
+                                                                      .image
+                                                                      .toString(),
+                                                            ))).then((value) {
+                                                  communityReviewApi();
+                                                });
+                                              }
+                                            },
+                                            child: Text(
+                                              "Replies (" +
+                                                  communityReviewList[index]
+                                                      .replies_count
+                                                      .toString() +
+                                                  ")",
+                                              style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 1.h,
+                                          ),
+                                          // isloading
+                                          //     ? Align(
+                                          //         alignment: Alignment.center,
+                                          //         child: Platform.isAndroid
+                                          //             ? CircularProgressIndicator()
+                                          //             : CupertinoActivityIndicator())
+                                          //     :
+                                          SizedBox(
+                                            width: 65.w,
+                                            child: TextField(
+                                              controller: messageTextController,
+                                              onChanged: (val) {
+                                                if (val.toString() == " ") {
+                                                  messageTextController.text =
+                                                      "";
+                                                }
+                                                print(val);
+
+                                                communityReviewList[index]
+                                                        .messageText =
+                                                    val.toString().trim();
+                                              },
+                                              minLines: 1,
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                              maxLines: 50,
+                                              // inputFormatters: [
+                                              //   FilteringTextInputFormatter
+                                              //       .deny(RegExp('[  ]'))
+                                              // ],
+                                              decoration: InputDecoration(
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 2.h,
+                                                          horizontal: 4.w),
+                                                  fillColor: Colors.black,
+                                                  filled: true,
+                                                  //suffixIconConstraints: BoxConstraints(minWidth: 5),
+
+                                                  hintText: "Reply",
+                                                  suffixIcon: InkWell(
+                                                      onTap: () {
+                                                        var mesage =
+                                                            messageTextController
+                                                                .text
+                                                                .toString();
+
+                                                        if (mesage == "" ||
+                                                            mesage == "null") {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(SnackBar(
+                                                                  content: Text(
+                                                                      "Please enter message")));
+                                                        } else {
+                                                          FocusScope.of(context)
+                                                              .unfocus();
+                                                          communityReplyOnReviewApi(
+                                                              communityReviewList[
+                                                                      index]
+                                                                  .business_reviews_id
+                                                                  .toString(),
+                                                              communityReviewList[
+                                                                      index]
+                                                                  .messageText
+                                                                  .toString());
+                                                        }
+                                                      },
+                                                      child: Icon(Icons.send,
+                                                          color:
+                                                              kPrimaryColor)),
+                                                  hintStyle: TextStyle(
+                                                      fontSize: 9.sp,
+                                                      color: Colors.white)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
                                   ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                            ],
-                          )),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-                    ],
-                  );
-                },
-              ),
+                                )),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ],
           ),
         );
@@ -1103,9 +1130,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
-  Future<dynamic> addReportApi(
-    String comId, int index
-  ) async {
+  Future<dynamic> addReportApi(String comId, int index) async {
     reportEnable = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
@@ -1113,7 +1138,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     print("id community sdfdfsd id: " + comId.toString());
     print("business community id: " + widget.nearBy.id.toString());
     setState(() {
-     // isloading = true;
+      // isloading = true;
     });
 
     var request = http.post(
@@ -1286,14 +1311,14 @@ class _DetailBussinessState extends State<DetailBussiness> {
       } else {
         setState(() {
           isloading = false;
-  /*        ScaffoldMessenger.of(context).showSnackBar(
+          /*        ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));*/
         });
       }
     } else {
       setState(() {
         isloading = false;
-   /*     ScaffoldMessenger.of(context)
+        /*     ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));*/
       });
     }
@@ -1318,7 +1343,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
           "reply_id": "0",
           "type": "REVIEW",
           "message": messageText,
-          "video_image_status":"0"
+          "video_image_status": "0"
         });
     String msg = "";
     var jsonArray;
@@ -1521,7 +1546,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
       if (jsonRes["status"].toString() == "true") {
         Navigator.of(context, rootNavigator: true).pop();
-        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: widget.nearBy)));
+        Navigator.pushReplacement(
+            context,
+            new MaterialPageRoute(
+                builder: (builder) => DetailBussiness(nearBy: widget.nearBy)));
 
         reviewController.clear();
         file = null;
@@ -1625,9 +1653,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ],
                   )
                 : SingleChildScrollView(
-                    child: SizedBox(
-                    height: 58.h,
-                    width: 95.w,
+                    child: Card(
+                      color: Colors.black,
+                    
                     child: Column(
                       children: [
                         Row(
@@ -1648,8 +1676,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 check = "";
                               },
                               child: Container(
-                                height:10.w,
-                                width:10.w,
+                                height: 10.w,
+                                width: 10.w,
                                 color: Colors.transparent,
                                 child: Center(
                                   child: SvgPicture.asset(
@@ -1872,7 +1900,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           );
                                         } else {
                                           getCheckInImage();
-
                                         }
                                         //                              ScaffoldMessenger.of(context)
                                         // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
@@ -1887,22 +1914,26 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
-                                          : file!.path.toString().endsWith("mp4")?Container(
-                                          child: SvgPicture.asset(
-                                              "assets/icons/image.svg")):Container(
-                                              height: 3.h,
-                                              width: 3.h,
-                                              decoration: BoxDecoration(
-                                                  // borderRadius:
-                                                  //     BorderRadius.circular(3.w),
-                                                  border: Border.all(
-                                                    color: Colors.grey,
-                                                    //Color(0xffD5D5D5)
-                                                  ),
-                                                  image: DecorationImage(
-                                                      image: FileImage(
-                                                          File(file!.path)))),
-                                            ),
+                                          : file!.path
+                                                  .toString()
+                                                  .endsWith("mp4")
+                                              ? Container(
+                                                  child: SvgPicture.asset(
+                                                      "assets/icons/image.svg"))
+                                              : Container(
+                                                  height: 3.h,
+                                                  width: 3.h,
+                                                  decoration: BoxDecoration(
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(3.w),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                        //Color(0xffD5D5D5)
+                                                      ),
+                                                      image: DecorationImage(
+                                                          image: FileImage(File(
+                                                              file!.path)))),
+                                                ),
                                     ),
                                     SizedBox(
                                       width: 3.w,
@@ -1918,7 +1949,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               snackBar,
                                             );
                                           } else {
-
                                             FilePickerResult? result =
                                                 await FilePicker.platform
                                                     .pickFiles(
@@ -1993,11 +2023,71 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     fontSize: 12.sp, color: Color(0XFFCECECE))),
                           ),
                         ),
-                        SizedBox(
+                          SizedBox(
                           height: 1.2.h,
                         ),
+
+
+                        Visibility(
+                          visible: true,
+                          child: Container(
+                            height:8.h,
+                            width: 80.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              scrollDirection: Axis.horizontal,
+                             
+                              
+                              itemCount: 3,
+                              itemBuilder: (BuildContext context, int index) {
+                                return  Row(
+                                  children: [
+                                    Stack(
+                              children: [
+                                    Container(
+                                      height: 7.h,
+                                      width: 9.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(2.w),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
+                                      child: Container(
+                                        height: 2.h,
+                                        width: 2.h,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: Colors.white),
+                                        child: Center(
+                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              ],
+                            ),
+                        
+                            SizedBox(width: 2.w,)
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                          padding:  EdgeInsets.symmetric(horizontal: 3.0),
                           child: Visibility(
                               visible: isVisible,
                               child: Text(
@@ -2043,7 +2133,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     reviewController2.text.toString(),
                                     check.toString());
                               }
-
                             })
                       ],
                     ),
@@ -2079,9 +2168,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                     ],
                   )
                 : SingleChildScrollView(
-                    child: SizedBox(
-                    height: 40.h,
-                    width: 95.w,
+                    child: Card(
+                      color: Colors.black,
+                    // height: 49.h,
+                    // width: 95.w,
                     child: Column(
                       children: [
                         Row(
@@ -2102,8 +2192,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 currentPath = "";
                               },
                               child: Container(
-                                 height:10.w,
-                                width:10.w,
+                                height: 10.w,
+                                width: 10.w,
                                 color: Colors.transparent,
                                 child: Center(
                                   child: SvgPicture.asset(
@@ -2180,7 +2270,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-
                                         if (ivStatus == "2") {
                                           final snackBar = SnackBar(
                                               content: Text(
@@ -2197,22 +2286,26 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
-                                          : file!.path.toString().endsWith("mp4")?Container(
-                                          child: SvgPicture.asset(
-                                              "assets/icons/image.svg")):Container(
-                                              height: 3.h,
-                                              width: 3.h,
-                                              decoration: BoxDecoration(
-                                                  // borderRadius:
-                                                  //     BorderRadius.circular(3.w),
-                                                  border: Border.all(
-                                                    color: Colors.grey,
-                                                    //Color(0xffD5D5D5)
-                                                  ),
-                                                  image: DecorationImage(
-                                                      image: FileImage(
-                                                          File(file!.path)))),
-                                            ),
+                                          : file!.path
+                                                  .toString()
+                                                  .endsWith("mp4")
+                                              ? Container(
+                                                  child: SvgPicture.asset(
+                                                      "assets/icons/image.svg"))
+                                              : Container(
+                                                  height: 3.h,
+                                                  width: 3.h,
+                                                  decoration: BoxDecoration(
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(3.w),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                        //Color(0xffD5D5D5)
+                                                      ),
+                                                      image: DecorationImage(
+                                                          image: FileImage(File(
+                                                              file!.path)))),
+                                                ),
                                     ),
                                     SizedBox(
                                       width: 3.w,
@@ -2309,8 +2402,72 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         SizedBox(
                           height: 1.2.h,
                         ),
+
+
+                        Visibility(
+                          visible: true,
+                          child: Container(
+                            height:8.h,
+                            width: 80.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              scrollDirection: Axis.horizontal,
+                             
+                              
+                              itemCount: 3,
+                              itemBuilder: (BuildContext context, int index) {
+                                return  Row(
+                                  children: [
+                                    Stack(
+                              children: [
+                                    Container(
+                                      height: 7.h,
+                                      width: 9.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(2.w),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
+                                      child: Container(
+                                        height: 2.h,
+                                        width: 2.h,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: Colors.white),
+                                        child: Center(
+                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              ],
+                            ),
+                        
+                            SizedBox(width: 2.w,)
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+
+
+
+                       
                         Padding(
-                          padding: const EdgeInsets.all(3.0),
+                          padding: EdgeInsets.all(3.0),
                           child: Visibility(
                               visible: isVisible,
                               child: Container(
@@ -2325,6 +2482,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ),
                               )),
                         ),
+                        
                         isloading
                             ? Align(
                                 alignment: Alignment.center,
@@ -2336,7 +2494,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 height: 6.h,
                                 text: "Submit",
                                 press: () {
-                                  print("ratting "+ratting.toString());
+                                  print("ratting " + ratting.toString());
                                   if (ratting.toString() == "0.0" ||
                                       ratting.toString() == "null") {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -2362,7 +2520,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     businessReviewApi(ratting.toString(),
                                         reviewController.text.toString());
                                   }
-
                                 })
                       ],
                     ),
@@ -2387,32 +2544,23 @@ class _DetailBussinessState extends State<DetailBussiness> {
       isloading = true;
     });
 
-
     var request = http.post(
-      Uri.parse(
-        RestDatasource.CHECKINAPI,
-      ),
-      body: {
-        "id":widget.nearBy.id.toString(),
-        "user_id": id.toString()
-      }
-    );
+        Uri.parse(
+          RestDatasource.CHECKINAPI,
+        ),
+        body: {"id": widget.nearBy.id.toString(), "user_id": id.toString()});
 
-
-  var res;
-  var jsonRes;
+    var res;
+    var jsonRes;
 
     await request.then((http.Response response) {
-
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
       jsonRes["status"].toString();
-
     });
-
 
     if (res.statusCode == 200) {
       check = "";
@@ -2454,7 +2602,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
   }
 
-
   Future<dynamic> checkInApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
@@ -2470,12 +2617,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         Uri.parse(
           RestDatasource.CHECKINAPI,
         ),
-        body: {
-          "id":widget.nearBy.id.toString(),
-          "user_id": id.toString()
-        }
-
-        );
+        body: {"id": widget.nearBy.id.toString(), "user_id": id.toString()});
 
     await request.then((http.Response response) {
       res = response;
@@ -2526,7 +2668,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
       });
     }
   }
-
 
   Future<dynamic> checkoutApi(String ratting, String review, String tag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -2596,7 +2737,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
         reviewController.clear();
         file = null;
         Navigator.of(context, rootNavigator: true).pop();
-        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: widget.nearBy)));
+        Navigator.pushReplacement(
+            context,
+            new MaterialPageRoute(
+                builder: (builder) => DetailBussiness(nearBy: widget.nearBy)));
         setState(() {
           isloading = false;
         });

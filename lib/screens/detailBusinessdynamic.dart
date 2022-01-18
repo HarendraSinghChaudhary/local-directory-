@@ -1719,9 +1719,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                     ],
                   )
                 : SingleChildScrollView(
-                    child: SizedBox(
-                    height: 55.h,
-                    width: 95.w,
+                    child: Card(
+                    color: Colors.black,
                     child: Column(
                       children: [
                         Row(
@@ -2085,6 +2084,70 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                     fontSize: 12.sp, color: Color(0XFFCECECE))),
                           ),
                         ),
+
+                          SizedBox(
+                          height: 1.2.h,
+                        ),
+
+
+                        Visibility(
+                          visible: true,
+                          child: Container(
+                            height:8.h,
+                            width: 80.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              scrollDirection: Axis.horizontal,
+                             
+                              
+                              itemCount: 3,
+                              itemBuilder: (BuildContext context, int index) {
+                                return  Row(
+                                  children: [
+                                    Stack(
+                              children: [
+                                    Container(
+                                      height: 7.h,
+                                      width: 9.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(2.w),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
+                                      child: Container(
+                                        height: 2.h,
+                                        width: 2.h,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: Colors.white),
+                                        child: Center(
+                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              ],
+                            ),
+                        
+                            SizedBox(width: 2.w,)
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           height: 1.2.h,
                         ),
@@ -2168,9 +2231,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                     ],
                   )
                 : SingleChildScrollView(
-                    child: SizedBox(
-                    height: 35.h,
-                    width: 95.w,
+                    child: Card(
+                   color: Colors.black,
                     child: Column(
                       children: [
                         Row(
@@ -2391,6 +2453,70 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 hintText: "Type a Review...",
                                 hintStyle: TextStyle(
                                     fontSize: 12.sp, color: Color(0XFFCECECE))),
+                          ),
+                        ),
+
+                          SizedBox(
+                          height: 1.2.h,
+                        ),
+
+
+                        Visibility(
+                          visible: true,
+                          child: Container(
+                            height:8.h,
+                            width: 80.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              scrollDirection: Axis.horizontal,
+                             
+                              
+                              itemCount: 3,
+                              itemBuilder: (BuildContext context, int index) {
+                                return  Row(
+                                  children: [
+                                    Stack(
+                              children: [
+                                    Container(
+                                      height: 7.h,
+                                      width: 9.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(2.w),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
+                                      child: Container(
+                                        height: 2.h,
+                                        width: 2.h,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: Colors.white),
+                                        child: Center(
+                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              ],
+                            ),
+                        
+                            SizedBox(width: 2.w,)
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                         SizedBox(
