@@ -1391,7 +1391,6 @@ class _HotspotState extends State<Hotspot> {
         RestDatasource.ADDHOTSPOT_URL,
       ),
     );
-    print("statuss " + image_video_status);
 
     request.fields["user_id"] = id.toString();
     request.fields["business_id"] = sec != "" ? sec.toString() : "312";

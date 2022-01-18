@@ -22,6 +22,7 @@ import 'package:path/path.dart' as path;
 import 'package:wemarkthespot/services/modelProvider.dart';
 
 import '../main.dart';
+import 'hotspot.dart';
 
 class HotSpotReply extends StatefulWidget {
   var id, image, username, businessname, time, message;
@@ -51,6 +52,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   var created_at = "";
   var review_id = "";
   var message = "";
+  List<GetAllBusiness> getAllBusinessList = [];
+  List<String> coments = [];
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
@@ -62,9 +65,17 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   var image_video_status = "0";
   var tabOne = "";
   var selectedIndex = -1;
+  var words = [];
+  String str = '';
+  String selectedName = "";
+  String selectedvalue = "";
+  var selectedId = "";
+
   @override
   void initState() {
     getReplyOnHotspotApi();
+    getallBusinessDataApi();
+
     super.initState();
   }
 
@@ -530,6 +541,82 @@ class _HotSpotReplyState extends State<HotSpotReply> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+
+                str.length > 1
+                    ? ListView(
+                    shrinkWrap: true,
+                    children: getAllBusinessList.map((s) {
+                      if (('@' + s.business_name.toString().toLowerCase())
+                          .contains(str.toString().toLowerCase())) {
+                        print("running");
+                        return Container(
+                          color: Colors.white,
+                          child: ListTile(
+                              title: Text(
+                                s.business_name,
+                                style: TextStyle(
+                                    color: Colors.black),
+                              ),
+                              onTap: () {
+                                String tmp = str.substring(
+                                    1, str.length);
+                                print(
+                                    "tmp " + tmp.toString() + "^");
+                                selectedId = s.business_id;
+                                setState(() {
+                                  messageController.text =
+                                      messageController
+                                          .text
+                                          .toString()
+                                          .substring(
+                                          0,
+                                          messageController.text
+                                              .toString()
+                                              .length -
+                                              tmp.length);
+                                  messageController.text +=
+                                      s.business_name;
+                                  //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
+
+                                  messageController.selection =
+                                      TextSelection.fromPosition(
+                                          TextPosition(
+                                              offset:
+                                              messageController.text
+                                                  .length));
+                                  str = '';
+                                });
+                              }),
+                        );
+                      }
+                      else {
+                        return SizedBox();
+                      }
+                    }).toList())
+                    : Visibility(visible: false, child: SizedBox()),
+                SizedBox(height: 25),
+                coments.length > 0
+                    ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: coments.length,
+                  itemBuilder: (con, ind) {
+                    return Text.rich(
+                      TextSpan(
+                          text: '',
+                          children: coments[ind].split(' ').map((w) {
+                            return w.startsWith('@') && w.length > 1
+                                ? TextSpan(
+                              text: ' ' + w,
+                              style: TextStyle(color: Colors.blue),
+                            )
+                                : TextSpan(
+                                text: ' ' + w,
+                                style: TextStyle(color: Colors.black));
+                          }).toList()),
+                    );
+                  },
+                )
+                    : Visibility(visible: false, child: SizedBox()),
                 Visibility(
                     visible: file==null?false:true,
                     child:  file!=null? image_video_status == "1"?Padding(
@@ -610,6 +697,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -694,7 +782,18 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           controller: messageController,
                           style: TextStyle(color: Colors.white, fontSize: 12.sp),
                           maxLines: 1,
-                          onChanged: (val) {},
+                          onChanged: (val) {
+                            setState(() {
+                              words = val.split(' ');
+                              str = words.length > 0 &&
+                                  words[words.length - 1].startsWith('@')
+                                  ? words[words.length - 1]
+                                  : '';
+
+                              print(words.length);
+                              print(str.length);
+                            });
+                          },
                           decoration: InputDecoration(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
@@ -727,7 +826,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
                               FocusScope.of(context).unfocus();
                               replyOnHotspotReplyApi(tabOne.toString(),
-                                  messageController.text.toString());
+                                  messageController.text.toString(), selectedId);
 
                             }
                           },
@@ -753,7 +852,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   }
 
   Future<dynamic> replyOnHotspotReplyApi(
-      String reply_id, String messageText) async {
+      String reply_id, String messageText, [String? sec = '312']) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -779,6 +878,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     request.fields["type"] = "HOTSPOT";
     request.fields["message"] = messageText;
     request.fields["video_image_status"] = image_video_status;
+    request.fields["business_id"] = sec != "" ? sec.toString() : "312";
+
     if (file != null) {
       request.files.add(await http.MultipartFile.fromPath("image", file!.path));
     }
@@ -2053,6 +2154,72 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     );
   }
 
+  Future<dynamic> getallBusinessDataApi() async {
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.get(Uri.parse(RestDatasource.GETALLBUSINESS_URL));
+
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          GetAllBusiness modelAgentSearch = new GetAllBusiness();
+          modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+
+          print("id: " + modelAgentSearch.business_id.toString());
+          print("Bussiness: " + modelAgentSearch.business_name.toString());
+
+          getAllBusinessList.add(modelAgentSearch);
+
+          setState(() {});
+        }
+
+        setState(() {
+          isloading = false;
+        });
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
 
   Future getCheckInImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
