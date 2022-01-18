@@ -77,11 +77,13 @@ void initState() {
   _chewieController = ChewieController(
     videoPlayerController: widget.videoPlayerController,
     showOptions: true,
-    showControlsOnInitialize: false,
+    showControlsOnInitialize: true,
     allowedScreenSleep: false,
+    fullScreenByDefault: false,
+    aspectRatio: widget.videoPlayerController.value.aspectRatio,
+ 
     
-    
-    //  aspectRatio:5/8,
+     
     autoInitialize: true,
     autoPlay: false,
     looping: false,
@@ -110,13 +112,13 @@ void dispose() {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      
      
-      height: 30.h,
+      // height: 30.h,
       width: double.infinity,
-       color: Colors.white,
       child: Chewie(
         controller: _chewieController,
+        
       ),
     );
   }

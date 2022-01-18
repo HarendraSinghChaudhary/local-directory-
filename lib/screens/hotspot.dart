@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -12,13 +13,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/default_button.dart';
+import 'package:wemarkthespot/components/slider_image.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
+import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/hotSpotReply.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/testing_overlay.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:select_dialog/select_dialog.dart';
@@ -52,6 +57,7 @@ class _HotspotState extends State<Hotspot> {
   TextEditingController businessNameController = new TextEditingController();
   TextEditingController reviewController = new TextEditingController();
   List<Asset> images = [];
+  List<File> fileList = [];
 
   List<GetHotSpotClass> getHostSpotList = [];
   List<GetHotSpotClass> getHostSpotList2 = [];
@@ -355,28 +361,38 @@ class _HotspotState extends State<Hotspot> {
                                             : false,
                                         child: SizedBox(
                                             height: 200,
-                                            child: VideoWidget(
-                                              url: getHostSpotList[index].image,
-                                              play: true,
+                                            child: VideoItems(
+                                              videoPlayerController: VideoPlayerController.network(getHostSpotList[index].image[0]),
+                                            
                                             ))),
                                     Visibility(
-                                      visible: getHostSpotList[index]
-                                                  .video_image_status
-                                                  .toString() ==
-                                              "1"
-                                          ? true
-                                          : false,
-                                      child: Container(
-                                        // height: 48.h,
-                                        child: Image.network(
-                                          //  "assets/images/lighting.jpeg",
-                                          getHostSpotList[index]
-                                              .image
-                                              .toString(),
-                                          fit: BoxFit.fill,
+                                        visible: getHostSpotList[index]
+                                                    .video_image_status
+                                                    .toString() ==
+                                                "1"
+                                            ? true
+                                            : false,
+                                        child: 
+                                        
+                                        
+                                        
+                                        HotspotImageSlider(
+                                          items:getHostSpotList[index]
+                                                    .image
+                                        ,
+                                        )
+
+                                        //  Container(
+                                        //   // height: 48.h,
+                                        //   child: Image.network(
+                                        //     //  "assets/images/lighting.jpeg",
+                                        //     getHostSpotList[index]
+                                        //         .image
+                                        //         .toString(),
+                                        //     fit: BoxFit.fill,
+                                        //   ),
+                                        // ),
                                         ),
-                                      ),
-                                    ),
                                     SizedBox(
                                       height: 2.h,
                                     ),
@@ -385,8 +401,7 @@ class _HotspotState extends State<Hotspot> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0),
+                                          padding: EdgeInsets.only(left: 9.w),
                                           child: InkWell(
                                             onTap: () {
                                               Navigator.push(
@@ -539,6 +554,76 @@ class _HotspotState extends State<Hotspot> {
                                       ],
                                     ),
                                     SizedBox(
+                                      height: 1.h,
+                                    ),
+                                    Visibility(
+                                      visible: true,
+                                      child: Container(
+                                        height: 8.h,
+                                        width: 80.w,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          controller: _controller,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: 3,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Row(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      height: 7.h,
+                                                      width: 9.h,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      2.w),
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                                              fit:
+                                                                  BoxFit.fill)),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 2.0, left: 14.w),
+                                                      child: Container(
+                                                        height: 2.h,
+                                                        width: 2.h,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color: Colors
+                                                                    .white),
+                                                        child: Center(
+                                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 2.w,
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
                                       height: 2.h,
                                     ),
                                   ],
@@ -635,30 +720,91 @@ class _HotspotState extends State<Hotspot> {
                   child: file != null
                       ? image_video_status == "1"
                           ? Container(
-                              height: 150,
+                              height: 100,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
                                       topRight: Radius.circular(10)),
-                                  color: kBackgroundColor),
+                                  color: Colors.black),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SizedBox(
-                                    width: 5.h,
+                                    width: 2.h,
                                   ),
-                                  Flexible(
-                                    flex: 8,
-                                    child: Center(
-                                      child: Container(
-                                          height: 150,
-                                          child: Image.file(
-                                            file!,
-                                            height: 80,
-                                          )),
+
+                                  Container(
+                                    height: 8.h,
+                                    width: 80.w,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      controller: _controller,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: fileList.length == 0
+                                          ? 0
+                                          : fileList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  height: 9.h,
+                                                  width: 9.h,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              2.w),
+                                                      image: DecorationImage(
+                                                          image: FileImage(
+                                                              fileList[index]),
+                                                          fit: BoxFit.fill)),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 2.0, left: 14.w),
+                                                  child: Container(
+                                                    height: 2.h,
+                                                    width: 2.h,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.white),
+                                                    child: Center(
+                                                      child: InkWell(
+                                                        onTap: () {},
+                                                        child: SvgPicture.asset(
+                                                          "assets/icons/cross.svg",
+                                                          width: 8,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              width: 2.w,
+                                            )
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
+
+                                  // Flexible(
+                                  //   flex: 8,
+                                  //   child: Center(
+                                  //     child: Container(
+                                  //         height: 150,
+                                  //         child: Image.file(
+                                  //           file!,
+                                  //           height: 80,
+                                  //         )),
+                                  //   ),
+                                  // ),
                                   Flexible(
                                     flex: 2,
                                     child: Column(
@@ -1400,16 +1546,21 @@ class _HotspotState extends State<Hotspot> {
     request.fields["message"] = reviewController.text;
     request.fields["video_image_status"] = image_video_status;
 
-    images.forEach((element) async{
-      var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
-      print("ImagePath "+ path.toString());
+    if(image_video_status=="2"){
+      request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
+
+    }else if(image_video_status=="1"){
+    images.forEach((element) async {
+      var path = await FlutterAbsolutePath.getAbsolutePath(
+          element.identifier.toString());
+      print("ImagePath " + path.toString());
       request.files.add(http.MultipartFile(
           'image[]',
           File(path.toString()).readAsBytes().asStream(),
           File(path.toString()).lengthSync(),
-          filename: path.toString().split("/").last
-      ));
+          filename: path.toString().split("/").last));
     });
+    }
 
     String msg = "";
     var jsonArray;
@@ -1423,6 +1574,8 @@ class _HotspotState extends State<Hotspot> {
       base64Image = "";
       image_video_status = "0";
       selectedId = "";
+      images.clear();
+      fileList.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1644,7 +1797,7 @@ class _HotspotState extends State<Hotspot> {
           }
           modelAgentSearch.video_image_status =
               jsonArray[i]["video_image_status"].toString();
-          modelAgentSearch.image = jsonArray[i]["image"].toString();
+          modelAgentSearch.image = jsonArray[i]["image"] ;
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
@@ -1675,6 +1828,7 @@ class _HotspotState extends State<Hotspot> {
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.person_name.toString());
+          print("imageeee: " + modelAgentSearch.image.toString());
 
           getHostSpotList.add(modelAgentSearch);
           getHostSpotList2.add(modelAgentSearch);
@@ -1951,31 +2105,28 @@ class _HotspotState extends State<Hotspot> {
     id = prefs.getString("id").toString();
   }
 
-
-
-
-
-
   Future<void> pickImages() async {
     List<Asset> resultList = [];
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 5,
+        maxImages: 3,
         enableCamera: false,
         selectedAssets: images,
         materialOptions: MaterialOptions(
-          actionBarTitle: "Select Image",
+          actionBarTitle: "Select upto 3 Images",
         ),
       );
       images = resultList;
-      if(images.length>0){
+      if (images.length > 0) {
         image_video_status = "1";
+        images.forEach((element) async {
+          var path = await FlutterAbsolutePath.getAbsolutePath(
+              element.identifier.toString());
 
-        var path =  await FlutterAbsolutePath.getAbsolutePath(images.first.identifier.toString());
-
-        file = File(path.toString());
-        fileName = file!.path.split("/").last;
-
+          file = File(path.toString());
+          fileName = file!.path.split("/").last;
+          fileList.add(file!);
+        });
       }
       Navigator.pop(context);
     } on Exception catch (e) {
@@ -1984,11 +2135,9 @@ class _HotspotState extends State<Hotspot> {
     }
 
     setState(() {
-      print("length "+images.length.toString()+"*");
-
-
+      print("length " + images.length.toString() + "*");
     });
-      print("pathhh "+fileName.toString()+"*");
+    print("pathhh " + fileName.toString() + "*");
   }
 }
 
@@ -2002,7 +2151,7 @@ class GetHotSpotClass {
   var message = "";
   var created_at = "";
   var messageText = "";
-  var image = "";
+  List<dynamic> image = [];
   var video_image_status = "";
   var timedelay = "Secconds";
 }
