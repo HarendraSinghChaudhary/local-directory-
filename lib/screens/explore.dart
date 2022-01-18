@@ -671,6 +671,7 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.checkIn_status = jsonArray[i]["checkIn_status"].toString();
           modelAgentSearch.countUserreview =
               jsonArray[i]["totalReviewusers"].toString();
 
@@ -730,6 +731,7 @@ class NearBy {
   var firecount = "";
   var okcount = "";
   var notcool_count = "";
+  var checkIn_status = "";
 }
 
 class CustomSliderWidget extends StatefulWidget {

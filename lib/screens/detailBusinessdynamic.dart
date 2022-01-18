@@ -450,7 +450,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           fileName = "";
                           file = null;
 
-                          checkInDialog();
+                          if(nearby!.checkIn_status =="1"){
+                            checkInDialog();
+                          }else {
+                            checkInApi();
+                          }
                         },
                         child: Container(
                           height: 7.h,
@@ -460,7 +464,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               borderRadius: BorderRadius.circular(12.w)),
                           child: Center(
                             child: Text(
-                              "Check In",
+                              nearby!.checkIn_status =="1"? "Check Out":"Check In",
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   color: Colors.white,
@@ -1513,6 +1517,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           nearby?.long = jsonArray["long"].toString();
           nearby?.avgratting = jsonArray["avgratting"].toString();
           nearby?.countUserreview = jsonArray["totalReviewusers"].toString();
+          nearby?.checkIn_status = jsonArray["checkIn_status"].toString();
 
           print("id: " + nearby!.id.toString());
           print("favvvv: " + jsonArray["fav"].toString());
@@ -2122,7 +2127,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                   fileName = path.basename(file!.path);
                                   print("Filename " + fileName.toString());
                                 }
-                                checkInApi(
+                                checkoutApi(
                                     rattingcheckin.toString(),
                                     reviewController2.text.toString(),
                                     check.toString());
@@ -2458,7 +2463,79 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     trimFile = File(path);
   }
 
-  Future<dynamic> checkInApi(String ratting, String review, String tag) async {
+  Future<dynamic> checkInApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("user_id Prinnt: " + id.toString());
+    print("id Prinnt: " + nearby!.id.toString().toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.CHECKINAPI,
+        ),
+        body: {
+          "id":nearby!.id.toString(),
+          "user_id": id.toString()
+        }
+
+    );
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+    });
+
+    if (res?.statusCode == 200) {
+      check = "";
+      currentPath = "";
+      ivStatus = "";
+      reviewController2.clear();
+      fileName = "";
+      rattingcheckin = 0.0;
+      image_video_status = "0";
+
+      if (jsonRes["status"].toString() == "true") {
+        nearby!.checkIn_status = "1";
+        reviewController.clear();
+        file = null;
+        setState(() {
+          isloading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+          Navigator.of(context, rootNavigator: true).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+  Future<dynamic> checkoutApi(String ratting, String review, String tag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -2490,8 +2567,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
     }
-    request.fields["check_status"] = "1";
-    request.fields["type"] = "CHECK_IN";
+    request.fields["type"] = "CHECK_OUT";
     request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
@@ -2513,6 +2589,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       fileName = "";
       rattingcheckin = 0.0;
       image_video_status = "0";
+
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2521,15 +2598,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        Navigator.of(context, rootNavigator: true).pop();
-        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussinessDynamic(id: widget.id)));
-
+        nearby!.checkIn_status = "0";
         communityReviewApi();
         reviewController.clear();
         file = null;
-
-        // prefs.setString('phone', jsonRes["data"]["phone"].toString());
-        prefs.commit();
+        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.pushReplacement(context, new MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: nearby!)));
         setState(() {
           isloading = false;
         });

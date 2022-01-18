@@ -109,7 +109,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   @override
   Widget build(BuildContext context) {
-    print("business id: " + widget.nearBy.id.toString());
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -445,7 +444,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           fileName = "";
                           file = null;
 
-                          checkInDialog();
+                          if(widget.nearBy.checkIn_status =="1"){
+                            checkInDialog();
+                          }else {
+                            checkInApi();
+                          }
                         },
                         child: Container(
                           height: 7.h,
@@ -455,7 +458,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               borderRadius: BorderRadius.circular(12.w)),
                           child: Center(
                             child: Text(
-                              "Check In",
+                              widget.nearBy.checkIn_status =="1"? "Check Out":"Check In",
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   color: Colors.white,
@@ -2035,7 +2038,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   fileName = path.basename(file!.path);
                                   print("Filename " + fileName.toString());
                                 }
-                                checkInApi(
+                                checkoutApi(
                                     rattingcheckin.toString(),
                                     reviewController2.text.toString(),
                                     check.toString());
@@ -2375,7 +2378,157 @@ class _DetailBussinessState extends State<DetailBussiness> {
     trimFile = File(path);
   }
 
-  Future<dynamic> checkInApi(String ratting, String review, String tag) async {
+  Future<dynamic> checkInApiii() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("user_id Prinnt: " + id.toString());
+    print("id Prinnt: " + widget.nearBy.id.toString().toString());
+    setState(() {
+      isloading = true;
+    });
+
+
+    var request = http.post(
+      Uri.parse(
+        RestDatasource.CHECKINAPI,
+      ),
+      body: {
+        "id":widget.nearBy.id.toString(),
+        "user_id": id.toString()
+      }
+    );
+
+
+  var res;
+  var jsonRes;
+
+    await request.then((http.Response response) {
+
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      jsonRes["status"].toString();
+
+    });
+
+
+    if (res.statusCode == 200) {
+      check = "";
+      currentPath = "";
+      ivStatus = "";
+      reviewController2.clear();
+      fileName = "";
+      rattingcheckin = 0.0;
+      image_video_status = "0";
+
+      if (jsonRes["status"].toString() == "true") {
+        widget.nearBy.checkIn_status = "1";
+        reviewController.clear();
+        file = null;
+        setState(() {
+          isloading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+          Navigator.of(context, rootNavigator: true).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+
+  Future<dynamic> checkInApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("user_id Prinnt: " + id.toString());
+    print("id Prinnt: " + widget.nearBy.id.toString().toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.CHECKINAPI,
+        ),
+        body: {
+          "id":widget.nearBy.id.toString(),
+          "user_id": id.toString()
+        }
+
+        );
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
+    });
+
+    if (res?.statusCode == 200) {
+      check = "";
+      currentPath = "";
+      ivStatus = "";
+      reviewController2.clear();
+      fileName = "";
+      rattingcheckin = 0.0;
+      image_video_status = "0";
+
+      if (jsonRes["status"].toString() == "true") {
+        widget.nearBy.checkIn_status = "1";
+        reviewController.clear();
+        file = null;
+        setState(() {
+          isloading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+          Navigator.of(context, rootNavigator: true).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+
+  Future<dynamic> checkoutApi(String ratting, String review, String tag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -2407,8 +2560,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
     }
-    request.fields["check_status"] = "1";
-    request.fields["type"] = "CHECK_IN";
+    request.fields["type"] = "CHECK_OUT";
     request.fields["business_id"] = widget.nearBy.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
@@ -2430,6 +2582,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       fileName = "";
       rattingcheckin = 0.0;
       image_video_status = "0";
+
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2438,7 +2591,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-
+        widget.nearBy.checkIn_status = "0";
         communityReviewApi();
         reviewController.clear();
         file = null;
