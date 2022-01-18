@@ -53,7 +53,6 @@ class _CustomSliderWidgetState extends State<NewImageSlider> {
               viewportFraction: 1,
             ),
             items: widget.items.map((i) {
-              print("iisixisi " + i + "^");
               return Builder(
                 builder: (BuildContext context) {
                   return InteractiveViewer(

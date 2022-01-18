@@ -392,7 +392,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                     SizedBox(
                                       height: 1.h,
                                     ),
-                                    Visibility(
+                                    getReplyOnHotspotList[index]
+                                        .video_image_status
+                                        .toString() ==
+                                        "2"? Visibility(
                                         visible: getReplyOnHotspotList[index]
                                             .video_image_status
                                             .toString() ==
@@ -405,8 +408,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[index]
                                                   .image[0]),
                                               
-                                            ))),
-                                    Visibility(
+                                            ))):Container(width: 0,height: 0,),
+                                    getReplyOnHotspotList[index]
+                                        .video_image_status
+                                        .toString() ==
+                                        "1"?Visibility(
                                       visible: getReplyOnHotspotList[index]
                                           .video_image_status
                                           .toString() ==
@@ -422,7 +428,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                       
                                       
                                       
-                                    ),
+                                    ):Container(width: 0,height: 0,),
                                     SizedBox(
                                       height: 2.h,
                                     ),

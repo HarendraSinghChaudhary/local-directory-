@@ -18,6 +18,7 @@ import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/components/slider_image.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/main.dart';
 import 'package:wemarkthespot/models/community_review_api_model.dart';
@@ -27,6 +28,7 @@ import 'package:path/path.dart' as path;
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wemarkthespot/screens/testing.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
@@ -669,39 +671,35 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     SizedBox(
                                       height: 1.5.h,
                                     ),
-                                    Visibility(
-                                        visible: communityReviewList[index]
+                                    communityReviewList[index]
+                                                .image_video_status
+                                                .toString() ==
+                                            "2"
+                                        ? SizedBox(
+                                            height: 200,
+                                            child: VideoItems(
+                                              videoPlayerController:
+                                                  VideoPlayerController.network(
+                                                      communityReviewList[index]
+                                                          .business_review_image
+                                                          .first),
+                                            ))
+                                        : communityReviewList[index]
                                                     .image_video_status
                                                     .toString() ==
-                                                "2"
-                                            ? true
-                                            : false,
-                                        child: SizedBox(
-                                            height: 200,
-                                            child: VideoWidget(
-                                              url: communityReviewList[index]
-                                                  .business_review_image,
-                                              play: true,
-                                            ))),
-                                    Visibility(
-                                      visible: communityReviewList[index]
-                                                  .image_video_status
-                                                  .toString() ==
-                                              "1"
-                                          ? true
-                                          : false,
-                                      child: Container(
-                                        // height: 48.h,
-                                        // width: double.infinity,
-                                        child: Image.network(
-                                          //  "assets/images/lighting.jpeg",
-                                          communityReviewList[index]
-                                              .business_review_image
-                                              .toString(),
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    ),
+                                                "1"
+                                            ? Container(
+                                                // height: 48.h,
+                                                // width: double.infinity,
+                                                child: HotspotImageSlider(
+                                                items:
+                                                    communityReviewList[index]
+                                                        .business_review_image,
+                                              ))
+                                            : Container(
+                                                width: 0,
+                                                height: 0,
+                                              ),
                                     SizedBox(
                                       height: 1.5.h,
                                     ),
@@ -1327,19 +1325,19 @@ class _DetailBussinessState extends State<DetailBussiness> {
       });
     }
   }
+
   Future<void> pickImagess(String type) async {
     await pickImages().then((value) {
       images = value;
-      print("lengthhhhhh "+images.length.toString()+"*");
-
+      print("lengthhhhhh " + images.length.toString() + "*");
     });
-    if(images.length>0){
+    if (images.length > 0) {
       image_video_status = "1";
       ivStatus = "1";
-      images.forEach((element) async{
-
-        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
-        print("pathhh "+path.toString()+"*");
+      images.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("pathhh " + path.toString() + "*");
 
         file = File(path.toString());
         fileName = file!.path.split("/").last;
@@ -1347,22 +1345,20 @@ class _DetailBussinessState extends State<DetailBussiness> {
       });
 
       setState(() {
-        print("pathhh "+fileName.toString()+"*");
-
+        print("pathhh " + fileName.toString() + "*");
       });
-    }else{
+    } else {
       image_video_status = "0";
       ivStatus = "0";
       images.clear();
     }
     Navigator.pop(context);
 
-    if(type=="checkin"){
+    if (type == "checkin") {
       checkInDialog();
-    }else{
+    } else {
       customDialog();
     }
-
   }
 
   Future<dynamic> communityReplyOnReviewApi(
@@ -1475,7 +1471,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
           modelAgentSearch.review = jsonArray[i]["review"].toString();
           modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
           modelAgentSearch.business_review_image =
-              jsonArray[i]["business_review_image"].toString();
+              jsonArray[i]["business_review_image"];
           modelAgentSearch.business_review_image_status =
               jsonArray[i]["business_review_image_status"].toString();
           modelAgentSearch.total_like = jsonArray[i]["total_like"].toString();
@@ -1561,16 +1557,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["image_video_status"] =
         ivStatus.toString() != "" ? ivStatus.toString() : "0";
     print("ivStatus: " + ivStatus.toString());
-    if(ivStatus.toString()=="1") {
+    if (ivStatus.toString() == "1") {
       if (fileList != null) {
         fileList.forEach((element) async {
-          request.files.add(
-              await http.MultipartFile.fromPath("image[]", file!.path));
+          request.files
+              .add(await http.MultipartFile.fromPath("image[]", file!.path));
         });
       }
-    }else if(ivStatus.toString()=="2"){
-      if(file!=null){
-        request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
+    } else if (ivStatus.toString() == "2") {
+      if (file != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath("image[]", file!.path));
       }
     }
 
@@ -1702,8 +1699,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   )
                 : SingleChildScrollView(
                     child: Card(
-                      color: Colors.black,
-                    
+                    color: Colors.black,
                     child: Column(
                       children: [
                         Row(
@@ -2074,65 +2070,64 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     fontSize: 12.sp, color: Color(0XFFCECECE))),
                           ),
                         ),
-                          SizedBox(
+                        SizedBox(
                           height: 1.2.h,
                         ),
-
-
                         Visibility(
                           visible: true,
                           child: Container(
-                            height:8.h,
+                            height: 8.h,
                             width: 80.w,
                             child: ListView.builder(
                               shrinkWrap: true,
                               controller: _controller,
                               scrollDirection: Axis.horizontal,
-                             
-                              
-                              itemCount: fileList.length==0?0:fileList.length,
+                              itemCount:
+                                  fileList.length == 0 ? 0 : fileList.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return  Row(
+                                return Row(
                                   children: [
                                     Stack(
-                              children: [
-                                    Container(
-                                      height: 7.h,
-                                      width: 9.h,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(2.w),
-                                          image: DecorationImage(
-                                              image: FileImage(fileList[index]),
-                                              fit: BoxFit.fill)),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
-                                      child: Container(
-                                        height: 2.h,
-                                        width: 2.h,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle, color: Colors.white),
-                                        child: Center(
-                                          child: InkWell(
-                                                            onTap: () {
-                                                              //fileList.removeAt(index);
-
-                                                            },
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/cross.svg",
-                                                              width: 8,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
+                                      children: [
+                                        Container(
+                                          height: 7.h,
+                                          width: 9.h,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(2.w),
+                                              image: DecorationImage(
+                                                  image: FileImage(
+                                                      fileList[index]),
+                                                  fit: BoxFit.fill)),
                                         ),
-                                      ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 2.0, left: 14.w),
+                                          child: Container(
+                                            height: 2.h,
+                                            width: 2.h,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white),
+                                            child: Center(
+                                              child: InkWell(
+                                                onTap: () {
+                                                  //fileList.removeAt(index);
+                                                },
+                                                child: SvgPicture.asset(
+                                                  "assets/icons/cross.svg",
+                                                  width: 8,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                              ],
-                            ),
-                        
-                            SizedBox(width: 2.w,)
+                                    SizedBox(
+                                      width: 2.w,
+                                    )
                                   ],
                                 );
                               },
@@ -2140,7 +2135,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           ),
                         ),
                         Padding(
-                          padding:  EdgeInsets.symmetric(horizontal: 3.0),
+                          padding: EdgeInsets.symmetric(horizontal: 3.0),
                           child: Visibility(
                               visible: isVisible,
                               child: Text(
@@ -2222,7 +2217,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   )
                 : SingleChildScrollView(
                     child: Card(
-                      color: Colors.black,
+                    color: Colors.black,
                     // height: 49.h,
                     // width: 95.w,
                     child: Column(
@@ -2334,21 +2329,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             snackBar,
                                           );
                                         } else {
-                                         // getImage();
+                                          // getImage();
                                           pickImagess("review");
                                         }
                                       },
-                                      child:/* file == null
+                                      child: /* file == null
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
                                           : file!.path
                                                   .toString()
                                                   .endsWith("mp4")
-                                              ? */Container(
-                                                  child: SvgPicture.asset(
-                                                      "assets/icons/image.svg"))
-                                             /* : Container(
+                                              ? */
+                                          Container(
+                                              child: SvgPicture.asset(
+                                                  "assets/icons/image.svg"))
+                                      /* : Container(
                                                   height: 3.h,
                                                   width: 3.h,
                                                   decoration: BoxDecoration(
@@ -2361,7 +2357,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                       image: DecorationImage(
                                                           image: FileImage(File(
                                                               file!.path)))),
-                                                )*/,
+                                                )*/
+                                      ,
                                     ),
                                     SizedBox(
                                       width: 3.w,
@@ -2458,12 +2455,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         SizedBox(
                           height: 1.2.h,
                         ),
-
-
                         Visibility(
-                          visible: image_video_status=="1"?true:false,
+                          visible: image_video_status == "1" ? true : false,
                           child: Container(
-                            height:8.h,
+                            height: 8.h,
                             width: 80.w,
                             child: ListView.builder(
                               shrinkWrap: true,
@@ -2471,54 +2466,53 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               scrollDirection: Axis.horizontal,
                               itemCount: fileList.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return  Row(
+                                return Row(
                                   children: [
                                     Stack(
-                              children: [
-                                    Container(
-                                      height: 7.h,
-                                      width: 9.h,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(2.w),
-                                          image: DecorationImage(
-                                              image: FileImage(fileList[index]),
-                                              fit: BoxFit.fill)),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 2.0, left: 14.w),
-                                      child: Container(
-                                        height: 2.h,
-                                        width: 2.h,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle, color: Colors.white),
-                                        child: Center(
-                                          child: InkWell(
-                                                            onTap: () {},
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/cross.svg",
-                                                              width: 8,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
+                                      children: [
+                                        Container(
+                                          height: 7.h,
+                                          width: 9.h,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(2.w),
+                                              image: DecorationImage(
+                                                  image: FileImage(
+                                                      fileList[index]),
+                                                  fit: BoxFit.fill)),
                                         ),
-                                      ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 2.0, left: 14.w),
+                                          child: Container(
+                                            height: 2.h,
+                                            width: 2.h,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white),
+                                            child: Center(
+                                              child: InkWell(
+                                                onTap: () {},
+                                                child: SvgPicture.asset(
+                                                  "assets/icons/cross.svg",
+                                                  width: 8,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                              ],
-                            ),
-                        
-                            SizedBox(width: 2.w,)
+                                    SizedBox(
+                                      width: 2.w,
+                                    )
                                   ],
                                 );
                               },
                             ),
                           ),
                         ),
-
-
-
-                       
                         Padding(
                           padding: EdgeInsets.all(3.0),
                           child: Visibility(
@@ -2535,7 +2529,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ),
                               )),
                         ),
-                        
                         isloading
                             ? Align(
                                 alignment: Alignment.center,
@@ -2759,16 +2752,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
 
-    if(ivStatus.toString()=="1") {
+    if (ivStatus.toString() == "1") {
       if (fileList != null) {
         fileList.forEach((element) async {
-          request.files.add(
-              await http.MultipartFile.fromPath("image[]", file!.path));
+          request.files
+              .add(await http.MultipartFile.fromPath("image[]", file!.path));
         });
       }
-    }else if(ivStatus.toString()=="2"){
-      if(file!=null){
-        request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
+    } else if (ivStatus.toString() == "2") {
+      if (file != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath("image[]", file!.path));
       }
     }
 

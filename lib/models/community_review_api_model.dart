@@ -7,7 +7,7 @@ class CommunityReviewAPI{
   var name = "";
   var image = "";
   var review = "";
-  var business_review_image = "";
+  List<dynamic> business_review_image = [];
   var business_review_image_status = "";
   var total_like = "";
   var total_dislike = "";

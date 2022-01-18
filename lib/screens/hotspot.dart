@@ -358,47 +358,23 @@ class _HotspotState extends State<Hotspot> {
                                     SizedBox(
                                       height: 2.h,
                                     ),
-                                    Visibility(
-                                        visible: getHostSpotList[index]
-                                                    .video_image_status
-                                                    .toString() ==
-                                                "2"
-                                            ? true
-                                            : false,
-                                        child: SizedBox(
-                                            height: 200,
-                                            child: VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getHostSpotList[index].image[0]),
-                                            
-                                            ))),
-                                    Visibility(
-                                        visible: getHostSpotList[index]
-                                                    .video_image_status
-                                                    .toString() ==
-                                                "1"
-                                            ? true
-                                            : false,
-                                        child: 
-                                        
-                                        
-                                        
-                                        HotspotImageSlider(
-                                          items:getHostSpotList[index]
-                                                    .image
-                                        ,
-                                        )
+                                    getHostSpotList[index]
+                                        .video_image_status
+                                        .toString() ==
+                                        "2"?SizedBox(
+                                        height: 200,
+                                        child: VideoItems(
+                                          videoPlayerController: VideoPlayerController.network(getHostSpotList[index].image[0]),
 
-                                        //  Container(
-                                        //   // height: 48.h,
-                                        //   child: Image.network(
-                                        //     //  "assets/images/lighting.jpeg",
-                                        //     getHostSpotList[index]
-                                        //         .image
-                                        //         .toString(),
-                                        //     fit: BoxFit.fill,
-                                        //   ),
-                                        // ),
-                                        ),
+                                        )):getHostSpotList[index]
+                                        .video_image_status
+                                        .toString() ==
+                                        "1"?
+                                    HotspotImageSlider(
+                                      items:getHostSpotList[index]
+                                                .image
+                                    ,
+                                    ):Container(width: 0, height: 0,),
                                     SizedBox(
                                       height: 2.h,
                                     ),
@@ -562,7 +538,7 @@ class _HotspotState extends State<Hotspot> {
                                     SizedBox(
                                       height: 1.h,
                                     ),
-                                    Visibility(
+                                    getHostSpotList[index].reply_image_video_status=="1"?Visibility(
                                       visible: getHostSpotList[index].replyfileList!=null?getHostSpotList[index].replyfileList.length>0?true:false:false,
                                       child: Container(
                                         height: 8.h,
@@ -605,7 +581,13 @@ class _HotspotState extends State<Hotspot> {
                                                                     .white),
                                                         child: Center(
                                                           child: InkWell(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              getHostSpotList[index].replyfileList.removeAt(i);
+                                                              getHostSpotList[index].replyimages.removeAt(i);
+                                                              setState(() {
+
+                                                              });
+                                                            },
                                                             child: SvgPicture
                                                                 .asset(
                                                               "assets/icons/cross.svg",
@@ -627,7 +609,15 @@ class _HotspotState extends State<Hotspot> {
                                           },
                                         ),
                                       ),
-                                    ),
+                                    ):Container(width: 0,height: 0,),
+                                    getHostSpotList[index].reply_image_video_status=="2"? Visibility(
+                                      visible: true,
+                                      child: Container(
+                                        height: 8.h,
+                                        width: 80.w,
+                                        child: Center(child: Text(getHostSpotList[index].replyfile!.path.toString(), style: TextStyle(color: Colors.white),)),
+                                      ),
+                                    ):Container(width: 0,height: 0,),
                                     SizedBox(
                                       height: 2.h,
                                     ),
@@ -750,7 +740,7 @@ class _HotspotState extends State<Hotspot> {
                                           ? 0
                                           : fileList.length,
                                       itemBuilder:
-                                          (BuildContext context, int index) {
+                                          (BuildContext context, int i) {
                                         return Row(
                                           children: [
                                             Stack(
@@ -764,7 +754,7 @@ class _HotspotState extends State<Hotspot> {
                                                               2.w),
                                                       image: DecorationImage(
                                                           image: FileImage(
-                                                              fileList[index]),
+                                                              fileList[i]),
                                                           fit: BoxFit.fill)),
                                                 ),
                                                 Padding(
@@ -778,7 +768,13 @@ class _HotspotState extends State<Hotspot> {
                                                         color: Colors.white),
                                                     child: Center(
                                                       child: InkWell(
-                                                        onTap: () {},
+                                                        onTap: () {
+                                                          fileList.removeAt(i);
+                                                          images.removeAt(i);
+                                                          setState(() {
+
+                                                          });
+                                                        },
                                                         child: SvgPicture.asset(
                                                           "assets/icons/cross.svg",
                                                           width: 8,
@@ -1702,8 +1698,10 @@ class _HotspotState extends State<Hotspot> {
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
+      if(index>1){
+        _scrollToIndex(index-1);
+      }
 
-      _scrollToIndex(index);
     } else {
       setState(() {
         isloading = false;
@@ -2135,7 +2133,7 @@ class _HotspotState extends State<Hotspot> {
 
                                 Navigator.of(context).push(
                                   MaterialPageRoute(builder: (context) {
-                                    return TrimmerView(file!);
+                                    return TrimmerView(getHostSpotList[index].replyfile!);
                                   }),
                                 ).then((value) {
                                   Navigator.of(context, rootNavigator: true).pop();

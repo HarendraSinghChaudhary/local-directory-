@@ -1417,7 +1417,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           modelAgentSearch.review = jsonArray[i]["review"].toString();
           modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
           modelAgentSearch.business_review_image =
-              jsonArray[i]["business_review_image"].toString();
+              jsonArray[i]["business_review_image"];
           modelAgentSearch.business_review_image_status =
               jsonArray[i]["business_review_image_status"].toString();
           modelAgentSearch.total_like = jsonArray[i]["total_like"].toString();
