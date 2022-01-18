@@ -132,8 +132,17 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     this.mesageTextController.addListener(_onSearchChanged);
     if(widget.list!=null){
-      locatePosition();
+      print("widget Length: "+widget.list.length.toString());
+      if (widget.list.length.toString() == "0") {
+         locatePosition();
+      nearBy();
+      initilize(nearByRestaurantList);
+        
+      } else {
+        locatePosition();
       filterData(widget.list);
+      }
+      
     }else{
       locatePosition();
       nearBy();
@@ -228,6 +237,15 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             child: Stack(
           children: [
             GoogleMap(
+              onTap: (latLong) {
+                setState(() {
+                  viewVisible = false;
+                });
+
+
+                
+
+              },
               initialCameraPosition: _currentPosition,
               myLocationEnabled: true,
               zoomControlsEnabled: true,
@@ -268,11 +286,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                   },
                   validator: (val) {},
                   style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.bold),
+                    color: kPrimaryColor,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700),
                   decoration: InputDecoration(
                     suffixIconConstraints: BoxConstraints(minWidth: 50),
-                    prefixIconConstraints: BoxConstraints(minWidth: 60),
-                    contentPadding: EdgeInsets.only(top: 0.h),
+                    prefixIconConstraints: BoxConstraints(minWidth: 50),
+                    contentPadding: EdgeInsets.only(top: 3),
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -299,7 +319,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                       // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
                     ),
                     prefixIcon: SvgPicture.asset(
-                      "assets/icons/search-.svg",
+                      "assets/icons/-search.svg",
                       width: 20,
                       color: kPrimaryColor,
                     ),
@@ -307,10 +327,21 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 ),
               ),
             ),
-            Visibility(
+           
+          ],
+        ),
+
+      
+        ),
+
+            floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(left: 6.w),
+        child:  Visibility(
               visible: viewVisible,
               child: Padding(
-                padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
+                // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
+                padding: EdgeInsets.only(bottom: 7.h, right: 12.2.w),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
@@ -502,8 +533,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 ),
               ),
             )
-          ],
-        )));
+          ,
+      ),
+        );
   }
 
   _onSearchChanged(){

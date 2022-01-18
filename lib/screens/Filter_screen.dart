@@ -12,7 +12,9 @@ import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class FliterScreen extends StatefulWidget {
-  const FliterScreen({Key? key}) : super(key: key);
+  // var list;
+  // FliterScreen({required this.list});
+  
 
   @override
   _FliterScreenState createState() => _FliterScreenState();
@@ -42,6 +44,7 @@ class _FliterScreenState extends State<FliterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print("object "+widget.list);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -290,7 +293,9 @@ class _FliterScreenState extends State<FliterScreen> {
                     child: FlatButton(
                      
                      
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: Text(
                         "Cancel",
                         style: TextStyle(
@@ -374,6 +379,10 @@ class _FliterScreenState extends State<FliterScreen> {
             modelFilter.name = jsonErray[j]["name"].toString();
             modelFilter.category_id = jsonErray[j]["category_id"].toString();
             print("id sub: " + modelFilter.name.toString());
+
+            // for (var i = 0; i < count; i++) {
+              
+            // }
 
             modelAgentSearch.subLifeStyle.add(modelFilter);
           }

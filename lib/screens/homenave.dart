@@ -14,6 +14,7 @@ import 'package:wemarkthespot/screens/mapScreen.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
 
+
 class HomeNav extends StatefulWidget {
   int index;
   var selectedList;
@@ -38,8 +39,8 @@ class _HomeNavState extends State<HomeNav> {
     widgets = <Widget>[
       Home(),
       //Scaffold(),
-      //GoogleMapScreen(list: list,),
-      AApp(),
+      GoogleMapScreen(list: list,),
+      //AApp(),
       Hotspot(),
       Explore(),
       Account()
