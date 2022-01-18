@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 
 const kPrimaryColor = Color(0xFFD66821);
@@ -71,3 +72,26 @@ const defaultDuration = Duration(milliseconds: 250);
 //     borderSide: BorderSide(color: kTextColor),
 //   );
 // }
+
+
+
+
+Future<List<Asset>> pickImages() async {
+  List<Asset> resultList = [];
+  try {
+    resultList = await MultiImagePicker.pickImages(
+      maxImages: 3,
+      enableCamera: false,
+      selectedAssets: resultList,
+      materialOptions: MaterialOptions(
+        actionBarTitle: "Select Image",
+      ),
+    );
+   return resultList;
+  } on Exception catch (e) {
+    print(e);
+    return resultList;
+  }
+
+
+}

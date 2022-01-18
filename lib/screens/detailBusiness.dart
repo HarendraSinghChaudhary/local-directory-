@@ -8,8 +8,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -99,6 +101,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
   bool isLoading = false;
   final picker = ImagePicker();
   bool isVisible = false;
+  List<Asset> images = [];
+  List<File> fileList = [];
 
   //get kPrimaryColor => null;
 
@@ -1323,6 +1327,43 @@ class _DetailBussinessState extends State<DetailBussiness> {
       });
     }
   }
+  Future<void> pickImagess(String type) async {
+    await pickImages().then((value) {
+      images = value;
+      print("lengthhhhhh "+images.length.toString()+"*");
+
+    });
+    if(images.length>0){
+      image_video_status = "1";
+      ivStatus = "1";
+      images.forEach((element) async{
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+        print("pathhh "+path.toString()+"*");
+
+        file = File(path.toString());
+        fileName = file!.path.split("/").last;
+        fileList.add(file!);
+      });
+
+      setState(() {
+        print("pathhh "+fileName.toString()+"*");
+
+      });
+    }else{
+      image_video_status = "0";
+      ivStatus = "0";
+      images.clear();
+    }
+    Navigator.pop(context);
+
+    if(type=="checkin"){
+      checkInDialog();
+    }else{
+      customDialog();
+    }
+
+  }
 
   Future<dynamic> communityReplyOnReviewApi(
       String review_id, String messageText) async {
@@ -1520,12 +1561,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["image_video_status"] =
         ivStatus.toString() != "" ? ivStatus.toString() : "0";
     print("ivStatus: " + ivStatus.toString());
-    if (file != null) {
-      print("sendPath: " + file!.path.toString());
-
-      request.files.add(await http.MultipartFile.fromPath("image", file!.path));
-
-      clearFile = file.toString();
+    if(ivStatus.toString()=="1") {
+      if (fileList != null) {
+        fileList.forEach((element) async {
+          request.files.add(
+              await http.MultipartFile.fromPath("image[]", file!.path));
+        });
+      }
+    }else if(ivStatus.toString()=="2"){
+      if(file!=null){
+        request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
+      }
     }
 
     var jsonRes;
@@ -1537,6 +1583,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
       fileName = "";
       ratting = 0.0;
       image_video_status = "0";
+      images.clear();
+      fileList.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1674,6 +1722,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 currentPath = "";
                                 rattingcheckin = 0.0;
                                 check = "";
+                                fileList.clear();
+                                images.clear();
                               },
                               child: Container(
                                 height: 10.w,
@@ -1899,7 +1949,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             snackBar,
                                           );
                                         } else {
-                                          getCheckInImage();
+                                          pickImagess("checkin");
+                                          //getCheckInImage();
                                         }
                                         //                              ScaffoldMessenger.of(context)
                                         // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
@@ -2039,7 +2090,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               scrollDirection: Axis.horizontal,
                              
                               
-                              itemCount: 3,
+                              itemCount: fileList.length==0?0:fileList.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return  Row(
                                   children: [
@@ -2051,8 +2102,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(2.w),
                                           image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              image: FileImage(fileList[index]),
                                               fit: BoxFit.fill)),
                                     ),
                                     Padding(
@@ -2064,7 +2114,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             shape: BoxShape.circle, color: Colors.white),
                                         child: Center(
                                           child: InkWell(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              //fileList.removeAt(index);
+
+                                                            },
                                                             child: SvgPicture
                                                                 .asset(
                                                               "assets/icons/cross.svg",
@@ -2190,6 +2243,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 image_video_status = "";
                                 ratting = 0.0;
                                 currentPath = "";
+                                fileList.clear();
+                                images.clear();
                               },
                               child: Container(
                                 height: 10.w,
@@ -2279,20 +2334,21 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             snackBar,
                                           );
                                         } else {
-                                          getImage();
+                                         // getImage();
+                                          pickImagess("review");
                                         }
                                       },
-                                      child: file == null
+                                      child:/* file == null
                                           ? Container(
                                               child: SvgPicture.asset(
                                                   "assets/icons/image.svg"))
                                           : file!.path
                                                   .toString()
                                                   .endsWith("mp4")
-                                              ? Container(
+                                              ? */Container(
                                                   child: SvgPicture.asset(
                                                       "assets/icons/image.svg"))
-                                              : Container(
+                                             /* : Container(
                                                   height: 3.h,
                                                   width: 3.h,
                                                   decoration: BoxDecoration(
@@ -2305,7 +2361,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                       image: DecorationImage(
                                                           image: FileImage(File(
                                                               file!.path)))),
-                                                ),
+                                                )*/,
                                     ),
                                     SizedBox(
                                       width: 3.w,
@@ -2405,7 +2461,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
 
                         Visibility(
-                          visible: true,
+                          visible: image_video_status=="1"?true:false,
                           child: Container(
                             height:8.h,
                             width: 80.w,
@@ -2413,9 +2469,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               shrinkWrap: true,
                               controller: _controller,
                               scrollDirection: Axis.horizontal,
-                             
-                              
-                              itemCount: 3,
+                              itemCount: fileList.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return  Row(
                                   children: [
@@ -2427,8 +2481,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(2.w),
                                           image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "http://appsmav.com/blog/wp-content/uploads/2013/07/Apps-Mav-Restaurant-Cafe-App.jpeg"),
+                                              image: FileImage(fileList[index]),
                                               fit: BoxFit.fill)),
                                     ),
                                     Padding(
@@ -2706,10 +2759,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
 
-    if (file != null) {
-      request.files.add(await http.MultipartFile.fromPath("image", file!.path));
-
-      clearFile = file.toString();
+    if(ivStatus.toString()=="1") {
+      if (fileList != null) {
+        fileList.forEach((element) async {
+          request.files.add(
+              await http.MultipartFile.fromPath("image[]", file!.path));
+        });
+      }
+    }else if(ivStatus.toString()=="2"){
+      if(file!=null){
+        request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
+      }
     }
 
     var jsonRes;
@@ -2723,7 +2783,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
       fileName = "";
       rattingcheckin = 0.0;
       image_video_status = "0";
-
+      images.clear();
+      fileList.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

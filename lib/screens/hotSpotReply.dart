@@ -5,8 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/src/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +72,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   String selectedName = "";
   String selectedvalue = "";
   var selectedId = "";
+  List<Asset> images = [];
+  List<File> fileList = [];
 
   @override
   void initState() {
@@ -880,8 +884,11 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     request.fields["video_image_status"] = image_video_status;
     request.fields["business_id"] = sec != "" ? sec.toString() : "312";
 
-    if (file != null) {
-      request.files.add(await http.MultipartFile.fromPath("image", file!.path));
+    if (fileList != null) {
+      fileList.forEach((element) async {
+        request.files.add(await http.MultipartFile.fromPath("image[]", element.path));
+
+      });
     }
     String msg = "";
     var jsonArray;
@@ -998,7 +1005,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.video_image_status = jsonArray[i]["video_image_status"].toString();
-          modelAgentSearch.image = jsonArray[i]["image"].toString();
+          modelAgentSearch.image = jsonArray[i]["image"];
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
               .inSeconds;
@@ -1046,7 +1053,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
                 childModelOne.video_image_status = childDataOne[j]["video_image_status"].toString();
-                childModelOne.image = childDataOne[j]["image"].toString();
+                childModelOne.image = childDataOne[j]["image"];
                 var difference = date2
                     .difference(DateTime.parse(childModelOne.created_at))
                     .inSeconds;
@@ -1096,7 +1103,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       childrenModelTwo.message =
                           childDataTwo[k]["message"].toString();
                       childrenModelTwo.video_image_status = childDataTwo[k]["video_image_status"].toString();
-                      childrenModelTwo.image = childDataTwo[k]["image"].toString();
+                      childrenModelTwo.image = childDataTwo[k]["image"];
                       childrenUserDataTwo = childDataTwo[k]['user'];
                       var difference = date2
                           .difference(
@@ -1161,7 +1168,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
                             childrenModelThree.video_image_status = childDataThree[l]["video_image_status"].toString();
-                            childrenModelThree.image = childDataThree[l]["image"].toString();
+                            childrenModelThree.image = childDataThree[l]["image"];
                             var difference = date2
                                 .difference(DateTime.parse(
                                     childrenModelThree.created_at))
@@ -1941,8 +1948,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 snackBar,
                               );
                             } else {
-
-                              getCheckInImage();
+                              pickImagess();
+                              //getCheckInImage();
 
                             }
                           }),
@@ -2040,6 +2047,37 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     );
   }
 
+  Future<void> pickImagess() async {
+    await pickImages().then((value) {
+        images = value;
+        print("lengthhhhhh "+images.length.toString()+"*");
+
+    });
+      if(images.length>0){
+        image_video_status = "1";
+        images.forEach((element) async{
+
+          var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+          print("pathhh "+path.toString()+"*");
+
+          file = File(path.toString());
+          fileName = file!.path.split("/").last;
+          fileList.add(file!);
+        });
+
+        setState(() {
+          print("pathhh "+fileName.toString()+"*");
+
+        });
+      }else{
+        image_video_status = "0";
+        images.clear();
+      }
+      Navigator.pop(context);
+
+
+
+  }
 
   viewVideo() {
     showDialog(
@@ -2292,7 +2330,7 @@ class GETREPLYONHOTSPOT {
   var created_at = "";
   var review_id = "";
   var message = "";
-  var image = "";
+  List<dynamic>image = [];
   var video_image_status = "";
   bool viewV = false;
   var timedelay = "Secconds";
