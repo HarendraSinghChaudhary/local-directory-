@@ -18,7 +18,8 @@ class CommunityReviewAPI{
   var id = "";
   var like_status = "";
   var image_video_status = "";
-
+  TextEditingController messageTextController =
+  new TextEditingController();
   
 
 }

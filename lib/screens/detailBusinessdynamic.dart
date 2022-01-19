@@ -917,6 +917,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                                     index]
                                                                 .image
                                                                 .toString(),
+                                                          buisness_id: nearby!.id
                                                       ))).then((value) {
                                             communityReviewApi();
                                           });

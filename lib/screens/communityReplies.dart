@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -9,20 +10,26 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/components/slider_image.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
+import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
+import '../main.dart';
+import 'package:path/path.dart' as path;
+
 class CommunityReplies extends StatefulWidget {
-  var review_id, image, username, message;
+  var review_id, image, username, message, buisness_id;
 
   CommunityReplies(
       {required this.review_id,
       required this.image,
       required this.username,
-      required this.message});
+      required this.message,
+      required this.buisness_id});
 
   @override
   _CommunityRepliesState createState() => _CommunityRepliesState();
@@ -311,15 +318,11 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               SizedBox(
                                                 height: 1.h,
                                               ),
-                                              Visibility(
-                                                  visible: getReplyOnCommunityList[
-                                                                  index]
-                                                              .video_image_status
-                                                              .toString() ==
-                                                          "2"
-                                                      ? true
-                                                      : false,
-                                                  child: SizedBox(
+                                              getReplyOnCommunityList[index]
+                                                          .video_image_status
+                                                          .toString() ==
+                                                      "2"
+                                                  ? SizedBox(
                                                       height: 200,
                                                       child: VideoItems(
                                                         videoPlayerController:
@@ -327,20 +330,27 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                                 getReplyOnCommunityList[
                                                                         index]
                                                                     .image[0]),
-                                                      ))),
-                                              Visibility(
-                                                  visible: getReplyOnCommunityList[
-                                                                  index]
-                                                              .video_image_status
-                                                              .toString() ==
-                                                          "1"
-                                                      ? true
-                                                      : false,
-                                                  child: HotspotImageSlider(
-                                                      items:
-                                                          getReplyOnCommunityList[
-                                                                  index]
-                                                              .image)),
+                                                      ))
+                                                  : Container(
+                                                      width: 0,
+                                                      height: 0,
+                                                    ),
+                                              getReplyOnCommunityList[index]
+                                                          .video_image_status
+                                                          .toString() ==
+                                                      "1"
+                                                  ? SizedBox(
+                                                      height: 200,
+                                                      child: HotspotImageSlider(
+                                                          items:
+                                                              getReplyOnCommunityList[
+                                                                      index]
+                                                                  .image),
+                                                    )
+                                                  : Container(
+                                                      width: 0,
+                                                      height: 0,
+                                                    ),
                                               SizedBox(
                                                 height: 2.h,
                                               ),
@@ -464,76 +474,222 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: viewVisible,
-        child: Container(
-          width: double.infinity,
-          height: 8.h,
-          color: Colors.white,
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.add_circle_outline,
-                  size: 9.w,
-                  color: kPrimaryColor,
-                ),
-              ),
-              SizedBox(
-                width: 1.w,
-              ),
-              SizedBox(
-                width: 74.w,
-                height: 6.h,
-                child: TextField(
-                  controller: messageController,
-                  style: TextStyle(color: Colors.white, fontSize: 12.sp),
-                  maxLines: 1,
-                  onChanged: (val) {},
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
-                    focusColor: Colors.white,
-                    hoverColor: Colors.white,
-                    fillColor: kCyanColor,
-                    filled: true,
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(28),
-                        borderSide: BorderSide(color: kCyanColor)),
-                    hintText: "Type..",
-                    hintStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Visibility(
+                visible: file == null ? false : true,
+                child: file != null
+                    ? image_video_status == "1"
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  color: kBackgroundColor),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 5.h,
+                                  ),
+                                  Flexible(
+                                    flex: 9,
+                                    child: Center(
+                                      child: Container(
+                                          height: 150,
+                                          child: Image.file(
+                                            file!,
+                                            height: 80,
+                                          )),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: Column(
+                                      children: [
+                                        Flexible(
+                                          flex: 8,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  file = null;
+                                                  fileName = "";
+                                                  base64Image = "";
+                                                  image_video_status = "0";
+                                                  currentPath = "";
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5.0),
+                                                child: SvgPicture.asset(
+                                                  "assets/icons/cross.svg",
+                                                  color: Colors.white,
+                                                  width: 4.w,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Flexible(flex: 2, child: Container())
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  color: kBackgroundColor),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              file = null;
+                                              fileName = "";
+                                              base64Image = "";
+                                              image_video_status = "0";
+                                              currentPath = "";
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 5.0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/cross.svg",
+                                              color: Colors.white,
+                                              width: 4.w,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.5.h,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        fileName,
+                                        maxLines: 3,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                    : Container(
+                        color: Colors.white,
+                        height: 100,
+                      )),
+            Container(
+              width: double.infinity,
+              height: 8.h,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      image_video_status = "0";
+                      file = null;
+                      fileName = "";
+                      currentPath = "";
+                      setState(() {});
+                      getFileDialog();
+                    },
+                    icon: Icon(
+                      Icons.add_circle_outline,
+                      size: 9.w,
+                      color: kPrimaryColor,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: 3.w,
-              ),
-              InkWell(
-                  onTap: () {
-                    if (messageController.text != "" &&
-                        messageController.text != "null") {
-                      replyOnHotspotReplyApi(
-                          tabOne.toString(), messageController.text.toString());
+                  SizedBox(
+                    width: 1.w,
+                  ),
+                  SizedBox(
+                    width: 74.w,
+                    height: 6.h,
+                    child: TextField(
+                      controller: messageController,
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                      maxLines: 1,
+                      onChanged: (val) {},
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4.w, vertical: 0.h),
+                        focusColor: Colors.white,
+                        hoverColor: Colors.white,
+                        fillColor: kCyanColor,
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(28),
+                            borderSide: BorderSide(color: kCyanColor)),
+                        hintText: "Type..",
+                        hintStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 3.w,
+                  ),
+                  InkWell(
+                      onTap: () {
+                        if (messageController.text != "" &&
+                            messageController.text != "null") {
+                          replyOnHotspotReplyApi(tabOne.toString(),
+                              messageController.text.toString());
 
-                      setState(() {
-                        messageController.text = "";
+                          setState(() {
+                            messageController.text = "";
 
-                        viewVisible = false;
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter reply")));
-                    }
-                  },
-                  child: SvgPicture.asset(
-                    "assets/icons/send1.svg",
-                    width: 8.w,
-                    color: kPrimaryColor,
-                  )),
-            ],
-          ),
+                            viewVisible = false;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Please enter reply")));
+                        }
+                      },
+                      child: SvgPicture.asset(
+                        "assets/icons/send1.svg",
+                        width: 8.w,
+                        color: kPrimaryColor,
+                      )),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -592,7 +748,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
           //modelAgentSearch.hour = jsonArray[i]["hour"];
           modelAgentSearch.review_id = jsonArray[i]["review_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
-          modelAgentSearch.video_image_status = jsonArray[i]["video_image_status"].toString();
+          modelAgentSearch.video_image_status =
+              jsonArray[i]["video_image_status"].toString();
           modelAgentSearch.image = jsonArray[i]["image"];
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
@@ -641,7 +798,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                     childDataOne[j]["review_id"].toString();
                 childModelOne.message = childDataOne[j]["message"].toString();
                 childModelOne.image = childDataOne[j]["image"];
-                childModelOne.video_image_status= childDataOne[j]["video_image_status"].toString();
+                childModelOne.video_image_status =
+                    childDataOne[j]["video_image_status"].toString();
 
                 var difference = date2
                     .difference(DateTime.parse(childDataOne[j]["created_at"]))
@@ -694,9 +852,10 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                           childDataTwo[k]["review_id"].toString();
                       childrenModelTwo.message =
                           childDataTwo[k]["message"].toString();
-                          childrenModelTwo.image = childDataTwo[k]["image"];
-                          childrenModelTwo.video_image_status = childDataTwo[k]["video_image_status"].toString();
-                          
+                      childrenModelTwo.image = childDataTwo[k]["image"];
+                      childrenModelTwo.video_image_status =
+                          childDataTwo[k]["video_image_status"].toString();
+
                       var difference = date2
                           .difference(
                               DateTime.parse(childDataTwo[k]["created_at"]))
@@ -762,10 +921,13 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             childrenModelThree.message =
                                 childDataThree[l]["message"].toString();
 
-                                childrenModelThree.image = childDataThree[l]["image"];
+                            childrenModelThree.image =
+                                childDataThree[l]["image"];
 
-                                 childrenModelThree.video_image_status =childDataThree[l]["video_image_status"].toString();
-                                
+                            childrenModelThree.video_image_status =
+                                childDataThree[l]["video_image_status"]
+                                    .toString();
+
                             var difference = date2
                                 .difference(DateTime.parse(
                                     childDataThree[l]["created_at"]))
@@ -854,6 +1016,144 @@ class _CommunityRepliesState extends State<CommunityReplies> {
     }
   }
 
+  getFileDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: SingleChildScrollView(
+                child: SizedBox(
+              height: 25.h,
+              width: 95.w,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          image_video_status = "0";
+                          file = null;
+                          fileName = "";
+                          currentPath = "";
+                        },
+                        child: SvgPicture.asset(
+                          "assets/icons/cross.svg",
+                          color: Colors.white,
+                          width: 4.w,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Text(
+                    "What do you want to upload?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.white,
+                        // fontWeight: FontWeight.w500,
+                        fontFamily: "Roboto"
+                        //fontFamily: "Segoepr"
+                        ),
+                  ),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Image",
+                      press: () {
+                        if (image_video_status == "2") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          pickImagess();
+                          //getCheckInImage();
+
+                        }
+                      }),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Video",
+                      press: () async {
+                        if (image_video_status == "1") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                            type: FileType.video,
+                            allowCompression: false,
+                          );
+                          if (result != null) {
+                            file = File(result.files.single.path!);
+                            fileName = path.basename(file!.path);
+                            print("Filename " + fileName.toString() + "^");
+
+                            if (fileName == "" || fileName == null) {
+                              fileName = "File:- ";
+                              viewVisible = true;
+                            } else {
+                              fileName = "File:- " + fileName;
+                              viewVisible = true;
+                            }
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return TrimmerView(file!);
+                              }),
+                            ).then((value) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                image_video_status = "2";
+                              });
+                              Future.delayed(Duration(seconds: 2), () {
+                                if (currentPath != "") {
+                                  file = File(currentPath.toString());
+                                  fileName = path.basename(file!.path);
+                                  print("Filename " + fileName.toString());
+                                  setState(() {});
+                                } else {
+                                  file = null;
+                                  fileName = "";
+                                  image_video_status = "0";
+                                  setState(() {});
+                                }
+                              });
+                            });
+                          }
+                        }
+                      })
+                ],
+              ),
+            )));
+      },
+    );
+  }
+
   ListView replyWidget(int i) {
     return ListView.builder(
       shrinkWrap: true,
@@ -872,194 +1172,191 @@ class _CommunityRepliesState extends State<CommunityReplies> {
               children: [
                 Container(
                   margin: EdgeInsets.only(left: 2.w, top: 1.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 4.h, left: 1.w),
-                        child: CachedNetworkImage(
-                          imageUrl: getReplyOnCommunityList[i]
-                              .childrenList[index]
-                              .userProfile!
-                              .image
-                              .toString(),
-                          imageBuilder: (context, imageProvider) =>
-                              CircleAvatar(
-                            radius: 6.w,
-                            backgroundImage: NetworkImage(
-                                getReplyOnCommunityList[i]
-                                    .childrenList[index]
-                                    .userProfile!
-                                    .image
-                                    .toString()),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 4.h, left: 1.w),
+                            child: CachedNetworkImage(
+                              imageUrl: getReplyOnCommunityList[i]
+                                  .childrenList[index]
+                                  .userProfile!
+                                  .image
+                                  .toString(),
+                              imageBuilder: (context, imageProvider) =>
+                                  CircleAvatar(
+                                radius: 6.w,
+                                backgroundImage: NetworkImage(
+                                    getReplyOnCommunityList[i]
+                                        .childrenList[index]
+                                        .userProfile!
+                                        .image
+                                        .toString()),
+                              ),
+                              placeholder: (context, url) => CircleAvatar(
+                                radius: 6.w,
+                                backgroundImage:
+                                    AssetImage("assets/images/usericon.png"),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  CircleAvatar(
+                                radius: 6.w,
+                                backgroundImage:
+                                    AssetImage("assets/images/usericon.png"),
+                              ),
+                            ),
                           ),
-                          placeholder: (context, url) => CircleAvatar(
-                            radius: 6.w,
-                            backgroundImage:
-                                AssetImage("assets/images/usericon.png"),
+                          SizedBox(
+                            width: 2.w,
                           ),
-                          errorWidget: (context, url, error) => CircleAvatar(
-                            radius: 6.w,
-                            backgroundImage:
-                                AssetImage("assets/images/usericon.png"),
+                          Container(
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 74.w,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 74.w,
+                                        child: Text(
+                                          // "Person Name",
+
+                                          getReplyOnCommunityList[i]
+                                              .childrenList[index]
+                                              .userProfile!
+                                              .name
+                                              .toString(),
+
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kCyanColor,
+                                              fontFamily: "Segoepr"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.1.h,
+                                ),
+                                Container(
+                                  width: 74.w,
+                                  child: Text(
+                                    //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                                    getReplyOnCommunityList[i]
+                                        .childrenList[index]
+                                        .message
+                                        .toString(),
+
+                                    style: TextStyle(
+                                        //overflow: TextOverflow.ellipsis,
+                                        fontSize: 8.5.sp,
+                                        color: Colors.black87,
+                                        fontFamily: 'Roboto'),
+                                  ),
+                                ),
+
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       SizedBox(
-                        width: 2.w,
+                        height: 1.h,
                       ),
-                      Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 74.w,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                      // "Person Name",
-
-                                      getReplyOnCommunityList[i]
-                                          .childrenList[index]
-                                          .userProfile!
-                                          .name
-                                          .toString(),
-
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: kCyanColor,
-                                          fontFamily: "Segoepr"),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 0.1.h,
-                            ),
-                            Container(
-                              width: 74.w,
-                              child: Text(
-                                //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                getReplyOnCommunityList[i]
-                                    .childrenList[index]
-                                    .message
-                                    .toString(),
-
-                                style: TextStyle(
-                                    //overflow: TextOverflow.ellipsis,
-                                    fontSize: 8.5.sp,
-                                    color: Colors.black87,
-                                    fontFamily: 'Roboto'),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 1.h,
-                            ),
-
-
-                             Visibility(
-                          visible: getReplyOnCommunityList[i]
-                              .childrenList[index]
-                              .video_image_status
-                              .toString() ==
-                              "2"
-                              ? true
-                              : false,
-                          child: SizedBox(
-                            height: 200,
-                            child: VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
+                      getReplyOnCommunityList[i]
                                   .childrenList[index]
-                                  .image[0]),
-                                            
-                                            )
-                            
-                            
-                            //  VideoWidget(
-                            //   url: getReplyOnHotspotList[i]
-                            //       .childrenList[index]
-                            //       .image,
-                            //   play: true,
-                            // ),
-                          )),
-                      Visibility(
-                        visible: getReplyOnCommunityList[i]
-                            .childrenList[index]
-                            .video_image_status
-                            .toString() ==
-                            "1"
-                            ? true
-                            : false,
-                        child:  HotspotImageSlider(
-                                         items: getReplyOnCommunityList[i]
-                                .childrenList[index]
-                                .image,
-                                              
-                                        
-                                        )
-                        
-                        
-                        
-                     
-                      ),
+                                  .video_image_status
+                                  .toString() ==
+                              "2"
+                          ? SizedBox(
+                              height: 200,
+                              child: VideoItems(
+                                videoPlayerController:
+                                    VideoPlayerController.network(
+                                        getReplyOnCommunityList[i]
+                                            .childrenList[index]
+                                            .image[0]),
+                              )
+
+                              //  VideoWidget(
+                              //   url: getReplyOnHotspotList[i]
+                              //       .childrenList[index]
+                              //       .image,
+                              //   play: true,
+                              // ),
+                              )
+                          : Container(
+                              width: 0,
+                              height: 0,
+                            ),
+                      getReplyOnCommunityList[i]
+                                  .childrenList[index]
+                                  .video_image_status
+                                  .toString() ==
+                              "1"
+                          ? SizedBox(
+                              height: 200,
+                              child: HotspotImageSlider(
+                                items: getReplyOnCommunityList[i]
+                                    .childrenList[index]
+                                    .image,
+                              ),
+                            )
+                          : Container(
+                              width: 0,
+                              height: 0,
+                            ),
                       SizedBox(
                         height: 2.h,
                       ),
-
-
-
-
-                            Container(
-                              width: 74.w,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    // "2m ago",
-                                    getReplyOnCommunityList[i]
-                                        .childrenList[index]
-                                        .timedelay
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: kPrimaryColor,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 4.w),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          viewVisible = true;
-                                          selectedIndex = index;
-                                          tabOne = getReplyOnCommunityList[i]
-                                              .childrenList[index]
-                                              .id
-                                              .toString();
-                                        });
-                                      },
-                                      child: Text(
-                                        "Reply",
-                                        style: TextStyle(
-                                            fontSize: 10.sp,
-                                            color: kPrimaryColor,
-                                            fontFamily: "Roboto"),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                      Container(
+                        width: 74.w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              // "2m ago",
+                              getReplyOnCommunityList[i]
+                                  .childrenList[index]
+                                  .timedelay
+                                  .toString(),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: kPrimaryColor,
                               ),
                             ),
-                            SizedBox(
-                              height: 1.h,
+                            Padding(
+                              padding: EdgeInsets.only(right: 4.w),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    viewVisible = true;
+                                    selectedIndex = index;
+                                    tabOne = getReplyOnCommunityList[i]
+                                        .childrenList[index]
+                                        .id
+                                        .toString();
+                                  });
+                                },
+                                child: Text(
+                                  "Reply",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: kPrimaryColor,
+                                      fontFamily: "Roboto"),
+                                ),
+                              ),
                             ),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
                       ),
                     ],
                   ),
@@ -1081,175 +1378,178 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                               padding: EdgeInsets.only(
                                 left: 8.w,
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(
                                 children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(bottom: 6.h, left: 0.w),
-                                    child: CircleAvatar(
-                                      radius: 4.w,
-                                      backgroundImage: NetworkImage(
-                                          getReplyOnCommunityList[i]
-                                              .childrenList[index]
-                                              .childrenList[k]
-                                              .userProfile!
-                                              .image
-                                              .toString()),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          width: 74.w,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                //"Person Name @ Bar Name",
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.only(bottom: 6.h, left: 0.w),
+                                        child: CircleAvatar(
+                                          radius: 4.w,
+                                          backgroundImage: NetworkImage(
+                                              getReplyOnCommunityList[i]
+                                                  .childrenList[index]
+                                                  .childrenList[k]
+                                                  .userProfile!
+                                                  .image
+                                                  .toString()),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Container(
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              width: 74.w,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    //"Person Name @ Bar Name",
+                                                    getReplyOnCommunityList[i]
+                                                        .childrenList[index]
+                                                        .childrenList[k]
+                                                        .userProfile!
+                                                        .name
+                                                        .toString(),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 10.sp,
+                                                        color: kCyanColor,
+                                                        fontFamily: "Segoepr"),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 12.w,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 0.1.h,
+                                            ),
+                                            Container(
+                                              width: 74.w,
+                                              child: Text(
+                                                //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
                                                 getReplyOnCommunityList[i]
                                                     .childrenList[index]
                                                     .childrenList[k]
-                                                    .userProfile!
-                                                    .name
+                                                    .message
                                                     .toString(),
-                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    fontSize: 10.sp,
-                                                    color: kCyanColor,
-                                                    fontFamily: "Segoepr"),
+                                                    //overflow: TextOverflow.ellipsis,
+                                                    fontSize: 8.5.sp,
+                                                    color: Colors.black87,
+                                                    fontFamily: 'Roboto'),
                                               ),
-                                              SizedBox(
-                                                width: 12.w,
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+
+                                          ],
                                         ),
-                                        SizedBox(
-                                          height: 0.1.h,
-                                        ),
-                                        Container(
-                                          width: 74.w,
-                                          child: Text(
-                                            //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
+                                      )
+                                    ],
+                                  ),
+
+
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  getReplyOnCommunityList[i]
+                                      .childrenList[index]
+                                      .childrenList[k]
+                                      .video_image_status
+                                      .toString() ==
+                                      "2"
+                                      ? SizedBox(
+                                      height: 200,
+                                      width: 35.h,
+                                      child: VideoItems(
+                                        videoPlayerController:
+                                        VideoPlayerController.network(
                                             getReplyOnCommunityList[i]
-                                                .childrenList[index]
-                                                .childrenList[k]
-                                                .message
-                                                .toString(),
-                                            style: TextStyle(
-                                                //overflow: TextOverflow.ellipsis,
-                                                fontSize: 8.5.sp,
-                                                color: Colors.black87,
-                                                fontFamily: 'Roboto'),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-
-
-                                          Visibility(
-                                      visible: getReplyOnCommunityList[i]
-                                          .childrenList[index]
-                                          .childrenList[k]
-                                          .video_image_status
-                                          .toString() ==
-                                          "2"
-                                          ? true
-                                          : false,
-                                      child: SizedBox(
-                                          height: 200,
-                                          width: 35.h,
-                                          child:VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
-                                                .childrenList[index]
+                                                .childrenList[
+                                            index]
                                                 .childrenList[k]
                                                 .image[0]),
-                                              
-                                            )
-                                          
-                                          
-                                          
-                                        
-                                          )),
-                                  Visibility(
-                                    visible: getReplyOnCommunityList[i]
-                                        .childrenList[index]
-                                        .childrenList[k]
-                                        .video_image_status
-                                        .toString() ==
-                                        "1"
-                                        ? true
-                                        : false,
-                                    child:  HotspotImageSlider(
-                                         items: getReplyOnCommunityList[i]
+                                      ))
+                                      : Container(
+                                    width: 0,
+                                    height: 0,
+                                  ),
+                                  getReplyOnCommunityList[i]
+                                      .childrenList[index]
+                                      .childrenList[k]
+                                      .video_image_status
+                                      .toString() ==
+                                      "1"
+                                      ? SizedBox(
+                                    height: 200,
+                                    child: HotspotImageSlider(
+                                        items:
+                                        getReplyOnCommunityList[
+                                        i]
                                             .childrenList[index]
                                             .childrenList[k]
-                                            .image
-                                              
-                                        
-                                        )
-                                    
-                                 
+                                            .image),
+                                  )
+                                      : Container(
+                                    width: 0,
+                                    height: 0,
                                   ),
                                   SizedBox(
                                     height: 2.h,
                                   ),
-                                        Container(
-                                          width: 74.w,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                //"2m ago",
-                                                getReplyOnCommunityList[i]
-                                                    .childrenList[index]
-                                                    .childrenList[k]
-                                                    .timedelay
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  fontSize: 8.sp,
+                                  Container(
+                                    width: 74.w,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          //"2m ago",
+                                          getReplyOnCommunityList[i]
+                                              .childrenList[index]
+                                              .childrenList[k]
+                                              .timedelay
+                                              .toString(),
+                                          style: TextStyle(
+                                            fontSize: 8.sp,
+                                            color: kPrimaryColor,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          EdgeInsets.only(right: 6.w),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                viewVisible = true;
+                                                selectedIndex = index;
+                                                tabOne =
+                                                    getReplyOnCommunityList[i]
+                                                        .childrenList[
+                                                    index]
+                                                        .childrenList[k]
+                                                        .id
+                                                        .toString();
+                                              });
+                                            },
+                                            child: Text(
+                                              "Reply",
+                                              style: TextStyle(
+                                                  fontSize: 10.sp,
                                                   color: kPrimaryColor,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(right: 6.w),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      viewVisible = true;
-                                                      selectedIndex = index;
-                                                      tabOne =
-                                                          getReplyOnCommunityList[i]
-                                                              .childrenList[
-                                                                  index]
-                                                              .childrenList[k]
-                                                              .id
-                                                              .toString();
-                                                    });
-                                                  },
-                                                  child: Text(
-                                                    "Reply",
-                                                    style: TextStyle(
-                                                        fontSize: 10.sp,
-                                                        color: kPrimaryColor,
-                                                        fontFamily: "Roboto"),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                                  fontFamily: "Roboto"),
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -1270,202 +1570,201 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                       padding: EdgeInsets.only(
                                         left: 16.w,
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      child: Column(
                                         children: [
-                                          Flexible(
-                                            flex: 1,
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: 6.h, left: 0.w),
-                                              child: CircleAvatar(
-                                                radius: 4.w,
-                                                backgroundImage:
-                                                    // AssetImage("assets/images/loc.png"),
-                                                    NetworkImage(
-                                                  getReplyOnCommunityList[i]
-                                                      .childrenList[index]
-                                                      .childrenList[k]
-                                                      .childrenList[j]
-                                                      .userProfile!
-                                                      .image
-                                                      .toString(),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                flex: 1,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 6.h, left: 0.w),
+                                                  child: CircleAvatar(
+                                                    radius: 4.w,
+                                                    backgroundImage:
+                                                        // AssetImage("assets/images/loc.png"),
+                                                        NetworkImage(
+                                                      getReplyOnCommunityList[i]
+                                                          .childrenList[index]
+                                                          .childrenList[k]
+                                                          .childrenList[j]
+                                                          .userProfile!
+                                                          .image
+                                                          .toString(),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                              SizedBox(
+                                                width: 2.w,
+                                              ),
+                                              Flexible(
+                                                flex: 8,
+                                                child: Container(
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        width: 70.w,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              //"Person Name @ Bar Name",
+                                                              getReplyOnCommunityList[i]
+                                                                  .childrenList[
+                                                                      index]
+                                                                  .childrenList[k]
+                                                                  .childrenList[j]
+                                                                  .userProfile!
+                                                                  .name
+                                                                  .toString(),
+                                                              overflow: TextOverflow
+                                                                  .ellipsis,
+                                                              style: TextStyle(
+                                                                  fontSize: 10.sp,
+                                                                  color: kCyanColor,
+                                                                  fontFamily:
+                                                                      "Segoepr"),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 0.1.h,
+                                                      ),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                            right: 0.w),
+                                                        child: Container(
+                                                          width: 70.w,
+                                                          child: Text(
+                                                            // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
+                                                            getReplyOnCommunityList[
+                                                                    i]
+                                                                .childrenList[index]
+                                                                .childrenList[k]
+                                                                .childrenList[j]
+                                                                .message
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                //overflow: TextOverflow.ellipsis,
+                                                                fontSize: 8.5.sp,
+                                                                color:
+                                                                    Colors.black87,
+                                                                fontFamily:
+                                                                    'Roboto'),
+                                                          ),
+                                                        ),
+                                                      ),
+
+
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                           SizedBox(
-                                            width: 2.w,
+                                            height: 1.h,
                                           ),
-                                          Flexible(
-                                            flex: 8,
-                                            child: Container(
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    width: 70.w,
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          //"Person Name @ Bar Name",
-                                                          getReplyOnCommunityList[i]
-                                                              .childrenList[
-                                                                  index]
-                                                              .childrenList[k]
-                                                              .childrenList[j]
-                                                              .userProfile!
-                                                              .name
-                                                              .toString(),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                              fontSize: 10.sp,
-                                                              color: kCyanColor,
-                                                              fontFamily:
-                                                                  "Segoepr"),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 0.1.h,
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 0.w),
-                                                    child: Container(
-                                                      width: 70.w,
-                                                      child: Text(
-                                                        // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
-                                                        getReplyOnCommunityList[
-                                                                i]
-                                                            .childrenList[index]
-                                                            .childrenList[k]
-                                                            .childrenList[j]
-                                                            .message
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            //overflow: TextOverflow.ellipsis,
-                                                            fontSize: 8.5.sp,
-                                                            color:
-                                                                Colors.black87,
-                                                            fontFamily:
-                                                                'Roboto'),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1.h,
-                                                  ),
-
-                                                  Visibility(
-                                              visible:  getReplyOnCommunityList[i]
-                                                  .childrenList[index]
+                                          getReplyOnCommunityList[i]
+                                              .childrenList[
+                                          index]
+                                              .childrenList[k]
+                                              .childrenList[j]
+                                              .video_image_status
+                                              .toString() ==
+                                              "2"
+                                              ? SizedBox(
+                                              height: 200,
+                                              width: 35.h,
+                                              child: VideoItems(
+                                                videoPlayerController:
+                                                VideoPlayerController.network(getReplyOnCommunityList[i]
+                                                    .childrenList[
+                                                index]
+                                                    .childrenList[
+                                                k]
+                                                    .childrenList[
+                                                j]
+                                                    .image[0]),
+                                              ))
+                                              : Container(),
+                                          getReplyOnCommunityList[i]
+                                              .childrenList[
+                                          index]
+                                              .childrenList[k]
+                                              .childrenList[j]
+                                              .video_image_status
+                                              .toString() ==
+                                              "1"
+                                              ? SizedBox(
+                                            height: 200,
+                                            child:
+                                            HotspotImageSlider(
+                                              items: getReplyOnCommunityList[
+                                              i]
+                                                  .childrenList[
+                                              index]
                                                   .childrenList[k]
                                                   .childrenList[j]
-                                                  .video_image_status
-                                                  .toString() ==
-                                                  "2"
-                                                  ? true
-                                                  : false,
-                                              child: SizedBox(
-                                                  height: 200,
-                                                  width: 35.h,
-                                                  child: VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnCommunityList[i]
-                                                        .childrenList[index]
-                                                        .childrenList[k]
-                                                        .childrenList[j]
-                                                        .image[0]
-                                                  ),
-                                              
-                                            )
-                                                  
-                                                  
-                                                 
-                                                  )),
-                                          Visibility(
-                                            visible: getReplyOnCommunityList[i]
-                                                .childrenList[index]
-                                                .childrenList[k]
-                                                .childrenList[j]
-                                                .video_image_status
-                                                .toString() ==
-                                                "1"
-                                                ? true
-                                                : false,
-                                            child: HotspotImageSlider(
-                                          items:getReplyOnCommunityList[i]
-                                                    .childrenList[index]
-                                                    .childrenList[k]
-                                                    .childrenList[j]
-                                                    .image
-                                                    ,
-                                              
-                                        
-                                        )
-                                            
-                                            
-                                            
-                                          
-                                          ),
+                                                  .image,
+                                            ),
+                                          )
+                                              : Container(),
                                           SizedBox(
                                             height: 2.h,
                                           ),
-                                                  Container(
-                                                    width: 74.w,
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          //"2m ago",
-                                                          getReplyOnCommunityList[i]
-                                                              .childrenList[
-                                                                  index]
-                                                              .childrenList[k]
-                                                              .childrenList[j]
-                                                              .timedelay
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            fontSize: 8.sp,
+                                          Container(
+                                            width: 74.w,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  //"2m ago",
+                                                  getReplyOnCommunityList[i]
+                                                      .childrenList[
+                                                  index]
+                                                      .childrenList[k]
+                                                      .childrenList[j]
+                                                      .timedelay
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 8.sp,
+                                                    color:
+                                                    kPrimaryColor,
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                  visible: false,
+                                                  child: Padding(
+                                                    padding:
+                                                    EdgeInsets.only(
+                                                        right: 6.w),
+                                                    child:
+                                                    GestureDetector(
+                                                      onTap: () {},
+                                                      child: Text(
+                                                        "Reply",
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                            10.sp,
                                                             color:
-                                                                kPrimaryColor,
-                                                          ),
-                                                        ),
-                                                        Visibility(
-                                                          visible: false,
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    right: 6.w),
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                "Reply",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        10.sp,
-                                                                    color:
-                                                                        kPrimaryColor,
-                                                                    fontFamily:
-                                                                        "Roboto"),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
+                                                            kPrimaryColor,
+                                                            fontFamily:
+                                                            "Roboto"),
+                                                      ),
                                                     ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ));
@@ -1501,36 +1800,52 @@ class _CommunityRepliesState extends State<CommunityReplies> {
     print("type: " + "REVIEW");
     print("message: " + messageText.toString());
 
-    var request = http.post(
-        Uri.parse(
-          RestDatasource.COMMUNITYREPLYONREVIEW_URL,
-        ),
-        body: {
-          "user_id": id.toString(),
-          "review_id": widget.review_id.toString(),
-          "reply_id": reply_id,
-          "type": "REVIEW",
-          "message": messageText,
-          "video_image_status": "0",
-        });
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.COMMUNITYREPLYONREVIEW_URL,
+      ),
+    );
+    request.fields["user_id"] = id.toString();
+    request.fields["review_id"] = widget.review_id.toString();
+    request.fields["reply_id"] = reply_id;
+    request.fields["type"] = "REVIEW";
+    request.fields["message"] = messageText;
+    request.fields["video_image_status"] = image_video_status;
+    request.fields["business_id"] = widget.buisness_id;
+
+    if (image_video_status == "2") {
+      request.files
+          .add(await http.MultipartFile.fromPath("image[]", file!.path));
+    } else if (image_video_status == "1") {
+      images.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("ImagePath " + path.toString());
+        request.files.add(http.MultipartFile(
+            'image[]',
+            File(path.toString()).readAsBytes().asStream(),
+            File(path.toString()).lengthSync(),
+            filename: path.toString().split("/").last));
+      });
+    }
     String msg = "";
     var jsonArray;
     var jsonRes;
-    var res;
-
-    await request.then((http.Response response) {
-      res = response;
-      final JsonDecoder _decoder = new JsonDecoder();
-      jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
-    });
+    var res = await request.send();
 
     if (res.statusCode == 200) {
-      print(jsonRes["status"]);
+      file = null;
+      fileName = "";
+      base64Image = "";
+      image_video_status = "0";
+      currentPath = "";
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
 
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
+      print(jsonRes["status"]);
       if (jsonRes["status"].toString() == "true") {
         setState(() {
           isloading = false;
@@ -1582,6 +1897,145 @@ class _CommunityRepliesState extends State<CommunityReplies> {
     }
     Navigator.pop(context);
   }
+
+  getFileDialogReply(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: SingleChildScrollView(
+                child: SizedBox(
+              height: 25.h,
+              width: 95.w,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          file = null;
+                          fileName = "";
+                          currentPath = "";
+                          images.clear();
+                          fileList.clear();
+                          file = null;
+                          image_video_status = "0";
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        child: SvgPicture.asset(
+                          "assets/icons/cross.svg",
+                          color: Colors.white,
+                          width: 4.w,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Text(
+                    "What do you want to upload?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.white,
+                        // fontWeight: FontWeight.w500,
+                        fontFamily: "Roboto"
+                        //fontFamily: "Segoepr"
+                        ),
+                  ),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Image",
+                      press: () {
+                        if (image_video_status == "2") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          //getCheckInImage();
+
+                          pickImagess();
+                        }
+                      }),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Video",
+                      press: () async {
+                        if (image_video_status == "1") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                            type: FileType.video,
+                            allowCompression: false,
+                          );
+                          if (result != null) {
+                            file = File(result.files.single.path!);
+                            fileName = path.basename(file!.path);
+                            print("Filename " + fileName.toString() + "^");
+
+                            if (fileName == "" || fileName == null) {
+                              fileName = "File:- ";
+                            } else {
+                              fileName = "File:- " + fileName;
+                            }
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return TrimmerView(file!);
+                              }),
+                            ).then((value) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                image_video_status = "2";
+                              });
+                              Future.delayed(Duration(seconds: 2), () {
+                                if (currentPath != "") {
+                                  file = File(currentPath.toString());
+                                  fileName = path.basename(file!.path);
+                                  print("Filename " + fileName.toString());
+                                  setState(() {});
+                                } else {
+                                  file = null;
+                                  fileName = "";
+                                  image_video_status = "0";
+                                  setState(() {});
+                                }
+                              });
+                            });
+                          }
+                        }
+                      })
+                ],
+              ),
+            )));
+      },
+    );
+  }
 }
 
 class GETREPLYONCOMMUNITY {
@@ -1591,12 +2045,18 @@ class GETREPLYONCOMMUNITY {
   var review_id = "";
   var message = "";
   var hour;
-  List<dynamic>image = [];
+  List<dynamic> image = [];
   var video_image_status = "";
   var timedelay = "Secconds";
   bool viewV = false;
   List<GETREPLYONCOMMUNITY> childrenList = [];
-  List<GETREPLYONCOMMUNITY> childrenSubList = [];
+
+  var replyimage_video_status = "0";
+  File? replyfile;
+
+  var replyfileName = "";
+  List<Asset> replyimages = [];
+  List<File> replyfileList = [];
 }
 
 class UserData {

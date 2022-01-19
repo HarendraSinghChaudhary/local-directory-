@@ -552,8 +552,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                       controller: scrollController,
                       itemCount: communityReviewList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        TextEditingController messageTextController =
-                            new TextEditingController();
+
                         return
                             // communityReviewList.length == "0" ? Center(child: Text("Please type a message", style: TextStyle(color: Colors.white, fontSize: 20), ))
                             // :
@@ -932,6 +931,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                           index]
                                                                       .image
                                                                       .toString(),
+                                                              buisness_id: widget.nearBy.id,
                                                             ))).then((value) {
                                                   communityReviewApi();
                                                 });
@@ -962,10 +962,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           SizedBox(
                                             width: 65.w,
                                             child: TextField(
-                                              controller: messageTextController,
+                                              controller: communityReviewList[index].messageTextController,
                                               onChanged: (val) {
                                                 if (val.toString() == " ") {
-                                                  messageTextController.text =
+                                                  communityReviewList[index].messageTextController.text =
                                                       "";
                                                 }
                                                 print(val);
@@ -999,7 +999,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                   suffixIcon: InkWell(
                                                       onTap: () {
                                                         var mesage =
-                                                            messageTextController
+                                                        communityReviewList[index].messageTextController
                                                                 .text
                                                                 .toString();
 
@@ -1365,39 +1365,64 @@ class _DetailBussinessState extends State<DetailBussiness> {
       String review_id, String messageText) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
-    print("id Print: " + id.toString());
+    print("user_id: " + id.toString());
+    print("review_id: " + review_id);
+    print("reply_id: " + "0");
+    print("type: " + "REVIEW");
+    print("message: " + messageText);
+    print("video_image_status: " + id.toString());
+    print("business_id: " + widget.nearBy.id);
     setState(() {
       isloading = true;
     });
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.COMMUNITYREPLYONREVIEW_URL,
+      ),
+    );
 
-    var request = http.post(
-        Uri.parse(
-          RestDatasource.COMMUNITYREPLYONREVIEW_URL,
-        ),
-        body: {
-          "user_id": id.toString(),
-          "review_id": review_id,
-          "reply_id": "0",
-          "type": "REVIEW",
-          "message": messageText,
-          "video_image_status": "0"
+    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["user_id"] = id.toString();
+    request.fields["review_id"] = review_id;
+    request.fields["reply_id"] = "0";
+    request.fields["type"] = "REVIEW";
+    request.fields["message"] = messageText;
+    request.fields["video_image_status"] = image_video_status;
+
+    request.fields["video_image_status"] =
+    ivStatus.toString() != "" ? ivStatus.toString() : "0";
+    print("ivStatus: " + ivStatus.toString());
+    if (ivStatus.toString() == "1") {
+      if (fileList != null) {
+        fileList.forEach((element) async {
+          request.files
+              .add(await http.MultipartFile.fromPath("image[]", file!.path));
         });
+      }
+    } else if (ivStatus.toString() == "2") {
+      if (file != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath("image[]", file!.path));
+      }
+    }
     String msg = "";
     var jsonArray;
     var jsonRes;
-    var res;
-
-    await request.then((http.Response response) {
-      res = response;
-      final JsonDecoder _decoder = new JsonDecoder();
-      jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
-    });
+    var res = await request.send();
 
     if (res.statusCode == 200) {
+      currentPath = "";
+      ivStatus = "";
+      fileName = "";
+      image_video_status = "0";
+      images.clear();
+      fileList.clear();
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
