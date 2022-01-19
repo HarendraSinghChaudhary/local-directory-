@@ -660,7 +660,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     var request = http.post(
         Uri.parse(
-          RestDatasource.NEARBYRESTAURANT_URL,
+          RestDatasource.GETBUISNESSDETAIL_URL,
         ),
         body: {
           "id": id.toString(),

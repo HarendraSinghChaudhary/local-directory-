@@ -65,7 +65,7 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
                     height: 20.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3.w),
+                      borderRadius: BorderRadius.circular(0.w),
                       color: Colors.white,
                       image: DecorationImage(
                         image: NetworkImage(

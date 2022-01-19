@@ -634,7 +634,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                     child:  file!=null? image_video_status == "1"?Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Container(
-                        height: 150,
+                        height: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(topLeft:Radius.circular(10), topRight:Radius.circular(10)),
                           color: kBackgroundColor
@@ -645,17 +645,85 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SizedBox(
-                              width: 5.h,
+                              width: 2.h,
                             ),
-                            Flexible(
-                              flex:9,
-                              child: Center(
-                                child: Container(
 
-                                    height: 150,
-                                    child: Image.file(file!, height: 80,)),
-                              ),
-                            ),
+                            Container(
+                                    height: 8.h,
+                                    width: 80.w,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      controller: _controller,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: fileList.length == 0
+                                          ? 0
+                                          : fileList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  height: 9.h,
+                                                  width: 9.h,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              2.w),
+                                                      image: DecorationImage(
+                                                          image: FileImage(
+                                                              fileList[i]),
+                                                          fit: BoxFit.fill)),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 2.0, left: 14.w),
+                                                  child: Container(
+                                                    height: 2.h,
+                                                    width: 2.h,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.white),
+                                                    child: Center(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          fileList.removeAt(i);
+                                                          images.removeAt(i);
+                                                          setState(() {
+
+                                                          });
+                                                        },
+                                                        child: SvgPicture.asset(
+                                                          "assets/icons/cross.svg",
+                                                          width: 8,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              width: 2.w,
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+
+                            // Flexible(
+                            //   flex:9,
+                            //   child: Center(
+                            //     child: Container(
+
+                            //         height: 150,
+                            //         child: Image.file(file!, height: 80,)),
+                            //   ),
+                            // ),
 
                             Flexible(
                               flex: 1,
@@ -674,6 +742,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             base64Image = "";
                                             image_video_status = "0";
                                             currentPath = "";
+                                            fileList.clear();
                                           });
 
                                         },
@@ -919,6 +988,9 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       fileName = "";
       base64Image = "";
       image_video_status = "0";
+      fileList.clear();
+      images.clear();
+      currentPath = "";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1934,11 +2006,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                             onTap: () {
                               Navigator.of(context, rootNavigator: true)
                                   .pop();
-                              image_video_status = "0";
-                              file = null;
-                              fileName = "";
-                              currentPath = "";
-
+                             file = null;
+      fileName = "";
+      base64Image = "";
+      image_video_status = "0";
+      fileList.clear();
+      images.clear();
+      currentPath = "";
 
                             },
                             child: SvgPicture.asset(

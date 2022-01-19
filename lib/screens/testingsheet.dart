@@ -66,6 +66,22 @@ VideoItems({
 class _VideoItemsState extends State<VideoItems> {
 
   late ChewieController _chewieController;
+  late VideoPlayerController _videoPlayerController;
+
+  late Future<void> _future;
+
+    Future<void> initVideoPlayer() async {
+    await _videoPlayerController.initialize();
+    setState(() {
+      print("true: "  +_videoPlayerController.value.aspectRatio.toString());
+      _chewieController = ChewieController(
+        videoPlayerController: widget.videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        autoPlay: false,
+        looping: false,
+        autoInitialize: true
+      );
+    });}
 
 
 
@@ -74,52 +90,69 @@ class _VideoItemsState extends State<VideoItems> {
   @override
 void initState() {
   super.initState();
-  _chewieController = ChewieController(
-    videoPlayerController: widget.videoPlayerController,
-    showOptions: true,
-    showControlsOnInitialize: true,
-    allowedScreenSleep: false,
-    fullScreenByDefault: false,
-   
- 
+  _videoPlayerController = widget.videoPlayerController;
+    _future = initVideoPlayer();
+  // _chewieController = ChewieController(
+  //   videoPlayerController: widget.videoPlayerController,
     
-     
-    autoInitialize: true,
-    autoPlay: false,
-    looping: false,
+  
     
-    errorBuilder: (context, errorMessage) {
-      return Center(
-        child: Text(
-          errorMessage,
-          style: TextStyle(color: Colors.white),
-        ),
-      );
-    },
-  );
+  //   errorBuilder: (context, errorMessage) {
+  //     return Center(
+  //       child: Text(
+  //         errorMessage,
+  //         style: TextStyle(color: Colors.white),
+  //       ),
+  //     );
+  //   },
+  // );
 }
+
+
+
+ 
+
+
 
 @override
 void dispose() {
   super.dispose();
+  widget.videoPlayerController.dispose();
+
   _chewieController.dispose();
 }
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
-     
-      // height: 30.h,
-      width: double.infinity,
-      child: Chewie(
-        controller: _chewieController,
+    return new FutureBuilder(
+      future: _future,
+      builder: (context, snapshot) {
+        return _videoPlayerController.value.isInitialized
+        ? Container(
+            width: double.infinity,
+           
+            child: Chewie(
+              controller: _chewieController,
+            ),
+          ): Container();
         
-      ),
+       
+      }
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Container(
+      
+     
+      
+  //     child: Chewie(
+  //       controller: _chewieController,
+        
+  //     ),
+  //   );
+  // }
 }
