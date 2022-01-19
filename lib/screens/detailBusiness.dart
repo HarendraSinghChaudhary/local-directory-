@@ -420,6 +420,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           ivStatus = "";
                           fileName = "";
                           file = null;
+                          fileList.clear();
+                          images.clear();
+                          currentPath = "";
+
 
                           customDialog();
                         },
@@ -449,6 +453,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           ivStatus = "";
                           fileName = "";
                           file = null;
+                          fileList.clear();
+                          images.clear();
+                          currentPath = "";
 
                           if (widget.nearBy.checkIn_status == "1") {
                             checkInDialog();
@@ -680,8 +687,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               videoPlayerController:
                                                   VideoPlayerController.network(
                                                       communityReviewList[index]
-                                                          .business_review_image
-                                                          .first),
+                                                          .business_review_image[0]
+                                                          ),
                                             ))
                                         : communityReviewList[index]
                                                     .image_video_status
@@ -996,37 +1003,67 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                   //suffixIconConstraints: BoxConstraints(minWidth: 5),
 
                                                   hintText: "Reply",
-                                                  suffixIcon: InkWell(
-                                                      onTap: () {
-                                                        var mesage =
-                                                        communityReviewList[index].messageTextController
-                                                                .text
-                                                                .toString();
+                                                  suffixIcon: Padding(
+                                                    padding: EdgeInsets.only(right: 8.0),
+                                                    child: Row(
+                                                       mainAxisSize:
+                                                            MainAxisSize.min,
+                                                      children: [
 
-                                                        if (mesage == "" ||
-                                                            mesage == "null") {
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(SnackBar(
-                                                                  content: Text(
-                                                                      "Please enter message")));
-                                                        } else {
-                                                          FocusScope.of(context)
-                                                              .unfocus();
-                                                          communityReplyOnReviewApi(
-                                                              communityReviewList[
-                                                                      index]
-                                                                  .business_reviews_id
-                                                                  .toString(),
-                                                              communityReviewList[
-                                                                      index]
-                                                                  .messageText
-                                                                  .toString());
-                                                        }
-                                                      },
-                                                      child: Icon(Icons.send,
-                                                          color:
-                                                              kPrimaryColor)),
+                                                                                              InkWell(
+                                                            onTap: () {
+                                                              communityReviewList[index].reply_image_video_status =
+                                                                  "0";
+                                                              communityReviewList[index].replyfile = null;
+                                                              communityReviewList[index].replyfileName = "";
+                                                              currentPath = "";
+                                                              setState(() {});
+                                                              getFileDialogReply(index);
+                                                            },
+                                                            child: Icon(
+                                                                Icons
+                                                                    .add_circle_outline,
+                                                                color:
+                                                                    kPrimaryColor)),
+
+                                                        SizedBox(width: 2.w),
+
+
+
+                                                        InkWell(
+                                                            onTap: () {
+                                                              var mesage =
+                                                              communityReviewList[index].messageTextController
+                                                                      .text
+                                                                      .toString();
+
+                                                              if (mesage == "" ||
+                                                                  mesage == "null") {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(SnackBar(
+                                                                        content: Text(
+                                                                            "Please enter message")));
+                                                              } else {
+                                                                FocusScope.of(context)
+                                                                    .unfocus();
+                                                                communityReplyOnReviewApi(
+                                                                    communityReviewList[
+                                                                            index]
+                                                                        .business_reviews_id
+                                                                        .toString(),
+                                                                    communityReviewList[
+                                                                            index]
+                                                                        .messageText
+                                                                        .toString(),index);
+                                                              }
+                                                            },
+                                                            child: Icon(Icons.send,
+                                                                color:
+                                                                    kPrimaryColor)),
+                                                      ],
+                                                    ),
+                                                  ),
                                                   hintStyle: TextStyle(
                                                       fontSize: 9.sp,
                                                       color: Colors.white)),
@@ -1036,6 +1073,147 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       ),
                                     ),
                                     SizedBox(
+                                      height: 2.h,
+                                    ),
+
+                                                     communityReviewList[index].reply_image_video_status=="1"?Visibility(
+                                      visible: communityReviewList[index].replyfileList!=null?communityReviewList[index].replyfileList.length>0?true:false:false,
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 10),
+                                        height: 8.h,
+                                        width: 80.w,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          controller: _controller,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: communityReviewList[index].replyfileList.length==0?0:communityReviewList[index].replyfileList.length,
+                                          itemBuilder: (BuildContext context,
+                                              int i) {
+                                            return Row(
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      height: 7.h,
+                                                      width: 9.h,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      2.w),
+                                                          image: DecorationImage(
+                                                              image: FileImage(communityReviewList[index].replyfileList[i]),
+                                                              fit:
+                                                                  BoxFit.fill)),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 2.0, left: 14.w),
+                                                      child: Container(
+                                                        height: 2.h,
+                                                        width: 2.h,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color: Colors
+                                                                    .white),
+                                                        child: Center(
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              communityReviewList[index].replyfileList.removeAt(i);
+                                                              communityReviewList[index].replyimages.removeAt(i);
+                                                              setState(() {
+
+                                                              });
+                                                            },
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 2.w,
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ):Container(width: 0,height: 0,),
+                                    communityReviewList[index].reply_image_video_status=="2"? Visibility(
+                                      visible: true,
+                                      child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              communityReviewList[index].replyfileList.clear();
+                                              communityReviewList[index].replyfile = null;
+                                              communityReviewList[index].replyfileName = "";
+                                              base64Image = "";
+                                              communityReviewList[index].reply_image_video_status = "0";
+                                              currentPath = "";
+                                              communityReviewList[index].replyimages.clear();
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 5.0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/cross.svg",
+                                              color: Colors.black,
+                                              width: 4.w,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.5.h,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        fileName,
+                                        maxLines: 3,
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                                    ):Container(width: 0,height: 0,),
+
+                                      
+                                     
+                                   SizedBox(
                                       height: 2.h,
                                     ),
                                   ],
@@ -1054,6 +1232,215 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
+
+   getFileDialogReply(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: SingleChildScrollView(
+                child: SizedBox(
+                  height: 25.h,
+                  width: 95.w,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              file = null;
+                              fileName = "";
+                              currentPath = "";
+                              communityReviewList[index].replyimages.clear();
+                              communityReviewList[index].replyfileList.clear();
+                             communityReviewList[index].replyfile = null;
+                             communityReviewList[index].reply_image_video_status = "0";
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            child: SvgPicture.asset(
+                              "assets/icons/cross.svg",
+                              color: Colors.white,
+                              width: 4.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.h,
+                      ),
+                      Text(
+                        "What do you want to upload?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"
+                          //fontFamily: "Segoepr"
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Image",
+                          press: () {
+                            if (communityReviewList[index].reply_image_video_status == "2") {
+                              final snackBar = SnackBar(
+                                  content: Text(
+                                      'Either image or video can be post at a time'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                snackBar,
+                              );
+                            } else {
+                              //getCheckInImage();
+
+                                pickImagesSlider(index);
+
+
+                            }
+                          }),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Video",
+                          press: () async {
+                            if (communityReviewList[index].reply_image_video_status == "1") {
+                              final snackBar = SnackBar(
+                                  content: Text(
+                                      'Either image or video can be post at a time'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                snackBar,
+                              );
+                            } else {
+                              FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                                type: FileType.video,
+                                allowCompression: false,
+                              );
+                              if (result != null) {
+                                communityReviewList[index].replyfile = File(result.files.single.path!);
+                                communityReviewList[index].replyfileName = path.basename(communityReviewList[index].replyfile!.path);
+                                print("Filename " + communityReviewList[index].replyfileName.toString() + "^");
+
+                                if (communityReviewList[index].replyfileName == "" || communityReviewList[index].replyfileName == null) {
+                                  communityReviewList[index].replyfileName = "File:- ";
+                                } else {
+                                  communityReviewList[index].replyfileName = "File:- " + communityReviewList[index].replyfileName;
+                                }
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) {
+                                    return TrimmerView(communityReviewList[index].replyfile!);
+                                  }),
+                                ).then((value) {
+                                  Navigator.of(context, rootNavigator: true).pop();
+                                  setState(() {
+                                    communityReviewList[index].reply_image_video_status = "2";
+                                  });
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    if (currentPath != "") {
+                                      communityReviewList[index].replyfile = File(currentPath.toString());
+                                      fileName = path.basename(communityReviewList[index].replyfile!.path);
+                                      print("Filename " + communityReviewList[index].replyfileName.toString());
+                                      setState(() {});
+                                    } else {
+                                      communityReviewList[index].replyfile = null;
+                                      communityReviewList[index].replyfileName = "";
+                                      communityReviewList[index].reply_image_video_status = "0";
+                                      setState(() {});
+                                    }
+                                  });
+                                });
+                              }
+                            }
+                          })
+                    ],
+                  ),
+                )));
+      },
+    );
+  }
+
+  Future<void> pickImagesss() async {
+    List<Asset> resultList = [];
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 3,
+        enableCamera: false,
+        selectedAssets: images,
+        materialOptions: MaterialOptions(
+          actionBarTitle: "Select upto 3 Images",
+        ),
+      );
+      images = resultList;
+      if (images.length > 0) {
+        image_video_status = "1";
+        images.forEach((element) async {
+          var path = await FlutterAbsolutePath.getAbsolutePath(
+              element.identifier.toString());
+
+          file = File(path.toString());
+          fileName = file!.path.split("/").last;
+          fileList.add(file!);
+        });
+      }
+      Navigator.pop(context);
+    } on Exception catch (e) {
+      print(e);
+      image_video_status = "0";
+    }
+
+    setState(() {
+      print("length " + images.length.toString() + "*");
+    });
+    print("pathhh " + fileName.toString() + "*");
+  }
+
+ Future<void> pickImagesSlider(int index) async {
+    await pickImages().then((value) {
+      communityReviewList[index].replyimages = value;
+      print("lengthhhhhh "+communityReviewList[index].replyimages.length.toString()+"*");
+
+    });
+    if(communityReviewList[index].replyimages.length>0){
+      communityReviewList[index].reply_image_video_status = "1";
+      communityReviewList[index].replyimages.forEach((element) async{
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+        print("pathhh "+path.toString()+"*");
+
+        communityReviewList[index].replyfile = File(path.toString());
+        communityReviewList[index].replyfileName = communityReviewList[index].replyfile!.path.split("/").last;
+        communityReviewList[index].replyfileList.add(communityReviewList[index].replyfile!);
+      });
+
+      setState(() {
+        print("lengthhhhhhnewImages "+communityReviewList[index].replyimages.length.toString()+"*");
+        print("lengthhhhhhnew "+communityReviewList[index].replyfileList.length.toString()+"*");
+
+      });
+    }else{
+      communityReviewList[index].reply_image_video_status = "0";
+      communityReviewList[index].replyimages.clear();
+    }
+    Navigator.pop(context);
+
+
+
+  }
   reportDialog() {
     showDialog(
       context: context,
@@ -1362,7 +1749,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   Future<dynamic> communityReplyOnReviewApi(
-      String review_id, String messageText) async {
+      String review_id, String messageText, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("user_id: " + id.toString());
@@ -1388,22 +1775,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
     request.fields["reply_id"] = "0";
     request.fields["type"] = "REVIEW";
     request.fields["message"] = messageText;
-    request.fields["video_image_status"] = image_video_status;
+    request.fields["video_image_status"] = communityReviewList[index].reply_image_video_status;
 
     request.fields["video_image_status"] =
-    ivStatus.toString() != "" ? ivStatus.toString() : "0";
-    print("ivStatus: " + ivStatus.toString());
-    if (ivStatus.toString() == "1") {
-      if (fileList != null) {
-        fileList.forEach((element) async {
+    communityReviewList[index].reply_image_video_status.toString() != "" ? communityReviewList[index].reply_image_video_status.toString() : "0";
+    print("ivStatus: " + communityReviewList[index].reply_image_video_status.toString());
+    if (communityReviewList[index].reply_image_video_status.toString() == "1") {
+      if (communityReviewList[index].replyfileList != null) {
+        communityReviewList[index].replyfileList.forEach((element) async {
           request.files
-              .add(await http.MultipartFile.fromPath("image[]", file!.path));
+              .add(await http.MultipartFile.fromPath("image[]", element.path));
         });
       }
-    } else if (ivStatus.toString() == "2") {
-      if (file != null) {
+    } else if (communityReviewList[index].reply_image_video_status.toString() == "2") {
+      if (communityReviewList[index].replyfile != null) {
         request.files
-            .add(await http.MultipartFile.fromPath("image[]", file!.path));
+            .add(await http.MultipartFile.fromPath("image[]", communityReviewList[index].replyfile!.path));
       }
     }
     String msg = "";
@@ -1414,10 +1801,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
     if (res.statusCode == 200) {
       currentPath = "";
       ivStatus = "";
-      fileName = "";
-      image_video_status = "0";
-      images.clear();
-      fileList.clear();
+      communityReviewList[index].replyfileName = "";
+      communityReviewList[index].reply_image_video_status = "0";
+      communityReviewList[index].replyimages.clear();
+      communityReviewList[index].replyfileList.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1586,7 +1973,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       if (fileList != null) {
         fileList.forEach((element) async {
           request.files
-              .add(await http.MultipartFile.fromPath("image[]", file!.path));
+              .add(await http.MultipartFile.fromPath("image[]", element.path));
         });
       }
     } else if (ivStatus.toString() == "2") {
@@ -2109,7 +2496,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               scrollDirection: Axis.horizontal,
                               itemCount:
                                   fileList.length == 0 ? 0 : fileList.length,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: (BuildContext context, int i) {
                                 return Row(
                                   children: [
                                     Stack(
@@ -2122,7 +2509,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                   BorderRadius.circular(2.w),
                                               image: DecorationImage(
                                                   image: FileImage(
-                                                      fileList[index]),
+                                                      fileList[i]),
                                                   fit: BoxFit.fill)),
                                         ),
                                         Padding(
@@ -2137,7 +2524,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             child: Center(
                                               child: InkWell(
                                                 onTap: () {
-                                                  //fileList.removeAt(index);
+                                                                        fileList.removeAt(i);
+                                                          images.removeAt(i);
+                                                          if (fileList.length == 0) {
+
+                                                            file = null;
+                                                            fileName = "";
+                                                            fileList.clear();
+                                                            images.clear();
+                                                            
+                                                          }
+                                                          setState(() {});
                                                 },
                                                 child: SvgPicture.asset(
                                                   "assets/icons/cross.svg",
@@ -2490,7 +2887,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               controller: _controller,
                               scrollDirection: Axis.horizontal,
                               itemCount: fileList.length,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: (BuildContext context, int i) {
                                 return Row(
                                   children: [
                                     Stack(
@@ -2503,7 +2900,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                   BorderRadius.circular(2.w),
                                               image: DecorationImage(
                                                   image: FileImage(
-                                                      fileList[index]),
+                                                      fileList[i]),
                                                   fit: BoxFit.fill)),
                                         ),
                                         Padding(
@@ -2517,7 +2914,20 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                 color: Colors.white),
                                             child: Center(
                                               child: InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                                        fileList.removeAt(i);
+                                                          images.removeAt(i);
+                                                          if (fileList.length == 0) {
+
+                                                            file = null;
+                                                            fileName = "";
+                                                            fileList.clear();
+                                                            images.clear();
+                                                            
+                                                          }
+                                                          setState(() {});
+
+                                                },
                                                 child: SvgPicture.asset(
                                                   "assets/icons/cross.svg",
                                                   width: 8,

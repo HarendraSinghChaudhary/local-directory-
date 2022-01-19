@@ -136,7 +136,11 @@ void dispose() {
             child: Chewie(
               controller: _chewieController,
             ),
-          ): Container();
+          ): Container(
+            height: 30,
+            width: 30,
+            child: Center(child: CircularProgressIndicator()),
+          );
         
        
       }

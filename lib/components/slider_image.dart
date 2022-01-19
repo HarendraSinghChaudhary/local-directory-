@@ -54,7 +54,7 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
             viewportFraction: 1.0,
           ),
           items: widget.items.map((i) {
-            print("iisixisi "+i+"^");
+        
             return Builder(
               builder: (BuildContext context) {
                 return GestureDetector(

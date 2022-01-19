@@ -315,7 +315,14 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                       fontFamily: 'Roboto'),
                                                 ),
                                               ),
-                                              SizedBox(
+                                         
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                       SizedBox(
                                                 height: 1.h,
                                               ),
                                               getReplyOnCommunityList[index]
@@ -446,12 +453,6 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               SizedBox(
                                                 height: 3.h,
                                               ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
                                   replyWidget(index),
                                 ],
                               )),
@@ -485,7 +486,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Container(
-                              height: 150,
+                              height: 100,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
@@ -496,19 +497,92 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SizedBox(
-                                    width: 5.h,
+                                    width: 2.h,
                                   ),
-                                  Flexible(
-                                    flex: 9,
-                                    child: Center(
-                                      child: Container(
-                                          height: 150,
-                                          child: Image.file(
-                                            file!,
-                                            height: 80,
-                                          )),
+
+                                  Container(
+                                    height: 8.h,
+                                    width: 80.w,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      controller: _controller,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: fileList.length == 0
+                                          ? 0
+                                          : fileList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  height: 9.h,
+                                                  width: 9.h,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              2.w),
+                                                      image: DecorationImage(
+                                                          image: FileImage(
+                                                              fileList[i]),
+                                                          fit: BoxFit.fill)),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 2.0, left: 14.w),
+                                                  child: Container(
+                                                    height: 2.h,
+                                                    width: 2.h,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.white),
+                                                    child: Center(
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          fileList.removeAt(i);
+                                                          images.removeAt(i);
+                                                          if (fileList.length == 0) {
+
+                                                            file = null;
+                                                            fileName = "";
+                                                            fileList.clear();
+                                                            images.clear();
+                                                            
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                        child: SvgPicture.asset(
+                                                          "assets/icons/cross.svg",
+                                                          width: 8,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              width: 2.w,
+                                            )
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
+
+                                  // Flexible(
+                                  //   flex: 9,
+                                  //   child: Center(
+                                  //     child: Container(
+                                  //         height: 150,
+                                  //         child: Image.file(
+                                  //           file!,
+                                  //           height: 80,
+                                  //         )),
+                                  //   ),
+                                  // ),
                                   Flexible(
                                     flex: 1,
                                     child: Column(
@@ -525,6 +599,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                   base64Image = "";
                                                   image_video_status = "0";
                                                   currentPath = "";
+                                                  fileList.clear();
+                                                  images.clear();
                                                 });
                                               },
                                               child: Padding(
@@ -573,6 +649,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                               base64Image = "";
                                               image_video_status = "0";
                                               currentPath = "";
+                                              fileList.clear();
+                                              images.clear();
                                             });
                                           },
                                           child: Padding(
@@ -619,10 +697,13 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      image_video_status = "0";
                       file = null;
                       fileName = "";
+                      base64Image = "";
+                      image_video_status = "0";
                       currentPath = "";
+                      fileList.clear();
+                      images.clear();
                       setState(() {});
                       getFileDialog();
                     },
@@ -1259,7 +1340,6 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                         fontFamily: 'Roboto'),
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -1382,11 +1462,12 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding:
-                                            EdgeInsets.only(bottom: 6.h, left: 0.w),
+                                        padding: EdgeInsets.only(
+                                            bottom: 6.h, left: 0.w),
                                         child: CircleAvatar(
                                           radius: 4.w,
                                           backgroundImage: NetworkImage(
@@ -1416,7 +1497,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                         .userProfile!
                                                         .name
                                                         .toString(),
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                         fontSize: 10.sp,
                                                         color: kCyanColor,
@@ -1447,59 +1529,53 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                     fontFamily: 'Roboto'),
                                               ),
                                             ),
-
                                           ],
                                         ),
                                       )
                                     ],
                                   ),
-
-
                                   SizedBox(
                                     height: 1.h,
                                   ),
                                   getReplyOnCommunityList[i]
-                                      .childrenList[index]
-                                      .childrenList[k]
-                                      .video_image_status
-                                      .toString() ==
-                                      "2"
+                                              .childrenList[index]
+                                              .childrenList[k]
+                                              .video_image_status
+                                              .toString() ==
+                                          "2"
                                       ? SizedBox(
-                                      height: 200,
-                                      width: 35.h,
-                                      child: VideoItems(
-                                        videoPlayerController:
-                                        VideoPlayerController.network(
-                                            getReplyOnCommunityList[i]
-                                                .childrenList[
-                                            index]
-                                                .childrenList[k]
-                                                .image[0]),
-                                      ))
+                                          height: 200,
+                                          width: 35.h,
+                                          child: VideoItems(
+                                            videoPlayerController:
+                                                VideoPlayerController.network(
+                                                    getReplyOnCommunityList[i]
+                                                        .childrenList[index]
+                                                        .childrenList[k]
+                                                        .image[0]),
+                                          ))
                                       : Container(
-                                    width: 0,
-                                    height: 0,
-                                  ),
+                                          width: 0,
+                                          height: 0,
+                                        ),
                                   getReplyOnCommunityList[i]
-                                      .childrenList[index]
-                                      .childrenList[k]
-                                      .video_image_status
-                                      .toString() ==
-                                      "1"
+                                              .childrenList[index]
+                                              .childrenList[k]
+                                              .video_image_status
+                                              .toString() ==
+                                          "1"
                                       ? SizedBox(
-                                    height: 200,
-                                    child: HotspotImageSlider(
-                                        items:
-                                        getReplyOnCommunityList[
-                                        i]
-                                            .childrenList[index]
-                                            .childrenList[k]
-                                            .image),
-                                  )
+                                          height: 200,
+                                          child: HotspotImageSlider(
+                                              items: getReplyOnCommunityList[i]
+                                                  .childrenList[index]
+                                                  .childrenList[k]
+                                                  .image),
+                                        )
                                       : Container(
-                                    width: 0,
-                                    height: 0,
-                                  ),
+                                          width: 0,
+                                          height: 0,
+                                        ),
                                   SizedBox(
                                     height: 2.h,
                                   ),
@@ -1507,7 +1583,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                     width: 74.w,
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           //"2m ago",
@@ -1522,8 +1598,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          EdgeInsets.only(right: 6.w),
+                                          padding: EdgeInsets.only(right: 6.w),
                                           child: GestureDetector(
                                             onTap: () {
                                               setState(() {
@@ -1531,8 +1606,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                 selectedIndex = index;
                                                 tabOne =
                                                     getReplyOnCommunityList[i]
-                                                        .childrenList[
-                                                    index]
+                                                        .childrenList[index]
                                                         .childrenList[k]
                                                         .id
                                                         .toString();
@@ -1616,16 +1690,21 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                               getReplyOnCommunityList[i]
                                                                   .childrenList[
                                                                       index]
-                                                                  .childrenList[k]
-                                                                  .childrenList[j]
+                                                                  .childrenList[
+                                                                      k]
+                                                                  .childrenList[
+                                                                      j]
                                                                   .userProfile!
                                                                   .name
                                                                   .toString(),
-                                                              overflow: TextOverflow
-                                                                  .ellipsis,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                               style: TextStyle(
-                                                                  fontSize: 10.sp,
-                                                                  color: kCyanColor,
+                                                                  fontSize:
+                                                                      10.sp,
+                                                                  color:
+                                                                      kCyanColor,
                                                                   fontFamily:
                                                                       "Segoepr"),
                                                             ),
@@ -1636,31 +1715,32 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                         height: 0.1.h,
                                                       ),
                                                       Padding(
-                                                        padding: EdgeInsets.only(
-                                                            right: 0.w),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 0.w),
                                                         child: Container(
                                                           width: 70.w,
                                                           child: Text(
                                                             // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et",
                                                             getReplyOnCommunityList[
                                                                     i]
-                                                                .childrenList[index]
+                                                                .childrenList[
+                                                                    index]
                                                                 .childrenList[k]
                                                                 .childrenList[j]
                                                                 .message
                                                                 .toString(),
                                                             style: TextStyle(
                                                                 //overflow: TextOverflow.ellipsis,
-                                                                fontSize: 8.5.sp,
-                                                                color:
-                                                                    Colors.black87,
+                                                                fontSize:
+                                                                    8.5.sp,
+                                                                color: Colors
+                                                                    .black87,
                                                                 fontFamily:
                                                                     'Roboto'),
                                                           ),
                                                         ),
                                                       ),
-
-
                                                     ],
                                                   ),
                                                 ),
@@ -1671,49 +1751,46 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                             height: 1.h,
                                           ),
                                           getReplyOnCommunityList[i]
-                                              .childrenList[
-                                          index]
-                                              .childrenList[k]
-                                              .childrenList[j]
-                                              .video_image_status
-                                              .toString() ==
-                                              "2"
+                                                      .childrenList[index]
+                                                      .childrenList[k]
+                                                      .childrenList[j]
+                                                      .video_image_status
+                                                      .toString() ==
+                                                  "2"
                                               ? SizedBox(
-                                              height: 200,
-                                              width: 35.h,
-                                              child: VideoItems(
-                                                videoPlayerController:
-                                                VideoPlayerController.network(getReplyOnCommunityList[i]
-                                                    .childrenList[
-                                                index]
-                                                    .childrenList[
-                                                k]
-                                                    .childrenList[
-                                                j]
-                                                    .image[0]),
-                                              ))
+                                                  height: 200,
+                                                  width: 35.h,
+                                                  child: VideoItems(
+                                                    videoPlayerController:
+                                                        VideoPlayerController.network(
+                                                            getReplyOnCommunityList[
+                                                                    i]
+                                                                .childrenList[
+                                                                    index]
+                                                                .childrenList[k]
+                                                                .childrenList[j]
+                                                                .image[0]),
+                                                  ))
                                               : Container(),
                                           getReplyOnCommunityList[i]
-                                              .childrenList[
-                                          index]
-                                              .childrenList[k]
-                                              .childrenList[j]
-                                              .video_image_status
-                                              .toString() ==
-                                              "1"
+                                                      .childrenList[index]
+                                                      .childrenList[k]
+                                                      .childrenList[j]
+                                                      .video_image_status
+                                                      .toString() ==
+                                                  "1"
                                               ? SizedBox(
-                                            height: 200,
-                                            child:
-                                            HotspotImageSlider(
-                                              items: getReplyOnCommunityList[
-                                              i]
-                                                  .childrenList[
-                                              index]
-                                                  .childrenList[k]
-                                                  .childrenList[j]
-                                                  .image,
-                                            ),
-                                          )
+                                                  height: 200,
+                                                  child: HotspotImageSlider(
+                                                    items:
+                                                        getReplyOnCommunityList[
+                                                                i]
+                                                            .childrenList[index]
+                                                            .childrenList[k]
+                                                            .childrenList[j]
+                                                            .image,
+                                                  ),
+                                                )
                                               : Container(),
                                           SizedBox(
                                             height: 2.h,
@@ -1722,42 +1799,37 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                             width: 74.w,
                                             child: Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   //"2m ago",
                                                   getReplyOnCommunityList[i]
-                                                      .childrenList[
-                                                  index]
+                                                      .childrenList[index]
                                                       .childrenList[k]
                                                       .childrenList[j]
                                                       .timedelay
                                                       .toString(),
                                                   style: TextStyle(
                                                     fontSize: 8.sp,
-                                                    color:
-                                                    kPrimaryColor,
+                                                    color: kPrimaryColor,
                                                   ),
                                                 ),
                                                 Visibility(
                                                   visible: false,
                                                   child: Padding(
-                                                    padding:
-                                                    EdgeInsets.only(
+                                                    padding: EdgeInsets.only(
                                                         right: 6.w),
-                                                    child:
-                                                    GestureDetector(
+                                                    child: GestureDetector(
                                                       onTap: () {},
                                                       child: Text(
                                                         "Reply",
                                                         style: TextStyle(
-                                                            fontSize:
-                                                            10.sp,
+                                                            fontSize: 10.sp,
                                                             color:
-                                                            kPrimaryColor,
+                                                                kPrimaryColor,
                                                             fontFamily:
-                                                            "Roboto"),
+                                                                "Roboto"),
                                                       ),
                                                     ),
                                                   ),
@@ -1840,6 +1912,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       base64Image = "";
       image_video_status = "0";
       currentPath = "";
+      fileList.clear();
+      images.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

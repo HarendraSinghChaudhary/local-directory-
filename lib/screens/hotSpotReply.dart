@@ -690,6 +690,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                         onTap: () {
                                                           fileList.removeAt(i);
                                                           images.removeAt(i);
+
+                                                                                  if (fileList.length == 0) {
+
+                                                            file = null;
+                                                            fileName = "";
+                                                            fileList.clear();
+                                                            images.clear();
+                                                            
+                                                          }
                                                           setState(() {
 
                                                           });
@@ -743,6 +752,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             image_video_status = "0";
                                             currentPath = "";
                                             fileList.clear();
+                                            images.clear();
                                           });
 
                                         },
@@ -789,10 +799,12 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
                                       setState(() {
                                         file = null;
-                                        fileName = "";
-                                        base64Image = "";
-                                        image_video_status = "0";
-                                        currentPath = "";
+                                            fileName = "";
+                                            base64Image = "";
+                                            image_video_status = "0";
+                                            currentPath = "";
+                                            fileList.clear();
+                                            images.clear();
                                       });
 
                                     },
