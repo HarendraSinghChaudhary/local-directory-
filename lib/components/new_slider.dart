@@ -14,7 +14,7 @@ class NewImageSlider extends StatefulWidget {
 
 class _CustomSliderWidgetState extends State<NewImageSlider> {
   bool isloading = false;
-
+  CarouselController _controller = CarouselController();
   @override
   void initState() {
     super.initState();
@@ -38,8 +38,9 @@ class _CustomSliderWidgetState extends State<NewImageSlider> {
           width: double.infinity,
           color: Colors.black,
           child: CarouselSlider(
+            carouselController: _controller,
             options: CarouselOptions(
-             
+
              
              
               autoPlay: true,
@@ -77,5 +78,11 @@ class _CustomSliderWidgetState extends State<NewImageSlider> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
   }
 }

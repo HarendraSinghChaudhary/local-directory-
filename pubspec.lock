@@ -200,10 +200,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: dbfabda6d2bbefd317960ad53363d28bc8e6ac21
-      url: "https://github.com/canewsin/flutter_absolute_path.git"
+      resolved-ref: "04f639c58b461ea85d6920e1deed5c67231ffd8f"
+      url: "https://github.com/kornperkus/flutter_absolute_path.git"
     source: git
-    version: "0.0.1"
+    version: "1.1.0-nullsafety.0"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -467,7 +467,7 @@ packages:
     source: hosted
     version: "0.2.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -758,6 +758,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
+  textfield_tags:
+    dependency: "direct main"
+    description:
+      name: textfield_tags
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.2"
   typed_data:
     dependency: transitive
     description:

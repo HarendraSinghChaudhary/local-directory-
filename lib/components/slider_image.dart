@@ -1,14 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/new_slider.dart';
 import 'package:wemarkthespot/components/new_slider_widget.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 
-
-
 class HotspotImageSlider extends StatefulWidget {
-
   final List items;
 
   HotspotImageSlider({required this.items});
@@ -20,8 +18,6 @@ class HotspotImageSlider extends StatefulWidget {
 class _CustomSliderWidgetState extends State<HotspotImageSlider> {
   bool isloading = false;
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -30,6 +26,7 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
   }
 
   int activeIndex = 0;
+
   setActiveDot(index) {
     setState(() {
       activeIndex = index;
@@ -54,12 +51,17 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
             viewportFraction: 1.0,
           ),
           items: widget.items.map((i) {
-        
             return Builder(
               builder: (BuildContext context) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewSliderClass(items: widget.items)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewSliderClass(
+                                  items: widget.items,
+                                  index: activeIndex,
+                                )));
                   },
                   child: Container(
                     height: 20.h,
@@ -68,8 +70,7 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
                       borderRadius: BorderRadius.circular(0.w),
                       color: Colors.white,
                       image: DecorationImage(
-                        image: NetworkImage(
-                            i),
+                        image: NetworkImage(i),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -92,5 +93,10 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

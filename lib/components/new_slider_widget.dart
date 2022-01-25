@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class NewSliderClass extends StatefulWidget {
 
     final List items;
+    int index = 0;
 
- NewSliderClass({required this.items});
+ NewSliderClass({required this.items, required this.index});
 
 
  
@@ -23,11 +24,19 @@ class _NewSliderClassState extends State<NewSliderClass> {
   'assets/two.png',
   'assets/three.png'
  ];
+
+  @override
+  void initState() {
+    currentIndex2 = widget.index;
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     var getScreenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(title: Text("Image Viewer"),),
       body: Stack(
         children: [
           Container(
@@ -41,23 +50,19 @@ class _NewSliderClassState extends State<NewSliderClass> {
               itemBuilder: (BuildContext context,
                   int itemIndex, int pageViewIndex) {
                 print("Cur "+currentIndex2.toString()+"^^");
-                return InteractiveViewer(
-                  maxScale: 14,
-                  minScale: 0.2,
-                  child: FadeInImage(
-                    image: NetworkImage(
-                          widget.items.elementAt(itemIndex)),
-                      placeholder: AssetImage("assets/images/Business.png"),
-                      
-                
-                  ),
+                return FadeInImage(
+                  image: NetworkImage(
+                        widget.items.elementAt(itemIndex)),
+                    placeholder: AssetImage("assets/images/Business.png"),
+
+
                 );
               },
               options: CarouselOptions(
                 height: getScreenHeight,
                   viewportFraction: 1.0,
                   autoPlay: true,
-                  initialPage: 0,
+                  initialPage: currentIndex2,
                   onPageChanged: (index, reason) {
                     setState(() {
                       currentIndex2 = index;

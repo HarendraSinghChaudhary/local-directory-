@@ -28,7 +28,7 @@ class _HomeScreenState extends State<AApp> {
       body: ListView(
         children: <Widget>[
         
-          VideoItems(
+        /*  VideoItems(
             videoPlayerController: VideoPlayerController.network(
                 'https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4'
             ),
@@ -41,19 +41,19 @@ class _HomeScreenState extends State<AApp> {
                 "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
             ),
           
-          ),
+          ),*/
         ],
       ),
     );
   }
 }
 
-class VideoItems extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
+class VideoItemsss extends StatefulWidget {
+  var videoPlayerController;
 
 
 
-VideoItems({
+VideoItemsss({
   required this.videoPlayerController,
   
 
@@ -61,12 +61,12 @@ VideoItems({
  
 
   @override
-  State<VideoItems> createState() => _VideoItemsState();
+  State<VideoItemsss> createState() => _VideoItemsState();
 }
 
-class _VideoItemsState extends State<VideoItems> {
+class _VideoItemsState extends State<VideoItemsss> {
 
-  ChewieController? _chewieController;
+  late ChewieController _chewieController;
   late VideoPlayerController _videoPlayerController;
 
   late Future<void> _future;
@@ -93,8 +93,21 @@ class _VideoItemsState extends State<VideoItems> {
   @override
 void initState() {
   super.initState();
-  _videoPlayerController = widget.videoPlayerController;
-    _future = initVideoPlayer();
+  _videoPlayerController = VideoPlayerController.network(widget.videoPlayerController);
+
+  _future = _videoPlayerController.initialize().then((_) {
+    //       Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+    setState(() {
+      _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController,
+          aspectRatio: _videoPlayerController.value.aspectRatio,
+          autoPlay: false,
+          looping: false,
+          autoInitialize: true
+      );
+    });
+  });
+   // _future = initVideoPlayer();
   // _chewieController = ChewieController(
   //   videoPlayerController: widget.videoPlayerController,
     
@@ -109,7 +122,6 @@ void initState() {
   //     );
   //   },
   // );
-
 }
 
 
@@ -121,10 +133,10 @@ void initState() {
 @override
 void dispose() {
   super.dispose();
+
   _videoPlayerController.dispose();
-  if(_chewieController!=null) {
-    _chewieController!.dispose();
-  }
+
+  _chewieController.dispose();
 }
 
 
@@ -139,7 +151,7 @@ void dispose() {
             width: double.infinity,
            
             child: Chewie(
-              controller: _chewieController!,
+              controller: _chewieController,
             ),
           ): Center(child: CircularProgressIndicator(color: kPrimaryColor,));
         

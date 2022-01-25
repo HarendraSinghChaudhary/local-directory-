@@ -72,17 +72,21 @@ class _TrimmerViewState extends State<TrimmerView> {
           currentPath = outputPath.toString();
 
            _value = outputPath;
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString("currentPath", outputPath.toString());
-         })
-        .then((value) async{
-      setState(()  {
-        _progressVisibility = false;
-        widget.file = File(_value.toString());
-      });
-    });
+
+         });
+
     print("Pathh: "+widget.file.path.toString());
-    return _value;
+    Future.delayed(Duration(milliseconds: 100), () {
+      if(_value!=null) {
+        setState(()  {
+          _progressVisibility = false;
+          widget.file = File(_value.toString());
+        });
+        return _value;
+
+      }
+    });
+
   }
 
   void _loadVideo() {
@@ -121,15 +125,20 @@ class _TrimmerViewState extends State<TrimmerView> {
                   onPressed: _progressVisibility
                       ? null
                       : () async {
-                          _saveVideo().then((outputPath) {
+                          await _saveVideo().then((outputPath) {
                             print('OUTPUT PATH: '+outputPath.toString());
-                         /*   final snackBar = SnackBar(
+                            popback(context);
+                          });
+
+                          /*   final snackBar = SnackBar(
                                 content: Text('Video Saved successfully'));
                             ScaffoldMessenger.of(context).showSnackBar(
                               snackBar,
                             );*/
-                            Navigator.of(context, rootNavigator: true).pop();
-                          });
+
+
+
+
                         },
                   child: Text("SAVE"),
                 ),
@@ -184,4 +193,24 @@ class _TrimmerViewState extends State<TrimmerView> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _trimmer.dispose();
+    super.dispose();
+  }
+}
+
+void popback(BuildContext context) {
+  Future.delayed(Duration(milliseconds: 100), () {
+    if(currentPath!=""){
+
+      Navigator.of(context, rootNavigator: true).pop();
+    }else{
+      popback(context);
+    }
+
+
+  });
+
 }

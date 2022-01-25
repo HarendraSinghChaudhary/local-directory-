@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,10 +49,12 @@ class _ExploreState extends State<Explore> {
       RefreshController(initialRefresh: true);
   List<NearBy> nearByRestaurantList = [];
   bool isRefresh = false;
+  List<NearBy> featuresBusinessList = [];
 
   @override
   void initState() {
     nearBy();
+    featuredBusinessApi();
     give();
     super.initState();
   }
@@ -109,11 +112,7 @@ class _ExploreState extends State<Explore> {
                           height: 1.5.h,
                         ),
                         CustomSliderWidget(
-                          items: [
-                            "assets/images/11.jpeg",
-                            "assets/images/11.jpeg",
-                            "assets/images/restaurant.jpeg"
-                          ],
+                          items: featuresBusinessList,id:ids
                         ),
                         SizedBox(
                           height: 1.5.h,
@@ -470,7 +469,9 @@ class _ExploreState extends State<Explore> {
     print("id Print: " + id.toString());
     ids = id.toString();
     print("idsss" + ids.toString());
-    setState(() {});
+    setState(() {
+
+    });
   }
 
   void _onRefresh() async {
@@ -672,8 +673,7 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.long = jsonArray[i]["long"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
           modelAgentSearch.checkIn_status = jsonArray[i]["checkIn_status"].toString();
-          modelAgentSearch.countUserreview =
-              jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.countUserreview = jsonArray[i]["totalReviewusers"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
 
@@ -682,9 +682,104 @@ class _ExploreState extends State<Explore> {
 
           nearByRestaurantList.add(modelAgentSearch);
         }
-
+        SchedulerBinding.instance!.addPostFrameCallback((_) {
         setState(() {
           isloading = false;
+        });
+        });
+        //Navigator.pop(context);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text(jsonRes["message"].toString())));
+        // sliderBannerApi();
+        //Navigator.pop(context);
+
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isloading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+
+  Future<dynamic> featuredBusinessApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print Slider: " + id.toString());
+    setState(() {
+      isloading = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.FEATUREDBUSINESS_URL,
+        ),
+        body: {
+          "id": id.toString(),
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+      //nearByRestaurantList.clear();
+      if (jsonRes["status"].toString() == "true") {
+        for (var i = 0; i < jsonArray.length; i++) {
+          NearBy modelAgentSearch = new NearBy();
+          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+          modelAgentSearch.business_images =
+              jsonArray[i]["business_images"].toString();
+          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+          modelAgentSearch.description = jsonArray[i]["description"].toString();
+          modelAgentSearch.business_category =
+              jsonArray[i]["business_category "].toString();
+          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+          modelAgentSearch.review_count =
+              jsonArray[i]["review_count"].toString();
+          modelAgentSearch.location = jsonArray[i]["location"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
+          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+          modelAgentSearch.long = jsonArray[i]["long"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.countUserreview =
+              jsonArray[i]["totalReviewusers"].toString();
+
+          print("id: " + modelAgentSearch.id.toString());
+          print("ratting: " + modelAgentSearch.avgratting.toString());
+
+          featuresBusinessList.add(modelAgentSearch);
+        }
+        SchedulerBinding.instance!.addPostFrameCallback((_) {
+          setState(() {
+            isloading = false;
+          });
         });
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -737,8 +832,9 @@ class NearBy {
 class CustomSliderWidget extends StatefulWidget {
   // final List<String> items;
   final List items;
+  var id;
 
-  CustomSliderWidget({required this.items});
+  CustomSliderWidget({required this.items, required this.id});
 
   @override
   _CustomSliderWidgetState createState() => _CustomSliderWidgetState();
@@ -747,14 +843,13 @@ class CustomSliderWidget extends StatefulWidget {
 class _CustomSliderWidgetState extends State<CustomSliderWidget> {
   bool isloading = false;
 
-  List<NearBy> featuresBusinessList = [];
-  var ids = "";
 
   @override
   void initState() {
     super.initState();
 
-    featuredBusinessApi();
+
+
   }
 
   int activeIndex = 0;
@@ -783,12 +878,12 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
               // autoPlay: true,
               viewportFraction: 1.0,
             ),
-            items: featuresBusinessList.map((featuresBusinessList) {
+            items: widget.items.map((featuresBusinessList) {
               return Builder(
                 builder: (BuildContext context) {
                   return InkWell(
                     onTap: () {
-                      if (ids.toString() != '72') {
+                      if (widget.id.toString() != '72') {
                         Navigator.of(context)
                             .push(
                           new MaterialPageRoute(
@@ -797,7 +892,7 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                                   )),
                         )
                             .then((value) {
-                          featuredBusinessApi();
+
                         });
 
 
@@ -881,7 +976,7 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
           bottom: 20,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(featuresBusinessList.length, (idx) {
+              children: List.generate(widget.items.length, (idx) {
                 return activeIndex == idx ? ActiveDot() : InactiveDot();
               })),
         )
@@ -889,106 +984,8 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
     );
   }
 
-   give() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString("id");
-    print("id Print: " + id.toString());
-    ids = id.toString();
-    print("idsss" + ids.toString());
-    setState(() {});
-  }
 
-  Future<dynamic> featuredBusinessApi() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString("id");
-    print("id Print: " + id.toString());
-    setState(() {
-      isloading = true;
-    });
 
-    var request = http.post(
-        Uri.parse(
-          RestDatasource.FEATUREDBUSINESS_URL,
-        ),
-        body: {
-          "id": id.toString(),
-        });
-    String msg = "";
-    var jsonArray;
-    var jsonRes;
-    var res;
-
-    await request.then((http.Response response) {
-      res = response;
-      final JsonDecoder _decoder = new JsonDecoder();
-      jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
-    });
-
-    if (res.statusCode == 200) {
-      print(jsonRes["status"]);
-      //nearByRestaurantList.clear();
-      if (jsonRes["status"].toString() == "true") {
-        for (var i = 0; i < jsonArray.length; i++) {
-          NearBy modelAgentSearch = new NearBy();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name =
-              jsonArray[i]["business_name"].toString();
-          modelAgentSearch.business_images =
-              jsonArray[i]["business_images"].toString();
-          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
-          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
-          modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category =
-              jsonArray[i]["business_category "].toString();
-          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count =
-              jsonArray[i]["review_count"].toString();
-          modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name =
-              jsonArray[i]["category_name"].toString();
-          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
-          modelAgentSearch.long = jsonArray[i]["long"].toString();
-          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-          modelAgentSearch.countUserreview =
-              jsonArray[i]["totalReviewusers"].toString();
-
-          print("id: " + modelAgentSearch.id.toString());
-          print("ratting: " + modelAgentSearch.avgratting.toString());
-
-          featuresBusinessList.add(modelAgentSearch);
-        }
-
-        setState(() {
-          isloading = false;
-        });
-        //Navigator.pop(context);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(jsonRes["message"].toString())));
-        // sliderBannerApi();
-        //Navigator.pop(context);
-
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
-
-      } else {
-        setState(() {
-          isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
-        });
-      }
-    } else {
-      setState(() {
-        isloading = false;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try later")));
-      });
-    }
-  }
 }
 
 class ActiveDot extends StatelessWidget {

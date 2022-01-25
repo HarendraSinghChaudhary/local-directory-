@@ -29,6 +29,7 @@ import 'package:wemarkthespot/services/api_client.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:path/path.dart' as path;
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../main.dart';
 import 'detailBusinessdynamic.dart';
@@ -41,7 +42,7 @@ class Hotspot extends StatefulWidget {
 }
 
 class _HotspotState extends State<Hotspot> {
-  var selectedId = "";
+
   var person_name = "";
   var user_image = "";
   var business_user_name = "";
@@ -58,9 +59,10 @@ class _HotspotState extends State<Hotspot> {
   TextEditingController reviewController = new TextEditingController();
   List<Asset> images = [];
   List<File> fileList = [];
-
-
-
+  String sendReview = "";
+  var selectedId = "";
+  List<String> selectedList = [];
+  String completeString = "";
 
   List<GetHotSpotClass> getHostSpotList = [];
   List<GetHotSpotClass> getHostSpotList2 = [];
@@ -73,6 +75,7 @@ class _HotspotState extends State<Hotspot> {
   String base64Image = "";
   String fileName = "";
   String replyfileName = "";
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<GetAllBusiness> getAllBusinessList = [];
   List<String> coments = [];
@@ -80,6 +83,7 @@ class _HotspotState extends State<Hotspot> {
   String str = '';
   String selectedName = "";
   String selectedvalue = "";
+
   @override
   void initState() {
     getId();
@@ -91,6 +95,7 @@ class _HotspotState extends State<Hotspot> {
   late var size;
 
   late var _height;
+  FocusNode _focusNode = FocusNode();
 
   void _scrollToIndex(index) {
     _controller.animateTo(_height * index,
@@ -103,6 +108,7 @@ class _HotspotState extends State<Hotspot> {
     _height = size.height;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Center(
@@ -208,8 +214,7 @@ class _HotspotState extends State<Hotspot> {
                       controller: _controller,
                       itemCount: getHostSpotList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        TextEditingController messageController =
-                            new TextEditingController();
+                        print("insdsk "+ getHostSpotList[index].str.toString());
                         return Column(
                           children: [
                             Card(
@@ -289,19 +294,91 @@ class _HotspotState extends State<Hotspot> {
                                                                         index]
                                                                     .person_name
                                                                     .toString()),
-                                                            TextSpan(
-                                                                text: getHostSpotList[
-                                                                        index]
-                                                                    .business_user_name
-                                                                    .toString(),
-                                                                recognizer:
-                                                                    TapGestureRecognizer()
-                                                                      ..onTap =
-                                                                          () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getHostSpotList[index].business_id)));
-                                                                      }),
+                                                            getHostSpotList[index]
+                                                                        .business !=
+                                                                    null
+                                                                ? TextSpan(
+                                                                    text: getHostSpotList[
+                                                                            index]
+                                                                        .business!
+                                                                        .name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                        TapGestureRecognizer()
+                                                                          ..onTap =
+                                                                              () {
+                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business!.id)));
+                                                                          })
+                                                                : TextSpan(
+                                                                    text: ""),
+                                                            getHostSpotList[index]
+                                                                        .business2 !=
+                                                                    null
+                                                                ? TextSpan(
+                                                                    text: getHostSpotList[
+                                                                            index]
+                                                                        .business2!
+                                                                        .name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                        TapGestureRecognizer()
+                                                                          ..onTap =
+                                                                              () {
+                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business2!.id)));
+                                                                          })
+                                                                : TextSpan(
+                                                                    text: ""),
+                                                            getHostSpotList[index]
+                                                                        .business3 !=
+                                                                    null
+                                                                ? TextSpan(
+                                                                    text: getHostSpotList[
+                                                                            index]
+                                                                        .business3!
+                                                                        .name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                        TapGestureRecognizer()
+                                                                          ..onTap =
+                                                                              () {
+                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business3!.id)));
+                                                                          })
+                                                                : TextSpan(
+                                                                    text: ""),
+                                                            getHostSpotList[index]
+                                                                        .business4 !=
+                                                                    null
+                                                                ? TextSpan(
+                                                                    text: getHostSpotList[
+                                                                            index]
+                                                                        .business4!
+                                                                        .name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                        TapGestureRecognizer()
+                                                                          ..onTap =
+                                                                              () {
+                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business4!.id)));
+                                                                          })
+                                                                : TextSpan(
+                                                                    text: ""),
+                                                            getHostSpotList[index]
+                                                                        .business5 !=
+                                                                    null
+                                                                ? TextSpan(
+                                                                    text: getHostSpotList[
+                                                                            index]
+                                                                        .business5!
+                                                                        .name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                        TapGestureRecognizer()
+                                                                          ..onTap =
+                                                                              () {
+                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business5!.id)));
+                                                                          })
+                                                                : TextSpan(
+                                                                    text: "")
                                                           ])),
                                                     ),
                                                     Padding(
@@ -359,22 +436,31 @@ class _HotspotState extends State<Hotspot> {
                                       height: 2.h,
                                     ),
                                     getHostSpotList[index]
-                                        .video_image_status
-                                        .toString() ==
-                                        "2"?SizedBox(
-                                        height: 200,
-                                        child: VideoItems(
-                                          videoPlayerController: VideoPlayerController.network(getHostSpotList[index].image[0]),
-
-                                        )):getHostSpotList[index]
-                                        .video_image_status
-                                        .toString() ==
-                                        "1"?
-                                    HotspotImageSlider(
-                                      items:getHostSpotList[index]
-                                                .image
-                                    ,
-                                    ):Container(width: 0, height: 0,),
+                                                .video_image_status
+                                                .toString() ==
+                                            "2"
+                                        ? SizedBox(
+                                            height: 200,
+                                            child: VideoItems(
+                                              videoPlayerController:
+                                                  VideoPlayerController.network(
+                                                      getHostSpotList[index]
+                                                          .image[0]),
+                                            ))
+                                        : getHostSpotList[index]
+                                                    .video_image_status
+                                                    .toString() ==
+                                                "1"
+                                            ? Container(
+                                                child: HotspotImageSlider(
+                                                  items: getHostSpotList[index]
+                                                      .image,
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 0,
+                                                height: 0,
+                                              ),
                                     SizedBox(
                                       height: 2.h,
                                     ),
@@ -383,7 +469,7 @@ class _HotspotState extends State<Hotspot> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(left: 9.w),
+                                          padding: EdgeInsets.only(left: 4.w),
                                           child: InkWell(
                                             onTap: () {
                                               Navigator.push(
@@ -435,13 +521,36 @@ class _HotspotState extends State<Hotspot> {
                                           child: SizedBox(
                                             width: 60.w,
                                             child: TextField(
-                                              controller: messageController,
+                                              controller: getHostSpotList[index].messageController,
                                               onChanged: (val) {
                                                 print(val);
+                                                setState(() {
+                                                  if ( getHostSpotList[
+                                                  index].selectedList.length < 5) {
+                                                    getHostSpotList[
+                                                    index].words = val.split(' ');
+                                                    getHostSpotList[
+                                                    index].str = getHostSpotList[
+                                                    index].words.length > 0 &&
+                                                        getHostSpotList[
+                                                        index].words[ getHostSpotList[
+                                                        index].words.length - 1].startsWith('@')
+                                                        ?  getHostSpotList[
+                                                    index].words[ getHostSpotList[
+                                                    index].words.length - 1]
+                                                        : '';
+                                                  }
 
-                                                getHostSpotList[index]
-                                                        .messageText =
-                                                    val.toString();
+                                                  if ( getHostSpotList[
+                                                  index].messageController.text.contains("@@")) {
+                                                    getHostSpotList[
+                                                    index].sendReview =  getHostSpotList[
+                                                    index].messageController.text;
+                                                    splitReplyString(index);
+                                                  }
+                                                });
+
+
                                               },
                                               minLines: 1,
                                               keyboardType:
@@ -468,13 +577,21 @@ class _HotspotState extends State<Hotspot> {
                                                       children: [
                                                         InkWell(
                                                             onTap: () {
-                                                              getHostSpotList[index].reply_image_video_status =
+                                                              getHostSpotList[
+                                                                          index]
+                                                                      .reply_image_video_status =
                                                                   "0";
-                                                              getHostSpotList[index].replyfile = null;
-                                                              getHostSpotList[index].replyfileName = "";
+                                                              getHostSpotList[
+                                                                          index]
+                                                                      .replyfile =
+                                                                  null;
+                                                              getHostSpotList[
+                                                                      index]
+                                                                  .replyfileName = "";
                                                               currentPath = "";
                                                               setState(() {});
-                                                              getFileDialogReply(index);
+                                                              getFileDialogReply(
+                                                                  index);
                                                             },
                                                             child: Icon(
                                                                 Icons
@@ -487,7 +604,7 @@ class _HotspotState extends State<Hotspot> {
                                                         InkWell(
                                                             onTap: () {
                                                               var mesage =
-                                                                  messageController
+                                                              getHostSpotList[index].messageController
                                                                       .text
                                                                       .toString();
 
@@ -501,6 +618,7 @@ class _HotspotState extends State<Hotspot> {
                                                                         content:
                                                                             Text("Please enter reply")));
                                                               } else {
+
                                                                 FocusScope.of(
                                                                         context)
                                                                     .unfocus();
@@ -509,14 +627,11 @@ class _HotspotState extends State<Hotspot> {
                                                                             index]
                                                                         .id
                                                                         .toString(),
-                                                                    getHostSpotList[
-                                                                            index]
-                                                                        .messageText
-                                                                        .toString(),
+                                                                    mesage,
                                                                     index);
                                                               }
 
-                                                              messageController
+                                                              getHostSpotList[index].messageController
                                                                   .clear();
                                                             },
                                                             child: Icon(
@@ -538,93 +653,362 @@ class _HotspotState extends State<Hotspot> {
                                     SizedBox(
                                       height: 1.h,
                                     ),
-                                    getHostSpotList[index].reply_image_video_status=="1"?Visibility(
-                                      visible: getHostSpotList[index].replyfileList!=null?getHostSpotList[index].replyfileList.length>0?true:false:false,
-                                      child: Container(
-                                        height: 8.h,
-                                        width: 80.w,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          controller: _controller,
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: getHostSpotList[index].replyfileList.length==0?0:getHostSpotList[index].replyfileList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int i) {
-                                            return Row(
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
-                                                      height: 7.h,
-                                                      width: 9.h,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      2.w),
-                                                          image: DecorationImage(
-                                                              image: FileImage(getHostSpotList[index].replyfileList[i]),
-                                                              fit:
-                                                                  BoxFit.fill)),
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 2.0, left: 14.w),
-                                                      child: Container(
-                                                        height: 2.h,
-                                                        width: 2.h,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                color: Colors
-                                                                    .white),
-                                                        child: Center(
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              getHostSpotList[index].replyfileList.removeAt(i);
-                                                              getHostSpotList[index].replyimages.removeAt(i);
-                                                              setState(() {
+                                    getHostSpotList[index].str.length > 0
+                                        ? ListView(
+                                            shrinkWrap: true,
+                                            children:
+                                                getAllBusinessList.map((s) {
 
-                                                              });
-                                                            },
+                                              if (('@' +
+                                                      s.business_name
+                                                          .toString()
+                                                          .toLowerCase())
+                                                  .contains(getHostSpotList[index].str
+                                                      .toString()
+                                                      .toLowerCase()))
+                                                return Container(
+                                                  color: Colors.white,
+                                                  child: ListTile(
+                                                      title: Text(
+                                                        s.business_name,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      onTap: () {
+                                                        String tmp =
+                                                        getHostSpotList[index].str.substring(
+                                                                1, getHostSpotList[index].str.length);
+                                                        print("tmp " +
+                                                            tmp.toString() +
+                                                            "^");
+                                                        getHostSpotList[index].selectedId =
+                                                            s.business_id;
+                                                        getHostSpotList[index].selectedList
+                                                            .add(s.business_id);
+
+                                                        setState(() {
+                                                          getHostSpotList[index]. messageController.text = getHostSpotList[index].messageController
+                                                              .text
+                                                              .toString()
+                                                              .substring(
+                                                                  0,
+                                                              getHostSpotList[index].messageController
+                                                                          .text
+                                                                          .toString()
+                                                                          .length -
+                                                                      tmp.length);
+                                                          getHostSpotList[index].messageController
+                                                                  .text +=
+                                                              s.business_name +
+                                                                  "@@" +
+                                                                  s.business_id +
+                                                                  "##";
+                                                          //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
+                                                          getHostSpotList[index].sendReview =
+                                                          getHostSpotList[index].messageController
+                                                                  .text
+                                                                  .toString();
+                                                          if (getHostSpotList[index].messageController
+                                                              .text
+                                                              .contains("@@")) {
+                                                            splitReplyString(index);
+                                                          }
+                                                          getHostSpotList[index].messageController
+                                                                  .selection =
+                                                              TextSelection.fromPosition(
+                                                                  TextPosition(
+                                                                      offset: getHostSpotList[index].messageController
+                                                                          .text
+                                                                          .length));
+                                                          getHostSpotList[index].str = '';
+                                                        });
+                                                      }),
+                                                );
+                                              else
+                                                return SizedBox();
+                                            }).toList())
+                                        : Visibility(
+                                            visible: false, child: SizedBox()),
+                                    SizedBox(height: 25),
+                                    getHostSpotList[index].coments.length > 0
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: getHostSpotList[index].coments.length,
+                                            itemBuilder: (con, ind) {
+                                              return Text.rich(
+                                                TextSpan(
+                                                    text: '',
+                                                    children:getHostSpotList[index].coments[ind]
+                                                        .split(' ')
+                                                        .map((w) {
+                                                      return w.startsWith(
+                                                                  '@') &&
+                                                              w.length > 1
+                                                          ? TextSpan(
+                                                              text: ' ' + w,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .blue),
+                                                            )
+                                                          : TextSpan(
+                                                              text: ' ' + w,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black));
+                                                    }).toList()),
+                                              );
+                                            },
+                                          )
+                                        : Visibility(
+                                            visible: false, child: SizedBox()),
+                                    getHostSpotList[index]
+                                                .reply_image_video_status ==
+                                            "1"
+                                        ? Visibility(
+                                            visible: getHostSpotList[index]
+                                                        .replyfileList !=
+                                                    null
+                                                ? getHostSpotList[index]
+                                                            .replyfileList
+                                                            .length >
+                                                        0
+                                                    ? true
+                                                    : false
+                                                : false,
+                                            child: Container(
+                                              height: 8.h,
+                                              width: 80.w,
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                controller: _controller,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount:
+                                                    getHostSpotList[index]
+                                                                .replyfileList
+                                                                .length ==
+                                                            0
+                                                        ? 0
+                                                        : getHostSpotList[index]
+                                                            .replyfileList
+                                                            .length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int i) {
+                                                  return Row(
+                                                    children: [
+                                                      Stack(
+                                                        children: [
+                                                          Container(
+                                                            height: 7.h,
+                                                            width: 9.h,
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(2
+                                                                            .w),
+                                                                image: DecorationImage(
+                                                                    image: FileImage(
+                                                                        getHostSpotList[index].replyfileList[
+                                                                            i]),
+                                                                    fit: BoxFit
+                                                                        .fill)),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 11.w,
+                                                                    bottom:
+                                                                        5.h),
+                                                            child:
+                                                                GestureDetector(
+                                                              onTap: () {
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyfileList
+                                                                    .removeAt(
+                                                                        i);
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyimages
+                                                                    .removeAt(
+                                                                        i);
+
+                                                                if (getHostSpotList[
+                                                                            index]
+                                                                        .replyfileList
+                                                                        .length ==
+                                                                    0) {
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .replyfile = null;
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .replyfileName = "";
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .replyfileList
+                                                                      .clear();
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .replyimages
+                                                                      .clear();
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .reply_image_video_status = "0";
+                                                                }
+                                                                setState(() {});
+                                                              },
+                                                              child: Container(
+                                                                height: 4.h,
+                                                                width: 4.h,
+                                                                color: Colors
+                                                                    .transparent,
+                                                                child: Center(
+                                                                  child:
+                                                                      Container(
+                                                                    height: 2.h,
+                                                                    width: 2.h,
+                                                                    decoration: BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    child:
+                                                                        Center(
+                                                                      child: SvgPicture
+                                                                          .asset(
+                                                                        "assets/icons/cross.svg",
+                                                                        width:
+                                                                            8,
+                                                                        color: Colors
+                                                                            .black,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: 2.w,
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        : Container(
+                                            width: 0,
+                                            height: 0,
+                                          ),
+                                    getHostSpotList[index]
+                                                .reply_image_video_status ==
+                                            "2"
+                                        ? Visibility(
+                                            visible: true,
+                                            child: Container(
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(10),
+                                                    topRight:
+                                                        Radius.circular(10)),
+                                              ),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              getHostSpotList[
+                                                                      index]
+                                                                  .replyfileList
+                                                                  .clear();
+                                                              getHostSpotList[
+                                                                          index]
+                                                                      .replyfile =
+                                                                  null;
+                                                              getHostSpotList[
+                                                                      index]
+                                                                  .replyfileName = "";
+                                                              base64Image = "";
+                                                              getHostSpotList[
+                                                                          index]
+                                                                      .reply_image_video_status =
+                                                                  "0";
+                                                              currentPath = "";
+                                                              getHostSpotList[
+                                                                      index]
+                                                                  .replyimages
+                                                                  .clear();
+                                                            });
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 5.0),
                                                             child: SvgPicture
                                                                 .asset(
                                                               "assets/icons/cross.svg",
-                                                              width: 8,
                                                               color:
-                                                                  Colors.black,
+                                                                  Colors.white,
+                                                              width: 4.w,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 1.5.h,
+                                                  ),
+                                                  Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    height: 50,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        getHostSpotList[index]
+                                                            .replyfileName,
+                                                        maxLines: 3,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  width: 2.w,
-                                                )
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ):Container(width: 0,height: 0,),
-                                    getHostSpotList[index].reply_image_video_status=="2"? Visibility(
-                                      visible: true,
-                                      child: Container(
-                                        height: 8.h,
-                                        width: 80.w,
-                                        child: Center(child: Text(getHostSpotList[index].replyfile!.path.toString(), style: TextStyle(color: Colors.white),)),
-                                      ),
-                                    ):Container(width: 0,height: 0,),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ))
+                                        : Container(
+                                            width: 0,
+                                            height: 0,
+                                          ),
+
                                   ],
                                 )),
                             SizedBox(
-                              height: 2.h,
+                              height: 1.h,
                             ),
                             //replyWidget(controller: _controller),
                           ],
@@ -662,6 +1046,8 @@ class _HotspotState extends State<Hotspot> {
                                   String tmp = str.substring(1, str.length);
                                   print("tmp " + tmp.toString() + "^");
                                   selectedId = s.business_id;
+                                  selectedList.add(s.business_id);
+
                                   setState(() {
                                     reviewController.text = reviewController
                                         .text
@@ -672,9 +1058,16 @@ class _HotspotState extends State<Hotspot> {
                                                     .toString()
                                                     .length -
                                                 tmp.length);
-                                    reviewController.text += s.business_name;
+                                    reviewController.text += s.business_name +
+                                        "@@" +
+                                        s.business_id +
+                                        "##";
                                     //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
-
+                                    sendReview =
+                                        reviewController.text.toString();
+                                    if (reviewController.text.contains("@@")) {
+                                      splitString();
+                                    }
                                     reviewController.selection =
                                         TextSelection.fromPosition(TextPosition(
                                             offset:
@@ -711,7 +1104,7 @@ class _HotspotState extends State<Hotspot> {
                     )
                   : Visibility(visible: false, child: SizedBox()),
               Visibility(
-                  visible: file == null ? false : true,
+                  visible:  file != null?true:false,
                   child: file != null
                       ? image_video_status == "1"
                           ? Container(
@@ -741,6 +1134,7 @@ class _HotspotState extends State<Hotspot> {
                                           : fileList.length,
                                       itemBuilder:
                                           (BuildContext context, int i) {
+                                        print("running" + image_video_status);
                                         return Row(
                                           children: [
                                             Stack(
@@ -759,34 +1153,46 @@ class _HotspotState extends State<Hotspot> {
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 2.0, left: 14.w),
-                                                  child: Container(
-                                                    height: 2.h,
-                                                    width: 2.h,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Colors.white),
-                                                    child: Center(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          fileList.removeAt(i);
-                                                          images.removeAt(i);
-                                                                                  if (fileList.length == 0) {
+                                                      left: 11.w, bottom: 5.h),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      fileList.removeAt(i);
+                                                      images.removeAt(i);
 
-                                                            file = null;
-                                                            fileName = "";
-                                                            fileList.clear();
-                                                            images.clear();
-                                                            
-                                                          }
-                                                          setState(() {
-
-                                                          });
-                                                        },
-                                                        child: SvgPicture.asset(
-                                                          "assets/icons/cross.svg",
-                                                          width: 8,
-                                                          color: Colors.black,
+                                                      if (fileList.length ==
+                                                          0) {
+                                                        file = null;
+                                                        fileName = "";
+                                                        fileList.clear();
+                                                        images.clear();
+                                                        image_video_status =
+                                                            "0";
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    child: Container(
+                                                      height: 4.h,
+                                                      width: 4.h,
+                                                      color: Colors.transparent,
+                                                      child: Center(
+                                                        child: Container(
+                                                          height: 2.h,
+                                                          width: 2.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white),
+                                                          child: Center(
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -830,6 +1236,8 @@ class _HotspotState extends State<Hotspot> {
                                                   base64Image = "";
                                                   image_video_status = "0";
                                                   currentPath = "";
+                                                  fileList.clear();
+                                                  images.clear();
                                                 });
                                               },
                                               child: Padding(
@@ -851,66 +1259,64 @@ class _HotspotState extends State<Hotspot> {
                                 ],
                               ),
                             )
-                          : Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10)),
-                                  color: kBackgroundColor),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
+
+                      : Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                              color: kBackgroundColor),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              file = null;
-                                              fileName = "";
-                                              base64Image = "";
-                                              image_video_status = "0";
-                                              currentPath = "";
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 5.0),
-                                            child: SvgPicture.asset(
-                                              "assets/icons/cross.svg",
-                                              color: Colors.white,
-                                              width: 4.w,
-                                            ),
-                                          ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          file = null;
+                                          fileName = "";
+                                          base64Image = "";
+                                          image_video_status = "0";
+                                          currentPath = "";
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
+                                        child: SvgPicture.asset(
+                                          "assets/icons/cross.svg",
+                                          color: Colors.white,
+                                          width: 4.w,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 1.5.h,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 50,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        fileName,
-                                        maxLines: 3,
-                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                            )
-                      : Container(
-                          color: Colors.white,
-                          height: 100,
-                        )),
+                              SizedBox(
+                                height: 1.5.h,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    fileName,
+                                    maxLines: 3,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ):  Container()
+              ),
               Container(
                 width: double.infinity,
                 height: 8.h,
@@ -923,6 +1329,8 @@ class _HotspotState extends State<Hotspot> {
                         file = null;
                         fileName = "";
                         currentPath = "";
+                        fileList.clear();
+                        images.clear();
                         setState(() {});
                         getFileDialog();
                       },
@@ -938,62 +1346,85 @@ class _HotspotState extends State<Hotspot> {
                     SizedBox(
                       width: 80.w,
                       height: 6.h,
-                      child: TextField(
-                        controller: reviewController,
-                        onChanged: (val) {
-                          setState(() {
-                            words = val.split(' ');
-                            str = words.length > 0 &&
-                                    words[words.length - 1].startsWith('@')
-                                ? words[words.length - 1]
-                                : '';
-                          });
+                      child: RawKeyboardListener(
+                        focusNode: _focusNode,
+                        onKey: (event) {
+                          if (event.logicalKey ==
+                              LogicalKeyboardKey.backspace) {
+                            // here you can check if textfield is focused
+                            print('backspace clicked');
+                          }
                         },
-                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 4.w, vertical: 0.h),
-                          focusColor: Colors.white,
-                          hoverColor: Colors.white,
-                          fillColor: kPrimaryColor,
-                          filled: true,
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(28),
-                              borderSide: BorderSide(color: kPrimaryColor)),
-                          hintText: "Leave a message...",
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                          ),
-                          suffixIcon: Visibility(
-                            visible: reviewController.text.toString() == "" ||
-                                    reviewController.text.toString() == "null"
-                                ? false
-                                : true,
-                            child: InkWell(
-                                onTap: () {
-                                  var mesage = reviewController.text.toString();
+                        child: TextField(
+                          controller: reviewController,
+                          onChanged: (val) {
+                            setState(() {
+                              if (selectedList.length < 5) {
+                                words = val.split(' ');
+                                str = words.length > 0 &&
+                                        words[words.length - 1].startsWith('@')
+                                    ? words[words.length - 1]
+                                    : '';
+                              }
 
-                                  if (reviewEnable == true) {
-                                    if (mesage == "" || mesage == "null") {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "Please write message")));
-                                    } else {
-                                      FocusScope.of(context).unfocus();
-                                      print(image_video_status);
-                                      addHotspotReviewApi(
-                                          reviewController.text.toString(),
-                                          selectedId.toString());
+                              if (reviewController.text.contains("@@")) {
+                                sendReview = reviewController.text;
+                                splitString();
+                              }
+                            });
+                          },
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 12.sp),
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4.w, vertical: 0.h),
+                            focusColor: Colors.white,
+                            hoverColor: Colors.white,
+                            fillColor: kPrimaryColor,
+                            filled: true,
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                                borderSide: BorderSide(color: kPrimaryColor)),
+                            hintText: "Leave a message...",
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                            ),
+                            suffixIcon: Visibility(
+                              visible: reviewController.text.toString() == "" ||
+                                      reviewController.text.toString() == "null"
+                                  ? false
+                                  : true,
+                              child: InkWell(
+                                  onTap: () {
+                                    var mesage =
+                                        reviewController.text.toString();
+
+                                    if (reviewEnable == true) {
+                                      if (mesage == "" || mesage == "null") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    "Please write message")));
+                                      } else {
+                                        FocusScope.of(context).unfocus();
+                                        print(image_video_status);
+                                        print(selectedList.toString());
+                                        print(sendReview);
+                                        print(
+                                            "CompleteString " + completeString);
+                                        addHotspotReviewApi(
+                                            reviewController.text.toString(),
+                                            selectedId.toString());
+                                      }
                                     }
-                                  }
 
-                                  reviewController.text.toString() == "";
-                                },
-                                child: Icon(Icons.send,
-                                    size: 9.w, color: Colors.white)),
+                                    reviewController.text.toString() == "";
+                                  },
+                                  child: Icon(Icons.send,
+                                      size: 9.w, color: Colors.white)),
+                            ),
                           ),
                         ),
                       ),
@@ -1016,6 +1447,7 @@ class _HotspotState extends State<Hotspot> {
     );
   }
 
+/*
   Column buildMessageFormField() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -1164,18 +1596,18 @@ class _HotspotState extends State<Hotspot> {
                             print("tmp " + tmp.toString() + "^");
                             selectedId = s.business_id;
                             setState(() {
-                              reviewController.text = reviewController.text
+                              sendReview = sendReview
                                   .toString()
                                   .substring(
                                       0,
-                                      reviewController.text.toString().length -
+                                  sendReview.length -
                                           tmp.length);
-                              reviewController.text += s.business_name;
+                              sendReview += s.business_name;
                               //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
 
                               reviewController.selection =
                                   TextSelection.fromPosition(TextPosition(
-                                      offset: reviewController.text.length));
+                                      offset: sendReview.length));
                               str = '';
                             });
                           }),
@@ -1215,8 +1647,11 @@ class _HotspotState extends State<Hotspot> {
               str = words.length > 0 && words[words.length - 1].startsWith('@')
                   ? words[words.length - 1]
                   : '';
+
+
             });
           },
+          onEditingComplete: splitString,
           style: TextStyle(color: Colors.white),
           cursorColor: Colors.white,
           decoration: InputDecoration(
@@ -1291,7 +1726,8 @@ class _HotspotState extends State<Hotspot> {
         ),
       ],
     );
-    /* return TextFormField(
+    */
+/* return TextFormField(
       controller: reviewController,
       onChanged: (val) {
         selectedvalue = val.toString();
@@ -1304,14 +1740,14 @@ class _HotspotState extends State<Hotspot> {
             context,
             label: " Please select a business",
             titleStyle: TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600, fontSize: 16.sp),
-           
+
             items: getAllBusinessList,
             showSearchBox: true,
             searchBoxMaxLines: 1,
             searchBoxDecoration: InputDecoration(
               hintText: " Search Business...",
               contentPadding: EdgeInsets.all(8)
-              
+
             ),
 
             // onFind: ,
@@ -1362,12 +1798,12 @@ class _HotspotState extends State<Hotspot> {
 
 
 
-       
+
       },
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       decoration: InputDecoration(
-        suffixIcon: 
+        suffixIcon:
         Visibility(
           visible: reviewController.text.toString()=="" || reviewController.text.toString()== "null"?true:false,
           child: InkWell(
@@ -1412,8 +1848,10 @@ class _HotspotState extends State<Hotspot> {
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-    );*/
+    );*/ /*
+
   }
+*/
 
   Widget buildInput() {
     return Container(
@@ -1433,6 +1871,46 @@ class _HotspotState extends State<Hotspot> {
         // focusNode: focusNode,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  String splitString() {
+    /*  var a = sendReview.split("");
+    print("abnbnbn "+a.toString()+"^^");
+*/
+
+    var abcList = "";
+    abcList = sendReview.replaceRange(
+        sendReview.indexOf("@@"), sendReview.indexOf("#") + 2, "");
+    if (abcList.contains("@@")) {
+      splitString();
+    } else {
+      reviewController.text = abcList;
+      return abcList;
+    }
+    return "";
+  }
+
+  String splitReplyString(int i) {
+    /*  var a = sendReview.split("");
+    print("abnbnbn "+a.toString()+"^^");
+*/
+
+    var abcList = "";
+    abcList = getHostSpotList[i].sendReview.replaceRange(
+        getHostSpotList[i].sendReview.indexOf("@@"),  getHostSpotList[i].sendReview.indexOf("#") + 2, "");
+    if (abcList.contains("@@")) {
+      splitReplyString(i);
+    } else {
+      getHostSpotList[i].messageController.text = abcList;
+      return abcList;
+    }
+    return "";
   }
 
   Future<dynamic> searchData(String key) async {
@@ -1551,24 +2029,53 @@ class _HotspotState extends State<Hotspot> {
     );
 
     request.fields["user_id"] = id.toString();
-    request.fields["business_id"] = sec != "" ? sec.toString() : "312";
+    if (selectedList.length > 0) {
+      if (selectedList.length == 1) {
+        request.fields["business_id"] = selectedList[0];
+      } else if (selectedList.length == 2) {
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+      } else if (selectedList.length == 3) {
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+      } else if (selectedList.length == 4) {
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+        request.fields["business_id4"] = selectedList[3];
+      } else if (selectedList.length == 5) {
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+        request.fields["business_id4"] = selectedList[3];
+        request.fields["business_id5"] = selectedList[4];
+      }
+    }
+    /*else {
+      request.fields["business_id"] = sec != "" ? sec.toString() : "312";
+     // request.fields["business_id2"] = sec != "" ? sec.toString() : "312";
+     // request.fields["business_id3"] = sec != "" ? sec.toString() : "312";
+     // request.fields["business_id4"] = sec != "" ? sec.toString() : "312";
+     // request.fields["business_id5"] = sec != "" ? sec.toString() : "312";
+    }*/
     request.fields["message"] = reviewController.text;
     request.fields["video_image_status"] = image_video_status;
 
-    if(image_video_status=="2"){
-      request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
-
-    }else if(image_video_status=="1"){
-    images.forEach((element) async {
-      var path = await FlutterAbsolutePath.getAbsolutePath(
-          element.identifier.toString());
-      print("ImagePath " + path.toString());
-      request.files.add(http.MultipartFile(
-          'image[]',
-          File(path.toString()).readAsBytes().asStream(),
-          File(path.toString()).lengthSync(),
-          filename: path.toString().split("/").last));
-    });
+    if (image_video_status == "2") {
+      request.files
+          .add(await http.MultipartFile.fromPath("image[]", file!.path));
+    } else if (image_video_status == "1") {
+      images.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("ImagePath " + path.toString());
+        request.files.add(http.MultipartFile(
+            'image[]',
+            File(path.toString()).readAsBytes().asStream(),
+            File(path.toString()).lengthSync(),
+            filename: path.toString().split("/").last));
+      });
     }
 
     String msg = "";
@@ -1583,6 +2090,7 @@ class _HotspotState extends State<Hotspot> {
       base64Image = "";
       image_video_status = "0";
       selectedId = "";
+      selectedList.clear();
       images.clear();
       fileList.clear();
       var respone = await res.stream.bytesToString();
@@ -1626,6 +2134,7 @@ class _HotspotState extends State<Hotspot> {
       }
     } else {
       setState(() {
+        reviewEnable = true;
         isloading = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));
@@ -1653,13 +2162,55 @@ class _HotspotState extends State<Hotspot> {
     request.fields["reply_id"] = "0";
     request.fields["type"] = "HOTSPOT";
     request.fields["message"] = messageText;
-    request.fields["video_image_status"] = getHostSpotList[index].reply_image_video_status;
-
-
-    if(getHostSpotList[index].reply_image_video_status=="2"){
-      request.files.add(await http.MultipartFile.fromPath("image[]", getHostSpotList[index].replyfile!.path));
-
-    }else if(getHostSpotList[index].reply_image_video_status=="1"){
+    request.fields["video_image_status"] =
+        getHostSpotList[index].reply_image_video_status;
+    if (getHostSpotList[
+    index].selectedList.length > 0) {
+      if (getHostSpotList[
+      index].selectedList.length == 1) {
+        request.fields["business_id"] = getHostSpotList[
+        index].selectedList[0];
+      } else if (getHostSpotList[
+      index].selectedList.length == 2) {
+        request.fields["business_id"] = getHostSpotList[
+        index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[
+        index].selectedList[1];
+      } else if (getHostSpotList[
+      index].selectedList.length == 3) {
+        request.fields["business_id"] = getHostSpotList[
+        index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[
+        index].selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[
+        index].selectedList[2];
+      } else if (getHostSpotList[
+      index].selectedList.length == 4) {
+        request.fields["business_id"] = getHostSpotList[
+        index].selectedList[0];
+        request.fields["business_id2"] =getHostSpotList[
+        index]. selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[
+        index].selectedList[2];
+        request.fields["business_id4"] = getHostSpotList[
+        index].selectedList[3];
+      } else if (selectedList.length == 5) {
+        request.fields["business_id"] = getHostSpotList[
+        index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[
+        index].selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[
+        index].selectedList[2];
+        request.fields["business_id4"] = getHostSpotList[
+        index].selectedList[3];
+        request.fields["business_id5"] = getHostSpotList[
+        index].selectedList[4];
+      }
+    }
+    if (getHostSpotList[index].reply_image_video_status == "2") {
+      request.files.add(await http.MultipartFile.fromPath(
+          "image[]", getHostSpotList[index].replyfile!.path));
+    } else if (getHostSpotList[index].reply_image_video_status == "1") {
       getHostSpotList[index].replyimages.forEach((element) async {
         var path = await FlutterAbsolutePath.getAbsolutePath(
             element.identifier.toString());
@@ -1706,10 +2257,9 @@ class _HotspotState extends State<Hotspot> {
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
-      if(index>1){
-        _scrollToIndex(index-1);
+      if (index > 1) {
+        _scrollToIndex(index - 1);
       }
-
     } else {
       setState(() {
         isloading = false;
@@ -1817,17 +2367,67 @@ class _HotspotState extends State<Hotspot> {
         for (var i = 0; i < jsonArray.length; i++) {
           GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.person_name = jsonArray[i]["person_name"].toString();
-          modelAgentSearch.user_image = jsonArray[i]["user_image"].toString();
-          if (jsonArray[i]["business_id"].toString() == "312") {
+          modelAgentSearch.person_name =
+              jsonArray[i]["user"]["name"].toString();
+          modelAgentSearch.user_image =
+              jsonArray[i]["user"]["image"].toString();
+          print("UserImage " + jsonArray[i]["user"]["image"] + "^^");
+          if (jsonArray[i]["business"].toString() != "[]") {
+            BuisnessData buisnessData = new BuisnessData();
+            buisnessData.id = jsonArray[i]["business"]["id"].toString();
+            buisnessData.name =
+                " @ " + jsonArray[i]["business"]["business_name"].toString();
+            buisnessData.image = jsonArray[i]["business"]["image"].toString();
+            print("Businessname " +
+                jsonArray[i]["business"]["business_name"].toString());
+            modelAgentSearch.business = buisnessData;
+          }
+          if (jsonArray[i]["business2"].toString() != "[]") {
+            BuisnessData buisnessData2 = new BuisnessData();
+            buisnessData2.id = jsonArray[i]["business2"]["id"].toString();
+            buisnessData2.name =
+                " @ " + jsonArray[i]["business2"]["business_name"].toString();
+            buisnessData2.image = jsonArray[i]["business2"]["image"].toString();
+            modelAgentSearch.business2 = buisnessData2;
+          }
+          if (jsonArray[i]["business3"].toString() != "[]") {
+            BuisnessData buisnessData3 = new BuisnessData();
+            buisnessData3.id = jsonArray[i]["business3"]["id"].toString();
+            buisnessData3.name =
+                " @ " + jsonArray[i]["business3"]["business_name"].toString();
+            buisnessData3.image = jsonArray[i]["business3"]["image"].toString();
+            modelAgentSearch.business3 = buisnessData3;
+          }
+          if (jsonArray[i]["business4"].toString() != "[]") {
+            BuisnessData buisnessData4 = new BuisnessData();
+            buisnessData4.id = jsonArray[i]["business4"]["id"].toString();
+            buisnessData4.name =
+                " @ " + jsonArray[i]["business4"]["business_name"].toString();
+            buisnessData4.image = jsonArray[i]["business4"]["image"].toString();
+            modelAgentSearch.business4 = buisnessData4;
+          }
+          if (jsonArray[i]["business5"].toString() != "[]") {
+            BuisnessData buisnessData5 = new BuisnessData();
+            buisnessData5.id = jsonArray[i]["business5"]["id"].toString();
+            buisnessData5.name =
+                " @ " + jsonArray[i]["business5"]["business_name"].toString();
+            buisnessData5.image = jsonArray[i]["business5"]["image"].toString();
+            modelAgentSearch.business5 = buisnessData5;
+          }
+        /*       if (jsonArray[i]["business_id"].toString() == "312") {
             modelAgentSearch.business_user_name = "";
           } else {
             modelAgentSearch.business_user_name =
                 " @ " + jsonArray[i]["business_user_name"].toString();
-          }
+          }*/
           modelAgentSearch.video_image_status =
               jsonArray[i]["video_image_status"].toString();
-          modelAgentSearch.image = jsonArray[i]["image"] ;
+
+          if (jsonArray[i]["video_image_status"].toString() != "0") {
+            print(
+                "Ye h " + jsonArray[i]["video_image_status"].toString() + "&&");
+             modelAgentSearch.image = jsonArray[i]["image"] != "" ? jsonArray[i]["image"] : [];
+          }
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
@@ -1894,7 +2494,7 @@ class _HotspotState extends State<Hotspot> {
 
   getFileDialog() {
     showDialog(
-      context: context,
+      context: _scaffoldKey.currentContext!,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -1919,6 +2519,146 @@ class _HotspotState extends State<Hotspot> {
                           fileName = "";
                           currentPath = "";
                           images.clear();
+                          fileList.clear();
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        child: SvgPicture.asset(
+                          "assets/icons/cross.svg",
+                          color: Colors.white,
+                          width: 4.w,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  Text(
+                    "What do you want to upload?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.white,
+                        // fontWeight: FontWeight.w500,
+                        fontFamily: "Roboto"
+                        //fontFamily: "Segoepr"
+                        ),
+                  ),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Image",
+                      press: () async {
+                        if (image_video_status == "2") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          //getCheckInImage();
+                          //pickFile();
+                          await pickImagesss();
+                          setState(() {
+                            print("length " + fileList.length.toString() + "*");
+                          });
+                        }
+                      }),
+                  SizedBox(
+                    height: 1.5.h,
+                  ),
+                  DefaultButton(
+                      width: 35.w,
+                      height: 6.h,
+                      text: "Video",
+                      press: () async {
+                        if (image_video_status == "1") {
+                          final snackBar = SnackBar(
+                              content: Text(
+                                  'Either image or video can be post at a time'));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            snackBar,
+                          );
+                        } else {
+                          File file1;
+                          FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                            type: FileType.video,
+                            allowCompression: false,
+                          );
+                          if (result != null) {
+                            file1 = File(result.files.single.path!);
+
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return TrimmerView(file1);
+                              }),
+                            );
+                            Navigator.of(context, rootNavigator: true).pop();
+                            print("CurrentPth "+currentPath+"");
+                            if (currentPath != "") {
+                              file = File(currentPath.toString());
+                              fileName = path.basename(file!.path);
+                              print("Filename " + fileName.toString());
+                              image_video_status = "2";
+                              print("fileName "+fileName+"");
+
+                              if (fileName == "" || fileName == null) {
+                                fileName = "File:- ";
+                              } else {
+                                fileName = "File:- " + fileName;
+                              }
+                              setState(() {});
+                            } else {
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+
+                              setState(() {});
+                            }
+                          }
+                        }
+                      })
+                ],
+              ),
+            )));
+      },
+    );
+  }
+
+  getFileDialogReply(int index) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: SingleChildScrollView(
+                child: SizedBox(
+              height: 25.h,
+              width: 95.w,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          file = null;
+                          fileName = "";
+                          currentPath = "";
+                          getHostSpotList[index].replyimages.clear();
+                          getHostSpotList[index].replyfileList.clear();
+                          getHostSpotList[index].replyfile = null;
+                          getHostSpotList[index].reply_image_video_status = "0";
                           Navigator.of(context, rootNavigator: true).pop();
                         },
                         child: SvgPicture.asset(
@@ -1951,7 +2691,8 @@ class _HotspotState extends State<Hotspot> {
                       height: 6.h,
                       text: "Image",
                       press: () {
-                        if (image_video_status == "2") {
+                        if (getHostSpotList[index].reply_image_video_status ==
+                            "2") {
                           final snackBar = SnackBar(
                               content: Text(
                                   'Either image or video can be post at a time'));
@@ -1960,9 +2701,14 @@ class _HotspotState extends State<Hotspot> {
                           );
                         } else {
                           //getCheckInImage();
-
-                            pickImagesss();
-
+                          file = null;
+                          fileName = "";
+                          currentPath = "";
+                          getHostSpotList[index].replyimages.clear();
+                          getHostSpotList[index].replyfileList.clear();
+                          getHostSpotList[index].replyfile = null;
+                          getHostSpotList[index].reply_image_video_status = "0";
+                          pickImagess(index);
                         }
                       }),
                   SizedBox(
@@ -1973,7 +2719,8 @@ class _HotspotState extends State<Hotspot> {
                       height: 6.h,
                       text: "Video",
                       press: () async {
-                        if (image_video_status == "1") {
+                        if (getHostSpotList[index].reply_image_video_status ==
+                            "1") {
                           final snackBar = SnackBar(
                               content: Text(
                                   'Either image or video can be post at a time'));
@@ -1981,193 +2728,48 @@ class _HotspotState extends State<Hotspot> {
                             snackBar,
                           );
                         } else {
+                          File file1;
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
                             type: FileType.video,
                             allowCompression: false,
                           );
                           if (result != null) {
-                            file = File(result.files.single.path!);
-                            fileName = path.basename(file!.path);
-                            print("Filename " + fileName.toString() + "^");
+                            file1 = File(result.files.single.path!);
 
-                            if (fileName == "" || fileName == null) {
-                              fileName = "File:- ";
-                            } else {
-                              fileName = "File:- " + fileName;
-                            }
-
-                            Navigator.of(context).push(
+                            await Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
-                                return TrimmerView(file!);
+                                return TrimmerView(file1);
                               }),
-                            ).then((value) {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              setState(() {
-                                image_video_status = "2";
-                              });
-                              Future.delayed(Duration(seconds: 2), () {
-                                if (currentPath != "") {
-                                  file = File(currentPath.toString());
-                                  fileName = path.basename(file!.path);
-                                  print("Filename " + fileName.toString());
-                                  setState(() {});
-                                } else {
-                                  file = null;
-                                  fileName = "";
-                                  image_video_status = "0";
-                                  setState(() {});
-                                }
-                              });
-                            });
+                            );
+                            Navigator.of(context, rootNavigator: true).pop();
+
+                            if (currentPath != "") {
+                              getHostSpotList[index].replyfile =
+                                  File(currentPath.toString());
+                              getHostSpotList[index].replyfileName =
+                                  path.basename(
+                                      getHostSpotList[index].replyfile!.path);
+                              print("Filename " +
+                                  getHostSpotList[index]
+                                      .replyfileName
+                                      .toString());
+                              getHostSpotList[index].reply_image_video_status =
+                                  "2";
+                              setState(() {});
+                            } else {
+                              getHostSpotList[index].replyfile = null;
+                              getHostSpotList[index].replyfileName = "";
+                              getHostSpotList[index].reply_image_video_status =
+                                  "0";
+                              setState(() {});
+                            }
                           }
                         }
                       })
                 ],
               ),
             )));
-      },
-    );
-  }
-
-
-  getFileDialogReply(int index) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            scrollable: true,
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.w)),
-            title: SingleChildScrollView(
-                child: SizedBox(
-                  height: 25.h,
-                  width: 95.w,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              file = null;
-                              fileName = "";
-                              currentPath = "";
-                              getHostSpotList[index].replyimages.clear();
-                              getHostSpotList[index].replyfileList.clear();
-                              getHostSpotList[index].replyfile = null;
-                              getHostSpotList[index].reply_image_video_status = "0";
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                            child: SvgPicture.asset(
-                              "assets/icons/cross.svg",
-                              color: Colors.white,
-                              width: 4.w,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Text(
-                        "What do you want to upload?",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 13.sp,
-                            color: Colors.white,
-                            // fontWeight: FontWeight.w500,
-                            fontFamily: "Roboto"
-                          //fontFamily: "Segoepr"
-                        ),
-                      ),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
-                      DefaultButton(
-                          width: 35.w,
-                          height: 6.h,
-                          text: "Image",
-                          press: () {
-                            if (getHostSpotList[index].reply_image_video_status == "2") {
-                              final snackBar = SnackBar(
-                                  content: Text(
-                                      'Either image or video can be post at a time'));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                snackBar,
-                              );
-                            } else {
-                              //getCheckInImage();
-
-                                pickImagess(index);
-
-
-                            }
-                          }),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
-                      DefaultButton(
-                          width: 35.w,
-                          height: 6.h,
-                          text: "Video",
-                          press: () async {
-                            if (getHostSpotList[index].reply_image_video_status == "1") {
-                              final snackBar = SnackBar(
-                                  content: Text(
-                                      'Either image or video can be post at a time'));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                snackBar,
-                              );
-                            } else {
-                              FilePickerResult? result =
-                              await FilePicker.platform.pickFiles(
-                                type: FileType.video,
-                                allowCompression: false,
-                              );
-                              if (result != null) {
-                                getHostSpotList[index].replyfile = File(result.files.single.path!);
-                                getHostSpotList[index].replyfileName = path.basename(getHostSpotList[index].replyfile!.path);
-                                print("Filename " + getHostSpotList[index].replyfileName.toString() + "^");
-
-                                if (getHostSpotList[index].replyfileName == "" || getHostSpotList[index].replyfileName == null) {
-                                  getHostSpotList[index].replyfileName = "File:- ";
-                                } else {
-                                  getHostSpotList[index].replyfileName = "File:- " + getHostSpotList[index].replyfileName;
-                                }
-
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) {
-                                    return TrimmerView(getHostSpotList[index].replyfile!);
-                                  }),
-                                ).then((value) {
-                                  Navigator.of(context, rootNavigator: true).pop();
-                                  setState(() {
-                                    getHostSpotList[index].reply_image_video_status = "2";
-                                  });
-                                  Future.delayed(Duration(seconds: 2), () {
-                                    if (currentPath != "") {
-                                      getHostSpotList[index].replyfile = File(currentPath.toString());
-                                      fileName = path.basename(getHostSpotList[index].replyfile!.path);
-                                      print("Filename " + getHostSpotList[index].replyfileName.toString());
-                                      setState(() {});
-                                    } else {
-                                      getHostSpotList[index].replyfile = null;
-                                      getHostSpotList[index].replyfileName = "";
-                                      getHostSpotList[index].reply_image_video_status = "0";
-                                      setState(() {});
-                                    }
-                                  });
-                                });
-                              }
-                            }
-                          })
-                    ],
-                  ),
-                )));
       },
     );
   }
@@ -2279,7 +2881,149 @@ class _HotspotState extends State<Hotspot> {
     id = prefs.getString("id").toString();
   }
 
+  Future<List<File?>> getFilefromAsset(List<Asset> assets) async {
+    File file;
+    var fileName;
+    List<File?> fileListLocal = [];
+    assets.forEach((element) async {
+      var path = await FlutterAbsolutePath.getAbsolutePath(
+          element.identifier.toString());
+      print("path " + path.toString() + "*");
+
+      file = File(path.toString());
+      fileName = file.path.split("/").last;
+      fileList.add(file);
+    });
+    print("Lentghhh " + fileListLocal.length.toString());
+    return fileList;
+  }
+
   Future<void> pickImagesss() async {
+    const platform = const MethodChannel('flutter_absolute_path');
+
+    List<Asset> resultList = [];
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 3,
+        enableCamera: false,
+        selectedAssets: images,
+        materialOptions: MaterialOptions(
+          actionBarTitle: "Select upto 3 Images",
+        ),
+      );
+      images = resultList;
+      if (images.length > 0) {
+        image_video_status = "1";
+
+        /*     images.forEach((element) async {
+         */ /* if(Platform.isIOS){
+            final Map<String, dynamic> params = <String, dynamic>{
+              'uri': element.identifier.toString(),
+            };
+       */ /**/ /*     file = await getImageFileFromAssets(element);
+            fileName = file!
+                .path
+                .split("/")
+                .last;
+            fileList.add(file!);*/ /**/ /*
+            try {
+              final result = await platform.invokeMethod('getAbsolutePath', params);
+              print("resulttt"+result);
+              file = File(result.toString());
+              fileName = file!
+                  .path
+                  .split("/")
+                  .last;
+              fileList.add(file!);
+              print("FilePath "+file!.path.toString());
+            } on PlatformException catch (e) {
+              print("Error");
+            }
+            print("FilePath "+file!.path.toString());
+          }*/ /*
+
+            file = await getFilefromAsset(element);
+            fileName = file!
+                .path
+                .split("/")
+                .last;
+            fileList.add(file!);
+
+
+        });
+
+*/
+        /*  await getFilefromAsset(images).whenComplete(() {
+          print("lengthhhh " + fileList.length.toString() + "*");
+
+        });*/
+        images.forEach((element) async {
+          var path = await FlutterAbsolutePath.getAbsolutePath(
+              element.identifier.toString());
+          print("path " + path.toString() + "*");
+
+          file = File(path.toString());
+          fileName = file!.path.split("/").last;
+          fileList.add(file!);
+
+          setState(() {});
+        });
+      }
+      Navigator.of(context, rootNavigator: true).pop();
+    } on Exception catch (e) {
+      print(e);
+      image_video_status = "0";
+    }
+
+    print("pathhh " + fileName.toString() + "*");
+  }
+
+  Future<File> getImageFileFromAssets(Asset asset) async {
+    final byteData = await asset.getByteData();
+
+    final tempFile =
+        File("${(await getTemporaryDirectory()).path}/${asset.name}");
+    final file = await tempFile.writeAsBytes(
+      byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    );
+    return file;
+  }
+
+  Future<void> pickFile() async {
+    /* var result = await PhotoManager.requestPermissionExtend();
+    if(result.isAuth){
+      List<AssetPathEntity> list = await PhotoManager.getAssetPathList();
+      AssetPathEntity data = list[1]; // 1st album in the list, typically the "Recent" or "All" album
+      List<AssetEntity> imageList = await data.assetList;
+      File? file = await imageList.first.file;
+      print(file!.path.toString());
+    }*/
+    /*   final ImagePicker _picker = ImagePicker();
+    try {
+      final pickedFileList = await _picker.pickMultiImage(  );
+      setState(() {
+        if(pickedFileList!=null) {
+          print(pickedFileList.length);
+        }
+      });
+    } catch (e) {
+      setState(() {
+
+      });
+    }
+*/
+
+    /* FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image,allowMultiple: true);
+    if(result!=null){
+      List<File> files = result.paths.map((path) => File(path!)).toList();
+      print(files.length);
+
+    }else {
+      print("Error while picking file");
+    }
+
+
     List<Asset> resultList = [];
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -2311,40 +3055,36 @@ class _HotspotState extends State<Hotspot> {
     setState(() {
       print("length " + images.length.toString() + "*");
     });
-    print("pathhh " + fileName.toString() + "*");
+    print("pathhh " + fileName.toString() + "*");*/
   }
 
   Future<void> pickImagess(int index) async {
     await pickImages().then((value) {
       getHostSpotList[index].replyimages = value;
-      print("lengthhhhhh "+getHostSpotList[index].replyimages.length.toString()+"*");
-
+      print("lengthhhhhh " +
+          getHostSpotList[index].replyimages.length.toString() +
+          "*");
     });
-    if(getHostSpotList[index].replyimages.length>0){
+    if (getHostSpotList[index].replyimages.length > 0) {
       getHostSpotList[index].reply_image_video_status = "1";
-      getHostSpotList[index].replyimages.forEach((element) async{
-
-        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
-        print("pathhh "+path.toString()+"*");
+      getHostSpotList[index].replyimages.forEach((element) async {
+        var path = await FlutterAbsolutePath.getAbsolutePath(
+            element.identifier.toString());
+        print("pathhh " + path.toString() + "*");
 
         getHostSpotList[index].replyfile = File(path.toString());
-        getHostSpotList[index].replyfileName = getHostSpotList[index].replyfile!.path.split("/").last;
-        getHostSpotList[index].replyfileList.add(getHostSpotList[index].replyfile!);
+        getHostSpotList[index].replyfileName =
+            getHostSpotList[index].replyfile!.path.split("/").last;
+        getHostSpotList[index]
+            .replyfileList
+            .add(getHostSpotList[index].replyfile!);
+        setState(() {});
       });
-
-      setState(() {
-        print("lengthhhhhhnewImages "+getHostSpotList[index].replyimages.length.toString()+"*");
-        print("lengthhhhhhnew "+getHostSpotList[index].replyfileList.length.toString()+"*");
-
-      });
-    }else{
+      Navigator.of(context, rootNavigator: true).pop();
+    } else {
       getHostSpotList[index].reply_image_video_status = "0";
       getHostSpotList[index].replyimages.clear();
     }
-    Navigator.pop(context);
-
-
-
   }
 }
 
@@ -2361,11 +3101,29 @@ class GetHotSpotClass {
   List<dynamic> image = [];
   var video_image_status = "";
   var timedelay = "Secconds";
- var reply_image_video_status = "0";
-  File? replyfile ;
+  var reply_image_video_status = "0";
+  File? replyfile;
+  String str = '';
+  var words = [];
+
+  List<String> coments = [];
+  TextEditingController messageController =
+  new TextEditingController();
   var replyfileName = "";
   List<Asset> replyimages = [];
   List<File> replyfileList = [];
+  String sendReview = "";
+  var selectedId = "";
+  List<String> selectedList = [];
+  BuisnessData? business;
+
+  BuisnessData? business2;
+
+  BuisnessData? business3;
+
+  BuisnessData? business4;
+
+  BuisnessData? business5;
 }
 
 class GetAllBusiness {

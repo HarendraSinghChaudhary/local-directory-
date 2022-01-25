@@ -228,9 +228,7 @@ class _HomeState extends State<Home> {
         body: isloading
             ? Align(
                 alignment: Alignment.center,
-                child: Platform.isAndroid
-                    ? ShimmerEffectHome()
-                    : CupertinoActivityIndicator())
+                child: ShimmerEffectHome())
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -668,9 +666,11 @@ class _HomeState extends State<Home> {
     print("id Print: " + id.toString());
     print("id lat: " + latPosition.toString());
     print("id long: " + longPosition.toString());
-    setState(() {
-      isloading = true;
-    });
+    if(mounted) {
+      setState(() {
+        isloading = true;
+      });
+    }
 
     var request = http.post(
         Uri.parse(

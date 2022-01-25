@@ -396,11 +396,18 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                           )
                                                         : InkWell(
                                                             onTap: () {
-                                                              setState(() {
-                                                                getReplyOnCommunityList[
-                                                                        index]
-                                                                    .viewV = true;
-                                                              });
+                                                              if(  getReplyOnCommunityList[
+                                                              index].childrenList !=null){
+                                                                if(getReplyOnCommunityList[
+                                                                index].childrenList.length>0){
+                                                                  setState(() {
+                                                                    getReplyOnCommunityList[
+                                                                    index]
+                                                                        .viewV = true;
+                                                                  });
+                                                                }
+                                                              }
+
                                                             },
                                                             child: Text(
                                                               "View Replies",
@@ -548,7 +555,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                             fileName = "";
                                                             fileList.clear();
                                                             images.clear();
-                                                            
+                                                            image_video_status = "0";
+
                                                           }
                                                           setState(() {});
                                                         },
@@ -1124,6 +1132,8 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                           file = null;
                           fileName = "";
                           currentPath = "";
+                          fileList.clear();
+                          images.clear();
                         },
                         child: SvgPicture.asset(
                           "assets/icons/cross.svg",
@@ -1184,47 +1194,52 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             snackBar,
                           );
                         } else {
+                          File file1;
+
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
                             type: FileType.video,
                             allowCompression: false,
                           );
                           if (result != null) {
-                            file = File(result.files.single.path!);
-                            fileName = path.basename(file!.path);
-                            print("Filename " + fileName.toString() + "^");
+                            file1 = File(result.files.single.path!);
+                           await Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return TrimmerView(file1);
+                              }),
+                            );
 
-                            if (fileName == "" || fileName == null) {
-                              fileName = "File:- ";
-                              viewVisible = true;
+                            Navigator.of(context, rootNavigator: true).pop();
+                            if (currentPath != "") {
+                              file = File(currentPath.toString());
+                              fileName = path.basename(file!.path);
+                              print("Filename " + fileName.toString());
+                              image_video_status = "2";
+                              if (fileName == "" || fileName == null) {
+                                fileName = "File:- ";
+                                viewVisible = true;
+                              } else {
+                                fileName = "File:- " + fileName;
+                                viewVisible = true;
+                              }
+                              setState(() {});
                             } else {
-                              fileName = "File:- " + fileName;
-                              viewVisible = true;
+
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+                              if (fileName == "" || fileName == null) {
+                                fileName = "File:- ";
+                                viewVisible = true;
+                              } else {
+                                fileName = "File:- " + fileName;
+                                viewVisible = true;
+                              }
+                              setState(() {});
                             }
 
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return TrimmerView(file!);
-                              }),
-                            ).then((value) {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              setState(() {
-                                image_video_status = "2";
-                              });
-                              Future.delayed(Duration(seconds: 2), () {
-                                if (currentPath != "") {
-                                  file = File(currentPath.toString());
-                                  fileName = path.basename(file!.path);
-                                  print("Filename " + fileName.toString());
-                                  setState(() {});
-                                } else {
-                                  file = null;
-                                  fileName = "";
-                                  image_video_status = "0";
-                                  setState(() {});
-                                }
-                              });
-                            });
+
+
                           }
                         }
                       })
@@ -1392,7 +1407,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                               height: 0,
                             ),
                       SizedBox(
-                        height: 2.h,
+                        height: 1.h,
                       ),
                       Container(
                         width: 74.w,
@@ -1415,12 +1430,14 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
+
                                     viewVisible = true;
                                     selectedIndex = index;
                                     tabOne = getReplyOnCommunityList[i]
                                         .childrenList[index]
                                         .id
                                         .toString();
+
                                   });
                                 },
                                 child: Text(
@@ -1940,7 +1957,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -1960,16 +1977,17 @@ class _CommunityRepliesState extends State<CommunityReplies> {
         file = File(path.toString());
         fileName = file!.path.split("/").last;
         fileList.add(file!);
-      });
+        setState(() {
 
-      setState(() {
-        print("pathhh " + fileName.toString() + "*");
+        });
       });
+      Navigator.pop(context);
+
     } else {
       image_video_status = "0";
       images.clear();
     }
-    Navigator.pop(context);
+
   }
 
   getFileDialogReply(int index) {
@@ -2062,45 +2080,46 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                             snackBar,
                           );
                         } else {
+                          File file1;
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
                             type: FileType.video,
                             allowCompression: false,
                           );
                           if (result != null) {
-                            file = File(result.files.single.path!);
-                            fileName = path.basename(file!.path);
-                            print("Filename " + fileName.toString() + "^");
+                            file1 = File(result.files.single.path!);
 
-                            if (fileName == "" || fileName == null) {
-                              fileName = "File:- ";
-                            } else {
-                              fileName = "File:- " + fileName;
-                            }
 
-                            Navigator.of(context).push(
+                            await Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
                                 return TrimmerView(file!);
                               }),
-                            ).then((value) {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              setState(() {
-                                image_video_status = "2";
-                              });
-                              Future.delayed(Duration(seconds: 2), () {
-                                if (currentPath != "") {
-                                  file = File(currentPath.toString());
-                                  fileName = path.basename(file!.path);
-                                  print("Filename " + fileName.toString());
-                                  setState(() {});
-                                } else {
-                                  file = null;
-                                  fileName = "";
-                                  image_video_status = "0";
-                                  setState(() {});
-                                }
-                              });
-                            });
+                            );
+                            Navigator.of(context, rootNavigator: true).pop();
+                            if (currentPath != "") {
+                              file = File(currentPath.toString());
+                              fileName = path.basename(file!.path);
+                              print("Filename " + fileName.toString());
+                              image_video_status = "2";
+
+                              if (fileName == "" || fileName == null) {
+                                fileName = "File:- ";
+                              } else {
+                                fileName = "File:- " + fileName;
+                              }
+                              setState(() {});
+                            } else {
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+
+                              if (fileName == "" || fileName == null) {
+                                fileName = "File:- ";
+                              } else {
+                                fileName = "File:- " + fileName;
+                              }
+                              setState(() {});
+                            }
                           }
                         }
                       })

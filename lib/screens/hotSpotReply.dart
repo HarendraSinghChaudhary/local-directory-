@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,6 +28,7 @@ import 'package:path/path.dart' as path;
 import 'package:wemarkthespot/services/modelProvider.dart';
 
 import '../main.dart';
+import 'detailBusinessdynamic.dart';
 import 'hotspot.dart';
 
 class HotSpotReply extends StatefulWidget {
@@ -59,6 +61,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   var message = "";
   List<GetAllBusiness> getAllBusinessList = [];
   List<String> coments = [];
+  List<String> selectedList = [];
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
@@ -77,7 +80,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
   var selectedId = "";
   List<Asset> images = [];
   List<File> fileList = [];
-
+  String sendReply = "";
   @override
   void initState() {
     getReplyOnHotspotApi();
@@ -317,7 +320,108 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
+                                                    Expanded(
+                                                      child: RichText(
+                                                          text: TextSpan(
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                  11.sp,
+                                                                  color:
+                                                                  kCyanColor,
+                                                                  fontFamily:
+                                                                  "Segoepr"),
+                                                              children: [
+                                                                TextSpan(
+                                                                    text:  getReplyOnHotspotList[
+                                                                    index]
+                                                                        .userProfile!
+                                                                        .name
+                                                                        .toString() !=
+                                                                        "null"
+                                                                        ? getReplyOnHotspotList[
+                                                                    index]
+                                                                        .userProfile!
+                                                                        .name
+                                                                        .toString()
+                                                                        : "User Name"),
+                                                                getReplyOnHotspotList[
+                                                                index]
+                                                                    .business!=null?TextSpan(
+                                                                    text: getReplyOnHotspotList[
+                                                                    index]
+                                                                        .business!.name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business!.id)));
+                                                                      }):TextSpan(text: ""),
+                                                                getReplyOnHotspotList[
+                                                                index]
+                                                                    .business2!=null?TextSpan(
+                                                                    text: getReplyOnHotspotList[
+                                                                    index]
+                                                                        .business2!.name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business2!.id)));
+                                                                      }):TextSpan(text: ""),
+                                                                getReplyOnHotspotList[
+                                                                index]
+                                                                    .business3!=null?TextSpan(
+                                                                    text: getReplyOnHotspotList[
+                                                                    index]
+                                                                        .business3!.name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business3!.id)));
+                                                                      }):TextSpan(text: ""),
+                                                                getReplyOnHotspotList[
+                                                                index]
+                                                                    .business4!=null?TextSpan(
+                                                                    text: getReplyOnHotspotList[
+                                                                    index]
+                                                                        .business4!.name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business4!.id)));
+                                                                      }):TextSpan(text: ""),
+                                                                getReplyOnHotspotList[
+                                                                index]
+                                                                    .business5!=null?TextSpan(
+                                                                    text: getReplyOnHotspotList[
+                                                                    index]
+                                                                        .business5!.name
+                                                                        .toString(),
+                                                                    recognizer:
+                                                                    TapGestureRecognizer()
+                                                                      ..onTap =
+                                                                          () {
+                                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                                            builder: (builder) =>
+                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business5!.id)));
+                                                                      }):TextSpan(text: "")
+                                                              ])),
+                                                    ),
+                                                    /*Text(
                                                       //"Person Name",
                                                       getReplyOnHotspotList[
                                                                       index]
@@ -338,7 +442,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                           color: kCyanColor,
                                                           fontFamily:
                                                               "Segoepr"),
-                                                    ),
+                                                    ),*/
                                                     Padding(
                                                       padding: EdgeInsets.only(
                                                           right: 4.w),
@@ -467,9 +571,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               : InkWell(
                                             onTap: () {
                                               setState(() {
-                                                getReplyOnHotspotList[
-                                                index]
-                                                    .viewV = true;
+                                                if(getReplyOnHotspotList[index].childrenList!=null){
+                                                  if(getReplyOnHotspotList[index].childrenList.length>0){
+                                                    getReplyOnHotspotList[
+                                                    index]
+                                                        .viewV = true;
+                                                  }
+                                                }
+
                                               });
                                             },
                                             child: Text(
@@ -575,6 +684,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 print(
                                     "tmp " + tmp.toString() + "^");
                                 selectedId = s.business_id;
+                                selectedList.add(s.business_id);
+
                                 setState(() {
                                   messageController.text =
                                       messageController
@@ -586,10 +697,17 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               .toString()
                                               .length -
                                               tmp.length);
-                                  messageController.text +=
-                                      s.business_name;
+                                  messageController.text +=s.business_name +
+                                      "@@" +
+                                      s.business_id +
+                                      "##";
                                   //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
-
+                                  sendReply =
+                                      messageController.text.toString();
+                                  if (messageController.text
+                                      .contains("@@")) {
+                                    splitString();
+                                  }
                                   messageController.selection =
                                       TextSelection.fromPosition(
                                           TextPosition(
@@ -678,35 +796,42 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 2.0, left: 14.w),
-                                                  child: Container(
-                                                    height: 2.h,
-                                                    width: 2.h,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Colors.white),
-                                                    child: Center(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          fileList.removeAt(i);
-                                                          images.removeAt(i);
+                                                      left: 11.w, bottom: 5.h),
+                                                  child: GestureDetector(
+                                                    onTap: (){
+                                                      fileList.removeAt(i);
+                                                      images.removeAt(i);
 
-                                                                                  if (fileList.length == 0) {
+                                                      if (fileList.length == 0) {
 
-                                                            file = null;
-                                                            fileName = "";
-                                                            fileList.clear();
-                                                            images.clear();
-                                                            
-                                                          }
-                                                          setState(() {
+                                                        file = null;
+                                                        fileName = "";
+                                                        fileList.clear();
+                                                        images.clear();
+                                                        image_video_status = "0";
+                                                      }
+                                                      setState(() {
 
-                                                          });
-                                                        },
-                                                        child: SvgPicture.asset(
-                                                          "assets/icons/cross.svg",
-                                                          width: 8,
-                                                          color: Colors.black,
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height:4.h,
+                                                      width:4.h,
+                                                      color:Colors.transparent,
+                                                      child: Center(
+                                                        child: Container(
+                                                          height: 2.h,
+                                                          width: 2.h,
+                                                          decoration: BoxDecoration(
+                                                              shape: BoxShape.circle,
+                                                              color: Colors.white),
+                                                          child: Center(
+                                                            child: SvgPicture.asset(
+                                                              "assets/icons/cross.svg",
+                                                              width: 8,
+                                                              color: Colors.black,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -854,6 +979,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           file = null;
                           fileName = "";
                           currentPath = "";
+                          fileList.clear();
+                          images.clear();
                           setState(() {
 
                           });
@@ -877,14 +1004,19 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           maxLines: 1,
                           onChanged: (val) {
                             setState(() {
-                              words = val.split(' ');
-                              str = words.length > 0 &&
-                                  words[words.length - 1].startsWith('@')
-                                  ? words[words.length - 1]
-                                  : '';
+                              if(selectedList.length<5) {
+                                words = val.split(' ');
+                                str = words.length > 0 &&
+                                    words[words.length - 1].startsWith('@')
+                                    ? words[words.length - 1]
+                                    : '';
 
-                              print(words.length);
-                              print(str.length);
+
+                              }
+                              if (messageController.text.contains("@@")) {
+                                sendReply = messageController.text;
+                                splitString();
+                              }
                             });
                           },
                           decoration: InputDecoration(
@@ -943,6 +1075,22 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     isRefresh = true;
     getReplyOnHotspotApi();
   }
+  String splitString() {
+    /*  var a = sendReview.split("");
+    print("abnbnbn "+a.toString()+"^^");
+*/
+
+    var abcList = "";
+    abcList = sendReply.replaceRange(
+        sendReply.indexOf("@@"), sendReply.indexOf("#") + 2, "");
+    if (abcList.contains("@@")) {
+      splitString();
+    } else {
+      messageController.text = abcList;
+      return abcList;
+    }
+    return "";
+  }
 
   Future<dynamic> replyOnHotspotReplyApi(
       String reply_id, String messageText, [String? sec = '312']) async {
@@ -971,7 +1119,34 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     request.fields["type"] = "HOTSPOT";
     request.fields["message"] = messageText;
     request.fields["video_image_status"] = image_video_status;
-    request.fields["business_id"] = sec != "" ? sec.toString() : "312";
+
+    if(selectedList.length>0) {
+      if(selectedList.length==1){
+        request.fields["business_id"] = selectedList[0];
+
+      }else if(selectedList.length==2){
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+      }else if(selectedList.length==3){
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+      }else if(selectedList.length==4){
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+        request.fields["business_id4"] = selectedList[3];
+      }else if(selectedList.length==5){
+        request.fields["business_id"] = selectedList[0];
+        request.fields["business_id2"] = selectedList[1];
+        request.fields["business_id3"] = selectedList[2];
+        request.fields["business_id4"] = selectedList[3];
+        request.fields["business_id5"] = selectedList[4];
+      }
+
+    }
+
+   // request.fields["business_id"] = sec != "" ? sec.toString() : "312";
 
      if(image_video_status=="2"){
       request.files.add(await http.MultipartFile.fromPath("image[]", file!.path));
@@ -988,6 +1163,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           filename: path.toString().split("/").last));
     });
     }
+    print("input "+request.fields.toString());
     String msg = "";
     var jsonArray;
     var jsonRes;
@@ -1003,6 +1179,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       fileList.clear();
       images.clear();
       currentPath = "";
+      selectedList.clear();
+      selectedId = "";
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -1107,6 +1285,43 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.video_image_status = jsonArray[i]["video_image_status"].toString();
           modelAgentSearch.image = jsonArray[i]["image"];
+
+          if(jsonArray[i]["business"].toString()!="[]"){
+            BuisnessData buisnessData = new BuisnessData();
+            buisnessData.id = jsonArray[i]["business"]["id"].toString();
+            buisnessData.name =" @ "+ jsonArray[i]["business"]["business_name"].toString();
+            buisnessData.image = jsonArray[i]["business"]["image"].toString();
+            print("Businessname "+jsonArray[i]["business"]["business_name"].toString());
+            modelAgentSearch.business = buisnessData;
+          }
+          if(jsonArray[i]["business2"].toString()!="[]"){
+            BuisnessData buisnessData2 = new BuisnessData();
+            buisnessData2.id = jsonArray[i]["business2"]["id"].toString();
+            buisnessData2.name =" @ "+ jsonArray[i]["business2"]["business_name"].toString();
+            buisnessData2.image = jsonArray[i]["business2"]["image"].toString();
+            modelAgentSearch.business2 = buisnessData2;
+          }
+          if(jsonArray[i]["business3"].toString()!="[]"){
+            BuisnessData buisnessData3 = new BuisnessData();
+            buisnessData3.id = jsonArray[i]["business3"]["id"].toString();
+            buisnessData3.name =" @ "+ jsonArray[i]["business3"]["business_name"].toString();
+            buisnessData3.image = jsonArray[i]["business3"]["image"].toString();
+            modelAgentSearch.business3 = buisnessData3;
+          }
+          if(jsonArray[i]["business4"].toString()!="[]"){
+            BuisnessData buisnessData4 = new BuisnessData();
+            buisnessData4.id = jsonArray[i]["business4"]["id"].toString();
+            buisnessData4.name =" @ "+ jsonArray[i]["business4"]["business_name"].toString();
+            buisnessData4.image = jsonArray[i]["business4"]["image"].toString();
+            modelAgentSearch.business4 = buisnessData4;
+          }
+          if(jsonArray[i]["business5"].toString()!="[]"){
+            BuisnessData buisnessData5 = new BuisnessData();
+            buisnessData5.id = jsonArray[i]["business5"]["id"].toString();
+            buisnessData5.name =" @ "+ jsonArray[i]["business5"]["business_name"].toString();
+            buisnessData5.image = jsonArray[i]["business5"]["image"].toString();
+            modelAgentSearch.business5 = buisnessData5;
+          }
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
               .inSeconds;
@@ -1155,6 +1370,42 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                 childModelOne.message = childDataOne[j]["message"].toString();
                 childModelOne.video_image_status = childDataOne[j]["video_image_status"].toString();
                 childModelOne.image = childDataOne[j]["image"];
+                if(childDataOne[j]["business"].toString()!="[]"){
+                  BuisnessData buisnessData = new BuisnessData();
+                  buisnessData.id = childDataOne[j]["business"]["id"].toString();
+                  buisnessData.name =" @ "+ childDataOne[j]["business"]["business_name"].toString();
+                  buisnessData.image = childDataOne[j]["business"]["image"].toString();
+                  print("Businessname "+childDataOne[j]["business"]["business_name"].toString());
+                  childModelOne.business = buisnessData;
+                }
+                if(childDataOne[j]["business2"].toString()!="[]"){
+                  BuisnessData buisnessData2 = new BuisnessData();
+                  buisnessData2.id = childDataOne[j]["business2"]["id"].toString();
+                  buisnessData2.name =" @ "+ childDataOne[j]["business2"]["business_name"].toString();
+                  buisnessData2.image = childDataOne[j]["business2"]["image"].toString();
+                  childModelOne.business2 = buisnessData2;
+                }
+                if(childDataOne[j]["business3"].toString()!="[]"){
+                  BuisnessData buisnessData3 = new BuisnessData();
+                  buisnessData3.id = childDataOne[j]["business3"]["id"].toString();
+                  buisnessData3.name =" @ "+ childDataOne[j]["business3"]["business_name"].toString();
+                  buisnessData3.image = childDataOne[j]["business3"]["image"].toString();
+                  childModelOne.business3 = buisnessData3;
+                }
+                if(childDataOne[j]["business4"].toString()!="[]"){
+                  BuisnessData buisnessData4 = new BuisnessData();
+                  buisnessData4.id = childDataOne[j]["business4"]["id"].toString();
+                  buisnessData4.name =" @ "+ childDataOne[j]["business4"]["business_name"].toString();
+                  buisnessData4.image = childDataOne[j]["business4"]["image"].toString();
+                  childModelOne.business4 = buisnessData4;
+                }
+                if(childDataOne[j]["business5"].toString()!="[]"){
+                  BuisnessData buisnessData5 = new BuisnessData();
+                  buisnessData5.id = childDataOne[j]["business5"]["id"].toString();
+                  buisnessData5.name =" @ "+ childDataOne[j]["business5"]["business_name"].toString();
+                  buisnessData5.image = childDataOne[j]["business5"]["image"].toString();
+                  childModelOne.business5 = buisnessData5;
+                }
                 var difference = date2
                     .difference(DateTime.parse(childModelOne.created_at))
                     .inSeconds;
@@ -1206,6 +1457,42 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       childrenModelTwo.video_image_status = childDataTwo[k]["video_image_status"].toString();
                       childrenModelTwo.image = childDataTwo[k]["image"];
                       childrenUserDataTwo = childDataTwo[k]['user'];
+                      if(childDataTwo[k]["business"].toString()!="[]"){
+                        BuisnessData buisnessData = new BuisnessData();
+                        buisnessData.id = childDataTwo[k]["business"]["id"].toString();
+                        buisnessData.name =" @ "+ childDataTwo[k]["business"]["business_name"].toString();
+                        buisnessData.image = childDataTwo[k]["business"]["image"].toString();
+                        print("Businessname "+childDataTwo[k]["business"]["business_name"].toString());
+                        childrenModelTwo.business = buisnessData;
+                      }
+                      if(childDataTwo[k]["business2"].toString()!="[]"){
+                        BuisnessData buisnessData2 = new BuisnessData();
+                        buisnessData2.id = childDataTwo[k]["business2"]["id"].toString();
+                        buisnessData2.name =" @ "+ childDataTwo[k]["business2"]["business_name"].toString();
+                        buisnessData2.image = childDataTwo[k]["business2"]["image"].toString();
+                        childrenModelTwo.business2 = buisnessData2;
+                      }
+                      if(childDataTwo[k]["business3"].toString()!="[]"){
+                        BuisnessData buisnessData3 = new BuisnessData();
+                        buisnessData3.id = childDataTwo[k]["business3"]["id"].toString();
+                        buisnessData3.name =" @ "+ childDataTwo[k]["business3"]["business_name"].toString();
+                        buisnessData3.image = childDataTwo[k]["business3"]["image"].toString();
+                        childrenModelTwo.business3 = buisnessData3;
+                      }
+                      if(childDataTwo[k]["business4"].toString()!="[]"){
+                        BuisnessData buisnessData4 = new BuisnessData();
+                        buisnessData4.id = childDataTwo[k]["business4"]["id"].toString();
+                        buisnessData4.name =" @ "+ childDataTwo[k]["business4"]["business_name"].toString();
+                        buisnessData4.image = childDataTwo[k]["business4"]["image"].toString();
+                        childrenModelTwo.business4 = buisnessData4;
+                      }
+                      if(childDataTwo[k]["business5"].toString()!="[]"){
+                        BuisnessData buisnessData5 = new BuisnessData();
+                        buisnessData5.id = childDataTwo[k]["business5"]["id"].toString();
+                        buisnessData5.name =" @ "+ childDataTwo[k]["business5"]["business_name"].toString();
+                        buisnessData5.image = childDataTwo[k]["business5"]["image"].toString();
+                        childrenModelTwo.business5 = buisnessData5;
+                      }
                       var difference = date2
                           .difference(
                               DateTime.parse(childrenModelTwo.created_at))
@@ -1270,6 +1557,45 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 childDataThree[l]["message"].toString();
                             childrenModelThree.video_image_status = childDataThree[l]["video_image_status"].toString();
                             childrenModelThree.image = childDataThree[l]["image"];
+
+
+                            if(childDataThree[l]["business"].toString()!="[]"){
+                              BuisnessData buisnessData = new BuisnessData();
+                              buisnessData.id = childDataThree[l]["business"]["id"].toString();
+                              buisnessData.name =" @ "+ childDataThree[l]["business"]["business_name"].toString();
+                              buisnessData.image = childDataThree[l]["business"]["image"].toString();
+                              print("Businessname "+childDataThree[l]["business"]["business_name"].toString());
+                              childrenModelThree.business = buisnessData;
+                            }
+                            if(childDataThree[l]["business2"].toString()!="[]"){
+                              BuisnessData buisnessData2 = new BuisnessData();
+                              buisnessData2.id = childDataThree[l]["business2"]["id"].toString();
+                              buisnessData2.name =" @ "+ childDataThree[l]["business2"]["business_name"].toString();
+                              buisnessData2.image = childDataThree[l]["business2"]["image"].toString();
+                              childrenModelThree.business2 = buisnessData2;
+                            }
+                            if(childDataThree[l]["business3"].toString()!="[]"){
+                              BuisnessData buisnessData3 = new BuisnessData();
+                              buisnessData3.id = childDataThree[l]["business3"]["id"].toString();
+                              buisnessData3.name =" @ "+ childDataThree[l]["business3"]["business_name"].toString();
+                              buisnessData3.image = childDataThree[l]["business3"]["image"].toString();
+                              childrenModelThree.business3 = buisnessData3;
+                            }
+                            if(childDataThree[l]["business4"].toString()!="[]"){
+                              BuisnessData buisnessData4 = new BuisnessData();
+                              buisnessData4.id = childDataThree[l]["business4"]["id"].toString();
+                              buisnessData4.name =" @ "+ childDataThree[l]["business4"]["business_name"].toString();
+                              buisnessData4.image = childDataThree[l]["business4"]["image"].toString();
+                              childrenModelThree.business4 = buisnessData4;
+                            }
+                            if(childDataThree[l]["business5"].toString()!="[]"){
+                              BuisnessData buisnessData5 = new BuisnessData();
+                              buisnessData5.id = childDataThree[l]["business5"]["id"].toString();
+                              buisnessData5.name =" @ "+ childDataThree[l]["business5"]["business_name"].toString();
+                              buisnessData5.image = childDataThree[l]["business5"]["image"].toString();
+                              childrenModelThree.business5 = buisnessData5;
+                            }
+
                             var difference = date2
                                 .difference(DateTime.parse(
                                     childrenModelThree.created_at))
@@ -1398,7 +1724,113 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                   width: 74.w,
                                   child: Row(
                                     children: [
-                                      Text(
+                                      Expanded(
+                                        child: RichText(
+                                            text: TextSpan(
+                                                style: TextStyle(
+                                                    fontSize:
+                                                    11.sp,
+                                                    color:
+                                                    kCyanColor,
+                                                    fontFamily:
+                                                    "Segoepr"),
+                                                children: [
+                                                  TextSpan(
+                                                      text:  getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .userProfile!
+                                                          .name
+                                                          .toString() !=
+                                                          "null"
+                                                          ?getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .userProfile!
+                                                          .name
+                                                          .toString()
+                                                          : "User Name"),
+                                                  getReplyOnHotspotList[i]
+                                                      .childrenList[index]
+                                                      .business!=null?TextSpan(
+                                                      text: getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .business!.name
+                                                          .toString(),
+                                                      recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap =
+                                                            () {
+                                                          Navigator.of(context).push(new MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                      .childrenList[index].business!.id)));
+                                                        }):TextSpan(text: ""),
+                                                  getReplyOnHotspotList[i]
+                                                      .childrenList[index]
+                                                      .business2!=null?TextSpan(
+                                                      text: getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .business2!.name
+                                                          .toString(),
+                                                      recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap =
+                                                            () {
+                                                          Navigator.of(context).push(new MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                      .childrenList[index].business2!.id)));
+                                                        }):TextSpan(text: ""),
+                                                  getReplyOnHotspotList[i]
+                                                      .childrenList[index]
+                                                      .business3!=null?TextSpan(
+                                                      text: getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .business3!.name
+                                                          .toString(),
+                                                      recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap =
+                                                            () {
+                                                          Navigator.of(context).push(new MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                      .childrenList[index].business3!.id)));
+                                                        }):TextSpan(text: ""),
+                                                  getReplyOnHotspotList[i]
+                                                      .childrenList[index]
+                                                      .business4!=null?TextSpan(
+                                                      text: getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .business4!.name
+                                                          .toString(),
+                                                      recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap =
+                                                            () {
+                                                          Navigator.of(context).push(new MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                      .childrenList[index].business4!.id)));
+                                                        }):TextSpan(text: ""),
+                                                  getReplyOnHotspotList[i]
+                                                      .childrenList[index]
+                                                      .business5!=null?TextSpan(
+                                                      text: getReplyOnHotspotList[i]
+                                                          .childrenList[index]
+                                                          .business5!.name
+                                                          .toString(),
+                                                      recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap =
+                                                            () {
+                                                          Navigator.of(context).push(new MaterialPageRoute(
+                                                              builder: (builder) =>
+                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                      .childrenList[index].business5!.id)));
+                                                        }):TextSpan(text: "")
+                                                ])),
+                                      ),
+                                   /*   Text(
                                         //"Person Name @ Bar Name",
                                         getReplyOnHotspotList[i]
                                             .childrenList[index]
@@ -1410,7 +1842,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                             fontSize: 10.sp,
                                             color: kCyanColor,
                                             fontFamily: "Segoepr"),
-                                      ),
+                                      ),*/
                                       SizedBox(
                                         width: 12.w,
                                       ),
@@ -1450,51 +1882,38 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       SizedBox(
                         height: 1.h,
                       ),
-                      Visibility(
-                          visible: getReplyOnHotspotList[i]
+                      getReplyOnHotspotList[i]
+                          .childrenList[index]
+                          .video_image_status
+                          .toString() ==
+                          "2"? SizedBox(
+                        height: 200,
+                        child: VideoItems(
+                                          videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
                               .childrenList[index]
-                              .video_image_status
-                              .toString() ==
-                              "2"
-                              ? true
-                              : false,
-                          child: SizedBox(
-                            height: 200,
-                            child: VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
-                                  .childrenList[index]
-                                  .image[0]),
-                                            
-                                            )
-                            
-                            
-                            //  VideoWidget(
-                            //   url: getReplyOnHotspotList[i]
-                            //       .childrenList[index]
-                            //       .image,
-                            //   play: true,
-                            // ),
-                          )),
-                      Visibility(
-                        visible: getReplyOnHotspotList[i]
-                            .childrenList[index]
-                            .video_image_status
-                            .toString() ==
-                            "1"
-                            ? true
-                            : false,
-                        child:  HotspotImageSlider(
-                                         items: getReplyOnHotspotList[i]
-                                .childrenList[index]
-                                .image,
-                                              
-                                        
+                              .image[0]),
+
                                         )
-                        
-                        
-                        
-                     
-                      ),
+
+
+                        //  VideoWidget(
+                        //   url: getReplyOnHotspotList[i]
+                        //       .childrenList[index]
+                        //       .image,
+                        //   play: true,
+                        // ),
+                      ):Container(),
+                      getReplyOnHotspotList[i]
+                          .childrenList[index]
+                          .video_image_status
+                          .toString() ==
+                          "1"?HotspotImageSlider(
+                                       items: getReplyOnHotspotList[i]
+                              .childrenList[index]
+                              .image,
+
+
+                                      ):Container(),
                       SizedBox(
                         height: 2.h,
                       ),
@@ -1600,7 +2019,125 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                               width: 74.w,
                                               child: Row(
                                                 children: [
-                                                  Text(
+                                                  Expanded(
+                                                    child: RichText(
+                                                        text: TextSpan(
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                11.sp,
+                                                                color:
+                                                                kCyanColor,
+                                                                fontFamily:
+                                                                "Segoepr"),
+                                                            children: [
+                                                              TextSpan(
+                                                                  text:   getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .userProfile!
+                                                                      .name
+                                                                      .toString() !=
+                                                                      "null"
+                                                                      ?getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .userProfile!
+                                                                      .name
+                                                                      .toString()
+                                                                      : "User Name"),
+                                                              getReplyOnHotspotList[i]
+                                                                  .childrenList[index]
+                                                                  .childrenList[k]
+                                                                  .business!=null?TextSpan(
+                                                                  text: getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .business!.name
+                                                                      .toString(),
+                                                                  recognizer:
+                                                                  TapGestureRecognizer()
+                                                                    ..onTap =
+                                                                        () {
+                                                                      Navigator.of(context).push(new MaterialPageRoute(
+                                                                          builder: (builder) =>
+                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                  .childrenList[index].childrenList[k].business!.id)));
+                                                                    }):TextSpan(text: ""),
+                                                              getReplyOnHotspotList[i]
+                                                                  .childrenList[index]
+                                                                  .childrenList[k]
+                                                                  .business2!=null?TextSpan(
+                                                                  text: getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .business2!.name
+                                                                      .toString(),
+                                                                  recognizer:
+                                                                  TapGestureRecognizer()
+                                                                    ..onTap =
+                                                                        () {
+                                                                      Navigator.of(context).push(new MaterialPageRoute(
+                                                                          builder: (builder) =>
+                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                  .childrenList[index].childrenList[k].business2!.id)));
+                                                                    }):TextSpan(text: ""),
+                                                              getReplyOnHotspotList[i]
+                                                                  .childrenList[index]
+                                                                  .childrenList[k]
+                                                                  .business3!=null?TextSpan(
+                                                                  text: getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .business3!.name
+                                                                      .toString(),
+                                                                  recognizer:
+                                                                  TapGestureRecognizer()
+                                                                    ..onTap =
+                                                                        () {
+                                                                      Navigator.of(context).push(new MaterialPageRoute(
+                                                                          builder: (builder) =>
+                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                  .childrenList[index].childrenList[k].business3!.id)));
+                                                                    }):TextSpan(text: ""),
+                                                              getReplyOnHotspotList[i]
+                                                                  .childrenList[index]
+                                                                  .childrenList[k]
+                                                                  .business4!=null?TextSpan(
+                                                                  text: getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .business4!.name
+                                                                      .toString(),
+                                                                  recognizer:
+                                                                  TapGestureRecognizer()
+                                                                    ..onTap =
+                                                                        () {
+                                                                      Navigator.of(context).push(new MaterialPageRoute(
+                                                                          builder: (builder) =>
+                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                  .childrenList[index].childrenList[k].business4!.id)));
+                                                                    }):TextSpan(text: ""),
+                                                              getReplyOnHotspotList[i]
+                                                                  .childrenList[index]
+                                                                  .childrenList[k]
+                                                                  .business5!=null?TextSpan(
+                                                                  text: getReplyOnHotspotList[i]
+                                                                      .childrenList[index]
+                                                                      .childrenList[k]
+                                                                      .business5!.name
+                                                                      .toString(),
+                                                                  recognizer:
+                                                                  TapGestureRecognizer()
+                                                                    ..onTap =
+                                                                        () {
+                                                                      Navigator.of(context).push(new MaterialPageRoute(
+                                                                          builder: (builder) =>
+                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                  .childrenList[index].childrenList[k].business5!.id)));
+                                                                    }):TextSpan(text: "")
+                                                            ])),
+                                                  ),
+                                             /*     Text(
                                                     //  "Person Name @ Bar Name",
                                                     getReplyOnHotspotList[i]
                                                         .childrenList[index]
@@ -1613,7 +2150,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                         fontSize: 10.sp,
                                                         color: kCyanColor,
                                                         fontFamily: "Segoepr"),
-                                                  ),
+                                                  ),*/
                                                   SizedBox(
                                                     width: 12.w,
                                                   ),
@@ -1651,50 +2188,42 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                   SizedBox(
                                     height: 1.h,
                                   ),
-                                  Visibility(
-                                      visible: getReplyOnHotspotList[i]
-                                          .childrenList[index]
-                                          .childrenList[k]
-                                          .video_image_status
-                                          .toString() ==
-                                          "2"
-                                          ? true
-                                          : false,
-                                      child: SizedBox(
-                                          height: 200,
-                                          width: 35.h,
-                                          child:VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
-                                                .childrenList[index]
-                                                .childrenList[k]
-                                                .image[0]),
-                                              
-                                            )
-                                          
-                                          
-                                          
-                                        
-                                          )),
-                                  Visibility(
-                                    visible: getReplyOnHotspotList[i]
-                                        .childrenList[index]
-                                        .childrenList[k]
-                                        .video_image_status
-                                        .toString() ==
-                                        "1"
-                                        ? true
-                                        : false,
-                                    child:  HotspotImageSlider(
+                                  getReplyOnHotspotList[i]
+                                      .childrenList[index]
+                                      .childrenList[k]
+                                      .video_image_status
+                                      .toString() ==
+                                      "2"?SizedBox(
+                                      height: 200,
+                                      width: 35.h,
+                                      child:VideoItems(
+                                          videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
+                                            .childrenList[index]
+                                            .childrenList[k]
+                                            .image[0]),
+
+                                        )
+
+
+
+
+                                      ):Container(width: 0, height: 0,),
+                                  getReplyOnHotspotList[i]
+                                      .childrenList[index]
+                                      .childrenList[k]
+                                      .video_image_status
+                                      .toString() ==
+                                      "1"?SizedBox(
+                                    height: 200,
+                                        child: HotspotImageSlider(
                                          items: getReplyOnHotspotList[i]
                                             .childrenList[index]
                                             .childrenList[k]
                                             .image
-                                              
-                                        
-                                        )
-                                    
-                                 
-                                  ),
+
+
+                                        ),
+                                      ):Container(width: 0, height: 0,),
                                   SizedBox(
                                     height: 2.h,
                                   ),
@@ -1809,7 +2338,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                         width: 70.w,
                                                         child: Row(
                                                           children: [
-                                                            Text(
+                                                          /*  Text(
                                                               // "Person Name @ Bar Name",
                                                               getReplyOnHotspotList[i]
                                                                   .childrenList[
@@ -1826,6 +2355,137 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   color: kCyanColor,
                                                                   fontFamily:
                                                                       "Segoepr"),
+                                                            ),*/
+
+                                                            Expanded(
+                                                              child: RichText(
+                                                                  text: TextSpan(
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                          11.sp,
+                                                                          color:
+                                                                          kCyanColor,
+                                                                          fontFamily:
+                                                                          "Segoepr"),
+                                                                      children: [
+                                                                        TextSpan(
+                                                                            text:   getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .userProfile!
+                                                                                .name
+                                                                                .toString() !=
+                                                                                "null"
+                                                                                ?getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .userProfile!
+                                                                                .name
+                                                                                .toString()
+                                                                                : "User Name"),
+                                                                        getReplyOnHotspotList[i]
+                                                                            .childrenList[index]
+                                                                            .childrenList[k]
+                                                                            .childrenList[j]
+                                                                            .business!=null?TextSpan(
+                                                                            text: getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .business!.name
+                                                                                .toString(),
+                                                                            recognizer:
+                                                                            TapGestureRecognizer()
+                                                                              ..onTap =
+                                                                                  () {
+                                                                                Navigator.of(context).push(new MaterialPageRoute(
+                                                                                    builder: (builder) =>
+                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                            .childrenList[index].childrenList[k].childrenList[j].business!.id)));
+                                                                              }):TextSpan(text: ""),
+                                                                        getReplyOnHotspotList[i]
+                                                                            .childrenList[index]
+                                                                            .childrenList[k]
+                                                                            .childrenList[j]
+                                                                            .business2!=null?TextSpan(
+                                                                            text: getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .business2!.name
+                                                                                .toString(),
+                                                                            recognizer:
+                                                                            TapGestureRecognizer()
+                                                                              ..onTap =
+                                                                                  () {
+                                                                                Navigator.of(context).push(new MaterialPageRoute(
+                                                                                    builder: (builder) =>
+                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                            .childrenList[index].childrenList[k].childrenList[j].business2!.id)));
+                                                                              }):TextSpan(text: ""),
+                                                                        getReplyOnHotspotList[i]
+                                                                            .childrenList[index]
+                                                                            .childrenList[k]
+                                                                            .childrenList[j]
+                                                                            .business3!=null?TextSpan(
+                                                                            text: getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .business3!.name
+                                                                                .toString(),
+                                                                            recognizer:
+                                                                            TapGestureRecognizer()
+                                                                              ..onTap =
+                                                                                  () {
+                                                                                Navigator.of(context).push(new MaterialPageRoute(
+                                                                                    builder: (builder) =>
+                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                            .childrenList[index].childrenList[k].childrenList[j].business3!.id)));
+                                                                              }):TextSpan(text: ""),
+                                                                        getReplyOnHotspotList[i]
+                                                                            .childrenList[index]
+                                                                            .childrenList[k]
+                                                                            .childrenList[j]
+                                                                            .business4!=null?TextSpan(
+                                                                            text: getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .business4!.name
+                                                                                .toString(),
+                                                                            recognizer:
+                                                                            TapGestureRecognizer()
+                                                                              ..onTap =
+                                                                                  () {
+                                                                                Navigator.of(context).push(new MaterialPageRoute(
+                                                                                    builder: (builder) =>
+                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                            .childrenList[index].childrenList[k].childrenList[j].business4!.id)));
+                                                                              }):TextSpan(text: ""),
+                                                                        getReplyOnHotspotList[i]
+                                                                            .childrenList[index]
+                                                                            .childrenList[k]
+                                                                            .childrenList[j]
+                                                                            .business5!=null?TextSpan(
+                                                                            text: getReplyOnHotspotList[i]
+                                                                                .childrenList[index]
+                                                                                .childrenList[k]
+                                                                                .childrenList[j]
+                                                                                .business5!.name
+                                                                                .toString(),
+                                                                            recognizer:
+                                                                            TapGestureRecognizer()
+                                                                              ..onTap =
+                                                                                  () {
+                                                                                Navigator.of(context).push(new MaterialPageRoute(
+                                                                                    builder: (builder) =>
+                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
+                                                                                            .childrenList[index].childrenList[k].childrenList[j].business5!.id)));
+                                                                              }):TextSpan(text: "")
+                                                                      ])),
                                                             ),
                                                           ],
                                                         ),
@@ -1866,57 +2526,44 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                           SizedBox(
                                             height: 1.h,
                                           ),
-                                          Visibility(
-                                              visible:  getReplyOnHotspotList[i]
-                                                  .childrenList[index]
-                                                  .childrenList[k]
-                                                  .childrenList[j]
-                                                  .video_image_status
-                                                  .toString() ==
-                                                  "2"
-                                                  ? true
-                                                  : false,
-                                              child: SizedBox(
-                                                  height: 200,
-                                                  width: 35.h,
-                                                  child: VideoItems(
-                                              videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
-                                                        .childrenList[index]
-                                                        .childrenList[k]
-                                                        .childrenList[j]
-                                                        .image[0]
-                                                  ),
-                                              
-                                            )
-                                                  
-                                                  
-                                                 
-                                                  )),
-                                          Visibility(
-                                            visible: getReplyOnHotspotList[i]
-                                                .childrenList[index]
-                                                .childrenList[k]
-                                                .childrenList[j]
-                                                .video_image_status
-                                                .toString() ==
-                                                "1"
-                                                ? true
-                                                : false,
-                                            child: HotspotImageSlider(
-                                          items:getReplyOnHotspotList[i]
+                                          getReplyOnHotspotList[i]
+                                              .childrenList[index]
+                                              .childrenList[k]
+                                              .childrenList[j]
+                                              .video_image_status
+                                              .toString() ==
+                                              "2"? SizedBox(
+                                              height: 200,
+                                              width: 35.h,
+                                              child: VideoItems(
+                                          videoPlayerController: VideoPlayerController.network(getReplyOnHotspotList[i]
                                                     .childrenList[index]
                                                     .childrenList[k]
                                                     .childrenList[j]
-                                                    .image
-                                                    ,
-                                              
-                                        
-                                        )
-                                            
-                                            
-                                            
-                                          
-                                          ),
+                                                    .image[0]
+                                              ),
+
+                                            )
+
+
+
+                                              ):Container(),
+                                          getReplyOnHotspotList[i]
+                                              .childrenList[index]
+                                              .childrenList[k]
+                                              .childrenList[j]
+                                              .video_image_status
+                                              .toString() ==
+                                              "1"?HotspotImageSlider(
+                                          items:getReplyOnHotspotList[i]
+                                                  .childrenList[index]
+                                                  .childrenList[k]
+                                                  .childrenList[j]
+                                                  .image
+                                                  ,
+
+
+                                        ):Container(),
                                           SizedBox(
                                             height: 1.h,
                                           ),
@@ -2091,7 +2738,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                 snackBar,
                               );
                             } else {
-
+                              File file1;
                               FilePickerResult? result =
                                   await FilePicker.platform
                                   .pickFiles(
@@ -2100,60 +2747,45 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                               );
                               if (result != null) {
 
-                                file = File(
+                                file1 = File(
                                     result.files.single.path!);
-                                fileName =
-                                    path.basename(file!.path);
-                                print("Filename " +
-                                    fileName.toString() +
-                                    "^");
 
-                                if (fileName == "" ||
-                                    fileName == null) {
-                                  fileName = "File:- ";
-                                  viewVisible = true;
-                                } else {
-                                  fileName = "File:- " + fileName;
-                                  viewVisible = true;
-                                }
 
-                                Navigator.of(context).push(
+
+                                await Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (context) {
-                                        return TrimmerView(file!);
+                                        return TrimmerView(file1);
                                       }),
-                                ).then((value) {
-                                  Navigator.of(context,
-                                      rootNavigator: true)
-                                      .pop();
+                                );
+                                Navigator.of(context,
+                                    rootNavigator: true)
+                                    .pop();
+                                if (currentPath != "") {
+
+                                  file = File(currentPath.toString());
+                                  fileName = path.basename(file!.path);
+                                  print("Filename " + fileName.toString());
+                                  image_video_status = "2";
+                                  if (fileName == "" ||
+                                      fileName == null) {
+                                    fileName = "File:- ";
+                                    viewVisible = true;
+                                  } else {
+                                    fileName = "File:- " + fileName;
+                                    viewVisible = true;
+                                  }
                                   setState(() {
-                                    image_video_status = "2";
+
                                   });
-                                  Future.delayed(Duration(seconds: 2), (){
-                                    if (currentPath != "") {
+                                }else{
+                                  file = null;
+                                  fileName = "";
+                                  image_video_status = "0";
+                                  setState(() {
 
-                                      file = File(currentPath.toString());
-                                      fileName = path.basename(file!.path);
-                                      print("Filename " + fileName.toString());
-                                      setState(() {
-
-                                      });
-                                    }else{
-                                      file = null;
-                                      fileName = "";
-                                      image_video_status = "0";
-                                      setState(() {
-
-                                      });
-                                    }
                                   });
-
-
-
-
-
-
-                                });
+                                }
                               }
                             }
                           })
@@ -2183,135 +2815,22 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           file = File(path.toString());
           fileName = file!.path.split("/").last;
           fileList.add(file!);
-        });
+          setState(() {
 
-        setState(() {
-          print("pathhh "+fileName.toString()+"*");
 
+          });
         });
+        Navigator.pop(context);
+
       }else{
         image_video_status = "0";
         images.clear();
       }
-      Navigator.pop(context);
+
 
 
 
   }
-
-  viewVideo() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context, setState) {
-
-          return AlertDialog(
-              scrollable: true,
-              backgroundColor: Colors.black,
-
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3.w)),
-              title:SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                          height: 200,
-                          width: 40.h,
-                          child: VideoWidgettt(url: file,play: true,)),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-
-
-                      DefaultButton(
-                          width: 35.w,
-                          height: 6.h,
-                          text: "Ok",
-                          press: () {
-                          Navigator.of(context, rootNavigator: true).pop();
-
-                          }),
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
-                      DefaultButton(
-                          width: 35.w,
-                          height: 6.h,
-                          text: "Video",
-                          press: () async {
-
-                            if (image_video_status == "1") {
-                              final snackBar = SnackBar(
-                                  content: Text(
-                                      'Either image or video can be post at a time'));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
-                                snackBar,
-                              );
-                            } else {
-                              image_video_status = "2";
-                              FilePickerResult? result =
-                              await FilePicker.platform
-                                  .pickFiles(
-                                type: FileType.video,
-                                allowCompression: false,
-                              );
-                              if (result != null) {
-
-                                file = File(
-                                    result.files.single.path!);
-                                fileName =
-                                    path.basename(file!.path);
-                                print("Filename " +
-                                    fileName.toString() +
-                                    "^");
-                                setState(() {
-                                });
-                                if (fileName == "" ||
-                                    fileName == null) {
-                                  fileName = "File:- ";
-                                  viewVisible = true;
-                                } else {
-                                  fileName = "File:- " + fileName;
-                                  viewVisible = true;
-                                }
-
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) {
-                                        return TrimmerView(file!);
-                                      }),
-                                ).then((value) {
-                                  Navigator.of(context,
-                                      rootNavigator: true)
-                                      .pop();
-
-
-                                  if (currentPath != "") {
-
-                                    file = File(currentPath.toString());
-                                    fileName = path.basename(file!.path);
-                                    print("Filename " + fileName.toString());
-                                  }
-
-
-
-                                });
-                              }
-                            }
-                          })
-                    ],
-                  ))
-
-
-          );
-        });
-      },
-    );
-  }
-
   Future<dynamic> getallBusinessDataApi() async {
     setState(() {
       isloading = true;
@@ -2456,9 +2975,23 @@ class GETREPLYONHOTSPOT {
   var timedelay = "Secconds";
   List<GETREPLYONHOTSPOT> childrenList = [];
   List<GETREPLYONHOTSPOT> childrenSubList = [];
+
+  BuisnessData? business ;
+  BuisnessData? business2 ;
+  BuisnessData? business3 ;
+  BuisnessData? business4 ;
+  BuisnessData? business5 ;
+
+
 }
 
 class UserData {
+  var id = "";
+  var name = "";
+  var image = "";
+}
+
+class BuisnessData {
   var id = "";
   var name = "";
   var image = "";
