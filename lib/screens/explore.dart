@@ -118,7 +118,7 @@ class _ExploreState extends State<Explore> {
                           height: 1.5.h,
                         ),
                         Text(
-                          "Restaurant Nearby ",
+                          "Restaurants Nearby ",
                           style: TextStyle(
                               fontSize: 14.5.sp,
                               color: Colors.white,

@@ -1042,6 +1042,44 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       ),
                       InkWell(
                           onTap: () {
+
+                            //  var mesage = getHostSpotList[
+                            //                                             index]
+                            //                                         .messageController
+                            //                                         .text
+                            //                                         .toString();
+
+                            //                                     if (mesage ==
+                            //                                             "" ||
+                            //                                         mesage ==
+                            //                                             "null") {
+                            //                                       ScaffoldMessenger.of(
+                            //                                               context)
+                            //                                           .showSnackBar(SnackBar(
+                            //                                               content:
+                            //                                                   Text("Please enter reply")));
+                            //                                     } else {
+                            //                                       FocusScope.of(
+                            //                                               context)
+                            //                                           .unfocus();
+                            //                                       replyOnHotspotReviewApi(
+                            //                                           getHostSpotList[
+                            //                                                   index]
+                            //                                               .id
+                            //                                               .toString(),
+                            //                                           mesage,
+                            //                                           index);
+                            //                                     }
+
+                            //                                     getHostSpotList[
+                            //                                             index]
+                            //                                         .messageController
+                            //                                         .clear();
+
+
+
+
+
                             var messge = messageController.text.toString();
 
                             if (messge == "" || messge == "null") {
@@ -1054,6 +1092,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                   messageController.text.toString(), selectedId);
 
                             }
+
+                            messageController.clear();
                           },
                           child: SvgPicture.asset(
                             "assets/icons/send1.svg",

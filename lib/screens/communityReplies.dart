@@ -769,6 +769,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Please enter reply")));
                         }
+                        messageController.clear();
                       },
                       child: SvgPicture.asset(
                         "assets/icons/send1.svg",

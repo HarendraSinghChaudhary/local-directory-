@@ -1100,6 +1100,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                     .toString(),
                                                                 index);
                                                           }
+                                                          communityReviewList[index]
+                                                              .messageTextController.clear();
                                                         },
                                                         child: Icon(Icons.send,
                                                             color:

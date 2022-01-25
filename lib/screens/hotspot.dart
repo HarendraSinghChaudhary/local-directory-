@@ -42,7 +42,6 @@ class Hotspot extends StatefulWidget {
 }
 
 class _HotspotState extends State<Hotspot> {
-
   var person_name = "";
   var user_image = "";
   var business_user_name = "";
@@ -214,799 +213,889 @@ class _HotspotState extends State<Hotspot> {
                       controller: _controller,
                       itemCount: getHostSpotList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        print("insdsk "+ getHostSpotList[index].str.toString());
+                        print(
+                            "insdsk " + getHostSpotList[index].str.toString());
                         return Column(
                           children: [
-                            Card(
-                                margin: EdgeInsets.symmetric(horizontal: 2.w),
-                                color: kBackgroundColor,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.all(6.0),
-                                          child: CachedNetworkImage(
-                                            imageUrl: getHostSpotList[index]
-                                                .user_image
-                                                .toString(),
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    CircleAvatar(
-                                              radius: 7.w,
-                                              backgroundImage: NetworkImage(
-                                                getHostSpotList[index]
-                                                    .user_image
-                                                    .toString(),
-                                              ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                CircleAvatar(
-                                              radius: 7.w,
-                                              backgroundImage: AssetImage(
-                                                  "assets/images/usericon.png"),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    CircleAvatar(
-                                              radius: 7.w,
-                                              backgroundImage: AssetImage(
-                                                  "assets/images/usericon.png"),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 0.9.w,
-                                        ),
-                                        Container(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              SizedBox(
-                                                height: 1.h,
-                                              ),
-                                              Container(
-                                                width: 74.w,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                      child: RichText(
-                                                          text: TextSpan(
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      11.sp,
-                                                                  color:
-                                                                      kCyanColor,
-                                                                  fontFamily:
-                                                                      "Segoepr"),
-                                                              children: [
-                                                            TextSpan(
-                                                                text: getHostSpotList[
-                                                                        index]
-                                                                    .person_name
-                                                                    .toString()),
-                                                            getHostSpotList[index]
-                                                                        .business !=
-                                                                    null
-                                                                ? TextSpan(
-                                                                    text: getHostSpotList[
-                                                                            index]
-                                                                        .business!
-                                                                        .name
-                                                                        .toString(),
-                                                                    recognizer:
-                                                                        TapGestureRecognizer()
-                                                                          ..onTap =
-                                                                              () {
-                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business!.id)));
-                                                                          })
-                                                                : TextSpan(
-                                                                    text: ""),
-                                                            getHostSpotList[index]
-                                                                        .business2 !=
-                                                                    null
-                                                                ? TextSpan(
-                                                                    text: getHostSpotList[
-                                                                            index]
-                                                                        .business2!
-                                                                        .name
-                                                                        .toString(),
-                                                                    recognizer:
-                                                                        TapGestureRecognizer()
-                                                                          ..onTap =
-                                                                              () {
-                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business2!.id)));
-                                                                          })
-                                                                : TextSpan(
-                                                                    text: ""),
-                                                            getHostSpotList[index]
-                                                                        .business3 !=
-                                                                    null
-                                                                ? TextSpan(
-                                                                    text: getHostSpotList[
-                                                                            index]
-                                                                        .business3!
-                                                                        .name
-                                                                        .toString(),
-                                                                    recognizer:
-                                                                        TapGestureRecognizer()
-                                                                          ..onTap =
-                                                                              () {
-                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business3!.id)));
-                                                                          })
-                                                                : TextSpan(
-                                                                    text: ""),
-                                                            getHostSpotList[index]
-                                                                        .business4 !=
-                                                                    null
-                                                                ? TextSpan(
-                                                                    text: getHostSpotList[
-                                                                            index]
-                                                                        .business4!
-                                                                        .name
-                                                                        .toString(),
-                                                                    recognizer:
-                                                                        TapGestureRecognizer()
-                                                                          ..onTap =
-                                                                              () {
-                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business4!.id)));
-                                                                          })
-                                                                : TextSpan(
-                                                                    text: ""),
-                                                            getHostSpotList[index]
-                                                                        .business5 !=
-                                                                    null
-                                                                ? TextSpan(
-                                                                    text: getHostSpotList[
-                                                                            index]
-                                                                        .business5!
-                                                                        .name
-                                                                        .toString(),
-                                                                    recognizer:
-                                                                        TapGestureRecognizer()
-                                                                          ..onTap =
-                                                                              () {
-                                                                            Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business5!.id)));
-                                                                          })
-                                                                : TextSpan(
-                                                                    text: "")
-                                                          ])),
-                                                    ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 2.w),
-                                                      child: Text(
-                                                        //  "2m ago",
+                            GestureDetector(
+                              onTap: () {
+                                FocusScopeNode currentFocus =
+                                    FocusScope.of(context);
 
-                                                        getHostSpotList[index]
-                                                            .timedelay
-                                                            .toString(),
-
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                          fontSize: 8.sp,
-                                                          color: kPrimaryColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 0.1.h,
-                                              ),
-                                              Container(
-                                                width: 74.w,
-                                                child: Text(
-                                                  // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                              },
+                              child: Card(
+                                  margin: EdgeInsets.symmetric(horizontal: 2.w),
+                                  color: kBackgroundColor,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: CachedNetworkImage(
+                                              imageUrl: getHostSpotList[index]
+                                                  .user_image
+                                                  .toString(),
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      CircleAvatar(
+                                                radius: 7.w,
+                                                backgroundImage: NetworkImage(
                                                   getHostSpotList[index]
-                                                              .message
-                                                              .toString() !=
-                                                          "null"
-                                                      ? getHostSpotList[index]
-                                                          .message
-                                                          .toString()
-                                                      : "",
-                                                  style: TextStyle(
-                                                      // overflow: TextOverflow.ellipsis,
-                                                      fontSize: 10.2.sp,
-                                                      color: Color(0xFFCECECE),
-                                                      fontFamily: 'Roboto'),
+                                                      .user_image
+                                                      .toString(),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                height: 1.h,
+                                              placeholder: (context, url) =>
+                                                  CircleAvatar(
+                                                radius: 7.w,
+                                                backgroundImage: AssetImage(
+                                                    "assets/images/usericon.png"),
                                               ),
-                                            ],
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      CircleAvatar(
+                                                radius: 7.w,
+                                                backgroundImage: AssetImage(
+                                                    "assets/images/usericon.png"),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    getHostSpotList[index]
-                                                .video_image_status
-                                                .toString() ==
-                                            "2"
-                                        ? SizedBox(
-                                            height: 200,
-                                            child: VideoItems(
-                                              videoPlayerController:
-                                                  VideoPlayerController.network(
-                                                      getHostSpotList[index]
-                                                          .image[0]),
-                                            ))
-                                        : getHostSpotList[index]
-                                                    .video_image_status
-                                                    .toString() ==
-                                                "1"
-                                            ? Container(
-                                                child: HotspotImageSlider(
-                                                  items: getHostSpotList[index]
-                                                      .image,
+                                          SizedBox(
+                                            width: 0.9.w,
+                                          ),
+                                          Container(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                SizedBox(
+                                                  height: 1.h,
                                                 ),
-                                              )
-                                            : Container(
-                                                width: 0,
-                                                height: 0,
-                                              ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4.w),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HotSpotReply(
-                                                      id: getHostSpotList[index]
-                                                          .id
-                                                          .toString(),
-                                                      username:
-                                                          getHostSpotList[index]
-                                                              .person_name
-                                                              .toString(),
-                                                      businessname:
-                                                          getHostSpotList[index]
-                                                              .business_user_name
-                                                              .toString()
-                                                              .replaceAll(
-                                                                  "@", "")
-                                                              .trim(),
-                                                      image:
-                                                          getHostSpotList[index]
-                                                              .user_image
-                                                              .toString(),
-                                                      message:
-                                                          getHostSpotList[index]
-                                                              .message
-                                                              .toString(),
-                                                      time:
+                                                Container(
+                                                  width: 74.w,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: RichText(
+                                                            text: TextSpan(
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        11.sp,
+                                                                    color:
+                                                                        kCyanColor,
+                                                                    fontFamily:
+                                                                        "Segoepr"),
+                                                                children: [
+                                                              TextSpan(
+                                                                  text: getHostSpotList[
+                                                                          index]
+                                                                      .person_name
+                                                                      .toString()),
+                                                              getHostSpotList[index]
+                                                                          .business !=
+                                                                      null
+                                                                  ? TextSpan(
+                                                                      text: getHostSpotList[
+                                                                              index]
+                                                                          .business!
+                                                                          .name
+                                                                          .toString(),
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () {
+                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business!.id)));
+                                                                            })
+                                                                  : TextSpan(
+                                                                      text: ""),
+                                                              getHostSpotList[index]
+                                                                          .business2 !=
+                                                                      null
+                                                                  ? TextSpan(
+                                                                      text: getHostSpotList[
+                                                                              index]
+                                                                          .business2!
+                                                                          .name
+                                                                          .toString(),
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () {
+                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business2!.id)));
+                                                                            })
+                                                                  : TextSpan(
+                                                                      text: ""),
+                                                              getHostSpotList[index]
+                                                                          .business3 !=
+                                                                      null
+                                                                  ? TextSpan(
+                                                                      text: getHostSpotList[
+                                                                              index]
+                                                                          .business3!
+                                                                          .name
+                                                                          .toString(),
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () {
+                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business3!.id)));
+                                                                            })
+                                                                  : TextSpan(
+                                                                      text: ""),
+                                                              getHostSpotList[index]
+                                                                          .business4 !=
+                                                                      null
+                                                                  ? TextSpan(
+                                                                      text: getHostSpotList[
+                                                                              index]
+                                                                          .business4!
+                                                                          .name
+                                                                          .toString(),
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () {
+                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business4!.id)));
+                                                                            })
+                                                                  : TextSpan(
+                                                                      text: ""),
+                                                              getHostSpotList[index]
+                                                                          .business5 !=
+                                                                      null
+                                                                  ? TextSpan(
+                                                                      text: getHostSpotList[
+                                                                              index]
+                                                                          .business5!
+                                                                          .name
+                                                                          .toString(),
+                                                                      recognizer:
+                                                                          TapGestureRecognizer()
+                                                                            ..onTap =
+                                                                                () {
+                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business5!.id)));
+                                                                            })
+                                                                  : TextSpan(
+                                                                      text: "")
+                                                            ])),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 2.w),
+                                                        child: Text(
+                                                          //  "2m ago",
+
                                                           getHostSpotList[index]
                                                               .timedelay
                                                               .toString(),
-                                                    ),
-                                                  ));
-                                            },
-                                            child: Text(
-                                              "View Replies",
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  color: Colors.white,
-                                                  fontFamily: "Roboto"),
+
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize: 8.sp,
+                                                            color:
+                                                                kPrimaryColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 0.1.h,
+                                                ),
+                                                Container(
+                                                  width: 74.w,
+                                                  child: Text(
+                                                    // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                                    getHostSpotList[index]
+                                                                .message
+                                                                .toString() !=
+                                                            "null"
+                                                        ? getHostSpotList[index]
+                                                            .message
+                                                            .toString()
+                                                        : "",
+                                                    style: TextStyle(
+                                                        // overflow: TextOverflow.ellipsis,
+                                                        fontSize: 10.2.sp,
+                                                        color:
+                                                            Color(0xFFCECECE),
+                                                        fontFamily: 'Roboto'),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 1.h,
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 2.0),
-                                          child: SizedBox(
-                                            width: 60.w,
-                                            child: TextField(
-                                              controller: getHostSpotList[index].messageController,
-                                              onChanged: (val) {
-                                                print(val);
-                                                setState(() {
-                                                  if ( getHostSpotList[
-                                                  index].selectedList.length < 5) {
-                                                    getHostSpotList[
-                                                    index].words = val.split(' ');
-                                                    getHostSpotList[
-                                                    index].str = getHostSpotList[
-                                                    index].words.length > 0 &&
-                                                        getHostSpotList[
-                                                        index].words[ getHostSpotList[
-                                                        index].words.length - 1].startsWith('@')
-                                                        ?  getHostSpotList[
-                                                    index].words[ getHostSpotList[
-                                                    index].words.length - 1]
-                                                        : '';
-                                                  }
-
-                                                  if ( getHostSpotList[
-                                                  index].messageController.text.contains("@@")) {
-                                                    getHostSpotList[
-                                                    index].sendReview =  getHostSpotList[
-                                                    index].messageController.text;
-                                                    splitReplyString(index);
-                                                  }
-                                                });
-
-
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      getHostSpotList[index]
+                                                  .video_image_status
+                                                  .toString() ==
+                                              "2"
+                                          ? SizedBox(
+                                              height: 200,
+                                              child: VideoItems(
+                                                videoPlayerController:
+                                                    VideoPlayerController
+                                                        .network(
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .image[0]),
+                                              ))
+                                          : getHostSpotList[index]
+                                                      .video_image_status
+                                                      .toString() ==
+                                                  "1"
+                                              ? Container(
+                                                  child: HotspotImageSlider(
+                                                    items:
+                                                        getHostSpotList[index]
+                                                            .image,
+                                                  ),
+                                                )
+                                              : Container(
+                                                  width: 0,
+                                                  height: 0,
+                                                ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 4.w),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HotSpotReply(
+                                                        id: getHostSpotList[
+                                                                index]
+                                                            .id
+                                                            .toString(),
+                                                        username:
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .person_name
+                                                                .toString(),
+                                                        businessname:
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .business_user_name
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    "@", "")
+                                                                .trim(),
+                                                        image: getHostSpotList[
+                                                                index]
+                                                            .user_image
+                                                            .toString(),
+                                                        message:
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .message
+                                                                .toString(),
+                                                        time: getHostSpotList[
+                                                                index]
+                                                            .timedelay
+                                                            .toString(),
+                                                      ),
+                                                    ));
                                               },
-                                              minLines: 1,
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.sp,
+                                              child: Text(
+                                                "View Replies",
+                                                style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    color: Colors.white,
+                                                    fontFamily: "Roboto"),
                                               ),
-                                              maxLines: 50,
-                                              decoration: InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 2.h,
-                                                          horizontal: 4.w),
-                                                  fillColor: Colors.black,
-                                                  filled: true,
-                                                  hintText: "Reply",
-                                                  suffixIcon: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 8.0),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        InkWell(
-                                                            onTap: () {
-                                                              getHostSpotList[
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 2.0),
+                                            child: SizedBox(
+                                              width: 60.w,
+                                              child: TextField(
+                                                controller:
+                                                    getHostSpotList[index]
+                                                        .messageController,
+                                                onChanged: (val) {
+                                                  print(val);
+                                                  setState(() {
+                                                    if (getHostSpotList[index]
+                                                            .selectedList
+                                                            .length <
+                                                        5) {
+                                                      getHostSpotList[index]
+                                                              .words =
+                                                          val.split(' ');
+                                                      getHostSpotList[index]
+                                                          .str = getHostSpotList[
                                                                           index]
-                                                                      .reply_image_video_status =
-                                                                  "0";
-                                                              getHostSpotList[
-                                                                          index]
-                                                                      .replyfile =
-                                                                  null;
+                                                                      .words
+                                                                      .length >
+                                                                  0 &&
                                                               getHostSpotList[
                                                                       index]
-                                                                  .replyfileName = "";
-                                                              currentPath = "";
-                                                              setState(() {});
-                                                              getFileDialogReply(
-                                                                  index);
-                                                            },
-                                                            child: Icon(
-                                                                Icons
-                                                                    .add_circle_outline,
-                                                                color:
-                                                                    kPrimaryColor)),
-
-                                                        SizedBox(width: 2.w),
-
-                                                        InkWell(
-                                                            onTap: () {
-                                                              var mesage =
-                                                              getHostSpotList[index].messageController
-                                                                      .text
-                                                                      .toString();
-
-                                                              if (mesage ==
-                                                                      "" ||
-                                                                  mesage ==
-                                                                      "null") {
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(SnackBar(
-                                                                        content:
-                                                                            Text("Please enter reply")));
-                                                              } else {
-
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus();
-                                                                replyOnHotspotReviewApi(
-                                                                    getHostSpotList[
-                                                                            index]
-                                                                        .id
-                                                                        .toString(),
-                                                                    mesage,
-                                                                    index);
-                                                              }
-
-                                                              getHostSpotList[index].messageController
-                                                                  .clear();
-                                                            },
-                                                            child: Icon(
-                                                                Icons.send,
-                                                                color:
-                                                                    kPrimaryColor)),
-                                                        //  SizedBox(width: 1.h,),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  hintStyle: TextStyle(
-                                                      fontSize: 9.sp,
-                                                      color: Colors.white)),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    getHostSpotList[index].str.length > 0
-                                        ? ListView(
-                                            shrinkWrap: true,
-                                            children:
-                                                getAllBusinessList.map((s) {
-
-                                              if (('@' +
-                                                      s.business_name
-                                                          .toString()
-                                                          .toLowerCase())
-                                                  .contains(getHostSpotList[index].str
-                                                      .toString()
-                                                      .toLowerCase()))
-                                                return Container(
-                                                  color: Colors.white,
-                                                  child: ListTile(
-                                                      title: Text(
-                                                        s.business_name,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                      onTap: () {
-                                                        String tmp =
-                                                        getHostSpotList[index].str.substring(
-                                                                1, getHostSpotList[index].str.length);
-                                                        print("tmp " +
-                                                            tmp.toString() +
-                                                            "^");
-                                                        getHostSpotList[index].selectedId =
-                                                            s.business_id;
-                                                        getHostSpotList[index].selectedList
-                                                            .add(s.business_id);
-
-                                                        setState(() {
-                                                          getHostSpotList[index]. messageController.text = getHostSpotList[index].messageController
-                                                              .text
-                                                              .toString()
-                                                              .substring(
-                                                                  0,
-                                                              getHostSpotList[index].messageController
-                                                                          .text
-                                                                          .toString()
+                                                                  .words[getHostSpotList[
+                                                                              index]
+                                                                          .words
                                                                           .length -
-                                                                      tmp.length);
-                                                          getHostSpotList[index].messageController
-                                                                  .text +=
-                                                              s.business_name +
-                                                                  "@@" +
-                                                                  s.business_id +
-                                                                  "##";
-                                                          //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
-                                                          getHostSpotList[index].sendReview =
-                                                          getHostSpotList[index].messageController
-                                                                  .text
-                                                                  .toString();
-                                                          if (getHostSpotList[index].messageController
-                                                              .text
-                                                              .contains("@@")) {
-                                                            splitReplyString(index);
-                                                          }
-                                                          getHostSpotList[index].messageController
-                                                                  .selection =
-                                                              TextSelection.fromPosition(
-                                                                  TextPosition(
-                                                                      offset: getHostSpotList[index].messageController
-                                                                          .text
-                                                                          .length));
-                                                          getHostSpotList[index].str = '';
-                                                        });
-                                                      }),
-                                                );
-                                              else
-                                                return SizedBox();
-                                            }).toList())
-                                        : Visibility(
-                                            visible: false, child: SizedBox()),
-                                    SizedBox(height: 25),
-                                    getHostSpotList[index].coments.length > 0
-                                        ? ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount: getHostSpotList[index].coments.length,
-                                            itemBuilder: (con, ind) {
-                                              return Text.rich(
-                                                TextSpan(
-                                                    text: '',
-                                                    children:getHostSpotList[index].coments[ind]
-                                                        .split(' ')
-                                                        .map((w) {
-                                                      return w.startsWith(
-                                                                  '@') &&
-                                                              w.length > 1
-                                                          ? TextSpan(
-                                                              text: ' ' + w,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .blue),
-                                                            )
-                                                          : TextSpan(
-                                                              text: ' ' + w,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black));
-                                                    }).toList()),
-                                              );
-                                            },
-                                          )
-                                        : Visibility(
-                                            visible: false, child: SizedBox()),
-                                    getHostSpotList[index]
-                                                .reply_image_video_status ==
-                                            "1"
-                                        ? Visibility(
-                                            visible: getHostSpotList[index]
-                                                        .replyfileList !=
-                                                    null
-                                                ? getHostSpotList[index]
-                                                            .replyfileList
-                                                            .length >
-                                                        0
-                                                    ? true
-                                                    : false
-                                                : false,
-                                            child: Container(
-                                              height: 8.h,
-                                              width: 80.w,
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                controller: _controller,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount:
-                                                    getHostSpotList[index]
-                                                                .replyfileList
-                                                                .length ==
-                                                            0
-                                                        ? 0
-                                                        : getHostSpotList[index]
-                                                            .replyfileList
-                                                            .length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int i) {
-                                                  return Row(
-                                                    children: [
-                                                      Stack(
+                                                                      1]
+                                                                  .startsWith(
+                                                                      '@')
+                                                          ? getHostSpotList[
+                                                                      index]
+                                                                  .words[
+                                                              getHostSpotList[
+                                                                          index]
+                                                                      .words
+                                                                      .length -
+                                                                  1]
+                                                          : '';
+                                                    }
+
+                                                    if (getHostSpotList[index]
+                                                        .messageController
+                                                        .text
+                                                        .contains("@@")) {
+                                                      getHostSpotList[index]
+                                                              .sendReview =
+                                                          getHostSpotList[index]
+                                                              .messageController
+                                                              .text;
+                                                      splitReplyString(index);
+                                                    }
+                                                  });
+                                                },
+                                                minLines: 1,
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.sp,
+                                                ),
+                                                maxLines: 50,
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 2.h,
+                                                            horizontal: 4.w),
+                                                    fillColor: Colors.black,
+                                                    filled: true,
+                                                    hintText: "Reply",
+                                                    suffixIcon: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 8.0),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                         children: [
-                                                          Container(
-                                                            height: 7.h,
-                                                            width: 9.h,
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(2
-                                                                            .w),
-                                                                image: DecorationImage(
-                                                                    image: FileImage(
-                                                                        getHostSpotList[index].replyfileList[
-                                                                            i]),
-                                                                    fit: BoxFit
-                                                                        .fill)),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 11.w,
-                                                                    bottom:
-                                                                        5.h),
-                                                            child:
-                                                                GestureDetector(
+                                                          InkWell(
                                                               onTap: () {
                                                                 getHostSpotList[
                                                                         index]
-                                                                    .replyfileList
-                                                                    .removeAt(
-                                                                        i);
+                                                                    .reply_image_video_status = "0";
                                                                 getHostSpotList[
                                                                         index]
-                                                                    .replyimages
-                                                                    .removeAt(
-                                                                        i);
+                                                                    .replyfile = null;
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyfileName = "";
+                                                                currentPath =
+                                                                    "";
+                                                                setState(() {});
+                                                                getFileDialogReply(
+                                                                    index);
+                                                              },
+                                                              child: Icon(
+                                                                  Icons
+                                                                      .add_circle_outline,
+                                                                  color:
+                                                                      kPrimaryColor)),
 
-                                                                if (getHostSpotList[
+                                                          SizedBox(width: 2.w),
+
+                                                          InkWell(
+                                                              onTap: () {
+                                                                var mesage = getHostSpotList[
+                                                                        index]
+                                                                    .messageController
+                                                                    .text
+                                                                    .toString();
+
+                                                                if (mesage ==
+                                                                        "" ||
+                                                                    mesage ==
+                                                                        "null") {
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text("Please enter reply")));
+                                                                } else {
+                                                                  FocusScope.of(
+                                                                          context)
+                                                                      .unfocus();
+                                                                  replyOnHotspotReviewApi(
+                                                                      getHostSpotList[
+                                                                              index]
+                                                                          .id
+                                                                          .toString(),
+                                                                      mesage,
+                                                                      index);
+                                                                }
+
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .messageController
+                                                                    .clear();
+                                                              },
+                                                              child: Icon(
+                                                                  Icons.send,
+                                                                  color:
+                                                                      kPrimaryColor)),
+                                                          //  SizedBox(width: 1.h,),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    hintStyle: TextStyle(
+                                                        fontSize: 9.sp,
+                                                        color: Colors.white)),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 1.h,
+                                      ),
+                                      getHostSpotList[index].str.length > 0
+                                          ? ListView(
+                                              shrinkWrap: true,
+                                              children:
+                                                  getAllBusinessList.map((s) {
+                                                if (('@' +
+                                                        s.business_name
+                                                            .toString()
+                                                            .toLowerCase())
+                                                    .contains(
+                                                        getHostSpotList[index]
+                                                            .str
+                                                            .toString()
+                                                            .toLowerCase()))
+                                                  return Container(
+                                                    color: Colors.white,
+                                                    child: ListTile(
+                                                        title: Text(
+                                                          s.business_name,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                        onTap: () {
+                                                          String tmp = getHostSpotList[
+                                                                  index]
+                                                              .str
+                                                              .substring(
+                                                                  1,
+                                                                  getHostSpotList[
+                                                                          index]
+                                                                      .str
+                                                                      .length);
+                                                          print("tmp " +
+                                                              tmp.toString() +
+                                                              "^");
+                                                          getHostSpotList[index]
+                                                                  .selectedId =
+                                                              s.business_id;
+                                                          getHostSpotList[index]
+                                                              .selectedList
+                                                              .add(s
+                                                                  .business_id);
+
+                                                          setState(() {
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .messageController
+                                                                .text = getHostSpotList[
+                                                                    index]
+                                                                .messageController
+                                                                .text
+                                                                .toString()
+                                                                .substring(
+                                                                    0,
+                                                                    getHostSpotList[index]
+                                                                            .messageController
+                                                                            .text
+                                                                            .toString()
+                                                                            .length -
+                                                                        tmp.length);
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .messageController
+                                                                .text += s
+                                                                    .business_name +
+                                                                "@@" +
+                                                                s.business_id +
+                                                                "##";
+                                                            //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
+                                                            getHostSpotList[
+                                                                        index]
+                                                                    .sendReview =
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .messageController
+                                                                    .text
+                                                                    .toString();
+                                                            if (getHostSpotList[
+                                                                    index]
+                                                                .messageController
+                                                                .text
+                                                                .contains(
+                                                                    "@@")) {
+                                                              splitReplyString(
+                                                                  index);
+                                                            }
+                                                            getHostSpotList[
+                                                                        index]
+                                                                    .messageController
+                                                                    .selection =
+                                                                TextSelection.fromPosition(TextPosition(
+                                                                    offset: getHostSpotList[
                                                                             index]
-                                                                        .replyfileList
-                                                                        .length ==
-                                                                    0) {
-                                                                  getHostSpotList[
-                                                                          index]
-                                                                      .replyfile = null;
-                                                                  getHostSpotList[
-                                                                          index]
-                                                                      .replyfileName = "";
+                                                                        .messageController
+                                                                        .text
+                                                                        .length));
+                                                            getHostSpotList[
+                                                                    index]
+                                                                .str = '';
+                                                          });
+                                                        }),
+                                                  );
+                                                else
+                                                  return SizedBox();
+                                              }).toList())
+                                          : Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
+                                      SizedBox(height: 25),
+                                      getHostSpotList[index].coments.length > 0
+                                          ? ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: getHostSpotList[index]
+                                                  .coments
+                                                  .length,
+                                              itemBuilder: (con, ind) {
+                                                return Text.rich(
+                                                  TextSpan(
+                                                      text: '',
+                                                      children:
+                                                          getHostSpotList[index]
+                                                              .coments[ind]
+                                                              .split(' ')
+                                                              .map((w) {
+                                                        return w.startsWith(
+                                                                    '@') &&
+                                                                w.length > 1
+                                                            ? TextSpan(
+                                                                text: ' ' + w,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .blue),
+                                                              )
+                                                            : TextSpan(
+                                                                text: ' ' + w,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black));
+                                                      }).toList()),
+                                                );
+                                              },
+                                            )
+                                          : Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
+                                      getHostSpotList[index]
+                                                  .reply_image_video_status ==
+                                              "1"
+                                          ? Visibility(
+                                              visible: getHostSpotList[index]
+                                                          .replyfileList !=
+                                                      null
+                                                  ? getHostSpotList[index]
+                                                              .replyfileList
+                                                              .length >
+                                                          0
+                                                      ? true
+                                                      : false
+                                                  : false,
+                                              child: Container(
+                                                height: 8.h,
+                                                width: 80.w,
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  controller: _controller,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: getHostSpotList[
+                                                                  index]
+                                                              .replyfileList
+                                                              .length ==
+                                                          0
+                                                      ? 0
+                                                      : getHostSpotList[index]
+                                                          .replyfileList
+                                                          .length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int i) {
+                                                    return Row(
+                                                      children: [
+                                                        Stack(
+                                                          children: [
+                                                            Container(
+                                                              height: 7.h,
+                                                              width: 9.h,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(2
+                                                                              .w),
+                                                                  image: DecorationImage(
+                                                                      image: FileImage(
+                                                                          getHostSpotList[index].replyfileList[
+                                                                              i]),
+                                                                      fit: BoxFit
+                                                                          .fill)),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left:
+                                                                          11.w,
+                                                                      bottom:
+                                                                          5.h),
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
                                                                   getHostSpotList[
                                                                           index]
                                                                       .replyfileList
-                                                                      .clear();
+                                                                      .removeAt(
+                                                                          i);
                                                                   getHostSpotList[
                                                                           index]
                                                                       .replyimages
-                                                                      .clear();
-                                                                  getHostSpotList[
-                                                                          index]
-                                                                      .reply_image_video_status = "0";
-                                                                }
-                                                                setState(() {});
-                                                              },
-                                                              child: Container(
-                                                                height: 4.h,
-                                                                width: 4.h,
-                                                                color: Colors
-                                                                    .transparent,
-                                                                child: Center(
-                                                                  child:
-                                                                      Container(
-                                                                    height: 2.h,
-                                                                    width: 2.h,
-                                                                    decoration: BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .circle,
-                                                                        color: Colors
-                                                                            .white),
+                                                                      .removeAt(
+                                                                          i);
+
+                                                                  if (getHostSpotList[
+                                                                              index]
+                                                                          .replyfileList
+                                                                          .length ==
+                                                                      0) {
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .replyfile = null;
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .replyfileName = "";
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .replyfileList
+                                                                        .clear();
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .replyimages
+                                                                        .clear();
+                                                                    getHostSpotList[
+                                                                            index]
+                                                                        .reply_image_video_status = "0";
+                                                                  }
+                                                                  setState(
+                                                                      () {});
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  height: 4.h,
+                                                                  width: 4.h,
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  child: Center(
                                                                     child:
-                                                                        Center(
-                                                                      child: SvgPicture
-                                                                          .asset(
-                                                                        "assets/icons/cross.svg",
-                                                                        width:
-                                                                            8,
-                                                                        color: Colors
-                                                                            .black,
+                                                                        Container(
+                                                                      height:
+                                                                          2.h,
+                                                                      width:
+                                                                          2.h,
+                                                                      decoration: BoxDecoration(
+                                                                          shape: BoxShape
+                                                                              .circle,
+                                                                          color:
+                                                                              Colors.white),
+                                                                      child:
+                                                                          Center(
+                                                                        child: SvgPicture
+                                                                            .asset(
+                                                                          "assets/icons/cross.svg",
+                                                                          width:
+                                                                              8,
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        width: 2.w,
-                                                      )
-                                                    ],
-                                                  );
-                                                },
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 2.w,
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                ),
                                               ),
+                                            )
+                                          : Container(
+                                              width: 0,
+                                              height: 0,
                                             ),
-                                          )
-                                        : Container(
-                                            width: 0,
-                                            height: 0,
-                                          ),
-                                    getHostSpotList[index]
-                                                .reply_image_video_status ==
-                                            "2"
-                                        ? Visibility(
-                                            visible: true,
-                                            child: Container(
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10),
-                                                    topRight:
-                                                        Radius.circular(10)),
-                                              ),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              getHostSpotList[
-                                                                      index]
-                                                                  .replyfileList
-                                                                  .clear();
-                                                              getHostSpotList[
-                                                                          index]
-                                                                      .replyfile =
-                                                                  null;
-                                                              getHostSpotList[
-                                                                      index]
-                                                                  .replyfileName = "";
-                                                              base64Image = "";
-                                                              getHostSpotList[
-                                                                          index]
-                                                                      .reply_image_video_status =
-                                                                  "0";
-                                                              currentPath = "";
-                                                              getHostSpotList[
-                                                                      index]
-                                                                  .replyimages
-                                                                  .clear();
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 5.0),
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              "assets/icons/cross.svg",
-                                                              color:
-                                                                  Colors.white,
-                                                              width: 4.w,
+                                      getHostSpotList[index]
+                                                  .reply_image_video_status ==
+                                              "2"
+                                          ? Visibility(
+                                              visible: true,
+                                              child: Container(
+                                                height: 100,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10)),
+                                                ),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyfileList
+                                                                    .clear();
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyfile = null;
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyfileName = "";
+                                                                base64Image =
+                                                                    "";
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .reply_image_video_status = "0";
+                                                                currentPath =
+                                                                    "";
+                                                                getHostSpotList[
+                                                                        index]
+                                                                    .replyimages
+                                                                    .clear();
+                                                              });
+                                                            },
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right:
+                                                                          5.0),
+                                                              child: SvgPicture
+                                                                  .asset(
+                                                                "assets/icons/cross.svg",
+                                                                color: Colors
+                                                                    .white,
+                                                                width: 4.w,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 1.5.h,
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    height: 50,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0),
-                                                      child: Text(
-                                                        getHostSpotList[index]
-                                                            .replyfileName,
-                                                        maxLines: 3,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.5.h,
+                                                    ),
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height: 50,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 8.0),
+                                                        child: Text(
+                                                          getHostSpotList[index]
+                                                              .replyfileName,
+                                                          maxLines: 3,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ))
-                                        : Container(
-                                            width: 0,
-                                            height: 0,
-                                          ),
-
-                                  ],
-                                )),
+                                                  ],
+                                                ),
+                                              ))
+                                          : Container(
+                                              width: 0,
+                                              height: 0,
+                                            ),
+                                    ],
+                                  )),
+                            ),
                             SizedBox(
                               height: 1.h,
                             ),
@@ -1104,7 +1193,7 @@ class _HotspotState extends State<Hotspot> {
                     )
                   : Visibility(visible: false, child: SizedBox()),
               Visibility(
-                  visible:  file != null?true:false,
+                  visible: file != null ? true : false,
                   child: file != null
                       ? image_video_status == "1"
                           ? Container(
@@ -1259,64 +1348,63 @@ class _HotspotState extends State<Hotspot> {
                                 ],
                               ),
                             )
-
-                      : Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
-                              color: kBackgroundColor),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                          : Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)),
+                                  color: kBackgroundColor),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          file = null;
-                                          fileName = "";
-                                          base64Image = "";
-                                          image_video_status = "0";
-                                          currentPath = "";
-                                        });
-                                      },
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 5.0),
-                                        child: SvgPicture.asset(
-                                          "assets/icons/cross.svg",
-                                          color: Colors.white,
-                                          width: 4.w,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              file = null;
+                                              fileName = "";
+                                              base64Image = "";
+                                              image_video_status = "0";
+                                              currentPath = "";
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 5.0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/cross.svg",
+                                              color: Colors.white,
+                                              width: 4.w,
+                                            ),
+                                          ),
                                         ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 1.5.h,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                        fileName,
+                                        maxLines: 3,
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: 1.5.h,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 50,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    fileName,
-                                    maxLines: 3,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ):  Container()
-              ),
+                            )
+                      : Container()),
               Container(
                 width: double.infinity,
                 height: 8.h,
@@ -1903,7 +1991,9 @@ class _HotspotState extends State<Hotspot> {
 
     var abcList = "";
     abcList = getHostSpotList[i].sendReview.replaceRange(
-        getHostSpotList[i].sendReview.indexOf("@@"),  getHostSpotList[i].sendReview.indexOf("#") + 2, "");
+        getHostSpotList[i].sendReview.indexOf("@@"),
+        getHostSpotList[i].sendReview.indexOf("#") + 2,
+        "");
     if (abcList.contains("@@")) {
       splitReplyString(i);
     } else {
@@ -1931,7 +2021,7 @@ class _HotspotState extends State<Hotspot> {
     print(getHostSpotList.length);
     setState(() {});
 
-/*    var request = http.post(
+    var request = http.post(
         Uri.parse(RestDatasource.SEARCHDATA_URL
             // RestDatasource.SEND_OTP,
             ),
@@ -1964,31 +2054,38 @@ class _HotspotState extends State<Hotspot> {
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.person_name = jsonArray[i]["person_name"].toString();
           modelAgentSearch.user_image = jsonArray[i]["user_image"].toString();
-          if(jsonArray[i]["business_id"].toString()=="312"){
-            modelAgentSearch.business_user_name ="";
-          }else{
+          if (jsonArray[i]["business_id"].toString() == "312") {
+            modelAgentSearch.business_user_name = "";
+          } else {
             modelAgentSearch.business_user_name =
-                " @ "+jsonArray[i]["business_user_name"].toString();
+                " @ " + jsonArray[i]["business_user_name"].toString();
           }
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
-           var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
-                      modelAgentSearch.timedelay = difference.toString()+" seconds ago";
-                      if(difference>60){
-                        var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inMinutes;
-                        modelAgentSearch.timedelay = difference.toString()+ " minutes ago";
+          var difference = date2
+              .difference(DateTime.parse(modelAgentSearch.created_at))
+              .inSeconds;
+          modelAgentSearch.timedelay = difference.toString() + " seconds ago";
+          if (difference > 60) {
+            var difference = date2
+                .difference(DateTime.parse(modelAgentSearch.created_at))
+                .inMinutes;
+            modelAgentSearch.timedelay = difference.toString() + " minutes ago";
 
-                        if(difference>60){
-                          var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inHours;
-                          modelAgentSearch.timedelay = difference.toString()+" hours ago";
-                          if(difference > 24){
-                            modelAgentSearch.timedelay = modelAgentSearch.created_at.toString().substring(0,10);
-                          }
-                        }
-                      }
+            if (difference > 60) {
+              var difference = date2
+                  .difference(DateTime.parse(modelAgentSearch.created_at))
+                  .inHours;
+              modelAgentSearch.timedelay = difference.toString() + " hours ago";
+              if (difference > 24) {
+                modelAgentSearch.timedelay =
+                    modelAgentSearch.created_at.toString().substring(0, 10);
+              }
+            }
+          }
 
           print("id: " + modelAgentSearch.id.toString());
           print("Bussiness: " + modelAgentSearch.person_name.toString());
@@ -2006,7 +2103,7 @@ class _HotspotState extends State<Hotspot> {
           isloading = false;
         });
       }
-    }*/
+    }
   }
 
   Future<dynamic> addHotspotReviewApi(String message,
@@ -2164,47 +2261,27 @@ class _HotspotState extends State<Hotspot> {
     request.fields["message"] = messageText;
     request.fields["video_image_status"] =
         getHostSpotList[index].reply_image_video_status;
-    if (getHostSpotList[
-    index].selectedList.length > 0) {
-      if (getHostSpotList[
-      index].selectedList.length == 1) {
-        request.fields["business_id"] = getHostSpotList[
-        index].selectedList[0];
-      } else if (getHostSpotList[
-      index].selectedList.length == 2) {
-        request.fields["business_id"] = getHostSpotList[
-        index].selectedList[0];
-        request.fields["business_id2"] = getHostSpotList[
-        index].selectedList[1];
-      } else if (getHostSpotList[
-      index].selectedList.length == 3) {
-        request.fields["business_id"] = getHostSpotList[
-        index].selectedList[0];
-        request.fields["business_id2"] = getHostSpotList[
-        index].selectedList[1];
-        request.fields["business_id3"] = getHostSpotList[
-        index].selectedList[2];
-      } else if (getHostSpotList[
-      index].selectedList.length == 4) {
-        request.fields["business_id"] = getHostSpotList[
-        index].selectedList[0];
-        request.fields["business_id2"] =getHostSpotList[
-        index]. selectedList[1];
-        request.fields["business_id3"] = getHostSpotList[
-        index].selectedList[2];
-        request.fields["business_id4"] = getHostSpotList[
-        index].selectedList[3];
+    if (getHostSpotList[index].selectedList.length > 0) {
+      if (getHostSpotList[index].selectedList.length == 1) {
+        request.fields["business_id"] = getHostSpotList[index].selectedList[0];
+      } else if (getHostSpotList[index].selectedList.length == 2) {
+        request.fields["business_id"] = getHostSpotList[index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[index].selectedList[1];
+      } else if (getHostSpotList[index].selectedList.length == 3) {
+        request.fields["business_id"] = getHostSpotList[index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[index].selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[index].selectedList[2];
+      } else if (getHostSpotList[index].selectedList.length == 4) {
+        request.fields["business_id"] = getHostSpotList[index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[index].selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[index].selectedList[2];
+        request.fields["business_id4"] = getHostSpotList[index].selectedList[3];
       } else if (selectedList.length == 5) {
-        request.fields["business_id"] = getHostSpotList[
-        index].selectedList[0];
-        request.fields["business_id2"] = getHostSpotList[
-        index].selectedList[1];
-        request.fields["business_id3"] = getHostSpotList[
-        index].selectedList[2];
-        request.fields["business_id4"] = getHostSpotList[
-        index].selectedList[3];
-        request.fields["business_id5"] = getHostSpotList[
-        index].selectedList[4];
+        request.fields["business_id"] = getHostSpotList[index].selectedList[0];
+        request.fields["business_id2"] = getHostSpotList[index].selectedList[1];
+        request.fields["business_id3"] = getHostSpotList[index].selectedList[2];
+        request.fields["business_id4"] = getHostSpotList[index].selectedList[3];
+        request.fields["business_id5"] = getHostSpotList[index].selectedList[4];
       }
     }
     if (getHostSpotList[index].reply_image_video_status == "2") {
@@ -2414,7 +2491,7 @@ class _HotspotState extends State<Hotspot> {
             buisnessData5.image = jsonArray[i]["business5"]["image"].toString();
             modelAgentSearch.business5 = buisnessData5;
           }
-        /*       if (jsonArray[i]["business_id"].toString() == "312") {
+          /*       if (jsonArray[i]["business_id"].toString() == "312") {
             modelAgentSearch.business_user_name = "";
           } else {
             modelAgentSearch.business_user_name =
@@ -2426,7 +2503,8 @@ class _HotspotState extends State<Hotspot> {
           if (jsonArray[i]["video_image_status"].toString() != "0") {
             print(
                 "Ye h " + jsonArray[i]["video_image_status"].toString() + "&&");
-             modelAgentSearch.image = jsonArray[i]["image"] != "" ? jsonArray[i]["image"] : [];
+            modelAgentSearch.image =
+                jsonArray[i]["image"] != "" ? jsonArray[i]["image"] : [];
           }
           modelAgentSearch.id = jsonArray[i]["id"].toString();
           modelAgentSearch.user_id = jsonArray[i]["user_id"].toString();
@@ -2599,13 +2677,13 @@ class _HotspotState extends State<Hotspot> {
                               }),
                             );
                             Navigator.of(context, rootNavigator: true).pop();
-                            print("CurrentPth "+currentPath+"");
+                            print("CurrentPth " + currentPath + "");
                             if (currentPath != "") {
                               file = File(currentPath.toString());
                               fileName = path.basename(file!.path);
                               print("Filename " + fileName.toString());
                               image_video_status = "2";
-                              print("fileName "+fileName+"");
+                              print("fileName " + fileName + "");
 
                               if (fileName == "" || fileName == null) {
                                 fileName = "File:- ";
@@ -3107,8 +3185,7 @@ class GetHotSpotClass {
   var words = [];
 
   List<String> coments = [];
-  TextEditingController messageController =
-  new TextEditingController();
+  TextEditingController messageController = new TextEditingController();
   var replyfileName = "";
   List<Asset> replyimages = [];
   List<File> replyfileList = [];

@@ -1141,6 +1141,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                                     .messageText
                                                                     .toString(),index);
                                                           }
+
+                                                           communityReviewList[index]
+                                                              .messageTextController.clear();
                                                         },
                                                         child: Icon(Icons.send,
                                                             color:

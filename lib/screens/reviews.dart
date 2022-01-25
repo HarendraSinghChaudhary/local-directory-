@@ -38,7 +38,7 @@ class _ReviewsState extends State<Reviews> {
   @override
   void initState() {
     reviewListApi();
-    editBox = reviewController.text;
+    reviewController.text = editBox;
     
     super.initState();
     
@@ -48,6 +48,8 @@ class _ReviewsState extends State<Reviews> {
   ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
+
+    print("object: "+editBox.toString());
 
    
 
@@ -487,7 +489,7 @@ class _ReviewsState extends State<Reviews> {
     
 
           editBox = jsonArray[i]["review"].toString();
-          print("editBox: "+ editBox.toString());
+          print("editBox  : "+ editBox.toString());
        
 
           reviewList.add(modelAgentSearch);
