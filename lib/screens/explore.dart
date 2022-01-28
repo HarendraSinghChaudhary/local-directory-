@@ -823,9 +823,9 @@ class NearBy {
   var long = "";
   var avgratting = "";
   var countUserreview = "";
-  var firecount = "";
-  var okcount = "";
-  var notcool_count = "";
+  var firecount = 0;
+  var okcount = 0;
+  var notcool_count = 0;
   var checkIn_status = "";
 }
 

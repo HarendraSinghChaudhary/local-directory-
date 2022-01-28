@@ -61,7 +61,7 @@ dependencies:
   path_provider: ^2.0.8
   provider:
   multi_image_picker: ^4.7.14
-  textfield_tags: ^1.4.2
+  rich_text_controller: ^1.4.0
   flutter_absolute_path:
     git:
       url: https://github.com/kornperkus/flutter_absolute_path.git
@@ -92,7 +92,9 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
- 
+    - assets/beckance/
+    - assets/snow/
+
     
   #   - images/a_dot_ham.jpeg
 

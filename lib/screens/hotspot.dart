@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
@@ -62,7 +63,7 @@ class _HotspotState extends State<Hotspot> {
   var selectedId = "";
   List<String> selectedList = [];
   String completeString = "";
-
+  RichTextController? reviewControllerr;
   List<GetHotSpotClass> getHostSpotList = [];
   List<GetHotSpotClass> getHostSpotList2 = [];
   List<GetHotSpotClass> searchList = [];
@@ -88,6 +89,45 @@ class _HotspotState extends State<Hotspot> {
     getId();
     getHotspotApi();
     getallBusinessDataApi();
+
+    reviewController = RichTextController(
+      patternMatchMap: {
+        //
+        //* Returns every Hashtag with red color
+        //
+        RegExp(r"\B#[a-zA-Z0-9]+\b"):TextStyle(color:Colors.red),
+        //
+        //* Returns every Mention with blue color and bold style.
+        //
+        RegExp(r"\B@[a-zA-Z0-9]+\b"):TextStyle(fontWeight: FontWeight.w800 ,color:Colors.blue,),
+        //
+        //* Returns every word after '!' with yellow color and italic style.
+        //
+        RegExp(r"\B![a-zA-Z0-9]+\b"):TextStyle(color:Colors.yellow, fontStyle:FontStyle.italic),
+
+
+        RegExp(r"\B@@[a-zA-Z0-9##]+\b"):TextStyle(color:Colors.yellow, fontStyle:FontStyle.italic),
+        // add as many expressions as you need!
+      },
+      //* starting v1.2.0
+      // Now you have the option to add string Matching!
+  /*    stringMatchMap: {
+        "String1":TextStyle(color: Colors.red),
+        "String2":TextStyle(color: Colors.yellow),
+      },*/
+      //! Assertion: Only one of the two matching options can be given at a time!
+
+      //* starting v1.1.0
+      //* Now you have an onMatch callback that gives you access to a List<String>
+      //* which contains all matched strings
+      onMatch: (List<String> matches){
+        // Do something with matches.
+        //! P.S
+        // as long as you're typing, the controller will keep updating the list.
+      },
+      deleteOnBack: true,
+
+    );
     super.initState();
   }
 
@@ -463,7 +503,7 @@ class _HotspotState extends State<Hotspot> {
                                               ))
                                           : getHostSpotList[index]
                                                       .video_image_status
-                                                      .toString() ==
+                                          .toString() ==
                                                   "1"
                                               ? Container(
                                                   child: HotspotImageSlider(
@@ -1138,8 +1178,7 @@ class _HotspotState extends State<Hotspot> {
                                   selectedList.add(s.business_id);
 
                                   setState(() {
-                                    reviewController.text = reviewController
-                                        .text
+                                    reviewController.text = reviewController.text
                                         .toString()
                                         .substring(
                                             0,
@@ -1147,16 +1186,16 @@ class _HotspotState extends State<Hotspot> {
                                                     .toString()
                                                     .length -
                                                 tmp.length);
-                                    reviewController.text += s.business_name +
-                                        "@@" +
+                                    reviewController.text += s.business_name ;
+                                       /* "@@" +
                                         s.business_id +
-                                        "##";
+                                        "##";*/
                                     //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
                                     sendReview =
                                         reviewController.text.toString();
-                                    if (reviewController.text.contains("@@")) {
+                               /*     if (reviewController!.value.text.contains("@@")) {
                                       splitString();
-                                    }
+                                    }*/
                                     reviewController.selection =
                                         TextSelection.fromPosition(TextPosition(
                                             offset:
@@ -1454,11 +1493,11 @@ class _HotspotState extends State<Hotspot> {
                                     ? words[words.length - 1]
                                     : '';
                               }
-
-                              if (reviewController.text.contains("@@")) {
-                                sendReview = reviewController.text;
+/*
+                              if (reviewController.value.text.contains("@@")) {
+                                sendReview = reviewController!.value.text;
                                 splitString();
-                              }
+                              }*/
                             });
                           },
                           style:
@@ -2207,8 +2246,7 @@ class _HotspotState extends State<Hotspot> {
 
         getHostSpotList.clear();
         getHotspotApi();
-        reviewController.clear();
-        reviewController.text.toString() == "";
+        reviewController.text = "";
 
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));

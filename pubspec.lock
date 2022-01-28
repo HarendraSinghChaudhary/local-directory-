@@ -585,6 +585,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  rich_text_controller:
+    dependency: "direct main"
+    description:
+      name: rich_text_controller
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   rxdart:
     dependency: transitive
     description:
@@ -758,13 +765,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
-  textfield_tags:
-    dependency: "direct main"
-    description:
-      name: textfield_tags
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.2"
   typed_data:
     dependency: transitive
     description:

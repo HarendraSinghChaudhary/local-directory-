@@ -29,6 +29,7 @@ class RestDatasource {
   static final SEARCHDATA_URL = BASE_URL + "Businesssearch";
   static final GETREVIEW_URL = BASE_URL + "getreviewbyuserid";
   static final GETALLBUSINESS_URL = BASE_URL + "getAllbusiness";
+  static final GETALLBUSINESSLIST_URL = BASE_URL + "getallBusinesslist";
   static final ADDREPORT_URL = BASE_URL + "addBuinessReports";
   static final ADDHOTSPOT_URL = BASE_URL + "add_hotspots";
   static final REVIEWDELETE_URL = BASE_URL + "deletereview";

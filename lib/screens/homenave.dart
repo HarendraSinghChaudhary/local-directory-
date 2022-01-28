@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wemarkthespot/richText.dart';
 
 import 'package:wemarkthespot/screens/account.dart';
 import 'package:wemarkthespot/screens/explore.dart';
@@ -40,6 +41,7 @@ class _HomeNavState extends State<HomeNav> {
       Home(),
       //Scaffold(),
       GoogleMapScreen(list: list,),
+     // ExampleRichText(),
       //AApp(),
       Hotspot(),
       Explore(),

@@ -2,6 +2,8 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +18,7 @@ import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+import 'dart:ui' as ui;
 
 class GoogleMapScreen extends StatefulWidget {
   var list;
@@ -48,14 +51,18 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
  
   var avgratting = "";
   var countUserreview = "";
-  var firecount = "";
-  var okcount = "";
-  var notcool_count = "";
+  var firecount = 0;
+  var okcount = 0;
+  var notcool_count = 0;
   double? lat;
   double? long;
 
   List<NearBy> nearByRestaurantList = [];
 
+  BitmapDescriptor? customIcon;
+  BitmapDescriptor? fireIcon;
+  BitmapDescriptor? okIcon;
+  BitmapDescriptor? notcoolIcon;
   TextEditingController mesageTextController = new TextEditingController();
   String searchText = "";
   LatLng sourceLocation = LatLng(26.862471, 75.762413);
@@ -63,7 +70,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
 
-  late GoogleMapController newGoogleMapController;
+  GoogleMapController? newGoogleMapController;
   late Position currentPosition;
   List<Marker> markers = [];
 
@@ -74,6 +81,24 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   void setCustomMarker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), "assets/images/fire.png");
+
+    final Uint8List fireI = await getBytesFromAsset('assets/images/fire.png', 50);
+    final Uint8List notcoolI = await getBytesFromAsset('assets/snow/snow.png', 50);
+    final Uint8List okI = await getBytesFromAsset('assets/beckance/bakance.png', 50);
+    fireIcon = BitmapDescriptor.fromBytes(fireI);
+    notcoolIcon = BitmapDescriptor.fromBytes(notcoolI);
+    okIcon = BitmapDescriptor.fromBytes(okI);
+    /*BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(1, 1)),
+        'assets/images/fire.png')
+        .then((d) {
+      customIcon = d;
+    });*/
+  }
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
   initilize(List<NearBy> businessList) {
@@ -89,14 +114,14 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 viewVisible = true;
                 business_name = business.business_name.toString();
                 avgratting = business.avgratting.toString();
-                firecount = business.firecount.toString();
-                notcool_count = business.notcool_count.toString();
+                firecount = business.firecount;
+                notcool_count = business.notcool_count;
                 user_count = business.user_count.toString();
                 review_count = business.review_count.toString();
                 business_images = business.business_images.toString();
                 id = business.id.toString();
 
-                okcount = business.okcount.toString();
+                okcount = business.okcount;
                 print("okok: "+okcount.toString());
 
               });
@@ -107,11 +132,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             infoWindow: InfoWindow(
               title: business_name = business.business_name.toString(),
             ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed),
+           /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),*/
+            icon:business.firecount>business.okcount?business.firecount>business.notcool_count?fireIcon!:notcoolIcon!:business.okcount>business.notcool_count?okIcon!:notcoolIcon!
           );
           markers.add(firstMarker);
-          print("business_name: "+business_name.toString());
+          print("markerslength: "+markers.length.toString());
+          print("business_lat: "+business.lat.toString());
         }
       }
     }
@@ -119,7 +146,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
  
 
     setState(() {
-       print("business_name2: "+ business_name.toString(),);
+       print("running: "+ "running",);
     });
   }
 
@@ -134,6 +161,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     if(widget.list!=null){
       print("widget Length: "+widget.list.length.toString());
       if (widget.list.length.toString() == "0") {
+
          locatePosition();
       nearBy();
       initilize(nearByRestaurantList);
@@ -144,19 +172,26 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       }
       
     }else{
-      locatePosition();
+      WidgetsBinding.instance!
+          .addPostFrameCallback((_) {
+        locatePosition();
+      });
+
       nearBy();
       initilize(nearByRestaurantList);
+
     }
   }
 @override
   void dispose() {
+  newGoogleMapController!.dispose();
     this.mesageTextController.removeListener(_onSearchChanged);
     this.mesageTextController.dispose();
     debounce?.cancel();
 
     super.dispose();
   }
+
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -170,7 +205,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     CameraPosition cameraPosition =
         new CameraPosition(target: latLngPosition, zoom: 15);
 
-    newGoogleMapController
+    newGoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
@@ -182,7 +217,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
 
-      print("business_name1: "+business_name.toString());
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -221,8 +255,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               child: InkWell(
                 onTap: () {
                   debounce?.cancel();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FliterScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FliterScreen()));
                 },
                 child: SvgPicture.asset(
                   "assets/icons/filter-list.svg",
@@ -239,12 +272,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             GoogleMap(
               onTap: (latLong) {
                 setState(() {
+
                   viewVisible = false;
+print("MarkersLength "+markers.length.toString()+"^^");
                 });
-
-
-                
-
               },
               initialCameraPosition: _currentPosition,
               myLocationEnabled: true,
@@ -347,7 +378,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
                   },
                   child: Container(
-                    height: 18.h,
+                    height: 20.h,
                     width: 70.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(3.w),
@@ -403,7 +434,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                     SvgPicture.asset("assets/icons/snow.svg",
                                         color: kNotCoolColor, width: 8.w),
                                     Text(
-                                      "Not Cool("+notcool_count.toString()+")",
+                                      "Not Cool("
+                                          +notcool_count.toString()+
+                                          ")",
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: Colors.white,
@@ -464,18 +497,21 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        //"Bar Name",
-                                        business_name.toString(),
-                                        // widget.nearBy.business_name.toString() != "null"
-                                        //     ? widget.nearBy.business_name.toString()
-                                        //     : "Bar Name",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 13.sp,
-                                            color: kCyanColor,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Segoepr"),
+                                      Container(
+                                        width: 45.w,
+                                        child: Text(
+                                          //"Bar Name",
+                                          business_name.toString(),
+                                          // widget.nearBy.business_name.toString() != "null"
+                                          //     ? widget.nearBy.business_name.toString()
+                                          //     : "Bar Name",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color: kCyanColor,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "Segoepr"),
+                                        ),
                                       ),
                 
                                       SizedBox(height: 0.5.h,),
@@ -605,7 +641,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
-
+          modelAgentSearch.firecount = jsonArray[i]["firecount"];
+          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+          modelAgentSearch.okcount = jsonArray[i]["okcount"];
           print("lat: " + modelAgentSearch.lat.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
@@ -632,7 +670,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
 
         setState(() {
-          newGoogleMapController.setMapStyle("[]");
+          newGoogleMapController!.setMapStyle("[]");
           initilize(nearByRestaurantList);
           print("lengthis "+nearByRestaurantList.length.toString()+"^");
           isloading = false;
@@ -660,11 +698,12 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     var request = http.post(
         Uri.parse(
-          RestDatasource.GETBUISNESSDETAIL_URL,
+          RestDatasource.GETALLBUSINESSLIST_URL,
         ),
-        body: {
-          "id": id.toString(),
-        });
+    body: {
+          "id":"238"
+    }
+    );
     String msg = "";
     var jsonArray;
     var jsonRes;
@@ -689,32 +728,28 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name =
-              jsonArray[i]["business_name"].toString();
-          modelAgentSearch.business_images =
-              jsonArray[i]["business_images"].toString();
+          modelAgentSearch.business_name = jsonArray[i]["business_name"].toString();
+         modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
           modelAgentSearch.distance = jsonArray[i]["distance"].toString();
           modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
           modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category =
-              jsonArray[i]["business_category "].toString();
+          modelAgentSearch.business_category = jsonArray[i]["business_category "].toString();
           modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count =
-              jsonArray[i]["review_count"].toString();
+          modelAgentSearch.review_count = jsonArray[i]["review_count"].toString();
           modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name =
-              jsonArray[i]["category_name"].toString();
+          modelAgentSearch.category_name = jsonArray[i]["category_name"].toString();
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-          modelAgentSearch.firecount = jsonArray[i]["firecount"].toString();
-          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"].toString();
-          modelAgentSearch.okcount = jsonArray[i]["okcount"].toString();
+          modelAgentSearch.firecount = jsonArray[i]["firecount"];
+          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+          modelAgentSearch.okcount = jsonArray[i]["okcount"];
 
           print("lat: " + modelAgentSearch.lat.toString());
-
-          nearByRestaurantList.add(modelAgentSearch);
+          if(modelAgentSearch.lat!=null) {
+            nearByRestaurantList.add(modelAgentSearch);
+          }
    /*       id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
@@ -727,11 +762,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           nearByRestaurantList.add(modelAgentSearch);*/
 
 
-          print("lattttttt: " + lat.toString());
+         // print("lattttttt: " + lat.toString());
 
         }
 
         setState(() {
+          newGoogleMapController!.setMapStyle("[]");
+          print("length is "+nearByRestaurantList.length.toString());
           initilize(nearByRestaurantList);
           isloading = false;
         });
@@ -811,7 +848,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
-
+          modelAgentSearch.firecount = jsonArray[i]["firecount"];
+          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+          modelAgentSearch.okcount = jsonArray[i]["okcount"];
           print("lat: " + modelAgentSearch.lat.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
@@ -827,7 +866,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           nearByRestaurantList.add(modelAgentSearch);*/
 
 
-          print("lattttttt: " + lat.toString());
 
         }
         print("FilterListLength "+nearByRestaurantList.length.toString()+"^^");

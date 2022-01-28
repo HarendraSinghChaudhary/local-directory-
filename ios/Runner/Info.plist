@@ -30,12 +30,12 @@
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
-			<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        	<string>Search for nearby Buisness</string>
-        	<key>NSLocationAlwaysUsageDescription</key>
-        	<string>Search for nearby Buisness</string>
-        	<key>NSLocationWhenInUseUsageDescription</key>
-        	<string>Search for nearby Buisness</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Search for nearby Buisness</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Search for nearby Buisness</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Search for nearby Buisness</string>
 		<key>NSCameraUsageDescription</key>
         	<string>Camera usage allows you to save and share profile image</string>
         	<key>NSPhotoLibraryUsageDescription</key>
