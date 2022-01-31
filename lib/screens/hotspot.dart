@@ -90,7 +90,11 @@ class _HotspotState extends State<Hotspot> {
     getHotspotApi();
     getallBusinessDataApi();
 
-    reviewController = RichTextController(
+    super.initState();
+
+
+
+    reviewControllerr = RichTextController(
       patternMatchMap: {
         //
         //* Returns every Hashtag with red color
@@ -111,7 +115,7 @@ class _HotspotState extends State<Hotspot> {
       },
       //* starting v1.2.0
       // Now you have the option to add string Matching!
-  /*    stringMatchMap: {
+      /*    stringMatchMap: {
         "String1":TextStyle(color: Colors.red),
         "String2":TextStyle(color: Colors.yellow),
       },*/
@@ -128,7 +132,6 @@ class _HotspotState extends State<Hotspot> {
       deleteOnBack: true,
 
     );
-    super.initState();
   }
 
   late var size;

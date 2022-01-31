@@ -19,8 +19,9 @@ import 'package:wemarkthespot/screens/testingsheet.dart';
 class HomeNav extends StatefulWidget {
   int index;
   var selectedList;
+  String route= "home";
   HomeNav({Key? key, required this.index}):super(key:key);
-  HomeNav.one(this.index,this.selectedList);
+  HomeNav.one(this.index,this.selectedList, this.route);
   @override
   _HomeNavState createState() => _HomeNavState();
 }
@@ -29,7 +30,7 @@ class _HomeNavState extends State<HomeNav> {
   int _index = 0;
   var list;
   List widgets = [];
-
+  var route = "home";
   //LanguageChange languageChange = new LanguageChange();
   GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 
@@ -37,10 +38,12 @@ class _HomeNavState extends State<HomeNav> {
   void initState() {
     _index = widget.index;
     list = widget.selectedList;
+    route = widget.route;
+
     widgets = <Widget>[
       Home(),
       //Scaffold(),
-      GoogleMapScreen(list: list,),
+      GoogleMapScreen(list: list,route: route),
      // ExampleRichText(),
       //AApp(),
       Hotspot(),
@@ -68,8 +71,10 @@ class _HomeNavState extends State<HomeNav> {
           selectedItemColor: Color(0xFF1DC2C2),
           unselectedItemColor: Color(0xFF7A7A7A),
           onTap: (page) {
+            route = "home";
             setState(() {
               list = null;
+
               _index = page;
             });
           },

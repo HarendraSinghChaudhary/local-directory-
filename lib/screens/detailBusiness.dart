@@ -3982,13 +3982,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
     if (res?.statusCode == 200) {
       isCheckinClicked = false;
-      check = "";
-      currentPath = "";
-      ivStatus = "";
-      reviewController2.clear();
-      fileName = "";
-      rattingcheckin = 0.0;
-      image_video_status = "0";
 
       if (jsonRes["status"].toString() == "true") {
         reviewController.clear();
@@ -4001,6 +3994,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
           widget.nearBy.checkIn_status = jsonRes["check_status"].toString();
 
           if (widget.nearBy.checkIn_status.toString() == "2") {
+
             checkInDialog();
           }else {
             checkoutApi(
@@ -4044,6 +4038,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
 
     print("id " + id.toString() + "");
+    print("review " + review.toString() + "");
 
     var request = http.MultipartRequest(
       "POST",

@@ -12,8 +12,8 @@ import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
 class FliterScreen extends StatefulWidget {
-  // var list;
-  // FliterScreen({required this.list});
+   var list;
+   FliterScreen({required this.list});
   
 
   @override
@@ -37,8 +37,15 @@ class _FliterScreenState extends State<FliterScreen> {
   List<String> selectedCat = [];
   @override
   void initState() {
-    liefeStyleApi();
-
+    if(widget.list!=null){
+      if(widget.list.length!=0){
+        lifeStyleList = widget.list;
+      }else{
+        liefeStyleApi();
+      }
+    }else {
+      liefeStyleApi();
+    }
     super.initState();
   }
 
@@ -307,22 +314,9 @@ class _FliterScreenState extends State<FliterScreen> {
                   ),
                   DefaultButton(
                       width: 45.w, height: 7.h, text: "Apply", press: () {
-                     lifeStyleList.forEach((element) {
-                      if(element.subLifeStyle!=null){
-                        if(element.subLifeStyle.length>0){
-                          for(var j=0; j<element.subLifeStyle.length; j++){
-                            if(element.subLifeStyle[j].isSelected){
-                              selectedCat.add(element.subLifeStyle[j].id);
-                            }
-                          }
-                        }
-                      }
-                    });
 
-                    String s = selectedCat.join(', ');
-                    print(selectedCat.toString());
                      Navigator.pushAndRemoveUntil(context,
-                         MaterialPageRoute(builder: (context) => HomeNav.one(1,selectedCat)), (r)=> false);
+                         MaterialPageRoute(builder: (context) => HomeNav.one(1,lifeStyleList, "filter")), (r)=> false);
                   })
                 ],
               ),
@@ -366,6 +360,7 @@ class _FliterScreenState extends State<FliterScreen> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
+        lifeStyleList.clear();
         for (var i = 0; i < jsonArray.length; i++) {
           LifeStyle modelAgentSearch = new LifeStyle();
           modelAgentSearch.id = jsonArray[i]["id"].toString();

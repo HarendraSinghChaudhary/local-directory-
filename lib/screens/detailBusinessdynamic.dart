@@ -69,6 +69,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   var replies_count = "";
   var clearFile = "";
   var videoLink = "";
+  bool isCheckinClicked = false;
 
   List<CommunityReviewAPI> communityReviewList = [];
 
@@ -542,9 +543,20 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           ivStatus = "";
                           fileName = "";
                           file = null;
+                          fileList.clear();
+                          images.clear();
+                          currentPath = "";
 
+                          if (!isCheckinClicked) {
+                            isCheckinClicked = true;
+                            if(nearby!.checkIn_status=="1"){
+                              checkInApi("2");
+                            }else{
+                              checkInDialog2();
 
-                            checkInApi();
+                            }
+
+                          }
 
                         },
                         child: Container(
@@ -1329,6 +1341,585 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     );
   }
 
+  checkInDialog2() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        isCheckinClicked = false;
+        return StatefulBuilder(builder: (context, setState) {
+          print("check: " + check.toString());
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: isloading == true
+                ? Column(
+              children: [
+                Center(
+                    child: Platform.isIOS
+                        ? CupertinoActivityIndicator()
+                        : CircularProgressIndicator()),
+                Text(
+                  "Please wait....",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                )
+              ],
+            )
+                : SingleChildScrollView(
+                child: Card(
+                  color: Colors.black,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop();
+
+                              reviewController2.clear();
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+                              ivStatus = "";
+                              currentPath = "";
+                              rattingcheckin = 0.0;
+                              check = "";
+                              fileList.clear();
+                              images.clear();
+                            },
+                            child: Container(
+                              height: 10.w,
+                              width: 10.w,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  color: Colors.white,
+                                  width: 4.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 0.2.h,
+                      ),
+                      Text(
+                        "How do you like restaurant\n"
+                            "after check in",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"
+                          //fontFamily: "Segoepr"
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "fire";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/file.svg",
+                                    color: check == "fire"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.2.h,
+                                  ),
+                                  Text(
+                                    "Fire",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "fire"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+
+                          InkWell(
+                            onTap: () {
+                              print("tab");
+                              setState(() {
+                                check = "OkOk";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/bakance.svg",
+                                    color: check == "OkOk"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "OkOk",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "OkOk"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "Not Cool";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/snow.svg",
+                                    color: check == "Not Cool"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "Not Cool",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "Not Cool"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Your Overall Rating",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 0.6.h,
+                              ),
+                              RatingBar.builder(
+                                itemSize: 24,
+                                unratedColor: Color(0XFFCECECE),
+                                initialRating: rattingcheckin,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding:
+                                EdgeInsets.symmetric(horizontal: 0.0),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
+                                onRatingUpdate: (rating) {
+                                  print("Ratting :" + rating.toString());
+                                  rattingcheckin = rating;
+                                  //rat = rattingController.text.toString();
+                                  print("Rat: " + rattingcheckin.toString());
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Add Images/Video",
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      if (image_video_status == "2") {
+                                        final snackBar = SnackBar(
+                                            content: Text(
+                                                'Either image or video can be post at a time'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          snackBar,
+                                        );
+                                      } else {
+                                        fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        await pickImages().then((value) {
+                                          images = value;
+                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
+                                        //getCheckInImage();
+                                      }
+                                      //                              ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             if (fileName.toString() != "null" || fileName.toString() != "") {
+                                      //                               ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             }
+                                    },
+                                    child: file == null
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : file!.path
+                                        .toString()
+                                        .endsWith("mp4")
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg")),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        if (image_video_status == "1") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          File file1;
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          setState(() {
+
+                                          });
+                                          FilePickerResult? result =
+                                          await FilePicker.platform
+                                              .pickFiles(
+                                            type: FileType.video,
+                                            allowCompression: false,
+                                          );
+                                          if (result != null) {
+                                            file1 = File(
+                                                result.files.single.path!);
+
+
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TrimmerView(file1);
+                                                  }),
+                                            );
+                                            Navigator.of(context,
+                                                rootNavigator: true)
+                                                .pop();
+                                            setState(() {
+                                              if (currentPath.toString() !=
+                                                  "") {
+                                                ivStatus = "2";
+                                                file = File(
+                                                    currentPath.toString());
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                image_video_status = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                image_video_status = "0";
+                                              }
+
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+                                            });
+                                            checkInDialog2();
+                                          }
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                          "assets/icons/video.svg")),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Container(
+                        height: 12.h,
+                        width: 85.w,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(3.w)),
+                        child: TextFormField(
+                          controller: reviewController2,
+                          style: TextStyle(color: Color(0XFFCECECE)),
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 2.w, vertical: .2.h),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintText: "Type a Review...",
+                              hintStyle: TextStyle(
+                                  fontSize: 12.sp, color: Color(0XFFCECECE))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.2.h,
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          height: 8.h,
+                          width: 80.w,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                            fileList.length == 0 ? 0 : fileList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              return Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 9.h,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(2.w),
+                                            image: DecorationImage(
+                                                image: FileImage(
+                                                    fileList[i]),
+                                                fit: BoxFit.fill)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            images.removeAt(i);
+
+                                            if (fileList.length == 0) {
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                            }
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.0),
+                        child: Visibility(
+                            visible: isVisible,
+                            child: Text(
+                              fileName,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Submit",
+                          press: () async {
+                            if (check.toString() == "" ||
+                                check.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please select tag")));
+                            } else {
+                              if (currentPath != "") {
+                                file = File(currentPath.toString());
+                                fileName = path.basename(file!.path);
+                                print("Filename " + fileName.toString());
+                              }
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                isloading = true;
+                                checkInDialog2();
+                              });
+                              await checkInApi("1");
+
+                            }
+                          })
+                    ],
+                  ),
+                )),
+          );
+        });
+      },
+    );
+  }
 
   getFileDialogReply(int index) {
     showDialog(
@@ -2498,19 +3089,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         child: SvgPicture.asset(
                                             "assets/icons/image.svg"))
                                         : Container(
-                                      height: 3.h,
-                                      width: 3.h,
-                                      decoration: BoxDecoration(
-                                        // borderRadius:
-                                        //     BorderRadius.circular(3.w),
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                            //Color(0xffD5D5D5)
-                                          ),
-                                          image: DecorationImage(
-                                              image: FileImage(File(
-                                                  file!.path)))),
-                                    ),
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg")),
                                   ),
                                   SizedBox(
                                     width: 3.w,
@@ -3214,11 +3794,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     }
   }
 
-  Future<dynamic> checkInApi() async {
+  Future<dynamic> checkInApi(String checkinstatus) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("user_id Prinnt: " + id.toString());
-    print("id Prinnt: " + nearby!.id.toString().toString());
+    print("id Prinnt: " +nearby!.id.toString().toString());
+    print("status Prinnt: " + checkinstatus.toString().toString());
     setState(() {
       isloading = true;
     });
@@ -3229,7 +3810,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         Uri.parse(
           RestDatasource.CHECKINAPI,
         ),
-        body: {"id": nearby!.id.toString(), "user_id": id.toString()});
+        body: {"id":nearby!.id.toString(), "user_id": id.toString(), "type":checkinstatus});
 
     await request.then((http.Response response) {
       res = response;
@@ -3242,24 +3823,27 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     });
 
     if (res?.statusCode == 200) {
-      check = "";
-      currentPath = "";
-      ivStatus = "";
-      reviewController2.clear();
-      fileName = "";
-      rattingcheckin = 0.0;
-      image_video_status = "0";
+
 
       if (jsonRes["status"].toString() == "true") {
-
-        nearby!.checkIn_status = jsonRes["check_status"].toString();
-        reviewController.clear();
-        file = null;
         setState(() {
           isloading = false;
         });
-        if(nearby!.checkIn_status.toString()=="2"){
-          checkInDialog();
+        if(!jsonRes["message"].toString().contains("You are already")) {
+          nearby!.checkIn_status = jsonRes["check_status"].toString();
+
+          if (nearby!.checkIn_status.toString() == "2") {
+            checkInDialog();
+          }else {
+            checkoutApi(
+                rattingcheckin.toString(),
+                reviewController2.text.toString(),
+                check.toString());
+          }
+        }else{
+          if (nearby!.checkIn_status.toString() != "1") {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
         }
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));
@@ -3274,6 +3858,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         });
       }
     } else {
+      isCheckinClicked = false;
       setState(() {
         isloading = false;
 
@@ -3356,15 +3941,15 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
-        nearby!.checkIn_status = "0";
         communityReviewApi();
         reviewController.clear();
         file = null;
+
         Navigator.of(context, rootNavigator: true).pop();
         Navigator.pushReplacement(
             context,
             new MaterialPageRoute(
-                builder: (builder) => DetailBussiness(nearBy: nearby!)));
+                builder: (builder) => DetailBussinessDynamic(id: nearby!.id)));
         setState(() {
           isloading = false;
         });

@@ -22,8 +22,9 @@ import 'dart:ui' as ui;
 
 class GoogleMapScreen extends StatefulWidget {
   var list;
+  var route;
 
-  GoogleMapScreen({Key? key, this.list}):super(key:key);
+  GoogleMapScreen({Key? key, this.list, this.route}):super(key:key);
   @override
   _GoogleMapLocationTestingState createState() =>
       _GoogleMapLocationTestingState();
@@ -47,7 +48,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var location = "";
   var category_name = "";
   var latlong_position = "";
- 
+ bool isCheckinClicked = false;
  
   var avgratting = "";
   var countUserreview = "";
@@ -103,7 +104,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   initilize(List<NearBy> businessList) {
     print("into the initalizer method");
-
+    print("businessLength "+businessList.length.toString()+"");
     for (final business in businessList) {
       if(business.lat!=null && business.long!=null) {
         if (business.lat.toString() != "null" &&
@@ -117,7 +118,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 firecount = business.firecount;
                 notcool_count = business.notcool_count;
                 user_count = business.user_count.toString();
-                review_count = business.review_count.toString();
+                review_count = business.totalReviewusers.toString();
                 business_images = business.business_images.toString();
                 id = business.id.toString();
 
@@ -156,22 +157,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     super.initState();
     setCustomMarker();
-
+  print(widget.route.toString()+"**");
     this.mesageTextController.addListener(_onSearchChanged);
-    if(widget.list!=null){
-      print("widget Length: "+widget.list.length.toString());
-      if (widget.list.length.toString() == "0") {
-
-         locatePosition();
-      nearBy();
-      initilize(nearByRestaurantList);
-        
-      } else {
-        locatePosition();
-      filterData(widget.list);
-      }
-      
-    }else{
+    if(widget.route.toString()=="home"){
+      print("RunHomeRoute");
       WidgetsBinding.instance!
           .addPostFrameCallback((_) {
         locatePosition();
@@ -180,7 +169,27 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       nearBy();
       initilize(nearByRestaurantList);
 
+    }else{
+      if(widget.list!=null) {
+        print("widget Length: " + widget.list.length.toString());
+        print("widget list: " + widget.list.toString());
+        if (widget.list.length.toString() == "0") {
+          locatePosition();
+          nearBy();
+          initilize(nearByRestaurantList);
+        } else {
+          locatePosition();
+          filterData(widget.list);
+
+        }
+      }else{
+        locatePosition();
+        nearBy();
+        initilize(nearByRestaurantList);
+      }
+      
     }
+
   }
 @override
   void dispose() {
@@ -255,7 +264,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               child: InkWell(
                 onTap: () {
                   debounce?.cancel();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FliterScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FliterScreen(list:widget.list)));
                 },
                 child: SvgPicture.asset(
                   "assets/icons/filter-list.svg",
@@ -373,25 +382,30 @@ print("MarkersLength "+markers.length.toString()+"^^");
               child: Padding(
                 // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
                 padding: EdgeInsets.only(bottom: 7.h, right: 12.2.w),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
-                  },
-                  child: Container(
-                    height: 20.h,
-                    width: 70.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3.w),
-                      color: kBackgroundColor,
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 14),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
+                child: Container(
+                  height: 20.h,
+                  width: 70.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3.w),
+                    color: kBackgroundColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                if(isCheckinClicked==false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "fire");
+                                }
+                              },
+                              child: Container(
                                 child: Column(
                                   children: [
                                     SvgPicture.asset("assets/icons/file.svg",
@@ -404,14 +418,24 @@ print("MarkersLength "+markers.length.toString()+"^^");
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: Colors.white,
-                
+
                                         //fontFamily: "Roboto"
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                if(isCheckinClicked==false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "OkOk");
+                                }
+                              },
+                              child: Container(
                                 child: Column(
                                   children: [
                                     SvgPicture.asset("assets/icons/bakance.svg",
@@ -421,14 +445,24 @@ print("MarkersLength "+markers.length.toString()+"^^");
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: Colors.white,
-                
+
                                         //fontFamily: "Roboto"
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                if(isCheckinClicked==false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "Not Cool");
+                                }
+                              },
+                              child: Container(
                                 child: Column(
                                   children: [
                                     SvgPicture.asset("assets/icons/snow.svg",
@@ -440,39 +474,45 @@ print("MarkersLength "+markers.length.toString()+"^^");
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         color: Colors.white,
-                
+
                                         //fontFamily: "Roboto"
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset("assets/icons/star.svg",
-                                        color: kPrimaryColor, width: 6.w),
-                                    SizedBox(
-                                      height: 1.h,
+                            ),
+                            Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset("assets/icons/star.svg",
+                                      color: kPrimaryColor, width: 6.w),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    //"3.5",
+                                    avgratting.toString(),
+                                    style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colors.white,
+
+                                      //fontFamily: "Roboto"
                                     ),
-                                    Text(
-                                      //"3.5",
-                                      avgratting.toString(),
-                                      style: TextStyle(
-                                        fontSize: 11.sp,
-                                        color: Colors.white,
-                
-                                        //fontFamily: "Roboto"
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Padding(
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
+
+                        },
+                        child: Padding(
                           padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
                           child: Container(
                             child: Row(
@@ -513,10 +553,10 @@ print("MarkersLength "+markers.length.toString()+"^^");
                                               fontFamily: "Segoepr"),
                                         ),
                                       ),
-                
+
                                       SizedBox(height: 0.5.h,),
-                
-                
+
+
                                       Row(
                                         children: [
                                           Text(
@@ -562,9 +602,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
                               ],
                             ),
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -670,9 +710,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
 
 
         setState(() {
+          print("lengthis "+nearByRestaurantList.length.toString()+"^");
           newGoogleMapController!.setMapStyle("[]");
           initilize(nearByRestaurantList);
-          print("lengthis "+nearByRestaurantList.length.toString()+"^");
           isloading = false;
         });
       } else {
@@ -689,6 +729,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
   }
 
   Future<dynamic> nearBy() async {
+    print("Run "+"GetAllbuisnessList");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -701,7 +742,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
           RestDatasource.GETALLBUSINESSLIST_URL,
         ),
     body: {
-          "id":"238"
+          "id":id
     }
     );
     String msg = "";
@@ -767,7 +808,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
         }
 
         setState(() {
-          newGoogleMapController!.setMapStyle("[]");
+          if(newGoogleMapController!=null) {
+            newGoogleMapController!.setMapStyle("[]");
+          }
           print("length is "+nearByRestaurantList.length.toString());
           initilize(nearByRestaurantList);
           isloading = false;
@@ -788,28 +831,22 @@ print("MarkersLength "+markers.length.toString()+"^^");
     }
   }
 
-
-
-  Future<dynamic> filterData(List<String> key) async {
-    print("Filter");
+  Future<dynamic> checkInApi(String id, String check) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var id = prefs.getString("id");
-    print("id Print: " + widget.list.toString());
+    var user_id = prefs.getString("id");
+    print("user_id Prinnt: " + user_id.toString());
+    print("id Prinnt: " + id.toString().toString());
     setState(() {
       isloading = true;
     });
 
+    var jsonRes;
+    http.Response? res;
     var request = http.post(
         Uri.parse(
-          RestDatasource.FILTER,
+          RestDatasource.CHECKINAPI,
         ),
-        body: {
-          "key": widget.list.toString(),
-        });
-    String msg = "";
-    var jsonArray;
-    var jsonRes;
-    var res;
+        body: {"id": id.toString(), "user_id": user_id.toString(), "type":"1"});
 
     await request.then((http.Response response) {
       res = response;
@@ -817,43 +854,137 @@ print("MarkersLength "+markers.length.toString()+"^^");
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
+      print("status: " + jsonRes["status"].toString() + "_");
+      print("message: " + jsonRes["message"].toString() + "_");
     });
 
-    if (res.statusCode == 200) {
-      print(jsonRes["status"]);
+    if (res?.statusCode == 200) {
+      isCheckinClicked = false;
 
       if (jsonRes["status"].toString() == "true") {
-        nearByRestaurantList.clear();
-        markers.clear();
-        for (var i = 0; i < jsonArray.length; i++) {
-          NearBy modelAgentSearch = new NearBy();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name =
-              jsonArray[i]["business_name"].toString();
-          modelAgentSearch.business_images =
-              jsonArray[i]["business_images"].toString();
-          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
-          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
-          modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category =
-              jsonArray[i]["business_category "].toString();
-          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count =
-              jsonArray[i]["review_count"].toString();
-          modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name =
-              jsonArray[i]["category_name"].toString();
-          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
-          modelAgentSearch.long = jsonArray[i]["long"].toString();
-          modelAgentSearch.firecount = jsonArray[i]["firecount"];
-          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
-          modelAgentSearch.okcount = jsonArray[i]["okcount"];
-          print("lat: " + modelAgentSearch.lat.toString());
 
-          nearByRestaurantList.add(modelAgentSearch);
+        setState(() {
+          isloading = false;
+        });
+        if(!jsonRes["message"].toString().contains("You are already")) {
+
+            checkoutApi(
+                id,
+                check.toString());
+
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonRes["message"].toString())));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+
+      } else {
+        setState(() {
+          isloading = false;
+         // Navigator.of(context, rootNavigator: true).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      isCheckinClicked = false;
+      setState(() {
+        isloading = false;
+
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+
+  Future<dynamic> filterData(List<LifeStyle> key) async {
+    print("Filter");
+
+    List<String> list = [];
+    key.forEach((element) {
+      if (element.subLifeStyle != null) {
+        if (element.subLifeStyle.length > 0) {
+          for (var j = 0; j < element.subLifeStyle.length; j++) {
+            if (element.subLifeStyle[j].isSelected) {
+              list.add(element.subLifeStyle[j].id);
+            }
+          }
+        }
+      }
+    });
+
+    String s = list.join(', ');
+    print("ssss " + s.toString());
+    print(list.toString());
+    if (list.length == 0) {
+      locatePosition();
+      nearBy();
+      initilize(nearByRestaurantList);
+    } else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var id = prefs.getString("id");
+      print("id Print: " + widget.list.toString());
+      setState(() {
+        isloading = true;
+      });
+
+      var request = http.post(
+          Uri.parse(
+            RestDatasource.FILTER,
+          ),
+          body: {
+            "key": list.toString(),
+          });
+      String msg = "";
+      var jsonArray;
+      var jsonRes;
+      var res;
+
+      await request.then((http.Response response) {
+        res = response;
+        final JsonDecoder _decoder = new JsonDecoder();
+        jsonRes = _decoder.convert(response.body.toString());
+        print("Response: " + response.body.toString() + "_");
+        print("ResponseJSON: " + jsonRes.toString() + "_");
+        msg = jsonRes["message"].toString();
+        jsonArray = jsonRes['data'];
+      });
+
+      if (res.statusCode == 200) {
+        print(jsonRes["status"]);
+
+        if (jsonRes["status"].toString() == "true") {
+          nearByRestaurantList.clear();
+          markers.clear();
+          for (var i = 0; i < jsonArray.length; i++) {
+            NearBy modelAgentSearch = new NearBy();
+            modelAgentSearch.id = jsonArray[i]["id"].toString();
+            modelAgentSearch.business_name =
+                jsonArray[i]["business_name"].toString();
+            modelAgentSearch.business_images =
+                jsonArray[i]["business_images"].toString();
+            modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+            modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+            modelAgentSearch.description =
+                jsonArray[i]["description"].toString();
+            modelAgentSearch.business_category =
+                jsonArray[i]["business_category "].toString();
+            modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+            modelAgentSearch.review_count =
+                jsonArray[i]["review_count"].toString();
+            modelAgentSearch.location = jsonArray[i]["location"].toString();
+            modelAgentSearch.category_name =
+                jsonArray[i]["category_name"].toString();
+            modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+            modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+            modelAgentSearch.long = jsonArray[i]["long"].toString();
+            modelAgentSearch.firecount = jsonArray[i]["firecount"];
+            modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+            modelAgentSearch.okcount = jsonArray[i]["okcount"];
+            print("lat: " + modelAgentSearch.lat.toString());
+
+            nearByRestaurantList.add(modelAgentSearch);
 /*          id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
@@ -866,23 +997,77 @@ print("MarkersLength "+markers.length.toString()+"^^");
           nearByRestaurantList.add(modelAgentSearch);*/
 
 
-
+          }
+          print("FilterListLength " + nearByRestaurantList.length.toString() +
+              "^^");
+          setState(() {
+            initilize(nearByRestaurantList);
+            isloading = false;
+          });
+        } else {
+          setState(() {
+            isloading = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(jsonRes["message"].toString())));
+          });
         }
-        print("FilterListLength "+nearByRestaurantList.length.toString()+"^^");
-        setState(() {
-          initilize(nearByRestaurantList);
-          isloading = false;
-        });
       } else {
         setState(() {
           isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Please try later")));
         });
       }
+    }
+  }
+
+
+  Future<dynamic> checkoutApi(String buisnessid, String tag) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("id Print: " + id.toString());
+
+
+    print("id " + id.toString() + "");
+    print("review " + "review".toString() + "");
+
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.BUSINESSREVIEW_URL,
+      ),
+    );
+
+
+
+    if (tag.toString() != "null" || tag.toString() != "") {
+      request.fields["tag"] = tag;
+      print("tag1: " + tag.toString());
+    }
+    request.fields["type"] = "REVIEW";
+    request.fields["business_id"] = buisnessid.toString();
+    request.fields["user_id"] = id.toString();
+
+
+    var jsonRes;
+    var res = await request.send();
+
+    if (res.statusCode == 200) {
+      check = "";
+
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
+      print(jsonRes["statusReview"]);
+
+
     } else {
       setState(() {
         isloading = false;
+
+        Navigator.of(context, rootNavigator: true).pop();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));
       });

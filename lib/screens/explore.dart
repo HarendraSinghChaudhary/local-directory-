@@ -672,6 +672,7 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
           modelAgentSearch.checkIn_status = jsonArray[i]["checkIn_status"].toString();
           modelAgentSearch.countUserreview = jsonArray[i]["totalReviewusers"].toString();
 
@@ -822,6 +823,7 @@ class NearBy {
   var lat = "";
   var long = "";
   var avgratting = "";
+  var totalReviewusers = "";
   var countUserreview = "";
   var firecount = 0;
   var okcount = 0;
