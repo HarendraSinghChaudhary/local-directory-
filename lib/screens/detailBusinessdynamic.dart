@@ -3005,7 +3005,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               Text(
                                 "Your Overall Rating",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -3024,11 +3024,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 itemCount: 5,
                                 itemPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  size: 6.w,
-                                  color: kPrimaryColor,
-                                ),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   rattingcheckin = rating;
@@ -3051,12 +3052,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 ),
                               ),
                               SizedBox(
-                                height: 0.6.h,
+                                height: 1.h,
                               ),
                               Row(
                                 children: [
                                   InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       if (image_video_status == "2") {
                                         final snackBar = SnackBar(
                                             content: Text(
@@ -3066,7 +3067,40 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           snackBar,
                                         );
                                       } else {
-                                        pickImagess("checkin");
+                                        fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        await pickImages().then((value) {
+                                          images = value;
+                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
                                         //getCheckInImage();
                                       }
                                       //                              ScaffoldMessenger.of(context)
@@ -3107,7 +3141,17 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           );
                                         } else {
                                           File file1;
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          setState(() {
 
+                                          });
                                           FilePickerResult? result =
                                           await FilePicker.platform
                                               .pickFiles(
@@ -3129,15 +3173,23 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 rootNavigator: true)
                                                 .pop();
                                             setState(() {
-
-                                              image_video_status = "2";
-
                                               if (currentPath.toString() !=
                                                   "") {
                                                 ivStatus = "2";
-                                                file = File(currentPath.toString());
-                                                fileName = path.basename(file!.path.toString());
-
+                                                file = File(
+                                                    currentPath.toString());
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                image_video_status = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                image_video_status = "0";
                                               }
 
                                               if (fileName == "" ||
@@ -3219,32 +3271,42 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            top: 2.0, left: 14.w),
-                                        child: Container(
-                                          height: 2.h,
-                                          width: 2.h,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white),
-                                          child: Center(
-                                            child: InkWell(
-                                              onTap: () {
-                                                fileList.removeAt(i);
-                                                images.removeAt(i);
-                                                if (fileList.length == 0) {
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            images.removeAt(i);
 
-                                                  file = null;
-                                                  fileName = "";
-                                                  fileList.clear();
-                                                  images.clear();
+                                            if (fileList.length == 0) {
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                            }
+                                            setState(() {
 
-                                                }
-                                                setState(() {});
-                                              },
-                                              child: SvgPicture.asset(
-                                                "assets/icons/cross.svg",
-                                                width: 8,
-                                                color: Colors.black,
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -3303,7 +3365,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 fileName = path.basename(file!.path);
                                 print("Filename " + fileName.toString());
                               }
-
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                isloading = true;
+                                checkInDialog();
+                              });
                               checkoutApi(
                                   rattingcheckin.toString(),
                                   reviewController2.text.toString(),
@@ -3370,8 +3436,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               images.clear();
                             },
                             child: Container(
-                              height: 10.w,
-                              width: 10.w,
+                              height: 8.w,
+                              width: 8.w,
                               color: Colors.transparent,
                               child: Center(
                                 child: SvgPicture.asset(
@@ -3396,7 +3462,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               Text(
                                 "Your Overall Rating",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -3415,11 +3481,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 itemCount: 5,
                                 itemPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  size: 6.w,
-                                  color: kPrimaryColor,
-                                ),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   ratting = rating;
@@ -3435,19 +3502,19 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               Text(
                                 "Add Images/Video",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
                                 ),
                               ),
                               SizedBox(
-                                height: 0.6.h,
+                                height: 1.h,
                               ),
                               Row(
                                 children: [
                                   InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       if (ivStatus == "2") {
                                         final snackBar = SnackBar(
                                             content: Text(
@@ -3458,7 +3525,42 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         );
                                       } else {
                                         // getImage();
-                                        pickImagess("review");
+                                        fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        await pickImages().then((value) {
+                                          images = value;
+                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
+
+                                        /* await pickImagess("review");
+                                    setState(() {});*/
                                       }
                                     },
                                     child: /* file == null
@@ -3502,6 +3604,18 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             snackBar,
                                           );
                                         } else {
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          setState(() {
+
+                                          });
                                           File file1;
                                           FilePickerResult? result =
                                           await FilePicker.platform
@@ -3510,10 +3624,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             allowCompression: false,
                                           );
                                           if (result != null) {
-                                            ivStatus = "2";
                                             file1 = File(
                                                 result.files.single.path!);
-
 
 
                                             await Navigator.of(context).push(
@@ -3527,15 +3639,22 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 rootNavigator: true)
                                                 .pop();
                                             setState(() {
-
-                                              ivStatus = "2";
-
                                               if (currentPath.toString() !=
                                                   "") {
-                                                ivStatus = "2";
                                                 file = File(currentPath.toString());
-                                                fileName = path.basename(file!.path.toString());
-
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                ivStatus = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                ivStatus = "0";
+                                                image_video_status = "0";
                                               }
                                               if (fileName == "" ||
                                                   fileName == null) {
@@ -3615,34 +3734,44 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            top: 2.0, left: 14.w),
-                                        child: Container(
-                                          height: 2.h,
-                                          width: 2.h,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white),
-                                          child: Center(
-                                            child: InkWell(
-                                              onTap: () {
-                                                fileList.removeAt(i);
-                                                images.removeAt(i);
-                                                if (fileList.length == 0) {
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            images.removeAt(i);
 
-                                                  file = null;
-                                                  fileName = "";
-                                                  fileList.clear();
-                                                  images.clear();
-                                                  ivStatus = "0";
+                                            if (fileList.length == 0) {
+                                              trimFile = null;
+                                              trimFileName = "";
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                            }
+                                            setState(() {
 
-                                                }
-                                                setState(() {});
-
-                                              },
-                                              child: SvgPicture.asset(
-                                                "assets/icons/cross.svg",
-                                                width: 8,
-                                                color: Colors.black,
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -3659,6 +3788,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           ),
                         ),
                       ),
+
                       Padding(
                         padding: EdgeInsets.all(3.0),
                         child: Visibility(

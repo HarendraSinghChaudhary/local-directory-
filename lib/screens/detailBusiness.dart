@@ -3530,7 +3530,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           Text(
                             "Add Images/Video",
                             style: TextStyle(
-                              fontSize: 10.sp,
+                              fontSize: 9.sp,
                               color: kCyanColor,
 
                               //fontFamily: "Roboto"
@@ -3640,6 +3640,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       fileList.clear();
                                       images.clear();
                                       image_video_status = "0";
+                                      ivStatus = "0";
                                       setState(() {
 
                                       });
@@ -3651,7 +3652,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                         allowCompression: false,
                                       );
                                       if (result != null) {
-                                        ivStatus = "2";
+
                                         file1 = File(
                                             result.files.single.path!);
 
@@ -3669,7 +3670,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                         setState(() {
                                           if (currentPath.toString() !=
                                               "") {
-                                            ivStatus = "2";
                                             file = File(currentPath.toString());
                                             fileName = path.basename(
                                                 file!.path.toString());
@@ -3682,7 +3682,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             currentPath = "";
                                             fileList.clear();
                                             images.clear();
-                                            ivStatus = "1";
+                                            ivStatus = "0";
                                           }
                                           if (fileName == "" ||
                                               fileName == null) {
@@ -3694,6 +3694,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           }
                                         });
                                         customDialog();
+                                      }else{
+                                        trimFileName = "";
+                                        trimFile = null;
+                                        file = null;
+                                        fileName = "";
+                                        currentPath = "";
+                                        fileList.clear();
+                                        images.clear();
+                                        ivStatus = "0";
+                                        image_video_status = "0";
                                       }
                                     }
                                   },

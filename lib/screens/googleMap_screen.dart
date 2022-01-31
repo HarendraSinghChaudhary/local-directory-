@@ -685,6 +685,8 @@ print("MarkersLength "+markers.length.toString()+"^^");
           modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
           modelAgentSearch.okcount = jsonArray[i]["okcount"];
           print("lat: " + modelAgentSearch.lat.toString());
+          modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
 
           nearByRestaurantList.add(modelAgentSearch);
 /*          id = jsonArray[i]["id"].toString();
@@ -786,6 +788,8 @@ print("MarkersLength "+markers.length.toString()+"^^");
           modelAgentSearch.firecount = jsonArray[i]["firecount"];
           modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
           modelAgentSearch.okcount = jsonArray[i]["okcount"];
+          modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
           if(modelAgentSearch.lat!=null) {
@@ -966,6 +970,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
                 jsonArray[i]["business_images"].toString();
             modelAgentSearch.distance = jsonArray[i]["distance"].toString();
             modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+            modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
             modelAgentSearch.description =
                 jsonArray[i]["description"].toString();
             modelAgentSearch.business_category =
@@ -973,6 +978,8 @@ print("MarkersLength "+markers.length.toString()+"^^");
             modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
             modelAgentSearch.review_count =
                 jsonArray[i]["review_count"].toString();
+            modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+
             modelAgentSearch.location = jsonArray[i]["location"].toString();
             modelAgentSearch.category_name =
                 jsonArray[i]["category_name"].toString();

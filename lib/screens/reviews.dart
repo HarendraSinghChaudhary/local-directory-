@@ -168,75 +168,35 @@ class _ReviewsState extends State<Reviews> {
                                     width: 2.w,
                                   ),
                                   Container(
-                                    width: 74.w,
+                                    width: 60.w,
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: 74.w,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width:45.w,
-                                                child: Text(
+                                          width:45.w,
+                                          child: Text(
                                             busId=  reviewList[index].business_name.toString(),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 11.sp,
-                                                      color: kCyanColor,
-                                                      fontFamily: "Segoepr"),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 12.w,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(right: 3.w),
-                                                child: Text(
-                                                 reviewList[index].timedelay.toString(),
-                                                  style: TextStyle(
-                                                    fontSize: 8.sp,
-                                                    color: kPrimaryColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 11.sp,
+                                                color: kCyanColor,
+                                                fontFamily: "Segoepr"),
                                           ),
                                         ),
                                         SizedBox(
                                           height: 0.1.h,
                                         ),
                                         Container(
-                                          width: 74.w,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: 45.w,
-                                                child: Text(
-                                                reviewList[index].review.toString(),
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      //overflow: TextOverflow.ellipsis,
-                                                      fontSize: 10.2.sp,
-                                                      color: Color(0xFFCECECE),
-                                                      fontFamily: 'Roboto'),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 12.w,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 20.0),
-                                                child:
-                                                SvgPicture.asset(reviewList[index].assets.toString(),
-                                                    color: reviewList[index].assetscolor, width: reviewList[index].assetswidth),
-                                              )
-                                            ],
+                                          width: 45.w,
+                                          child: Text(
+                                            reviewList[index].review.toString(),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              //overflow: TextOverflow.ellipsis,
+                                                fontSize: 10.2.sp,
+                                                color: Color(0xFFCECECE),
+                                                fontFamily: 'Roboto'),
                                           ),
                                         ),
                                         SizedBox(
@@ -244,7 +204,27 @@ class _ReviewsState extends State<Reviews> {
                                         ),
                                       ],
                                     ),
-                                  )
+                                  ),
+                                  Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          reviewList[index].timedelay.toString(),
+                                          style: TextStyle(
+                                            fontSize: 8.sp,
+                                            color: kPrimaryColor,
+                                          ),
+                                        ),
+                                        SizedBox(height: 1.h,),
+                                        reviewList[index].assets.toString()!=""?
+                                        SvgPicture.asset(reviewList[index].assets.toString(),
+                                            color: reviewList[index].assetscolor, width: reviewList[index].assetswidth):
+                                        Container()
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               )),
                         ),
@@ -484,18 +464,20 @@ Future<dynamic> reviewListApi() async {
             modelAgentSearch.assets = "assets/icons/file.svg";
             modelAgentSearch.assetscolor = kPrimaryColor;
             modelAgentSearch.assetswidth = 5.w;
-          }else if(modelAgentSearch == "OkOk"){
+          }else if(modelAgentSearch.tag == "OkOk"){
             modelAgentSearch.assets = "assets/icons/bakance.svg";
             modelAgentSearch.assetscolor = kokokColor;
             modelAgentSearch.assetswidth = 10.w;
 
 
-          }else{
+          }else if(modelAgentSearch.tag == "Not Cool"){
             modelAgentSearch.assets = "assets/icons/snow.svg";
             modelAgentSearch.assetscolor = kNotCoolColor;
             modelAgentSearch.assetswidth= 8.w;
 
 
+          }else{
+            modelAgentSearch.assets = "";
           }
           modelAgentSearch.business_review_image = jsonArray[i]["business_review_image"].toString();
           modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
@@ -820,7 +802,7 @@ class ReviewClass {
   var business_reviews_id = "";
   var review = "";
   var tag = "";
-  var assets = "assets/icons/file.svg";
+  var assets = "";
   Color assetscolor = kPrimaryColor;
   double assetswidth = 5.w;
   var business_review_image = "";
