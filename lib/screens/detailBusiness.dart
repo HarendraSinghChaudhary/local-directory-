@@ -2493,7 +2493,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               Text(
                                 "Add Images/Video",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -3086,7 +3086,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               Text(
                                 "Add Images/Video",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -4102,6 +4102,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       image_video_status = "0";
       images.clear();
       fileList.clear();
+      isCheckinClicked = false;
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

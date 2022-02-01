@@ -1594,7 +1594,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               Text(
                                 "Add Images/Video",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -3045,7 +3045,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                               Text(
                                 "Add Images/Video",
                                 style: TextStyle(
-                                  fontSize: 10.sp,
+                                  fontSize: 9.sp,
                                   color: kCyanColor,
 
                                   //fontFamily: "Roboto"
@@ -3954,6 +3954,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
     if (res?.statusCode == 200) {
 
+      isCheckinClicked = false;
 
       if (jsonRes["status"].toString() == "true") {
         setState(() {
@@ -4063,6 +4064,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       image_video_status = "0";
       images.clear();
       fileList.clear();
+      isCheckinClicked = false;
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 

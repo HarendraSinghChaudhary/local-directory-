@@ -657,6 +657,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
     });
 
     if (res!.statusCode == 200) {
+      setState(() {
+        viewVisible = false;
+      });
       if (jsonRes["status"] == true) {
         nearByRestaurantList.clear();
         markers.clear();
