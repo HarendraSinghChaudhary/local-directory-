@@ -303,6 +303,52 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       .spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 0.1.h),
+                                      child: Container(
+                                        width: 55.w,
+                                        child: Text(
+                                          //"1230 Roosvelt Road, Wichita",
+                                          widget.nearBy.opening_time
+                                              .toString() !=
+                                              "null"
+                                              ? "Opening Hours: "+widget.nearBy.opening_time
+                                              .toString()
+                                              : "",
+
+                                          maxLines: 3,
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              fontSize: 11.sp,
+                                              color: Colors.white,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      //Distance
+                                        widget.nearBy.closing_time.toString()!="null"?
+                                        "Closing Hours: " +widget.nearBy.closing_time.toString()
+                                         : " ",
+                                      style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: Colors.white,
+                                          // fontWeight: FontWeight.w500,
+                                          fontFamily: "Roboto"
+                                        //fontFamily: "Segoepr"
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment
                                           .start,
@@ -2177,6 +2223,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       } else {
         setState(() {
           isloading = false;
+          Navigator.of(context, rootNavigator: true).pop();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });

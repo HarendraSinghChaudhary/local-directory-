@@ -359,8 +359,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business!.id)));
-                                                                            })
+                        if(user_id == "72"){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                        "Please login or signup first to view business profile")));
+                        }else {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (builder) =>
+                                  DetailBussinessDynamic(
+                                      id: getHostSpotList[index].business!
+                                          .id)));
+                        } })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -376,8 +385,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business2!.id)));
-                                                                            })
+                        if(user_id == "72"){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                        "Please login or signup first to view business profile")));
+                        }else {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (builder) =>
+                                  DetailBussinessDynamic(
+                                      id: getHostSpotList[index].business2!
+                                          .id)));
+                        }  })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -393,8 +411,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business3!.id)));
-                                                                            })
+                        if(user_id == "72"){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                        "Please login or signup first to view business profile")));
+                        }else {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (builder) =>
+                                  DetailBussinessDynamic(
+                                      id: getHostSpotList[index].business3!
+                                          .id)));
+                        }   })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -410,8 +437,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business4!.id)));
-                                                                            })
+                        if(user_id == "72"){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                        "Please login or signup first to view business profile")));
+                        }else {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (builder) =>
+                                  DetailBussinessDynamic(
+                                      id: getHostSpotList[index].business4!
+                                          .id)));
+                        } })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -427,8 +463,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                                                                              Navigator.of(context).push(new MaterialPageRoute(builder: (builder) => DetailBussinessDynamic(id: getHostSpotList[index].business5!.id)));
-                                                                            })
+                        if(user_id == "72"){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                        "Please login or signup first to view business profile")));
+                        }else {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (builder) =>
+                                  DetailBussinessDynamic(
+                                      id: getHostSpotList[index].business5!
+                                          .id)));
+                        }})
                                                                   : TextSpan(
                                                                       text: "")
                                                             ])),
@@ -2232,6 +2277,7 @@ class _HotspotState extends State<Hotspot> {
       selectedList.clear();
       images.clear();
       fileList.clear();
+      reviewController.clear();
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2346,6 +2392,7 @@ class _HotspotState extends State<Hotspot> {
     var res = await request.send();
 
     if (res.statusCode == 200) {
+
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2362,6 +2409,7 @@ class _HotspotState extends State<Hotspot> {
         getHostSpotList[index].replyfile = null;
         getHostSpotList[index].replyfileName = "";
         getHostSpotList[index].replyfileList.clear();
+        getHostSpotList[index].messageController.clear();
         setState(() {
           isloading = false;
         });
@@ -2369,6 +2417,12 @@ class _HotspotState extends State<Hotspot> {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));
       } else {
+        getHostSpotList[index].reply_image_video_status = "0";
+        getHostSpotList[index].replyimages.clear();
+        getHostSpotList[index].replyfile = null;
+        getHostSpotList[index].replyfileName = "";
+        getHostSpotList[index].replyfileList.clear();
+        getHostSpotList[index].messageController.clear();
         setState(() {
           isloading = false;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -2552,7 +2606,7 @@ class _HotspotState extends State<Hotspot> {
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
-
+          print("CurrentDate "+modelAgentSearch.created_at.toString()+"^^");
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
               .inSeconds;

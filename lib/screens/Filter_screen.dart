@@ -62,7 +62,10 @@ class _FliterScreenState extends State<FliterScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListView.builder(
+            isloading==true?Padding(
+              padding: const EdgeInsets.only(top:20.0),
+              child: Center(child: CircularProgressIndicator(),),
+            ):ListView.builder(
               shrinkWrap: true,
               controller: _controller,
               itemCount: lifeStyleList.length,
@@ -387,7 +390,6 @@ class _FliterScreenState extends State<FliterScreen> {
 
           lifeStyleList.add(modelAgentSearch);
 
-          setState(() {});
         }
 
         setState(() {

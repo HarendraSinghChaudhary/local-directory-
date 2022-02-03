@@ -180,6 +180,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         nearby?.avgratting = jsonArray["avgratting"].toString();
         nearby?.countUserreview = jsonArray["totalReviewusers"].toString();
         nearby?.checkIn_status = jsonArray["checkIn_status"].toString();
+        nearby?.opening_time = jsonArray["opeing_hour"].toString();
+        nearby?.closing_time = jsonArray["closing_hour"].toString();
 
         print("id: " + nearby!.id.toString());
         print("favvvv: " + jsonArray["fav"].toString());
@@ -375,6 +377,51 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         ),
                         SizedBox(
                           height: 1.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 0.1.h),
+                              child: Container(
+                                width: 55.w,
+                                child: Text(
+                                  //"1230 Roosvelt Road, Wichita",
+                                  nearby!.opening_time
+                                      .toString() !=
+                                      "null"
+                                      ? "Opening Hours: "+nearby!.opening_time.toString()
+                                      : "",
+
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colors.white,
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              //Distance
+                              nearby!.closing_time.toString()!="null"?
+                              "Closing Hours: " +nearby!.closing_time.toString()
+                                  : " ",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                //fontFamily: "Segoepr"
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 2.h,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

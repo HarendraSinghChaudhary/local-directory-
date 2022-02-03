@@ -15,6 +15,7 @@ import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
+import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/screens/video_player_widget4.dart';
 import 'package:wemarkthespot/screens/video_player_widgett.dart';
@@ -251,14 +252,14 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 1.5.h,
                     ),
-                    imgvideostatus==1?Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        height: 23.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3.w),
-                            color: Colors.black),
-                        child: VideoPlayWidget2(context)):CachedNetworkImage(
+                    imgvideostatus==1?SizedBox(
+                        height: 200,
+                        child: VideoItems(
+                          videoPlayerController:
+                          VideoPlayerController
+                              .network(
+                              quoatesimage),
+                        )):CachedNetworkImage(
                       imageUrl: quoatesimage.toString(),
                       imageBuilder: (context, imageProvider) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -318,14 +319,13 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    datavideo_status==0?Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      height: 23.h,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3.w),
-                          color: Colors.black),
-                      child: VideoPlayWidget(context)):Container(),
+                    datavideo_status==0?SizedBox(
+                        height: 200,
+                        child: VideoItems(
+                          videoPlayerController:
+                          VideoPlayerController
+                              .network(datavideo),
+                        )):Container(),
 
                      /* YoutubePlayer(
                         controller: _controller,
@@ -634,6 +634,7 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     isPlaying = false;
+/*
 
     if(videoPlayerController!=null) {
       if (videoPlayerController!.value.isInitialized) {
@@ -654,6 +655,7 @@ class _HomeState extends State<Home> {
         videoPlayerController2?.dispose();
       }
     }
+*/
 
     super.dispose();
   }
@@ -719,7 +721,7 @@ class _HomeState extends State<Home> {
 
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
 
-
+/*
       if(datavideo!=null) {
         videoPlayerController = new VideoPlayerController.network(datavideo);
 
@@ -746,7 +748,7 @@ class _HomeState extends State<Home> {
           videoPlayerController2!.addListener(() {
             checkVideo2();
           });
-        }
+        }*/
         setState(() {
           isloading = false;
         });

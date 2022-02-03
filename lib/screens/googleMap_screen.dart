@@ -36,6 +36,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   bool _hasBeenPressed = true;
   var id = "";
+  var user_id = "";
   var fav = "";
   var business_name = "";
   var business_images = "";
@@ -397,12 +398,15 @@ print("MarkersLength "+markers.length.toString()+"^^");
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             GestureDetector(
-                              onTap: (){
-                                if(isCheckinClicked==false) {
-                                  setState(() {
-                                    isCheckinClicked = true;
-                                  });
-                                  checkInApi(id, "fire");
+                              onTap: () {
+                                if (user_id == "72") {
+                                } else {
+                                  if (isCheckinClicked == false) {
+                                    setState(() {
+                                      isCheckinClicked = true;
+                                    });
+                                    checkInApi(id, "fire");
+                                  }
                                 }
                               },
                               child: Container(
@@ -427,12 +431,14 @@ print("MarkersLength "+markers.length.toString()+"^^");
                               ),
                             ),
                             GestureDetector(
-                              onTap: (){
-                                if(isCheckinClicked==false) {
-                                  setState(() {
-                                    isCheckinClicked = true;
-                                  });
-                                  checkInApi(id, "OkOk");
+                              onTap: () {
+                                if (user_id == "72") {} else {
+                                  if (isCheckinClicked == false) {
+                                    setState(() {
+                                      isCheckinClicked = true;
+                                    });
+                                    checkInApi(id, "OkOk");
+                                  }
                                 }
                               },
                               child: Container(
@@ -454,12 +460,14 @@ print("MarkersLength "+markers.length.toString()+"^^");
                               ),
                             ),
                             GestureDetector(
-                              onTap: (){
-                                if(isCheckinClicked==false) {
-                                  setState(() {
-                                    isCheckinClicked = true;
-                                  });
-                                  checkInApi(id, "Not Cool");
+                              onTap: () {
+                                if (user_id == "72") {} else {
+                                  if (isCheckinClicked == false) {
+                                    setState(() {
+                                      isCheckinClicked = true;
+                                    });
+                                    checkInApi(id, "Not Cool");
+                                  }
                                 }
                               },
                               child: Container(
@@ -509,8 +517,15 @@ print("MarkersLength "+markers.length.toString()+"^^");
                       ),
                       GestureDetector(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: id)));
 
+                          if(user_id == "72"){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "Please login or signup first to view business profile")));
+                          }else {
+                            Navigator.push(context, MaterialPageRoute(builder: (
+                                context) => DetailBussinessDynamic(id: id)));
+                          }
                         },
                         child: Padding(
                           padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
@@ -737,6 +752,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
     print("Run "+"GetAllbuisnessList");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
+    user_id = prefs.getString("id").toString();
     print("id Print: " + id.toString());
     setState(() {
       isloading = true;
@@ -793,6 +809,8 @@ print("MarkersLength "+markers.length.toString()+"^^");
           modelAgentSearch.okcount = jsonArray[i]["okcount"];
           modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          modelAgentSearch.opening_time = jsonArray[i]["opeing_hour"].toString();
+          modelAgentSearch.closing_time = jsonArray[i]["closing_hour"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
           if(modelAgentSearch.lat!=null) {
@@ -931,6 +949,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var id = prefs.getString("id");
+      user_id = prefs.getString("id").toString();
       print("id Print: " + widget.list.toString());
       setState(() {
         isloading = true;

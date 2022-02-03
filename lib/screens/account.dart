@@ -479,13 +479,13 @@ class _UserAccountState extends State<UserAccount> {
                     if (id != null) {
                       if (id != "72") {
                         var pref = await SharedPreferences.getInstance();
-                        pref.setString('id', '');
-                        pref.setString('email', '');
-                        pref.setString('name', '');
-                        pref.setString('country_code', '');
-                        pref.setString('phone', '');
-                        pref.setString('dob', '');
-                        pref.setString('image', '');
+                        pref.remove('id');
+                        pref.remove('email');
+                        pref.remove('name');
+                        pref.remove('country_code');
+                        pref.remove('phone');
+                        pref.remove('dob');
+                        pref.remove('image');
                         pref.commit();
                         Navigator.pushAndRemoveUntil(
                             context,
@@ -497,13 +497,13 @@ class _UserAccountState extends State<UserAccount> {
                             SnackBar(content: Text('Logged out successfully')));
                       } else {
                         var pref = await SharedPreferences.getInstance();
-                        pref.setString('id', '');
-                        pref.setString('email', '');
-                        pref.setString('name', '');
-                        pref.setString('country_code', '');
-                        pref.setString('phone', '');
-                        pref.setString('dob', '');
-                        pref.setString('image', '');
+                        pref.remove('id');
+                        pref.remove('email');
+                        pref.remove('name');
+                        pref.remove('country_code');
+                        pref.remove('phone');
+                        pref.remove('dob');
+                        pref.remove('image');
                         pref.commit();
                         Navigator.pushAndRemoveUntil(
                             context,
@@ -513,13 +513,13 @@ class _UserAccountState extends State<UserAccount> {
                       }
                     } else {
                       var pref = await SharedPreferences.getInstance();
-                      pref.setString('id', '');
-                      pref.setString('email', '');
-                      pref.setString('name', '');
-                      pref.setString('country_code', '');
-                      pref.setString('phone', '');
-                      pref.setString('dob', '');
-                      pref.setString('image', '');
+                      pref.remove('id');
+                      pref.remove('email');
+                      pref.remove('name');
+                      pref.remove('country_code');
+                      pref.remove('phone');
+                      pref.remove('dob');
+                      pref.remove('image');
                       pref.commit();
                       Navigator.pushAndRemoveUntil(
                           context,

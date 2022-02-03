@@ -675,6 +675,8 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
           modelAgentSearch.checkIn_status = jsonArray[i]["checkIn_status"].toString();
           modelAgentSearch.countUserreview = jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.opening_time = jsonArray[i]["opeing_hour"].toString();
+          modelAgentSearch.closing_time = jsonArray[i]["closing_hour"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
 
@@ -771,6 +773,8 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
           modelAgentSearch.countUserreview =
               jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.opening_time = jsonArray[i]["opeing_hour"].toString();
+          modelAgentSearch.closing_time = jsonArray[i]["closing_hour"].toString();
 
           print("id: " + modelAgentSearch.id.toString());
           print("ratting: " + modelAgentSearch.avgratting.toString());
@@ -829,6 +833,8 @@ class NearBy {
   var okcount = 0;
   var notcool_count = 0;
   var checkIn_status = "";
+  var opening_time = "";
+  var closing_time = "";
 }
 
 class CustomSliderWidget extends StatefulWidget {

@@ -74,7 +74,10 @@ class _ReviewsState extends State<Reviews> {
             SizedBox(
               height: 3.h,
             ),
-            ListView.builder(
+            isloading==true?Padding(
+              padding: const EdgeInsets.only(top:20.0),
+              child: Center(child: CircularProgressIndicator(),),
+            ):ListView.builder(
               shrinkWrap: true,
               controller: _controller,
               itemCount: reviewList.length,
@@ -158,22 +161,27 @@ class _ReviewsState extends State<Reviews> {
                                   Padding(
                                     padding:
                                         EdgeInsets.only(bottom: 0.h, left: 2.w),
-                                    child: CircleAvatar(
+                                    child: reviewList[index].business_images.toString()!="null"?CircleAvatar(
                                       radius: 6.w,
                                       backgroundImage: NetworkImage(reviewList[index].business_images.toString()
                                             ),
+                                    )
+                                        :CircleAvatar(
+                                      radius: 6.w,
+                                      backgroundImage: AssetImage("assets/images/resimage.jpg"
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
                                     width: 2.w,
                                   ),
                                   Container(
-                                    width: 60.w,
+                                    width: 55.w,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width:45.w,
+                                          width:50.w,
                                           child: Text(
                                             busId=  reviewList[index].business_name.toString(),
                                             overflow: TextOverflow.ellipsis,
@@ -220,8 +228,8 @@ class _ReviewsState extends State<Reviews> {
                                         SizedBox(height: 1.h,),
                                         reviewList[index].assets.toString()!=""?
                                         SvgPicture.asset(reviewList[index].assets.toString(),
-                                            color: reviewList[index].assetscolor, width: reviewList[index].assetswidth):
-                                        Container()
+                                            color: reviewList[index].assetscolor, width: reviewList[index].assetswidth,):
+                                        Container(height: 25, width: 10,)
                                       ],
                                     ),
                                   ),
@@ -482,7 +490,7 @@ Future<dynamic> reviewListApi() async {
           modelAgentSearch.business_review_image = jsonArray[i]["business_review_image"].toString();
           modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
-
+          print("Created At "+modelAgentSearch.created_at+"^");
            var difference = date2.difference(DateTime.parse(modelAgentSearch.created_at)).inSeconds;
           modelAgentSearch.timedelay = difference.toString()+" seconds ago";
           if(difference>60){
@@ -517,7 +525,6 @@ Future<dynamic> reviewListApi() async {
           reviewList.add(modelAgentSearch);
           
 
-          setState(() {});
         }
 
         setState(() {
@@ -548,6 +555,7 @@ Future<dynamic> reviewListApi() async {
   }
 
   customDialog(int index) {
+    reviewController.text =  reviewList[index].review.toString();
     showDialog(
       context: context,
       builder: (BuildContext context) {
