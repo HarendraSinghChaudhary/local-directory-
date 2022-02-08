@@ -95,3 +95,24 @@ Future<List<Asset>> pickImages() async {
 
 
 }
+
+Future<List<Asset>> pickImagesMultiple(int maxImage) async {
+  List<Asset> resultList = [];
+  print("maxImage "+maxImage.toString()+"");
+  try {
+    resultList = await MultiImagePicker.pickImages(
+      maxImages: maxImage,
+      enableCamera: false,
+      selectedAssets: resultList,
+      materialOptions: MaterialOptions(
+        actionBarTitle: "Select Image",
+      ),
+    );
+    return resultList;
+  } on Exception catch (e) {
+    print(e);
+    return resultList;
+  }
+
+
+}

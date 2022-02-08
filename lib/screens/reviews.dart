@@ -1,11 +1,19 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
+import 'package:path_provider/path_provider.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
@@ -14,6 +22,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
+import 'package:path/path.dart' as path;
+
+import '../main.dart';
 
 class Reviews extends StatefulWidget {
   const Reviews({Key? key}) : super(key: key);
@@ -31,10 +42,28 @@ class _ReviewsState extends State<Reviews> {
   List<ReviewClass> reviewList = [];
 
   var editBox = "";
+  var ivStatus = "";
+  var check = "";
+  String image = "";
+  String base64Image = "";
+  String fileName = "";
+  String trimFileName = "";
+  File? file;
+  File? trimFile;
+  bool isLoading = false;
+  final picker = ImagePicker();
+  bool isVisible = false;
+  List<Asset> images = [];
+  List<File> fileList = [];
+  var image_video_status = "0";
 
   var busId = "";
   var revId = "";
 
+  double ratting = 0.0;
+  double rattingcheckin = 0.0;
+
+  TextEditingController reviewController2 = new TextEditingController();
   @override
   void initState() {
     reviewListApi();
@@ -74,7 +103,7 @@ class _ReviewsState extends State<Reviews> {
             SizedBox(
               height: 3.h,
             ),
-            isloading==true?Padding(
+            isLoading==true?Padding(
               padding: const EdgeInsets.only(top:20.0),
               child: Center(child: CircularProgressIndicator(),),
             ):ListView.builder(
@@ -85,9 +114,6 @@ class _ReviewsState extends State<Reviews> {
                 BuildContext context,
                 int index,
               ) {
-
-              
-
                 return cardList(index);
               },
             ),
@@ -249,7 +275,7 @@ class _ReviewsState extends State<Reviews> {
               );
   }
 
-      Future<dynamic> editReviewApi(String reviews_id, String review) async {
+Future<dynamic> editReviewApi(String reviews_id, String review, int index) async {
     
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
@@ -257,49 +283,82 @@ class _ReviewsState extends State<Reviews> {
     
     print("message Print: " + reviews_id.toString());
     print("message Print1: " + review.toString());
+    print("ratting Print1: " + ratting.toString());
+    Navigator.of(context, rootNavigator: true).pop();
 
     setState(() {
       isloading = true;
     });
+    customDialogReview(index);
 
-    var request = http.post(
-        Uri.parse(
-          RestDatasource.EDITREVIEW_URL,
-        ),
-        body: {
-         
-          
-          "reviews_id" : reviews_id.toString(),
-          "review": review.toString()
-         
-        });
-    String msg = "";
-    var jsonArray;
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(
+        RestDatasource.EDITREVIEW_URL,
+      ),
+    );
+    if (ratting.toString() != "null" || ratting.toString() != "") {
+      request.fields["ratting"] =  ratting.toString() ;
+      print("ratting1: " + ratting.toString());
+    }
+
+    if (review.toString() != "null" || review.toString() != "") {
+      request.fields["review"] = review;
+      print("review1: " + review.toString());
+    }
+
+    if(check.toString() != "null" || check.toString() != "") {
+      request.fields["tag"] = check.toString();
+      print("check: " + check.toString());
+    }
+    request.fields["reviews_id"] = reviews_id;
+    request.fields["user_id"] = id.toString();
+    if(image_video_status!="") {
+      request.fields["image_video_status"] = image_video_status.toString();
+      print("ImageVideoStatus " + image_video_status.toString() + "^^");
+      if (image_video_status.toString() == "1") {
+        if (fileList != null) {
+          fileList.forEach((element) async {
+            request.files
+                .add(
+                await http.MultipartFile.fromPath("image[]", element.path));
+          });
+        }
+      } else if (image_video_status.toString() == "2") {
+        if (file != null) {
+          request.files
+              .add(await http.MultipartFile.fromPath("image[]", file!.path));
+        }
+      }
+    }
+
     var jsonRes;
-    var res;
+    var res = await request.send();
 
-    await request.then((http.Response response) {
-      res = response;
-      final JsonDecoder _decoder = new JsonDecoder();
-      jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
-      msg = jsonRes["message"].toString();
-      jsonArray = jsonRes['data'];
-    });
 
     if (res.statusCode == 200) {
+      var respone = await res.stream.bytesToString();
+      final JsonDecoder _decoder = new JsonDecoder();
+
+      jsonRes = _decoder.convert(respone.toString());
+      print("Response: " + jsonRes.toString() + "_");
       print(jsonRes["status"]);
+      fileList.clear();
+      images.clear();
+      image_video_status = "0";
+      file = null;
+      fileName = "";
+      reviewController.text = "";
 
       if (jsonRes["status"].toString() == "true") {
         setState(() {
           isloading = false;
         });
         reviewList.clear();
-        reviewController.text = "";
+        Navigator.of(context, rootNavigator: true).pop();
+
         reviewListApi();
-          Navigator.of(context, rootNavigator: true).pop();
-        
+
 
        ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
@@ -326,10 +385,17 @@ class _ReviewsState extends State<Reviews> {
         });
       }
     } else {
+      fileList.clear();
+      images.clear();
+      image_video_status = "0";
+      file = null;
+      fileName = "";
+      reviewController.text = "";
+
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
@@ -408,11 +474,34 @@ class _ReviewsState extends State<Reviews> {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
 
+
+  Future<File> convertUriToFile(var url) async {
+    File? file = null;
+    try {
+     // Uri string
+
+      // Don't pass uri parameter using [Uri] object via uri.toString().
+      // Because uri.toString() changes the string to lowercase which causes this package to misbehave
+
+      // If you are using uni_links package for deep linking purpose.
+      // Pass the uri string using getInitialLink() or linkStream
+
+      file = await toFile(url);
+      return file;// Converting uri to file
+    } on UnsupportedError catch (e) {
+      print(e.message); // Unsupported error for uri not supported
+    } on IOException catch (e) {
+      print(e); // IOException for system error
+    } catch (e) {
+      print(e); // General exception
+    }
+    return file!;
+  }
 
 
 Future<dynamic> reviewListApi() async {
@@ -420,7 +509,7 @@ Future<dynamic> reviewListApi() async {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     setState(() {
-      isloading = true;
+      isLoading = true;
     });
 
      var request = http.post(
@@ -466,8 +555,10 @@ Future<dynamic> reviewListApi() async {
           modelAgentSearch.status = jsonArray[i]["status"].toString();
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.business_reviews_id = jsonArray[i]["business_reviews_id"].toString();
+          modelAgentSearch.image_video_status = jsonArray[i]["image_video_status"].toString();
           modelAgentSearch.review = jsonArray[i]["review"].toString();
           modelAgentSearch.tag = jsonArray[i]["tag"].toString();
+
           if(modelAgentSearch.tag=="fire"){
             modelAgentSearch.assets = "assets/icons/file.svg";
             modelAgentSearch.assetscolor = kPrimaryColor;
@@ -487,7 +578,17 @@ Future<dynamic> reviewListApi() async {
           }else{
             modelAgentSearch.assets = "";
           }
-          modelAgentSearch.business_review_image = jsonArray[i]["business_review_image"].toString();
+          modelAgentSearch.reviewType = jsonArray[i]["type"].toString();
+          modelAgentSearch.business_review_image = jsonArray[i]["business_review_image"];
+       /*   if(jsonArray[i]["business_review_image"].length>0){
+            var jsonArrayy = jsonArray[i]["business_review_image"];
+            for (var j=0; j<jsonArrayy.length; j++){
+              modelAgentSearch.business_review_image.clear();
+              if(jsonArrayy[j].toString().trim()!=""){
+              modelAgentSearch.business_review_image.add(jsonArrayy[j].toString().trim());
+              }
+            }
+          }*/
           modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
           print("Created At "+modelAgentSearch.created_at+"^");
@@ -506,18 +607,6 @@ Future<dynamic> reviewListApi() async {
               }
             }
           }
-        
-
-         
-
-
-              
-           
-
-
-
-    
-
           editBox = jsonArray[i]["review"].toString();
           print("editBox  : "+ editBox.toString());
        
@@ -526,9 +615,10 @@ Future<dynamic> reviewListApi() async {
           
 
         }
+        print("FileLength "+fileList.length.toString());
 
         setState(() {
-          isloading = false;
+          isLoading = false;
         });
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -537,6 +627,59 @@ Future<dynamic> reviewListApi() async {
         //Navigator.pop(context);
 
         // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+
+      } else {
+        setState(() {
+          isLoading = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
+  Future<dynamic> deleteImageApi( int index, String review_id, String image) async {
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.DELETE_IMAGE,
+        ),
+        body: {
+          "review_id": review_id.toString(),
+          "image": image.toString()
+
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+
+      if (jsonRes["status"].toString() == "true") {
+
+
+
+        setState(() {
+          isloading = false;
+        });
 
       } else {
         setState(() {
@@ -549,11 +692,12 @@ Future<dynamic> reviewListApi() async {
       setState(() {
         isloading = false;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Please try leter")));
+            .showSnackBar(SnackBar(content: Text("Please try later")));
       });
     }
   }
 
+/*
   customDialog(int index) {
     reviewController.text =  reviewList[index].review.toString();
     showDialog(
@@ -657,6 +801,1420 @@ Future<dynamic> reviewListApi() async {
         
         
        
+      },
+    );
+  }
+*/
+
+  Future<File> urlToFile(String imageUrl) async {
+// generate random number.
+    var rng = new Random();
+// get temporary directory of device.
+    Directory tempDir = await getTemporaryDirectory();
+// get temporary path from temporary directory.
+    String tempPath = tempDir.path;
+// create a new file in temporary path with random file name.
+    File file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.png');
+// call http.get method and pass imageUrl into it to get response.
+    http.Response response = await http.get(Uri.parse(imageUrl));
+// write bodyBytes received in response to file.
+    await file.writeAsBytes(response.bodyBytes);
+    print("FileLocalPath "+file.path.toString()+"^^");
+
+// now return the file which is created with random name in
+// temporary directory and image bytes from response is written to // that file.
+    return file;
+  }
+  Future <File?> createFileList(int index) async {
+    if(reviewList[index].business_review_image.length>0){
+      reviewList[index].business_review_image.forEach((element) async {
+
+        try {
+          /*  print(element.toString());
+          // Uri string
+
+          // Don't pass uri parameter using [Uri] object via uri.toString().
+          // Because uri.toString() changes the string to lowercase which causes this package to misbehave
+
+          // If you are using uni_links package for deep linking purpose.
+          // Pass the uri string using getInitialLink() or linkStream
+
+          File file = await urlToFile(element);
+          fileList.add(file);*/
+          var rng = new Random();
+          Directory tempDir = await getTemporaryDirectory();
+          String tempPath = tempDir.path;
+          file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.png');
+          http.Response response = await http.get(Uri.parse(element));
+          await file!.writeAsBytes(response.bodyBytes);
+          print("FileLocalPath "+file!.path.toString()+"^^");
+          fileList.add(file!);
+
+          // Converting uri to file
+        } on UnsupportedError catch (e) {
+          print(e.message);
+          return null;// Unsupported error for uri not supported
+        } on IOException catch (e) {
+          print(e);
+          return null;// IOException for system error
+        } catch (e) {
+          print(e);
+          return null;// General exception
+        }
+
+      });
+    }
+    return file;
+  }
+  customDialogReview(int index) async {
+    ratting = reviewList[index].ratting!=null?double.parse(reviewList[index].ratting):0.0;
+    ivStatus = reviewList[index].image_video_status;
+    image_video_status = reviewList[index].image_video_status;
+    if(ivStatus=="2"){
+      isVisible = true;
+    }
+    print("FilemnscnlancDialoge "+fileList.length.toString()+"^^");
+    print("ivStatus "+ivStatus.toString()+"^^");
+    if(reviewList[index].reviewType !="REVIEW"){
+      check = reviewList[index].tag;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: isloading == true
+                ? Column(
+              children: [
+                Center(
+                    child: Platform.isIOS
+                        ? CupertinoActivityIndicator()
+                        : CircularProgressIndicator()),
+                Text(
+                  "Please wait....",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                )
+              ],
+            )
+                : SingleChildScrollView(
+                child: Card(
+                  color: Colors.black,
+                  // height: 49.h,
+                  // width: 95.w,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                              check = "";
+                              ratting = 0.0;
+                              reviewController.clear();
+                              file = null;
+                              fileName = "";
+                              trimFile = null;
+                              trimFileName = "";
+                              ivStatus = "";
+                              image_video_status = "";
+                              currentPath = "";
+                              fileList.clear();
+                              images.clear();
+                            },
+                            child: Container(
+                              height: 8.w,
+                              width: 8.w,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  color: Colors.white,
+                                  width: 4.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      reviewList[index].reviewType!="REVIEW"?Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "fire";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/file.svg",
+                                    color: check == "fire"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.2.h,
+                                  ),
+                                  Text(
+                                    "Fire",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "fire"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+
+                          InkWell(
+                            onTap: () {
+                              print("tab");
+                              setState(() {
+                                check = "OkOk";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/bakance.svg",
+                                    color: check == "OkOk"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "OkOk",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "OkOk"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "Not Cool";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/snow.svg",
+                                    color: check == "Not Cool"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "Not Cool",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "Not Cool"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                        ],
+                      ):Container(height: 0,width: 0,),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Your Overall Rating",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 0.6.h,
+                              ),
+                              RatingBar.builder(
+                                itemSize: 24,
+                                unratedColor: Color(0XFFCECECE),
+                                initialRating: reviewList[index].ratting.toString()!="null" || reviewList[index].ratting.toString() !=""?double.parse(reviewList[index].ratting.toString()):0.0,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding:
+                                EdgeInsets.symmetric(horizontal: 0.0),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
+                                onRatingUpdate: (rating) {
+                                  print("Ratting :" + rating.toString());
+                                  ratting = rating;
+                                  reviewList[index].ratting = ratting.toString();
+                                  //rat = rattingController.text.toString();
+                                  print("Rat: " + ratting.toString());
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Add Images/Video",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      if (ivStatus == "2") {
+                                        final snackBar = SnackBar(
+                                            content: Text(
+                                                'Either image or video can be post at a time'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          snackBar,
+                                        );
+                                      } else {
+                                        // getImage();
+                                       // fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        int lengt = 3 - fileList.length;
+                                        await pickImagesMultiple(lengt).then((value) {
+                                          images = value;
+                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          reviewList[index].image_video_status = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
+
+                                        /* await pickImagess("review");
+                                    setState(() {});*/
+                                      }
+                                    },
+                                    child: /* file == null
+                                          ? Container(
+                                              child: SvgPicture.asset(
+                                                  "assets/icons/image.svg"))
+                                          : file!.path
+                                                  .toString()
+                                                  .endsWith("mp4")
+                                              ? */
+                                    Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                    /* : Container(
+                                                  height: 3.h,
+                                                  width: 3.h,
+                                                  decoration: BoxDecoration(
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(3.w),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                        //Color(0xffD5D5D5)
+                                                      ),
+                                                      image: DecorationImage(
+                                                          image: FileImage(File(
+                                                              file!.path)))),
+                                                )*/
+                                    ,
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        if (ivStatus == "1") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          setState(() {
+
+                                          });
+                                          File file1;
+                                          FilePickerResult? result =
+                                          await FilePicker.platform
+                                              .pickFiles(
+                                            type: FileType.video,
+                                            allowCompression: false,
+                                          );
+                                          if (result != null) {
+
+                                            file1 = File(
+                                                result.files.single.path!);
+
+
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TrimmerView(file1);
+                                                  }),
+                                            );
+
+                                            Navigator.of(context,
+                                                rootNavigator: true)
+                                                .pop();
+                                            setState(() {
+                                              if (currentPath.toString() !=
+                                                  "") {
+                                                file = File(currentPath.toString());
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                ivStatus = "2";
+                                                image_video_status = "2";
+                                                reviewList[index].image_video_status = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                ivStatus = "0";
+                                                image_video_status = "0";
+                                              }
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+                                            });
+                                            customDialogReview(index);
+                                          }else{
+                                            trimFileName = "";
+                                            trimFile = null;
+                                            file = null;
+                                            fileName = "";
+                                            currentPath = "";
+                                            fileList.clear();
+                                            images.clear();
+                                            ivStatus = "0";
+                                            image_video_status = "0";
+                                          }
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                          "assets/icons/video.svg")),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Container(
+                        height: 12.h,
+                        width: 85.w,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(3.w)),
+                        child: TextFormField(
+                          controller: reviewController,
+                          style: TextStyle(color: Color(0XFFCECECE)),
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 2.w, vertical: .2.h),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintText: "Type a Review...",
+                              hintStyle: TextStyle(
+                                  fontSize: 12.sp, color: Color(0XFFCECECE))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.2.h,
+                      ),
+                      Visibility(
+                        visible: image_video_status == "1" ? true : false,
+                        child: Container(
+                          height: 8.h,
+                          width: 80.w,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: fileList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              print("sdksndksan "+fileList[i].path.toString());
+                              return Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 9.h,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(2.w),
+                                            image: DecorationImage(
+                                                image: FileImage(
+                                                    fileList[i]),
+                                                fit: BoxFit.fill)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            if(reviewList[index].business_review_image.length>i) {
+                                              deleteImageApi(index,
+                                                  reviewList[index]
+                                                      .business_reviews_id,
+                                                  reviewList[index]
+                                                      .business_review_image[i]);
+                                              reviewList[index]
+                                                  .business_review_image
+                                                  .removeAt(i);
+                                            }
+
+                                            if (fileList.length == 0) {
+                                              trimFile = null;
+                                              trimFileName = "";
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                            }
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                /*      ivStatus=="1"?  Container(
+
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            Visibility(
+                              visible: reviewList[index].image_video_status=="1"?true:false ,
+                              child: Container(
+                                height: 8.h,
+                                width: 80.w,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  controller: _controller,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: reviewList[index].business_review_image.length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return Row(
+                                      children: [
+                                        Stack(
+                                          children: [
+                                            Container(
+                                              height: 7.h,
+                                              width: 9.h,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(2.w),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          reviewList[index].business_review_image[i]),
+                                                      fit: BoxFit.fill)),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 11.w, bottom: 5.h),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  deleteImageApi(index, reviewList[index].business_reviews_id, reviewList[index].business_review_image[i]);
+                                                  reviewList[index].business_review_image.removeAt(i);
+                                                  if (reviewList[index].business_review_image.length == 0) {
+                                                    trimFile = null;
+                                                    trimFileName = "";
+                                                    ivStatus = "0";
+                                                    image_video_status = "0";
+                                                    file = null;
+                                                    fileName = "";
+                                                    fileList.clear();
+                                                    images.clear();
+                                                  }
+                                                  setState(() {
+
+                                                  });
+                                                },
+                                                child: Container(
+                                                  height: 4.h,
+                                                  width: 4.h,
+                                                  color: Colors.transparent,
+                                                  child: Center(
+                                                    child: Container(
+                                                      height: 2.h,
+                                                      width: 2.h,
+                                                      decoration: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.white),
+                                                      child: Center(
+                                                        child: SvgPicture.asset(
+                                                          "assets/icons/cross.svg",
+                                                          width: 8,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        )
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ):Container(height: 0, width: 0,),*/
+
+                      reviewList[index].image_video_status=="2"? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () {
+
+                                    print("run");
+                                    if(reviewList[index].business_review_image.length>0){
+
+                                      deleteImageApi(index, reviewList[index].business_reviews_id, reviewList[index].business_review_image[0]);
+                                      reviewList[index].business_review_image.clear();
+
+                                    }
+                                    Navigator.of(context, rootNavigator: true).pop();
+                                    setState(() {
+
+                                      file = null;
+                                      fileName = "";
+                                      base64Image = "";
+                                      image_video_status = "0";
+                                      ivStatus = "0";
+                                      currentPath = "";
+                                      reviewList[index].image_video_status = "0";
+                                    });
+                                    customDialogReview(index);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 5.0),
+                                    child: SvgPicture.asset(
+                                      "assets/icons/cross.svg",
+                                      color: Colors.white,
+                                      width: 4.w,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 1.5.h,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                fileName==""?reviewList[index].business_review_image.length>0?reviewList[index].business_review_image[0]:"":fileName,
+                                maxLines: 3,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ):Container(height: 0, width: 0,),
+                      isloading
+                          ? Align(
+                          alignment: Alignment.center,
+                          child: Platform.isAndroid
+                              ? CircularProgressIndicator()
+                              : CupertinoActivityIndicator())
+                          : DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Submit",
+                          press: () {
+                            print("ratting " + ratting.toString());
+                            if (ratting.toString() == "0.0" ||
+                                ratting.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("Please select rating")));
+                            } else if (reviewController.text.toString() ==
+                                "" ||
+                                reviewController.text.toString() ==
+                                    "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("Please enter review")));
+                            } else {
+                              print("NowPath " + currentPath.toString());
+                              print("statussss " + ivStatus.toString());
+                              if (currentPath != "") {
+                                file = File(currentPath.toString());
+                                fileName = path.basename(file!.path);
+                              }
+                              editReviewApi(reviewList[index].business_reviews_id.toString(), reviewController.text.toString(), index);
+
+                            }
+                          })
+                    ],
+                  ),
+                )),
+          );
+        });
+      },
+    );
+  }
+  checkInDialog(int index) {
+    print("Checkin");
+    ratting = reviewList[index].ratting!=null?double.parse(reviewList[index].ratting):0.0;
+    ivStatus = reviewList[index].image_video_status;
+    image_video_status = reviewList[index].image_video_status;
+    if(ivStatus=="2"){
+      isVisible = true;
+    }
+    print("FilemnscnlancDialoge "+fileList.length.toString()+"^^");
+
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          print("check: " + check.toString());
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: isloading == true
+                ? Column(
+              children: [
+                Center(
+                    child: Platform.isIOS
+                        ? CupertinoActivityIndicator()
+                        : CircularProgressIndicator()),
+                Text(
+                  "Please wait....",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                )
+              ],
+            )
+                : SingleChildScrollView(
+                child: Card(
+                  color: Colors.black,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop();
+
+                              reviewController2.clear();
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+                              ivStatus = "";
+                              currentPath = "";
+                              rattingcheckin = 0.0;
+                              check = "";
+                              fileList.clear();
+                              images.clear();
+                            },
+                            child: Container(
+                              height: 10.w,
+                              width: 10.w,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  color: Colors.white,
+                                  width: 4.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 0.2.h,
+                      ),
+                      Text(
+                        "How do you like restaurant\n"
+                            "after check in",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"
+                          //fontFamily: "Segoepr"
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "fire";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/file.svg",
+                                    color: check == "fire"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.2.h,
+                                  ),
+                                  Text(
+                                    "Fire",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "fire"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+
+                          InkWell(
+                            onTap: () {
+                              print("tab");
+                              setState(() {
+                                check = "OkOk";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/bakance.svg",
+                                    color: check == "OkOk"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "OkOk",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "OkOk"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "Not Cool";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/snow.svg",
+                                    color: check == "Not Cool"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "Not Cool",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "Not Cool"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Your Overall Rating",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 0.6.h,
+                              ),
+                              RatingBar.builder(
+                                itemSize: 24,
+                                unratedColor: Color(0XFFCECECE),
+                                initialRating: rattingcheckin,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding:
+                                EdgeInsets.symmetric(horizontal: 0.0),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
+                                onRatingUpdate: (rating) {
+                                  print("Ratting :" + rating.toString());
+                                  rattingcheckin = rating;
+                                  //rat = rattingController.text.toString();
+                                  print("Rat: " + rattingcheckin.toString());
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Add Images/Video",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      if (image_video_status == "2") {
+                                        final snackBar = SnackBar(
+                                            content: Text(
+                                                'Either image or video can be post at a time'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          snackBar,
+                                        );
+                                      } else {
+                                        fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        await pickImages().then((value) {
+                                          images = value;
+                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
+                                        //getCheckInImage();
+                                      }
+                                      //                              ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             if (fileName.toString() != "null" || fileName.toString() != "") {
+                                      //                               ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             }
+                                    },
+                                    child: file == null
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : file!.path
+                                        .toString()
+                                        .endsWith("mp4")
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg")),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        if (image_video_status == "1") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          File file1;
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          setState(() {
+
+                                          });
+                                          FilePickerResult? result =
+                                          await FilePicker.platform
+                                              .pickFiles(
+                                            type: FileType.video,
+                                            allowCompression: false,
+                                          );
+                                          if (result != null) {
+                                            file1 = File(
+                                                result.files.single.path!);
+
+
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TrimmerView(file1);
+                                                  }),
+                                            );
+                                            Navigator.of(context,
+                                                rootNavigator: true)
+                                                .pop();
+                                            setState(() {
+                                              if (currentPath.toString() !=
+                                                  "") {
+                                                ivStatus = "2";
+                                                file = File(
+                                                    currentPath.toString());
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                image_video_status = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                image_video_status = "0";
+                                              }
+
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+                                            });
+                                            checkInDialog(index);
+                                          }
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                          "assets/icons/video.svg")),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Container(
+                        height: 12.h,
+                        width: 85.w,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(3.w)),
+                        child: TextFormField(
+                          controller: reviewController2,
+                          style: TextStyle(color: Color(0XFFCECECE)),
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 2.w, vertical: .2.h),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintText: "Type a Review...",
+                              hintStyle: TextStyle(
+                                  fontSize: 12.sp, color: Color(0XFFCECECE))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.2.h,
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          height: 8.h,
+                          width: 80.w,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                            fileList.length == 0 ? 0 : fileList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              return Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 9.h,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(2.w),
+                                            image: DecorationImage(
+                                                image: FileImage(
+                                                    fileList[i]),
+                                                fit: BoxFit.fill)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            images.removeAt(i);
+
+                                            if (fileList.length == 0) {
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                            }
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.0),
+                        child: Visibility(
+                            visible: isVisible,
+                            child: Text(
+                              fileName,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Submit",
+                          press: () {
+                            if (check.toString() == "" ||
+                                check.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please select tag")));
+                            } else if (rattingcheckin.toString() == "0.0" ||
+                                rattingcheckin.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please select rating")));
+                            } else if (reviewController2.text.toString() ==
+                                "" ||
+                                reviewController2.text.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please enter review")));
+                            } else {
+                              if (currentPath != "") {
+                                file = File(currentPath.toString());
+                                fileName = path.basename(file!.path);
+                                print("Filename " + fileName.toString());
+                              }
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                isloading = true;
+                                checkInDialog(index);
+                              });
+                            /*  editReviewApi(
+                                  reviewList[index].id,
+                                  reviewController2.text.toString(),);*/
+                            }
+                          })
+                    ],
+                  ),
+                )),
+          );
+        });
       },
     );
   }
@@ -791,8 +2349,77 @@ Future<dynamic> reviewListApi() async {
     );
   }
 
-  doNothing(int index) {
-    customDialog(index);
+  Future<List<File>> getData(int index) async{
+    setState(() {
+      isloading = true;
+      customDialogReview(index);
+    });
+    for(var k = 0; k< reviewList[index].business_review_image.length; k++){
+      if(reviewList[index].business_review_image[k].toString().trim()!="") {
+        var rng = new Random();
+        Directory tempDir = await getTemporaryDirectory();
+        String tempPath = tempDir.path;
+        File file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.png');
+        http.Response response = await http.get(Uri.parse(reviewList[index].business_review_image[k]));
+        await file.writeAsBytes(response.bodyBytes);
+        fileList.add(file);
+        print(fileList.length.toString());
+
+      }
+    }
+    setState(() {
+      Navigator.of(context, rootNavigator: true).pop();
+      isloading = false;
+      customDialogReview(index);
+    });
+    //Navigator.of(context, rootNavigator: true).pop();
+
+    return fileList;
+  }
+
+  Future<List<File>> getDataCheckin(int index) async{
+    reviewList[index].business_review_image.forEach((element) async {
+      if(element.toString().trim()!="") {
+        var rng = new Random();
+        Directory tempDir = await getTemporaryDirectory();
+        String tempPath = tempDir.path;
+        File file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.png');
+        http.Response response = await http.get(Uri.parse(element));
+        await file.writeAsBytes(response.bodyBytes);
+        fileList.add(file);
+        print(fileList.length.toString());
+        Navigator.of(context, rootNavigator: true).pop();
+        checkInDialog(index);
+      }
+
+    });
+
+
+    return fileList;
+  }
+  doNothing(int index) async {
+    reviewController.text = reviewList[index].review;
+
+      if(reviewList[index].business_review_image.length>0){
+        //customDialogReview(index);
+        await getData(index);
+      }else{
+        customDialogReview(index);
+      }
+
+
+    /*else{
+      print("ElseCheckin");
+      if(reviewList[index].business_review_image.length>0){
+      checkInDialog(index);
+      await getDataCheckin(index);
+    }else{
+      checkInDialog(index);
+    }
+
+    }*/
+
+
   }
 
  deleteNothing(int index) {
@@ -808,14 +2435,16 @@ class ReviewClass {
   var status = "";
   var business_id = "";
   var business_reviews_id = "";
+  var image_video_status = "0";
   var review = "";
+  var reviewType = "";
   var tag = "";
   var assets = "";
   Color assetscolor = kPrimaryColor;
   double assetswidth = 5.w;
-  var business_review_image = "";
+  List<dynamic> business_review_image = [];
   var created_at = "";
-  var timedelay = "Secconds";
+  var timedelay = "Seconds";
 
 }
 

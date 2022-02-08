@@ -675,7 +675,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                   //   height: 1.h,
                   // ),
                   Text(
-                    "COMMUNITY REVIEWS",
+                    "Community Reviews",
                     style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.white,
@@ -4079,7 +4079,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
     }
-    request.fields["type"] = "REVIEW";
+    request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();

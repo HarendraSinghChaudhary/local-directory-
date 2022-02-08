@@ -33,6 +33,7 @@ class RestDatasource {
   static final ADDREPORT_URL = BASE_URL + "addBuinessReports";
   static final ADDHOTSPOT_URL = BASE_URL + "add_hotspots";
   static final REVIEWDELETE_URL = BASE_URL + "deletereview";
+  static final DELETE_IMAGE = BASE_URL + "deleteImage";
   static final EDITREVIEW_URL = BASE_URL + "editReview";
   static final FILTERAPI_URL = BASE_URL + "getfilterbusiness";
   static final FAQ_URL = BASE_URL + "getfaq";

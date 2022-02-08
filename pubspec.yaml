@@ -62,6 +62,7 @@ dependencies:
   provider:
   multi_image_picker: ^4.7.14
   rich_text_controller: ^1.4.0
+  uri_to_file: ^0.2.0
   flutter_absolute_path:
     git:
       url: https://github.com/kornperkus/flutter_absolute_path.git

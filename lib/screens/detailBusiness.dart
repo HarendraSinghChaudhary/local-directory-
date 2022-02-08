@@ -608,7 +608,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   //   height: 1.h,
                   // ),
                   Text(
-                    "COMMUNITY REVIEWS",
+                    "Community Reviews",
                     style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.white,
@@ -2289,6 +2289,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   checkInDialog() {
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -4117,7 +4118,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
     }
-    request.fields["type"] = "REVIEW";
+    request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = widget.nearBy.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();

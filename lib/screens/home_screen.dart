@@ -149,7 +149,8 @@ class _HomeState extends State<Home> {
       business_name,
       category_name,
       distance;
-  var giveawayDesc;
+  var giveawayDesc,
+      giveawayImage;
   VideoPlayerController? videoPlayerController ;
   Future<void>? _initializeVideoPlayerFuture;
 
@@ -211,7 +212,7 @@ class _HomeState extends State<Home> {
               ),
 
               SizedBox(
-                width: 6.h,
+                width: 4.h,
               ),
 
               //Image.asset("assets/images/logo_name.png"),
@@ -221,6 +222,7 @@ class _HomeState extends State<Home> {
                 style: GoogleFonts.gothicA1(
                   fontSize: 18.sp,
                   color: Colors.white,
+                  fontWeight: FontWeight.bold
                 ),
               )
             ],
@@ -237,20 +239,6 @@ class _HomeState extends State<Home> {
                   children: [
                     SizedBox(
                       height: 2.h,
-                    ),
-                    Container(
-                      child: Center(
-                        child: Text(
-                          "Quote of the week",
-                          style: TextStyle(
-                              fontSize: 20.sp,
-                              color: kCyanColor,
-                              fontFamily: "Segoepr"),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 1.5.h,
                     ),
                     imgvideostatus==1?SizedBox(
                         height: 200,
@@ -271,7 +259,7 @@ class _HomeState extends State<Home> {
                           image: DecorationImage(
                             // image: AssetImage("assets/images/Business.png"), fit: BoxFit.fill
                             image: NetworkImage(
-                                //"assets/images/restaurant.jpeg"
+                              //"assets/images/restaurant.jpeg"
                                 quoatesimage.toString()),
                             fit: BoxFit.fill,
                           ),
@@ -287,6 +275,22 @@ class _HomeState extends State<Home> {
                         fit: BoxFit.fill,
                       ),
                     ),
+                    SizedBox(
+                      height: 1.5.h,
+                    ),
+                    Container(
+                      child: Center(
+                        child: Text(
+                          "Quote of the week",
+                          style: TextStyle(
+                              fontSize: 20.sp,
+                              color: kCyanColor,
+                              fontFamily: "Segoepr"),
+                        ),
+                      ),
+                    ),
+
+
                     SizedBox(
                       height: 2.h,
                     ),
@@ -490,6 +494,29 @@ class _HomeState extends State<Home> {
                     ),
                     SizedBox(
                       height: 2.h,
+                    ),
+
+                    giveawayImage.toString()!="null"?Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      height: 20.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.w),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            //"assets/images/restaurant.jpeg"
+                            giveawayImage.toString()
+
+                          ),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      // child: Image.asset(),
+                    ):Container(height: 0,),
+                    giveawayImage.toString()!="null"? SizedBox(
+                      height: 2.h,
+                    ):SizedBox(
+                      height: 0,
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -720,6 +747,7 @@ class _HomeState extends State<Home> {
         category_name = jsonRes["data"]["category_name"].toString();
 
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
+        giveawayImage = jsonRes["giweaways"]["image"].toString();
 
 /*
       if(datavideo!=null) {
@@ -749,14 +777,14 @@ class _HomeState extends State<Home> {
             checkVideo2();
           });
         }*/
+
         setState(() {
           isloading = false;
         });
       } else {
         setState(() {
           isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {

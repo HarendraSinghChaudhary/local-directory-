@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -247,15 +248,18 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               ),
 
               SizedBox(
-                width: 6.h,
+                width: 4.h,
               ),
 
               //Image.asset("assets/images/logo_name.png"),
 
               Text(
                 "WE MARK THE SPOT",
-                style: TextStyle(
-                    fontSize: 17.sp, color: Colors.white, fontFamily: "Roboto"),
+                style: GoogleFonts.gothicA1(
+                    fontSize: 18.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                ),
               )
             ],
           ),
@@ -400,6 +404,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
                             GestureDetector(
                               onTap: () {
                                 if (user_id == "72") {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Please login or signup first to checkin at business")));
                                 } else {
                                   if (isCheckinClicked == false) {
                                     setState(() {
@@ -432,7 +439,11 @@ print("MarkersLength "+markers.length.toString()+"^^");
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (user_id == "72") {} else {
+                                if (user_id == "72") {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Please login or signup first to checkin at business")));
+                                } else {
                                   if (isCheckinClicked == false) {
                                     setState(() {
                                       isCheckinClicked = true;
@@ -461,7 +472,11 @@ print("MarkersLength "+markers.length.toString()+"^^");
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (user_id == "72") {} else {
+                                if (user_id == "72") {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Please login or signup first to checkin at business")));
+                                } else {
                                   if (isCheckinClicked == false) {
                                     setState(() {
                                       isCheckinClicked = true;
