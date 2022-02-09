@@ -50,8 +50,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var location = "";
   var category_name = "";
   var latlong_position = "";
+  var lat1, long1;
  bool isCheckinClicked = false;
- 
+ var isFilter = false;
   var avgratting = "";
   var countUserreview = "";
   var firecount = 0;
@@ -123,7 +124,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 review_count = business.totalReviewusers.toString();
                 business_images = business.business_images.toString();
                 id = business.id.toString();
-
+                lat1 = business.lat;
+                long1 = business.long;
                 okcount = business.okcount;
                 print("okok: "+okcount.toString());
 
@@ -140,17 +142,30 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             icon:business.firecount>business.okcount?business.firecount>business.notcool_count?fireIcon!:notcoolIcon!:business.okcount>business.notcool_count?okIcon!:notcoolIcon!
           );
           markers.add(firstMarker);
+
           print("markerslength: "+markers.length.toString());
           print("business_lat: "+business.lat.toString());
         }
       }
     }
 
- 
+    if(lat1!=null) {
+      LatLng latLngPosition = LatLng(
+          lat1, long1);
+      print("lat1: " +lat1.toString());
+      print("long2 " + long1.toString());
 
-    setState(() {
-       print("running: "+ "running",);
-    });
+      CameraPosition cameraPosition =
+      new CameraPosition(target: latLngPosition, zoom: 12);
+      newGoogleMapController!
+          .animateCamera(
+          CameraUpdate.newCameraPosition(cameraPosition));
+    }
+    if(isFilter) {
+      setState(() {
+        viewVisible = true;
+      });
+    }
   }
 
   @override
@@ -180,9 +195,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           nearBy();
           initilize(nearByRestaurantList);
         } else {
-          locatePosition();
+          print("Filter Condition");
+         // locatePosition();
           filterData(widget.list);
-
+          isFilter = true;
         }
       }else{
         locatePosition();
@@ -214,14 +230,14 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     print("long " + position.longitude.toString());
 
     CameraPosition cameraPosition =
-        new CameraPosition(target: latLngPosition, zoom: 15);
+        new CameraPosition(target: latLngPosition, zoom: 12);
 
     newGoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
   static final CameraPosition _currentPosition =
-      CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 16);
+      CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 12);
 
      
 
@@ -300,7 +316,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
                 _controllerGoogleMap.complete(controller);
                 newGoogleMapController = controller;
 
-                locatePosition();
+                //locatePosition();
                 setState(() {});
               },
               markers: markers.map((e) => e).toSet(),

@@ -875,9 +875,7 @@ Future<dynamic> reviewListApi() async {
     }
     print("FilemnscnlancDialoge "+fileList.length.toString()+"^^");
     print("ivStatus "+ivStatus.toString()+"^^");
-    if(reviewList[index].reviewType !="REVIEW"){
-      check = reviewList[index].tag;
-    }
+
 
     showDialog(
       context: context,
@@ -957,6 +955,7 @@ Future<dynamic> reviewListApi() async {
                             onTap: () {
                               setState(() {
                                 check = "fire";
+                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -964,7 +963,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/file.svg",
-                                    color: check == "fire"
+                                    color: reviewList[index].tag == "fire"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -975,7 +974,7 @@ Future<dynamic> reviewListApi() async {
                                     "Fire",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: check == "fire"
+                                      color: reviewList[index].tag == "fire"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -995,6 +994,7 @@ Future<dynamic> reviewListApi() async {
                               print("tab");
                               setState(() {
                                 check = "OkOk";
+                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -1002,7 +1002,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/bakance.svg",
-                                    color: check == "OkOk"
+                                    color:reviewList[index].tag == "OkOk"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -1010,7 +1010,7 @@ Future<dynamic> reviewListApi() async {
                                     "OkOk",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: check == "OkOk"
+                                      color: reviewList[index].tag == "OkOk"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -1026,6 +1026,7 @@ Future<dynamic> reviewListApi() async {
                             onTap: () {
                               setState(() {
                                 check = "Not Cool";
+                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -1033,7 +1034,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/snow.svg",
-                                    color: check == "Not Cool"
+                                    color: reviewList[index].tag == "Not Cool"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -1041,7 +1042,7 @@ Future<dynamic> reviewListApi() async {
                                     "Not Cool",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: check == "Not Cool"
+                                      color: reviewList[index].tag == "Not Cool"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -1165,6 +1166,7 @@ Future<dynamic> reviewListApi() async {
                                         } else {
                                           image_video_status = "0";
                                           ivStatus = "0";
+
                                           images.clear();
                                           fileList.clear();
                                         }
@@ -1602,10 +1604,12 @@ Future<dynamic> reviewListApi() async {
                             } else {
                               print("NowPath " + currentPath.toString());
                               print("statussss " + ivStatus.toString());
+                              print("check " + check.toString());
                               if (currentPath != "") {
                                 file = File(currentPath.toString());
                                 fileName = path.basename(file!.path);
                               }
+
                               editReviewApi(reviewList[index].business_reviews_id.toString(), reviewController.text.toString(), index);
 
                             }
