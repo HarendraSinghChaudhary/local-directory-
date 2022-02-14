@@ -468,21 +468,21 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    Container(
+                    description.toString()!="null"|| description.toString()!=""?Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Text(
-                        description.toString(),
+                          description.toString()!="null"?description.toString():"",
                         // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                         style: TextStyle(
                             fontSize: 11.sp,
                             color: Color(0xFFCECECE),
                             fontFamily: "Roboto"),
                       ),
-                    ),
+                    ):Container(height: 0, width: 0,),
                     SizedBox(
                       height: 3.h,
                     ),
-                    Container(
+                    giveawayImage.toString()!="null"?Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Text(
                         "Giveaways",
@@ -491,7 +491,7 @@ class _HomeState extends State<Home> {
                             color: kCyanColor,
                             fontFamily: "Segoepr"),
                       ),
-                    ),
+                    ):Container(height: 0,width: 0,),
                     SizedBox(
                       height: 2.h,
                     ),
@@ -512,25 +512,25 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       // child: Image.asset(),
-                    ):Container(height: 0,),
+                    ):Container(height: 0,width: 0,),
                     giveawayImage.toString()!="null"? SizedBox(
                       height: 2.h,
                     ):SizedBox(
                       height: 0,
                     ),
-                    Container(
+                    giveawayDesc.toString()!="null"?Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Text(
-                          giveawayDesc.toString(),
+                          giveawayDesc.toString()!="null"?giveawayDesc.toString():"",
                         style: TextStyle(
                             fontSize: 11.sp,
                             color: Color(0xFFCECECE),
                             fontFamily: "Roboto"),
                       ),
-                    ),
-                    SizedBox(
+                    ):Container(height: 0,width: 0,),
+                    giveawayDesc.toString()!="null"?SizedBox(
                       height: 2.h,
-                    ),
+                    ):SizedBox(height: 0),
                   ],
                 ),
               ));
@@ -707,8 +707,8 @@ class _HomeState extends State<Home> {
         ),
         body: {
           "id": id.toString(),
-          "lat": "26.8546714985159",//latPosition.toString(),
-          "long":"75.76675952576491" //longPosition.toString(),
+          "lat":  latPosition.toString(),//"26.8546714985159",
+          "long":longPosition.toString(),//"75.76675952576491",
         });
 
     var jsonRes;
@@ -742,13 +742,14 @@ class _HomeState extends State<Home> {
         image = jsonRes["data"]["business_images"].toString();
         distance = jsonRes["data"]["distance"].toString();
         print("distance: " + distance.toString());
-        ratting = jsonRes["data"]["ratting"].toString();
+        ratting = jsonRes["data"]["avgratting"].toString();
         business_name = jsonRes["data"]["business_name"].toString();
         category_name = jsonRes["data"]["category_name"].toString();
 
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
         giveawayImage = jsonRes["giweaways"]["image"].toString();
-
+        print("giveawayDesc "+giveawayDesc.toString()+"^^");
+        print("giveawayImage "+giveawayImage.toString()+"^^");
 /*
       if(datavideo!=null) {
         videoPlayerController = new VideoPlayerController.network(datavideo);

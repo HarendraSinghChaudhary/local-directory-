@@ -16,6 +16,7 @@ import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/account.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/signup_Screen.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
@@ -751,7 +752,7 @@ class _ExploreState extends State<Explore> {
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
+          modelAgentSearch.id = jsonArray[i]["user_id"].toString();
           modelAgentSearch.business_name =
               jsonArray[i]["business_name"].toString();
           modelAgentSearch.business_images =
@@ -895,8 +896,8 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                         Navigator.of(context)
                             .push(
                           new MaterialPageRoute(
-                              builder: (_) => new DetailBussiness(
-                                    nearBy: featuresBusinessList,
+                              builder: (_) => new DetailBussinessDynamic(
+                                   id: featuresBusinessList.id,
                                   )),
                         )
                             .then((value) {

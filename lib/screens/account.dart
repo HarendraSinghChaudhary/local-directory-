@@ -173,13 +173,16 @@ class _UserAccountState extends State<UserAccount> {
                           SizedBox(
                             width: 2.w,
                           ),
-                          Text(
-                            email.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12.sp,
-                                fontFamily: 'Roboto'),
+                          Container(
+                            width: 48.w,
+                            child: Text(
+                              email.toString(),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 12.sp,
+                                  fontFamily: 'Roboto'),
+                            ),
                           ),
                         ],
                       ),

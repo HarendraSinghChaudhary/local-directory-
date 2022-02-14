@@ -53,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(right: 15),
+                padding: const EdgeInsets.only(right: 14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -192,7 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   //   },
                   // ),
                   Text(
-                    "I agree with terms & conditions and privacy policy",
+                    "I agree with terms & condition and privacy policy",
                     style: TextStyle(color: kPrimaryColor, fontSize: 10.sp),
                   ),
                 ],
@@ -469,7 +469,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       controller: nameController,
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
-      inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z]+|\s"))],
       decoration: InputDecoration(
         hintText: " Name",
         hintStyle: TextStyle(color: Colors.grey),

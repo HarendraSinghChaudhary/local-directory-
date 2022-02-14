@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'package:path_provider/path_provider.dart';
-import 'package:uri_to_file/uri_to_file.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -480,28 +479,6 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
   }
 
 
-  Future<File> convertUriToFile(var url) async {
-    File? file = null;
-    try {
-     // Uri string
-
-      // Don't pass uri parameter using [Uri] object via uri.toString().
-      // Because uri.toString() changes the string to lowercase which causes this package to misbehave
-
-      // If you are using uni_links package for deep linking purpose.
-      // Pass the uri string using getInitialLink() or linkStream
-
-      file = await toFile(url);
-      return file;// Converting uri to file
-    } on UnsupportedError catch (e) {
-      print(e.message); // Unsupported error for uri not supported
-    } on IOException catch (e) {
-      print(e); // IOException for system error
-    } catch (e) {
-      print(e); // General exception
-    }
-    return file!;
-  }
 
 
 Future<dynamic> reviewListApi() async {
@@ -867,15 +844,21 @@ Future<dynamic> reviewListApi() async {
     return file;
   }
   customDialogReview(int index) async {
-    ratting = reviewList[index].ratting!=null?double.parse(reviewList[index].ratting):0.0;
-    ivStatus = reviewList[index].image_video_status;
-    image_video_status = reviewList[index].image_video_status;
-    if(ivStatus=="2"){
-      isVisible = true;
-    }
-    print("FilemnscnlancDialoge "+fileList.length.toString()+"^^");
-    print("ivStatus "+ivStatus.toString()+"^^");
+    if(isloading!=true){
+      if(isLoading!=true){
+        ratting = reviewList[index].ratting!=null?double.parse(reviewList[index].ratting):0.0;
+        ivStatus = reviewList[index].image_video_status;
+        check = reviewList[index].tag;
+        image_video_status = reviewList[index].image_video_status;
+        if(ivStatus=="2"){
+          isVisible = true;
+        }
+        print("FilemnscnlancDialoge "+fileList.length.toString()+"^^");
+        print("ivStatus "+ivStatus.toString()+"^^");
 
+
+      }
+    }
 
     showDialog(
       context: context,
@@ -955,7 +938,6 @@ Future<dynamic> reviewListApi() async {
                             onTap: () {
                               setState(() {
                                 check = "fire";
-                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -963,7 +945,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/file.svg",
-                                    color: reviewList[index].tag == "fire"
+                                    color: check == "fire"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -974,7 +956,7 @@ Future<dynamic> reviewListApi() async {
                                     "Fire",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: reviewList[index].tag == "fire"
+                                      color: check == "fire"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -994,7 +976,6 @@ Future<dynamic> reviewListApi() async {
                               print("tab");
                               setState(() {
                                 check = "OkOk";
-                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -1002,7 +983,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/bakance.svg",
-                                    color:reviewList[index].tag == "OkOk"
+                                    color:check == "OkOk"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -1010,7 +991,7 @@ Future<dynamic> reviewListApi() async {
                                     "OkOk",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: reviewList[index].tag == "OkOk"
+                                      color: check == "OkOk"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -1026,7 +1007,6 @@ Future<dynamic> reviewListApi() async {
                             onTap: () {
                               setState(() {
                                 check = "Not Cool";
-                                reviewList[index].tag = check;
                               });
                             },
                             child: Container(
@@ -1034,7 +1014,7 @@ Future<dynamic> reviewListApi() async {
                                 children: [
                                   SvgPicture.asset(
                                     "assets/icons/snow.svg",
-                                    color: reviewList[index].tag == "Not Cool"
+                                    color: check == "Not Cool"
                                         ? kPrimaryColor
                                         : kIconBackgroundColor,
                                   ),
@@ -1042,7 +1022,7 @@ Future<dynamic> reviewListApi() async {
                                     "Not Cool",
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: reviewList[index].tag == "Not Cool"
+                                      color: check == "Not Cool"
                                           ? kPrimaryColor
                                           : Colors.white,
 
@@ -1082,7 +1062,7 @@ Future<dynamic> reviewListApi() async {
                               RatingBar.builder(
                                 itemSize: 24,
                                 unratedColor: Color(0XFFCECECE),
-                                initialRating: reviewList[index].ratting.toString()!="null" || reviewList[index].ratting.toString() !=""?double.parse(reviewList[index].ratting.toString()):0.0,
+                                initialRating: ratting.toString()!="null" || ratting.toString() !=""?ratting:0.0,
                                 minRating: 1,
                                 direction: Axis.horizontal,
                                 allowHalfRating: false,
@@ -1098,7 +1078,7 @@ Future<dynamic> reviewListApi() async {
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   ratting = rating;
-                                  reviewList[index].ratting = ratting.toString();
+                                 // reviewList[index].ratting = ratting.toString();
                                   //rat = rattingController.text.toString();
                                   print("Rat: " + ratting.toString());
                                 },
@@ -1139,36 +1119,45 @@ Future<dynamic> reviewListApi() async {
                                         file = null;
                                         fileName = "";
                                         int lengt = 3 - fileList.length;
-                                        await pickImagesMultiple(lengt).then((value) {
-                                          images = value;
-                                          print("lengthhhhhh " + images.length.toString() + "*");
-                                        });
-                                        if (images.length > 0) {
-                                          image_video_status = "1";
-                                          ivStatus = "1";
-                                          reviewList[index].image_video_status = "1";
-                                          images.forEach((element) async {
-                                            var path = await FlutterAbsolutePath.getAbsolutePath(
-                                                element.identifier.toString());
-                                            print("pathhh " + path.toString() + "*");
-
-                                            file = File(path.toString());
-                                            fileName = file!
-                                                .path
-                                                .split("/")
-                                                .last;
-                                            fileList.add(file!);
-                                            setState(() {
-
-                                            });
+                                        print("lengthFile "+fileList.length.toString()+"^^");
+                                        if(fileList.length<3) {
+                                          await pickImagesMultiple(lengt).then((
+                                              value) {
+                                            images = value;
+                                            print("lengthhhhhh " +
+                                                images.length.toString() + "*");
                                           });
 
-                                        } else {
-                                          image_video_status = "0";
-                                          ivStatus = "0";
+                                          if (images.length > 0) {
+                                            image_video_status = "1";
+                                            ivStatus = "1";
+                                            reviewList[index]
+                                                .image_video_status = "1";
+                                            images.forEach((element) async {
+                                              var path = await FlutterAbsolutePath
+                                                  .getAbsolutePath(
+                                                  element.identifier
+                                                      .toString());
+                                              print(
+                                                  "pathhh " + path.toString() +
+                                                      "*");
 
-                                          images.clear();
-                                          fileList.clear();
+                                              file = File(path.toString());
+                                              fileName = file!
+                                                  .path
+                                                  .split("/")
+                                                  .last;
+                                              fileList.add(file!);
+                                              setState(() {
+
+                                              });
+                                            });
+                                          } else {
+                                            image_video_status = "0";
+                                            ivStatus = "0";
+                                            images.clear();
+                                            fileList.clear();
+                                          }
                                         }
 
                                         /* await pickImagess("review");
@@ -1260,6 +1249,7 @@ Future<dynamic> reviewListApi() async {
                                                 ivStatus = "2";
                                                 image_video_status = "2";
                                                 reviewList[index].image_video_status = "2";
+                                                print("FileName "+fileName+"");
                                               } else {
                                                 trimFileName = "";
                                                 trimFile = null;
@@ -1364,7 +1354,7 @@ Future<dynamic> reviewListApi() async {
                                         child: GestureDetector(
                                           onTap: () {
                                             fileList.removeAt(i);
-                                            if(reviewList[index].business_review_image.length>i) {
+                                     /*       if(reviewList[index].business_review_image.length>i) {
                                               deleteImageApi(index,
                                                   reviewList[index]
                                                       .business_reviews_id,
@@ -1374,7 +1364,7 @@ Future<dynamic> reviewListApi() async {
                                                   .business_review_image
                                                   .removeAt(i);
                                             }
-
+*/
                                             if (fileList.length == 0) {
                                               trimFile = null;
                                               trimFileName = "";
@@ -1514,7 +1504,7 @@ Future<dynamic> reviewListApi() async {
                         ),
                       ):Container(height: 0, width: 0,),*/
 
-                      reviewList[index].image_video_status=="2"? Column(
+                      ivStatus=="2"? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Row(
@@ -1526,13 +1516,13 @@ Future<dynamic> reviewListApi() async {
                                   onTap: () {
 
                                     print("run");
-                                    if(reviewList[index].business_review_image.length>0){
+                                  /*  if(reviewList[index].business_review_image.length>0){
 
                                       deleteImageApi(index, reviewList[index].business_reviews_id, reviewList[index].business_review_image[0]);
                                       reviewList[index].business_review_image.clear();
 
-                                    }
-                                    Navigator.of(context, rootNavigator: true).pop();
+                                    }*/
+                                   // Navigator.of(context, rootNavigator: true).pop();
                                     setState(() {
 
                                       file = null;
@@ -1541,9 +1531,8 @@ Future<dynamic> reviewListApi() async {
                                       image_video_status = "0";
                                       ivStatus = "0";
                                       currentPath = "";
-                                      reviewList[index].image_video_status = "0";
                                     });
-                                    customDialogReview(index);
+                                   // customDialogReview(index);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -2403,7 +2392,7 @@ Future<dynamic> reviewListApi() async {
   }
   doNothing(int index) async {
     reviewController.text = reviewList[index].review;
-
+      print("ImageLength "+reviewList[index].business_review_image.length.toString()+"%^%^");
       if(reviewList[index].business_review_image.length>0){
         //customDialogReview(index);
         await getData(index);

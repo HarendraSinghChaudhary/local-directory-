@@ -304,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: TextInputType.emailAddress,
-      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
       decoration: InputDecoration(
         hintText: "Enter your Email",
         hintStyle: TextStyle(color: Colors.grey),
@@ -385,9 +385,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         body: {
           "email": guestMail.toString().trim(),
-
-
-
           "password": guestPassword.toString().trim(),
           
         });
@@ -413,7 +410,6 @@ class _LoginScreenState extends State<LoginScreen> {
         prefs.setString('dob', jsonRes["data"]["dob"].toString());
         prefs.setString('image', jsonRes["data"]["image"].toString());
         prefs.commit();
-
 
         print("image: "+jsonRes["data"]["image"].toString());
 

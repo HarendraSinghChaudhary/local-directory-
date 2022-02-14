@@ -238,7 +238,7 @@ class _EditProfileState extends State<EditProfile> {
       controller: nameController,
       maxLength: 30,
       maxLines: 1,
-      inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z]+|\s"))],
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -261,7 +261,7 @@ class _EditProfileState extends State<EditProfile> {
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: TextInputType.emailAddress,
-      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
       decoration: InputDecoration(
         hintText: "",
         hintStyle: TextStyle(color: Colors.white),
@@ -329,7 +329,7 @@ class _EditProfileState extends State<EditProfile> {
       cursorColor: Colors.white,
       enabled: false,
       //keyboardType: TextInputType.emailAddress,
-      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
       decoration: InputDecoration(
         disabledBorder: outlineInputBorder(),
         hintText: "DD/MM/YYYY",

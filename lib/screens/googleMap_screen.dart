@@ -89,9 +89,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     final Uint8List fireI = await getBytesFromAsset('assets/images/fire.png', 50);
     final Uint8List notcoolI = await getBytesFromAsset('assets/snow/snow.png', 50);
     final Uint8List okI = await getBytesFromAsset('assets/beckance/bakance.png', 50);
+    final Uint8List placeholde = await getBytesFromAsset('assets/images/placeholder.png', 50);
     fireIcon = BitmapDescriptor.fromBytes(fireI);
     notcoolIcon = BitmapDescriptor.fromBytes(notcoolI);
     okIcon = BitmapDescriptor.fromBytes(okI);
+    customIcon = BitmapDescriptor.fromBytes(placeholde);
     /*BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(1, 1)),
         'assets/images/fire.png')
         .then((d) {
@@ -112,37 +114,74 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       if(business.lat!=null && business.long!=null) {
         if (business.lat.toString() != "null" &&
             business.long.toString() != "null") {
-          Marker firstMarker = Marker(
-            onTap: () {
-              setState(() {
-                viewVisible = true;
-                business_name = business.business_name.toString();
-                avgratting = business.avgratting.toString();
-                firecount = business.firecount;
-                notcool_count = business.notcool_count;
-                user_count = business.user_count.toString();
-                review_count = business.totalReviewusers.toString();
-                business_images = business.business_images.toString();
-                id = business.id.toString();
-                lat1 = business.lat;
-                long1 = business.long;
-                okcount = business.okcount;
-                print("okok: "+okcount.toString());
-
-              });
-            },
-            markerId: MarkerId(business.id),
-            position:
-            LatLng(double.parse(business.lat), double.parse(business.long)),
-            infoWindow: InfoWindow(
-              title: business_name = business.business_name.toString(),
-            ),
-           /* icon: BitmapDescriptor.defaultMarkerWithHue(
+          if(business.firecount==0 && business.okcount==0 && business.notcool_count==0){
+            Marker firstMarker = Marker(
+                onTap: () {
+                  setState(() {
+                    viewVisible = true;
+                    business_name = business.business_name.toString();
+                    avgratting = business.avgratting.toString();
+                    firecount = business.firecount;
+                    notcool_count = business.notcool_count;
+                    user_count = business.user_count.toString();
+                    review_count = business.totalReviewusers.toString();
+                    business_images = business.business_images.toString();
+                    id = business.id.toString();
+                    lat1 = double.parse(business.lat);
+                    long1 = double.parse(business.long);
+                    okcount = business.okcount;
+                    print("okok: " + okcount.toString());
+                  });
+                },
+                markerId: MarkerId(business.id),
+                position:
+                LatLng(double.parse(business.lat), double.parse(business.long)),
+                infoWindow: InfoWindow(
+                  title: business_name = business.business_name.toString(),
+                ),
+                /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-            icon:business.firecount>business.okcount?business.firecount>business.notcool_count?fireIcon!:notcoolIcon!:business.okcount>business.notcool_count?okIcon!:notcoolIcon!
-          );
-          markers.add(firstMarker);
+                icon: customIcon!
+            );
 
+            markers.add(firstMarker);
+          }else {
+            Marker firstMarker = Marker(
+                onTap: () {
+                  setState(() {
+                    viewVisible = true;
+                    business_name = business.business_name.toString();
+                    avgratting = business.avgratting.toString();
+                    firecount = business.firecount;
+                    notcool_count = business.notcool_count;
+                    user_count = business.user_count.toString();
+                    review_count = business.totalReviewusers.toString();
+                    business_images = business.business_images.toString();
+                    id = business.id.toString();
+                    lat1 = double.parse(business.lat);
+                    long1 = double.parse(business.long);
+                    okcount = business.okcount;
+                    print("okok: " + okcount.toString());
+                  });
+                },
+                markerId: MarkerId(business.id),
+                position:
+                LatLng(double.parse(business.lat), double.parse(business.long)),
+                infoWindow: InfoWindow(
+                  title: business_name = business.business_name.toString(),
+                ),
+                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),*/
+                icon: business.firecount > business.okcount ? business
+                    .firecount > business.notcool_count
+                    ? fireIcon!
+                    : notcoolIcon! : business.okcount > business.notcool_count
+                    ? okIcon!
+                    : notcoolIcon!
+            );
+
+            markers.add(firstMarker);
+          }
           print("markerslength: "+markers.length.toString());
           print("business_lat: "+business.lat.toString());
         }
@@ -161,11 +200,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           .animateCamera(
           CameraUpdate.newCameraPosition(cameraPosition));
     }
-    if(isFilter) {
+   /* if(isFilter) {
       setState(() {
         viewVisible = true;
       });
-    }
+    }*/
   }
 
   @override
@@ -749,9 +788,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
 
           nearByRestaurantList.add(modelAgentSearch);*/
 
-
-          print("object");
-
           print("lattttttt: " + lat.toString());
 
           setState(() {
@@ -765,6 +801,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
           newGoogleMapController!.setMapStyle("[]");
           initilize(nearByRestaurantList);
           isloading = false;
+          viewVisible = true;
         });
       } else {
         setState(() {
@@ -787,6 +824,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
     print("id Print: " + id.toString());
     setState(() {
       isloading = true;
+      viewVisible = false;
     });
 
     var request = http.post(
@@ -979,9 +1017,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
       initilize(nearByRestaurantList);
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      var id = prefs.getString("id");
+
       user_id = prefs.getString("id").toString();
-      print("id Print: " + widget.list.toString());
+      print("key Print: " + list.toString());
       setState(() {
         isloading = true;
       });

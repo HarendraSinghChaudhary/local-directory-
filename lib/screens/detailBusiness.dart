@@ -15,6 +15,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:http/http.dart' as http;
@@ -349,44 +350,51 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       .spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .start,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        SvgPicture.asset(
-                                          "assets/icons/location-.svg",
-                                          color: kCyanColor,
-                                          width: 4.w,
-                                        ),
-                                        SizedBox(
-                                          width: 1.w,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 0.1.h),
-                                          child: Container(
-                                            width: 55.w,
-                                            child: Text(
-                                              //"1230 Roosvelt Road, Wichita",
-                                              widget.nearBy.location
-                                                  .toString() !=
-                                                  "null"
-                                                  ? widget.nearBy.location
-                                                  .toString()
-                                                  : "",
+                                    GestureDetector(
+                                      onTap: (){
+                                        double lat = double.parse(widget.nearBy.lat);
+                                        double long = double.parse(widget.nearBy.long);
+                                        openMap(lat, long);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          SvgPicture.asset(
+                                            "assets/icons/location-.svg",
+                                            color: kCyanColor,
+                                            width: 4.w,
+                                          ),
+                                          SizedBox(
+                                            width: 1.w,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 0.1.h),
+                                            child: Container(
+                                              width: 55.w,
+                                              child: Text(
+                                                //"1230 Roosvelt Road, Wichita",
+                                                widget.nearBy.location
+                                                    .toString() !=
+                                                    "null"
+                                                    ? widget.nearBy.location
+                                                    .toString()
+                                                    : "",
 
-                                              maxLines: 3,
-                                              textAlign: TextAlign.start,
-                                              style: TextStyle(
-                                                  fontSize: 11.sp,
-                                                  color: Colors.white,
-                                                  // fontWeight: FontWeight.w500,
-                                                  fontFamily: "Roboto"),
+                                                maxLines: 3,
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                    fontSize: 11.sp,
+                                                    color: Colors.white,
+                                                    // fontWeight: FontWeight.w500,
+                                                    fontFamily: "Roboto"),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                     Text(
                                       //Distance
@@ -1709,6 +1717,14 @@ class _DetailBussinessState extends State<DetailBussiness> {
         });
       },
     );
+  }
+  Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
   }
 
   Future<dynamic> addReportApi(String comId, int index) async {

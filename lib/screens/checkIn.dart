@@ -242,11 +242,11 @@ class _CheckInState extends State<CheckIn> {
 
 
               
-              jsonErray = jsonRes['data'][i]['user'];
+              jsonErray = jsonRes['data'][i]['business'];
                 UserCheckin modelcheckIn = new UserCheckin();
 
                 modelcheckIn.id = jsonErray["id"].toString();
-                modelcheckIn.name = jsonErray["name"].toString();
+                modelcheckIn.name = jsonErray["business_name"].toString();
                 modelcheckIn.image = jsonErray["image"].toString();
 
 

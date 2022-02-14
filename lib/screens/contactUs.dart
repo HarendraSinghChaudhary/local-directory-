@@ -240,7 +240,7 @@ class _ContactUsState extends State<ContactUs> {
   TextFormField builNameFormField() {
     return TextFormField(
       controller: nameController,
-      inputFormatters: [WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s"))],
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z]+|\s"))],
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -263,7 +263,7 @@ class _ContactUsState extends State<ContactUs> {
       style: TextStyle(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: TextInputType.emailAddress,
-      inputFormatters: [BlacklistingTextInputFormatter(RegExp(r"\s"))],
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
       decoration: InputDecoration(
         hintText: "Email",
         hintStyle: TextStyle(color: Colors.white),
