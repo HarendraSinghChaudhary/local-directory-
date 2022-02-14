@@ -1142,7 +1142,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
     }
-    request.fields["type"] = "REVIEW";
+    request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = buisnessid.toString();
     request.fields["user_id"] = id.toString();
 
