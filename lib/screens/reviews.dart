@@ -283,6 +283,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
     print("message Print: " + reviews_id.toString());
     print("message Print1: " + review.toString());
     print("ratting Print1: " + ratting.toString());
+
     Navigator.of(context, rootNavigator: true).pop();
 
     setState(() {
@@ -312,6 +313,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
     }
     request.fields["reviews_id"] = reviews_id;
     request.fields["user_id"] = id.toString();
+    print("ImageVideoStatus Print1: " + image_video_status.toString());
     if(image_video_status!="") {
       request.fields["image_video_status"] = image_video_status.toString();
       print("ImageVideoStatus " + image_video_status.toString() + "^^");
@@ -495,9 +497,8 @@ Future<dynamic> reviewListApi() async {
             ),
         body: {
           "user_id": id.toString(),
-         
-          
         });
+
     String msg = "";
     var jsonArray;
     var jsonRes;
@@ -1131,8 +1132,7 @@ Future<dynamic> reviewListApi() async {
                                           if (images.length > 0) {
                                             image_video_status = "1";
                                             ivStatus = "1";
-                                            reviewList[index]
-                                                .image_video_status = "1";
+
                                             images.forEach((element) async {
                                               var path = await FlutterAbsolutePath
                                                   .getAbsolutePath(
@@ -1237,9 +1237,7 @@ Future<dynamic> reviewListApi() async {
                                                   }),
                                             );
 
-                                            Navigator.of(context,
-                                                rootNavigator: true)
-                                                .pop();
+
                                             setState(() {
                                               if (currentPath.toString() !=
                                                   "") {
@@ -1248,7 +1246,6 @@ Future<dynamic> reviewListApi() async {
                                                     file!.path.toString());
                                                 ivStatus = "2";
                                                 image_video_status = "2";
-                                                reviewList[index].image_video_status = "2";
                                                 print("FileName "+fileName+"");
                                               } else {
                                                 trimFileName = "";
@@ -1270,7 +1267,7 @@ Future<dynamic> reviewListApi() async {
                                                 isVisible = true;
                                               }
                                             });
-                                            customDialogReview(index);
+
                                           }else{
                                             trimFileName = "";
                                             trimFile = null;
@@ -1575,14 +1572,7 @@ Future<dynamic> reviewListApi() async {
                           height: 6.h,
                           text: "Submit",
                           press: () {
-                            print("ratting " + ratting.toString());
-                            if (ratting.toString() == "0.0" ||
-                                ratting.toString() == "null") {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                      Text("Please select rating")));
-                            } else if (reviewController.text.toString() ==
+                           if (reviewController.text.toString() ==
                                 "" ||
                                 reviewController.text.toString() ==
                                     "null") {
@@ -1591,9 +1581,6 @@ Future<dynamic> reviewListApi() async {
                                       content:
                                       Text("Please enter review")));
                             } else {
-                              print("NowPath " + currentPath.toString());
-                              print("statussss " + ivStatus.toString());
-                              print("check " + check.toString());
                               if (currentPath != "") {
                                 file = File(currentPath.toString());
                                 fileName = path.basename(file!.path);
