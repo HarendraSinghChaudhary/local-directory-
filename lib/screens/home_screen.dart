@@ -32,7 +32,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isloading = false;
-
+  VideoPlayerController? videoPlayerController;
+  VideoPlayerController? videoPlayerController2;
   var latPosition;
 
   var longPosition;
@@ -151,10 +152,8 @@ class _HomeState extends State<Home> {
       distance;
   var giveawayDesc,
       giveawayImage;
-  VideoPlayerController? videoPlayerController ;
   Future<void>? _initializeVideoPlayerFuture;
 
-  VideoPlayerController? videoPlayerController2 ;
   Future<void>? _initializeVideoPlayerFuture2;
   @override
   void initState() {
@@ -244,9 +243,7 @@ class _HomeState extends State<Home> {
                         height: 200,
                         child: VideoItems(
                           videoPlayerController:
-                          VideoPlayerController
-                              .network(
-                              quoatesimage),
+                          videoPlayerController2!,
                         )):CachedNetworkImage(
                       imageUrl: quoatesimage.toString(),
                       imageBuilder: (context, imageProvider) => Container(
@@ -327,8 +324,7 @@ class _HomeState extends State<Home> {
                         height: 200,
                         child: VideoItems(
                           videoPlayerController:
-                          VideoPlayerController
-                              .network(datavideo),
+                         videoPlayerController!,
                         )):Container(),
 
                      /* YoutubePlayer(
@@ -750,6 +746,12 @@ class _HomeState extends State<Home> {
         giveawayImage = jsonRes["giweaways"]["image"].toString();
         print("giveawayDesc "+giveawayDesc.toString()+"^^");
         print("giveawayImage "+giveawayImage.toString()+"^^");
+        if(datavideo!=null){
+          videoPlayerController = new VideoPlayerController.network(datavideo);
+        }
+        if(imgvideostatus.toString()=="1") {
+          videoPlayerController2 = new VideoPlayerController.network(quoatesimage);
+        }
 /*
       if(datavideo!=null) {
         videoPlayerController = new VideoPlayerController.network(datavideo);
