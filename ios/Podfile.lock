@@ -48,13 +48,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_absolute_path (0.0.1):
     - Flutter
-  - flutter_inappwebview (0.0.1):
-    - Flutter
-    - flutter_inappwebview/Core (= 0.0.1)
-    - OrderedSet (~> 5.0)
-  - flutter_inappwebview/Core (0.0.1):
-    - Flutter
-    - OrderedSet (~> 5.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -82,7 +75,6 @@ PODS:
   - multi_image_picker (4.8.00):
     - BSImagePicker (~> 2.10.3)
     - Flutter
-  - OrderedSet (5.0.0)
   - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
@@ -113,7 +105,6 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_absolute_path (from `.symlinks/plugins/flutter_absolute_path/ios`)
-  - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -139,7 +130,6 @@ SPEC REPOS:
     - FMDB
     - GoogleMaps
     - libwebp
-    - OrderedSet
     - SDWebImage
     - SwiftyGif
 
@@ -152,8 +142,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_absolute_path:
     :path: ".symlinks/plugins/flutter_absolute_path/ios"
-  flutter_inappwebview:
-    :path: ".symlinks/plugins/flutter_inappwebview/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   google_maps_flutter:
@@ -192,7 +180,6 @@ SPEC CHECKSUMS:
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_absolute_path: 5adb13678c88f0bdfba527f3851f9543d01dde66
-  flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
   google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
@@ -200,7 +187,6 @@ SPEC CHECKSUMS:
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   multi_image_picker: 443e776a762d7901641854043b60abf88a85d5ef
-  OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   SDWebImage: 4dc3e42d9ec0c1028b960a33ac6b637bb432207b

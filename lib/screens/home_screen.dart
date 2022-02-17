@@ -20,7 +20,6 @@ import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/screens/video_player_widget4.dart';
 import 'package:wemarkthespot/screens/video_player_widgett.dart';
 import 'package:wemarkthespot/services/api_client.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
@@ -165,7 +164,7 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-
+/*
   static String videoID = '2iHoeHVmw0Q';
 
   // YouTube Video Full URL : https://www.youtube.com/watch?v=dFKhWe2bBkM&feature=emb_title&ab_channel=BBKiVines
@@ -177,7 +176,7 @@ class _HomeState extends State<Home> {
       mute: false,
       loop: true,
     ),
-  );
+  );*/
 
   @override
   Widget build(BuildContext context) {

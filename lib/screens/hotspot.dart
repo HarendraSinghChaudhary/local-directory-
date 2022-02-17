@@ -2094,20 +2094,77 @@ class _HotspotState extends State<Hotspot> {
     print("id Print: " + id.toString());
     print("key Print: " + key.toString());
 
+    print("getHotspotLength2: " + getHostSpotList2.length.toString());
+
     getHostSpotList2.forEach((element) {
-      print("element data " +
-          element.business_user_name.replaceAll("@", "").trim().toLowerCase());
-      if (element.business_user_name
-          .replaceAll("@", "")
-          .trim()
-          .toLowerCase()
-          .contains(key.toLowerCase())) {
-        getHostSpotList.add(element);
+      if(element.business != null) {
+        print("ElementName " + element.business!.name.toString() + "^^");
+        print("element data " +
+            element.business!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
+
+      if(element.business2 != null) {
+        print("ElementName " + element.business2!.name.toString() + "^^");
+        print("element data " +
+            element.business2!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business2!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
+
+      if(element.business3 != null) {
+        print("ElementName " + element.business3!.name.toString() + "^^");
+        print("element data " +
+            element.business3!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business3!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
+
+      if(element.business4 != null) {
+        print("ElementName " + element.business4!.name.toString() + "^^");
+        print("element data " +
+            element.business4!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business4!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
+
+      if(element.business5 != null) {
+        print("ElementName " + element.business5!.name.toString() + "^^");
+        print("element data " +
+            element.business5!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business5!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
       }
     });
     print(getHostSpotList.length);
     setState(() {});
-
+/*
     var request = http.post(
         Uri.parse(RestDatasource.SEARCHDATA_URL
             // RestDatasource.SEND_OTP,
@@ -2191,6 +2248,11 @@ class _HotspotState extends State<Hotspot> {
         });
       }
     }
+
+
+
+  */
+
   }
 
   Future<dynamic> addHotspotReviewApi(String message,

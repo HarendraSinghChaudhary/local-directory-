@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
@@ -15,17 +16,20 @@ String currentPath = "";
 bool isPlaying1 = false;
 bool isPlaying2 = false;
 void main() {
-
-  runApp(MultiProvider(
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Counter()),
       ],
-      child:WeMarkTheSpot()));
+      child:WeMarkTheSpot())));
 }
 
 class WeMarkTheSpot extends StatefulWidget {
+
   @override
   State<WeMarkTheSpot> createState() => _WeMarkTheSpotState();
+
 }
 
 class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
