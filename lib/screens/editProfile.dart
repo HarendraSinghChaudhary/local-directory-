@@ -470,6 +470,9 @@ class _EditProfileState extends State<EditProfile> {
     print("Image: " + base64Image.toString() + "_");
     setState(() {});
   }
+
+
+
 }
 
 class CustommSurffixIcon extends StatelessWidget {

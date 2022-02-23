@@ -1570,7 +1570,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                     getReplyOnCommunityList[i]
                                                         .childrenList[index]
                                                         .childrenList[k]
-                                                        .image[0]),
+                                                        .image[0]), 
                                           ))
                                       : Container(
                                           width: 0,
@@ -1787,7 +1787,7 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                                                                     index]
                                                                 .childrenList[k]
                                                                 .childrenList[j]
-                                                                .image[0]),
+                                                                .image[0]), 
                                                   ))
                                               : Container(),
                                           getReplyOnCommunityList[i]

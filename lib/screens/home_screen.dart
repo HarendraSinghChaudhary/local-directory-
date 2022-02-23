@@ -322,8 +322,8 @@ class _HomeState extends State<Home> {
                     datavideo_status==0?SizedBox(
                         height: 200,
                         child: VideoItems(
-                          videoPlayerController:
-                         videoPlayerController!,
+                          videoPlayerController: videoPlayerController!, 
+                         
                         )):Container(),
 
                      /* YoutubePlayer(
@@ -745,8 +745,13 @@ class _HomeState extends State<Home> {
         giveawayImage = jsonRes["giweaways"]["image"].toString();
         print("giveawayDesc "+giveawayDesc.toString()+"^^");
         print("giveawayImage "+giveawayImage.toString()+"^^");
+
+
+        datavideo = jsonRes["quoatesdata"]["video"].toString();
+
+        print("video: "+jsonRes["quoatesdata"]["video"].toString());
         if(datavideo!=null){
-          videoPlayerController = new VideoPlayerController.network(datavideo);
+          videoPlayerController = await VideoPlayerController.network(datavideo);
         }
         if(imgvideostatus.toString()=="1") {
           videoPlayerController2 = new VideoPlayerController.network(quoatesimage);

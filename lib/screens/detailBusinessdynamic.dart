@@ -211,6 +211,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   }
   @override
   Widget build(BuildContext context) {
+
+    print("new id "+widget.id.toString());
     return Scaffold(
       body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(

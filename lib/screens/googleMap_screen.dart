@@ -25,7 +25,7 @@ class GoogleMapScreen extends StatefulWidget {
   var list;
   var route;
 
-  GoogleMapScreen({Key? key, this.list, this.route}):super(key:key);
+  GoogleMapScreen({Key? key, this.list, this.route}) : super(key: key);
   @override
   _GoogleMapLocationTestingState createState() =>
       _GoogleMapLocationTestingState();
@@ -36,6 +36,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var check = "";
 
   bool _hasBeenPressed = true;
+  var ids = "";
   var id = "";
   var user_id = "";
   var fav = "";
@@ -51,8 +52,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var category_name = "";
   var latlong_position = "";
   var lat1, long1;
- bool isCheckinClicked = false;
- var isFilter = false;
+  bool isCheckinClicked = false;
+  var isFilter = false;
   var avgratting = "";
   var countUserreview = "";
   var firecount = 0;
@@ -86,10 +87,14 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     mapMarker = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), "assets/images/fire.png");
 
-    final Uint8List fireI = await getBytesFromAsset('assets/images/fire.png', 50);
-    final Uint8List notcoolI = await getBytesFromAsset('assets/snow/snow.png', 50);
-    final Uint8List okI = await getBytesFromAsset('assets/beckance/bakance.png', 50);
-    final Uint8List placeholde = await getBytesFromAsset('assets/images/placeholder.png', 50);
+    final Uint8List fireI =
+        await getBytesFromAsset('assets/images/fire.png', 50);
+    final Uint8List notcoolI =
+        await getBytesFromAsset('assets/snow/snow.png', 50);
+    final Uint8List okI =
+        await getBytesFromAsset('assets/beckance/bakance.png', 50);
+    final Uint8List placeholde =
+        await getBytesFromAsset('assets/images/placeholder.png', 50);
     fireIcon = BitmapDescriptor.fromBytes(fireI);
     notcoolIcon = BitmapDescriptor.fromBytes(notcoolI);
     okIcon = BitmapDescriptor.fromBytes(okI);
@@ -100,21 +105,27 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       customIcon = d;
     });*/
   }
+
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 
   initilize(List<NearBy> businessList) {
     print("into the initalizer method");
-    print("businessLength "+businessList.length.toString()+"");
+    print("businessLength " + businessList.length.toString() + "");
     for (final business in businessList) {
-      if(business.lat!=null && business.long!=null) {
+      if (business.lat != null && business.long != null) {
         if (business.lat.toString() != "null" &&
             business.long.toString() != "null") {
-          if(business.firecount==0 && business.okcount==0 && business.notcool_count==0){
+          if (business.firecount == 0 &&
+              business.okcount == 0 &&
+              business.notcool_count == 0) {
             Marker firstMarker = Marker(
                 onTap: () {
                   setState(() {
@@ -134,18 +145,17 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                   });
                 },
                 markerId: MarkerId(business.id),
-                position:
-                LatLng(double.parse(business.lat), double.parse(business.long)),
+                position: LatLng(
+                    double.parse(business.lat), double.parse(business.long)),
                 infoWindow: InfoWindow(
                   title: business_name = business.business_name.toString(),
                 ),
                 /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon: customIcon!
-            );
+                icon: customIcon!);
 
             markers.add(firstMarker);
-          }else {
+          } else {
             Marker firstMarker = Marker(
                 onTap: () {
                   setState(() {
@@ -165,42 +175,40 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                   });
                 },
                 markerId: MarkerId(business.id),
-                position:
-                LatLng(double.parse(business.lat), double.parse(business.long)),
+                position: LatLng(
+                    double.parse(business.lat), double.parse(business.long)),
                 infoWindow: InfoWindow(
                   title: business_name = business.business_name.toString(),
                 ),
                 /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon: business.firecount > business.okcount ? business
-                    .firecount > business.notcool_count
-                    ? fireIcon!
-                    : notcoolIcon! : business.okcount > business.notcool_count
-                    ? okIcon!
-                    : notcoolIcon!
-            );
+                icon: business.firecount > business.okcount
+                    ? business.firecount > business.notcool_count
+                        ? fireIcon!
+                        : notcoolIcon!
+                    : business.okcount > business.notcool_count
+                        ? okIcon!
+                        : notcoolIcon!);
 
             markers.add(firstMarker);
           }
-          print("markerslength: "+markers.length.toString());
-          print("business_lat: "+business.lat.toString());
+          print("markerslength: " + markers.length.toString());
+          print("business_lat: " + business.lat.toString());
         }
       }
     }
 
-    if(lat1!=null) {
-      LatLng latLngPosition = LatLng(
-          lat1, long1);
-      print("lat1: " +lat1.toString());
+    if (lat1 != null) {
+      LatLng latLngPosition = LatLng(lat1, long1);
+      print("lat1: " + lat1.toString());
       print("long2 " + long1.toString());
 
       CameraPosition cameraPosition =
-      new CameraPosition(target: latLngPosition, zoom: 12);
+          new CameraPosition(target: latLngPosition, zoom: 12);
       newGoogleMapController!
-          .animateCamera(
-          CameraUpdate.newCameraPosition(cameraPosition));
+          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
     }
-   /* if(isFilter) {
+    /* if(isFilter) {
       setState(() {
         viewVisible = true;
       });
@@ -209,24 +217,20 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
   @override
   void initState() {
-
-
     super.initState();
     setCustomMarker();
-  print(widget.route.toString()+"**");
+    print(widget.route.toString() + "**");
     this.mesageTextController.addListener(_onSearchChanged);
-    if(widget.route.toString()=="home"){
+    if (widget.route.toString() == "home") {
       print("RunHomeRoute");
-      WidgetsBinding.instance!
-          .addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         locatePosition();
       });
 
       nearBy();
       initilize(nearByRestaurantList);
-
-    }else{
-      if(widget.list!=null) {
+    } else {
+      if (widget.list != null) {
         print("widget Length: " + widget.list.length.toString());
         print("widget list: " + widget.list.toString());
         if (widget.list.length.toString() == "0") {
@@ -235,22 +239,21 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           initilize(nearByRestaurantList);
         } else {
           print("Filter Condition");
-         // locatePosition();
+          // locatePosition();
           filterData(widget.list);
           isFilter = true;
         }
-      }else{
+      } else {
         locatePosition();
         nearBy();
         initilize(nearByRestaurantList);
       }
-      
     }
-
   }
-@override
+
+  @override
   void dispose() {
-  newGoogleMapController!.dispose();
+    newGoogleMapController!.dispose();
     this.mesageTextController.removeListener(_onSearchChanged);
     this.mesageTextController.dispose();
     debounce?.cancel();
@@ -278,72 +281,70 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   static final CameraPosition _currentPosition =
       CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 12);
 
-     
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Explore()));
-                },
-                child: SvgPicture.asset(
-                  "assets/icons/explore.svg",
-                  width: 26,
-                  color: Colors.white,
-                ),
-              ),
-
-              SizedBox(
-                width: 4.h,
-              ),
-
-              //Image.asset("assets/images/logo_name.png"),
-
-              Text(
-                "WE MARK THE SPOT",
-                style: GoogleFonts.gothicA1(
-                    fontSize: 18.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                ),
-              )
-            ],
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 3.w),
-              child: InkWell(
-                onTap: () {
-                  debounce?.cancel();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FliterScreen(list:widget.list)));
-                },
-                child: SvgPicture.asset(
-                  "assets/icons/filter-list.svg",
-                  width: 26,
-                  color: Colors.white,
-                ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Explore()));
+              },
+              child: SvgPicture.asset(
+                "assets/icons/explore.svg",
+                width: 26,
+                color: Colors.white,
               ),
             ),
+
+            SizedBox(
+              width: 4.h,
+            ),
+
+            //Image.asset("assets/images/logo_name.png"),
+
+            Text(
+              "WE MARK THE SPOT",
+              style: GoogleFonts.gothicA1(
+                  fontSize: 18.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
+            )
           ],
         ),
-        body: SafeArea(
-            child: Stack(
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 3.w),
+            child: InkWell(
+              onTap: () {
+                debounce?.cancel();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FliterScreen(list: widget.list)));
+              },
+              child: SvgPicture.asset(
+                "assets/icons/filter-list.svg",
+                width: 26,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Stack(
           children: [
             GoogleMap(
               onTap: (latLong) {
                 setState(() {
-
                   viewVisible = false;
-print("MarkersLength "+markers.length.toString()+"^^");
+                  print("MarkersLength " + markers.length.toString() + "^^");
                 });
               },
               initialCameraPosition: _currentPosition,
@@ -380,15 +381,17 @@ print("MarkersLength "+markers.length.toString()+"^^");
                 child: TextFormField(
                   controller: mesageTextController,
                   onChanged: (value) {
-                    if(value.length==0){
+
+
+                    if (value.length == 0) {
                       nearBy();
                     }
                   },
                   validator: (val) {},
                   style: TextStyle(
-                    color: kPrimaryColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w700),
+                      color: kPrimaryColor,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700),
                   decoration: InputDecoration(
                     suffixIconConstraints: BoxConstraints(minWidth: 50),
                     prefixIconConstraints: BoxConstraints(minWidth: 50),
@@ -406,6 +409,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
                     suffixIcon: InkWell(
                       onTap: () {
                         mesageTextController.clear();
+                        nearByRestaurantList.clear();
+                        markers.clear();
+                      
                         // getHostSpotList.clear();
 
                         // getHotspotApi();
@@ -427,288 +433,293 @@ print("MarkersLength "+markers.length.toString()+"^^");
                 ),
               ),
             ),
-           
           ],
         ),
-
-      
-        ),
-
-            floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(left: 6.w),
-        child:  Visibility(
-              visible: viewVisible,
-              child: Padding(
-                // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
-                padding: EdgeInsets.only(bottom: 7.h, right: 12.2.w),
-                child: Container(
-                  height: 20.h,
-                  width: 70.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.w),
-                    color: kBackgroundColor,
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 14),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                if (user_id == "72") {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                          "Please login or signup first to checkin at business")));
-                                } else {
-                                  if (isCheckinClicked == false) {
-                                    setState(() {
-                                      isCheckinClicked = true;
-                                    });
-                                    checkInApi(id, "fire");
-                                  }
-                                }
-                              },
-                              child: Container(
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset("assets/icons/file.svg",
-                                        color: kPrimaryColor, width: 5.w),
-                                    SizedBox(
-                                      height: 0.6.h,
-                                    ),
-                                    Text(
-                                      "Fire(" +firecount.toString()+")",
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.white,
+        child: Visibility(
+          visible: viewVisible,
+          child: Padding(
+            // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
+            padding: EdgeInsets.only(bottom: 7.h, right: 12.2.w),
+            child: InkWell(
+              onTap: () {
 
-                                        //fontFamily: "Roboto"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if (user_id == "72") {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                          "Please login or signup first to checkin at business")));
-                                } else {
-                                  if (isCheckinClicked == false) {
-                                    setState(() {
-                                      isCheckinClicked = true;
-                                    });
-                                    checkInApi(id, "OkOk");
-                                  }
-                                }
-                              },
-                              child: Container(
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset("assets/icons/bakance.svg",
-                                        color: kokokColor, width: 10.w),
-                                    Text(
-                                      "Ok Ok("+okcount.toString()+")",
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.white,
 
-                                        //fontFamily: "Roboto"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if (user_id == "72") {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                          "Please login or signup first to checkin at business")));
-                                } else {
-                                  if (isCheckinClicked == false) {
-                                    setState(() {
-                                      isCheckinClicked = true;
-                                    });
-                                    checkInApi(id, "Not Cool");
-                                  }
+                          print("id hamari hai .... "+ids.toString());
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             DetailBussinessDynamic(id: id)));
+          
+              },
+              child: Container(
+                height: 20.h,
+                width: 70.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3.w),
+                  color: kBackgroundColor,
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 14),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (user_id == "72") {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please login or signup first to checkin at business")));
+                              } else {
+                                if (isCheckinClicked == false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "fire");
                                 }
-                              },
-                              child: Container(
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset("assets/icons/snow.svg",
-                                        color: kNotCoolColor, width: 8.w),
-                                    Text(
-                                      "Not Cool("
-                                          +notcool_count.toString()+
-                                          ")",
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.white,
-
-                                        //fontFamily: "Roboto"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
+                              }
+                            },
+                            child: Container(
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  SvgPicture.asset("assets/icons/star.svg",
-                                      color: kPrimaryColor, width: 6.w),
+                                  SvgPicture.asset("assets/icons/file.svg",
+                                      color: kPrimaryColor, width: 5.w),
                                   SizedBox(
-                                    height: 1.h,
+                                    height: 0.6.h,
                                   ),
                                   Text(
-                                    //"3.5",
-                                    avgratting.toString(),
+                                    "Fire(" + firecount.toString() + ")",
                                     style: TextStyle(
-                                      fontSize: 11.sp,
+                                      fontSize: 10.sp,
                                       color: Colors.white,
-
+            
                                       //fontFamily: "Roboto"
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-
-                          if(user_id == "72"){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    "Please login or signup first to view business profile")));
-                          }else {
-                            Navigator.push(context, MaterialPageRoute(builder: (
-                                context) => DetailBussinessDynamic(id: id)));
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
-                          child: Container(
-                            child: Row(
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (user_id == "72") {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please login or signup first to checkin at business")));
+                              } else {
+                                if (isCheckinClicked == false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "OkOk");
+                                }
+                              }
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset("assets/icons/bakance.svg",
+                                      color: kokokColor, width: 10.w),
+                                  Text(
+                                    "Ok Ok(" + okcount.toString() + ")",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+            
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (user_id == "72") {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please login or signup first to checkin at business")));
+                              } else {
+                                if (isCheckinClicked == false) {
+                                  setState(() {
+                                    isCheckinClicked = true;
+                                  });
+                                  checkInApi(id, "Not Cool");
+                                }
+                              }
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset("assets/icons/snow.svg",
+                                      color: kNotCoolColor, width: 8.w),
+                                  Text(
+                                    "Not Cool(" + notcool_count.toString() + ")",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+            
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 16.w,
-                                  width: 18.w,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3.w),
-                                      color: Colors.red,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              //"assets/images/restaurant.jpeg"
-                                              business_images
-                                              ),
-                                          fit: BoxFit.fill)),
+                                SvgPicture.asset("assets/icons/star.svg",
+                                    color: kPrimaryColor, width: 6.w),
+                                SizedBox(
+                                  height: 1.h,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 8.0, bottom: 10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: 45.w,
-                                        child: Text(
-                                          //"Bar Name",
-                                          business_name.toString(),
-                                          // widget.nearBy.business_name.toString() != "null"
-                                          //     ? widget.nearBy.business_name.toString()
-                                          //     : "Bar Name",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 13.sp,
-                                              color: kCyanColor,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Segoepr"),
-                                        ),
-                                      ),
-
-                                      SizedBox(height: 0.5.h,),
-
-
-                                      Row(
-                                        children: [
-                                          Text(
-                                            // communityReviewList != null &&
-                                            //         communityReviewList.length > 0
-                                            //     ? communityReviewList.length.toString() +
-                                            //         " Reviews "
-                                            review_count.toString()+" Reviews",
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: kPrimaryColor,
-                                                // fontWeight: FontWeight.w500,
-                                                fontFamily: "Roboto"
-                                                //fontFamily: "Segoepr"
-                                                ),
-                                          ),
-                                          Text(
-                                            " | ",
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: kPrimaryColor,
-                                                // fontWeight: FontWeight.w500,
-                                                fontFamily: "Roboto"
-                                                //fontFamily: "Segoepr"
-                                                ),
-                                          ),
-                                          Text(
-                                            // widget.nearBy.user_count.toString() +
-                                            user_count.toString()+" People",
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: kPrimaryColor,
-                                                // fontWeight: FontWeight.w500,
-                                                fontFamily: "Roboto"
-                                                //fontFamily: "Segoepr"
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                Text(
+                                  //"3.5",
+                                  avgratting.toString(),
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colors.white,
+            
+                                    //fontFamily: "Roboto"
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (user_id == "72") {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  "Please login or signup first to view business profile")));
+                        } else {
+
+                          print("id hamarti hai .... "+id);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailBussinessDynamic(id: id)));
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 1.h, left: 3.5.w),
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 16.w,
+                                width: 18.w,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3.w),
+                                    color: Colors.red,
+                                    image: DecorationImage(image: NetworkImage(
+                                        //"assets/images/restaurant.jpeg"
+                                        business_images), fit: BoxFit.fill)),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0, bottom: 10),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 45.w,
+                                      child: Text(
+                                        //"Bar Name",
+                                        business_name.toString(),
+                                        // widget.nearBy.business_name.toString() != "null"
+                                        //     ? widget.nearBy.business_name.toString()
+                                        //     : "Bar Name",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: kCyanColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Segoepr"),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 0.5.h,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          // communityReviewList != null &&
+                                          //         communityReviewList.length > 0
+                                          //     ? communityReviewList.length.toString() +
+                                          //         " Reviews "
+                                          review_count.toString() + " Reviews",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                        Text(
+                                          " | ",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                        Text(
+                                          // widget.nearBy.user_count.toString() +
+                                          user_count.toString() + " People",
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: kPrimaryColor,
+                                              // fontWeight: FontWeight.w500,
+                                              fontFamily: "Roboto"
+                                              //fontFamily: "Segoepr"
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            )
-          ,
+            ),
+          ),
+        ),
       ),
-        );
+    );
   }
 
-  _onSearchChanged(){
-    if(debounce?.isActive ?? false) debounce?.cancel();
+  _onSearchChanged() {
+    if (debounce?.isActive ?? false) debounce?.cancel();
 
-    debounce = Timer(const Duration(milliseconds: 500), (){
-      if(mesageTextController.text.toString().length==0){
+    debounce = Timer(const Duration(milliseconds: 500), () {
+      if (mesageTextController.text.toString().length == 0) {
         nearBy();
-      }else if(searchText != mesageTextController.text){
-
+      } else if (searchText != mesageTextController.text) {
         searchData(mesageTextController.text);
-
       }
     });
   }
@@ -726,7 +737,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
         body: {
           "business_name": key.toString(),
           "user_id": id.toString(),
-
         });
 
     var jsonArray;
@@ -773,10 +783,26 @@ print("MarkersLength "+markers.length.toString()+"^^");
           modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
           modelAgentSearch.okcount = jsonArray[i]["okcount"];
           print("lat: " + modelAgentSearch.lat.toString());
-          modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.totalReviewusers =
+              jsonArray[i]["totalReviewusers"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
 
           nearByRestaurantList.add(modelAgentSearch);
+
+          // business_name = jsonArray[i]["business_name"].toString();
+          // avgratting = jsonArray[i]["avgratting"].toString();
+          // firecount = jsonArray[i]["firecount"];
+          // notcool_count = jsonArray[i]["notcool_count"];
+          // user_count = jsonArray[i]["user_count"].toString();
+          // review_count = jsonArray[i]["totalReviewusers"].toString();
+          // business_images = jsonArray[i]["business_images"].toString();
+          // id = jsonArray.last["id"].toString();
+
+          // print("hmarai id..... "+id.toString());
+
+          // print("rajat id "+jsonArray[i]["id"].toString());
+                  
+          // okcount = jsonArray[i]["okcount"];
 /*          id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
@@ -788,20 +814,17 @@ print("MarkersLength "+markers.length.toString()+"^^");
 
           nearByRestaurantList.add(modelAgentSearch);*/
 
-          print("lattttttt: " + lat.toString());
+          // print("lattttttt: " + lat.toString());
 
-          setState(() {
-
-          });
+          setState(() {});
         }
 
-
         setState(() {
-          print("lengthis "+nearByRestaurantList.length.toString()+"^");
+          print("lengthis " + nearByRestaurantList.length.toString() + "^");
           newGoogleMapController!.setMapStyle("[]");
           initilize(nearByRestaurantList);
           isloading = false;
-          viewVisible = true;
+          viewVisible = false;
         });
       } else {
         setState(() {
@@ -813,11 +836,10 @@ print("MarkersLength "+markers.length.toString()+"^^");
     }
 
     searchText = mesageTextController.text;
-
   }
 
   Future<dynamic> nearBy() async {
-    print("Run "+"GetAllbuisnessList");
+    print("Run " + "GetAllbuisnessList");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     user_id = prefs.getString("id").toString();
@@ -831,10 +853,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
         Uri.parse(
           RestDatasource.GETALLBUSINESSLIST_URL,
         ),
-    body: {
-          "id":id
-    }
-    );
+        body: {"id": id});
     String msg = "";
     var jsonArray;
     var jsonRes;
@@ -859,16 +878,21 @@ print("MarkersLength "+markers.length.toString()+"^^");
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name = jsonArray[i]["business_name"].toString();
-         modelAgentSearch.business_images = jsonArray[i]["business_images"].toString();
+          modelAgentSearch.business_name =
+              jsonArray[i]["business_name"].toString();
+          modelAgentSearch.business_images =
+              jsonArray[i]["business_images"].toString();
           modelAgentSearch.distance = jsonArray[i]["distance"].toString();
           modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
           modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category = jsonArray[i]["business_category "].toString();
+          modelAgentSearch.business_category =
+              jsonArray[i]["business_category "].toString();
           modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count = jsonArray[i]["review_count"].toString();
+          modelAgentSearch.review_count =
+              jsonArray[i]["review_count"].toString();
           modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name = jsonArray[i]["category_name"].toString();
+          modelAgentSearch.category_name =
+              jsonArray[i]["category_name"].toString();
           modelAgentSearch.fav = jsonArray[i]["fav"].toString();
           modelAgentSearch.lat = jsonArray[i]["lat"].toString();
           modelAgentSearch.long = jsonArray[i]["long"].toString();
@@ -876,16 +900,19 @@ print("MarkersLength "+markers.length.toString()+"^^");
           modelAgentSearch.firecount = jsonArray[i]["firecount"];
           modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
           modelAgentSearch.okcount = jsonArray[i]["okcount"];
-          modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+          modelAgentSearch.totalReviewusers =
+              jsonArray[i]["totalReviewusers"].toString();
           modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-          modelAgentSearch.opening_time = jsonArray[i]["opeing_hour"].toString();
-          modelAgentSearch.closing_time = jsonArray[i]["closing_hour"].toString();
+          modelAgentSearch.opening_time =
+              jsonArray[i]["opeing_hour"].toString();
+          modelAgentSearch.closing_time =
+              jsonArray[i]["closing_hour"].toString();
 
           print("lat: " + modelAgentSearch.lat.toString());
-          if(modelAgentSearch.lat!=null) {
+          if (modelAgentSearch.lat != null) {
             nearByRestaurantList.add(modelAgentSearch);
           }
-   /*       id = jsonArray[i]["id"].toString();
+          /*       id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
           latlong_position = jsonArray[i]["lat"].toString() +
@@ -896,16 +923,18 @@ print("MarkersLength "+markers.length.toString()+"^^");
 
           nearByRestaurantList.add(modelAgentSearch);*/
 
+          // print("lattttttt: " + lat.toString());
 
-         // print("lattttttt: " + lat.toString());
+
+        
 
         }
 
         setState(() {
-          if(newGoogleMapController!=null) {
+          if (newGoogleMapController != null) {
             newGoogleMapController!.setMapStyle("[]");
           }
-          print("length is "+nearByRestaurantList.length.toString());
+          print("length is " + nearByRestaurantList.length.toString());
           initilize(nearByRestaurantList);
           isloading = false;
         });
@@ -940,7 +969,11 @@ print("MarkersLength "+markers.length.toString()+"^^");
         Uri.parse(
           RestDatasource.CHECKINAPI,
         ),
-        body: {"id": id.toString(), "user_id": user_id.toString(), "type":"1"});
+        body: {
+          "id": id.toString(),
+          "user_id": user_id.toString(),
+          "type": "1"
+        });
 
     await request.then((http.Response response) {
       res = response;
@@ -956,16 +989,11 @@ print("MarkersLength "+markers.length.toString()+"^^");
       isCheckinClicked = false;
 
       if (jsonRes["status"].toString() == "true") {
-
         setState(() {
           isloading = false;
         });
-        if(!jsonRes["message"].toString().contains("You are already")) {
-
-            checkoutApi(
-                id,
-                check.toString());
-
+        if (!jsonRes["message"].toString().contains("You are already")) {
+          checkoutApi(id, check.toString());
         }
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(jsonRes["message"].toString())));
@@ -974,7 +1002,7 @@ print("MarkersLength "+markers.length.toString()+"^^");
       } else {
         setState(() {
           isloading = false;
-         // Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
@@ -990,7 +1018,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
       });
     }
   }
-
 
   Future<dynamic> filterData(List<LifeStyle> key) async {
     print("Filter");
@@ -1069,7 +1096,8 @@ print("MarkersLength "+markers.length.toString()+"^^");
             modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
             modelAgentSearch.review_count =
                 jsonArray[i]["review_count"].toString();
-            modelAgentSearch.totalReviewusers = jsonArray[i]["totalReviewusers"].toString();
+            modelAgentSearch.totalReviewusers =
+                jsonArray[i]["totalReviewusers"].toString();
 
             modelAgentSearch.location = jsonArray[i]["location"].toString();
             modelAgentSearch.category_name =
@@ -1094,9 +1122,9 @@ print("MarkersLength "+markers.length.toString()+"^^");
 
           nearByRestaurantList.add(modelAgentSearch);*/
 
-
           }
-          print("FilterListLength " + nearByRestaurantList.length.toString() +
+          print("FilterListLength " +
+              nearByRestaurantList.length.toString() +
               "^^");
           setState(() {
             initilize(nearByRestaurantList);
@@ -1119,12 +1147,10 @@ print("MarkersLength "+markers.length.toString()+"^^");
     }
   }
 
-
   Future<dynamic> checkoutApi(String buisnessid, String tag) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-
 
     print("id " + id.toString() + "");
     print("review " + "review".toString() + "");
@@ -1136,8 +1162,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
       ),
     );
 
-
-
     if (tag.toString() != "null" || tag.toString() != "") {
       request.fields["tag"] = tag;
       print("tag1: " + tag.toString());
@@ -1145,7 +1169,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
     request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = buisnessid.toString();
     request.fields["user_id"] = id.toString();
-
 
     var jsonRes;
     var res = await request.send();
@@ -1159,8 +1182,6 @@ print("MarkersLength "+markers.length.toString()+"^^");
       jsonRes = _decoder.convert(respone.toString());
       print("Response: " + jsonRes.toString() + "_");
       print(jsonRes["statusReview"]);
-
-
     } else {
       setState(() {
         isloading = false;
@@ -1171,5 +1192,4 @@ print("MarkersLength "+markers.length.toString()+"^^");
       });
     }
   }
-
 }

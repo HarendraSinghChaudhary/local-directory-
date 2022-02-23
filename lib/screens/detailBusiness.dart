@@ -642,8 +642,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 itemCount: communityReviewList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return
-                    // communityReviewList.length == "0" ? Center(child: Text("Please type a message", style: TextStyle(color: Colors.white, fontSize: 20), ))
-                    // :
+                  
                     Column(
                       children: [
                         Card(
@@ -771,8 +770,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     child: VideoItems(
                                       videoPlayerController: VideoPlayerController
                                           .network(communityReviewList[index]
-                                          .business_review_image[0])
-                                      ,
+                                          .business_review_image[0]),
+                                      
 
                                     )
                                 )
