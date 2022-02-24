@@ -6,7 +6,8 @@
 class RestDatasource {
   
  // static final BASE_URL = "https://builtenance.com/development/wemarkthespot/api/";
-  static final BASE_URL = "https://appicdevelopment.online/development/wemarkthespot/api/";
+ // static final BASE_URL = "https://appicdevelopment.online/development/wemarkthespot/api/";
+ static final BASE_URL = "https://myprojectdesk.tech/development/wemarkthespot/api/";
   static final SignUP_URL = BASE_URL + "user_register";
   static final LOGIN_URL = BASE_URL + "login";
   static final FORGOTPASSWORD_URL = BASE_URL + "forgot_password";
@@ -45,6 +46,7 @@ class RestDatasource {
   static final FEATUREDBUSINESS_URL = BASE_URL + "featuredBusiness";
   static final GETBUISNESSDETAIL_URL = BASE_URL + "getbusinessDetails";
   static final FILTER = BASE_URL + "filter";
+  static final CHANGEPASSWORD_URL = BASE_URL + "changepassword";
 
    
 

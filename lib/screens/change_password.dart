@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/services/api_client.dart';
+import 'package:http/http.dart' as http;
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({ Key? key }) : super(key: key);
@@ -11,6 +16,20 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+
+
+
+  TextEditingController oldPasswordController = new TextEditingController();
+  TextEditingController newPasswordController = new TextEditingController();
+  TextEditingController confirmPasswordController = new TextEditingController();
+
+
+
+  bool isloading = false;
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,4 +126,71 @@ class _ChangePasswordState extends State<ChangePassword> {
       ),
     );
   }
+
+   Future<dynamic> changePassword(String oldPassword, String newPassword) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+       var id = prefs.getString("id");
+       print("id Print: " +id.toString());
+    setState(() {
+      isloading = true;
+    });
+    print(id.toString);
+    print(oldPassword);
+    print(newPassword);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(RestDatasource.CHANGEPASSWORD_URL
+            // RestDatasource.SEND_OTP,
+            ),
+        body: {
+          "user_id": id.toString(),
+          "oldPassword": oldPassword.toString(),
+          "newPassword": newPassword.toString(),
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      // msg = jsonRes["message"].toString();
+      // getotp = jsonRes["otp"];
+      // print(getotp.toString() + '123');
+    });
+    if (res!.statusCode == 200) {
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(res!.body.toString());
+      print("Response: " + res!.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+
+      if (jsonRes["status"] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"].toString())),
+        );
+
+        // print('getotp1: ' + getotp.toString());
+        Navigator.pop(context);
+
+        setState(() {
+          isloading = false;
+        });
+      }
+      if (jsonRes["status"] == false) {
+        setState(() {
+          isloading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"].toString())),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
 }

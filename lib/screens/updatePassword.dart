@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:http/http.dart' as http;
+import 'package:wemarkthespot/services/api_client.dart';
 
 class UpdatePassword extends StatefulWidget {
   const UpdatePassword({ Key? key }) : super(key: key);
@@ -11,6 +18,12 @@ class UpdatePassword extends StatefulWidget {
 }
 
 class _UpdatePasswordState extends State<UpdatePassword> {
+
+  bool isloading = false;
+
+
+
+
   bool obscure = false;
   bool obscure1 = false;
   bool obscure2 = false;
@@ -63,11 +76,126 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
             SizedBox(height: 3.h,),
 
+            
+            isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :  
+            
             DefaultButton(
               width: 40.w, 
               height: 7.h, 
               text: "Save", 
-              press: () {})
+              press: () {
+
+              var old = oldPasswordController.text.trim().toString();
+              var newPass = newPasswordController.text.trim().toString();
+              var confirm = confirmPasswordController.text.toString().trim();
+
+
+              if (old.toString() != "" || old.toString() != "null") {
+
+
+                if (newPass.toString() != "" || newPass.toString() != "null") {
+
+
+                  if (newPass.length > 7 && newPass.length < 25) {
+
+                    if (confirm.toString() != "" || confirm.toString() != "null") {
+
+                      if (confirm.length > 7 && confirm.length < 25) {
+
+                        if (newPass.toString() == confirm.toString()) {
+
+                          changePassword(old.toString(), confirm.toString());
+                          
+                        } else {
+
+                           ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "New password and confirm password must be same")));
+
+
+                        }
+
+
+
+                        
+                      } else {
+
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please enter 8 to 25 characters password")));
+
+
+                      }
+
+
+
+
+                      
+                    } else {
+
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Please enter confirm password')));
+
+
+
+                    }
+
+
+
+                    
+                  } else {
+
+
+                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "Please enter 8 to 25 characters password")));
+
+
+
+                  }
+
+
+
+
+
+
+
+                  
+                } else {
+
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Please enter new password')));
+
+
+
+
+                }
+
+
+                
+              } else {
+
+                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Please enter old password')));
+
+
+              }
+
+
+
+
+
+
+
+
+              })
           ],
         ),
       ),
@@ -210,4 +338,77 @@ class _UpdatePasswordState extends State<UpdatePassword> {
       ),
     );
   }
+
+
+  Future<dynamic> changePassword(String old_password, String newPassword) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+       var id = prefs.getString("id");
+       print("id Print: " +id.toString());
+    setState(() {
+      isloading = true;
+    });
+    print(id.toString);
+    print(old_password);
+    print(newPassword);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(RestDatasource.CHANGEPASSWORD_URL
+            // RestDatasource.SEND_OTP,
+            ),
+        body: {
+          "user_id": id.toString(),
+          "old_password": old_password.toString(),
+          "password": newPassword.toString(),
+        });
+
+    await request.then((http.Response response) {
+      res = response;
+      // msg = jsonRes["message"].toString();
+      // getotp = jsonRes["otp"];
+      // print(getotp.toString() + '123');
+    });
+    if (res!.statusCode == 200) {
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(res!.body.toString());
+      print("Response: " + res!.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("status: " + jsonRes["status"].toString() + "_");
+
+      if (jsonRes["status"] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"].toString())),
+        );
+
+        // print('getotp1: ' + getotp.toString());
+        Navigator.pop(context);
+
+        setState(() {
+          isloading = false;
+        });
+      }
+      if (jsonRes["status"] == false) {
+        setState(() {
+          isloading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonRes["message"].toString())),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      setState(() {
+        isloading = false;
+      });
+    }
+  }
+
+
+
+
+
+
 }

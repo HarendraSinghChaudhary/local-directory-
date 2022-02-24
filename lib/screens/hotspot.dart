@@ -207,7 +207,8 @@ class _HotspotState extends State<Hotspot> {
                             if (value.length > 0) {
                               getHostSpotList.clear();
                               searchData(value.toString());
-                            } else {
+                            } 
+                            else {
                               getHostSpotList.clear();
                               getHotspotApi();
                             }
@@ -232,7 +233,7 @@ class _HotspotState extends State<Hotspot> {
                                   mesageTextController.clear();
                                   getHostSpotList.clear();
                                   print("Clicked");
-                                  getHotspotApi();
+                                   getHotspotApi();
                                 },
                                 child: SvgPicture.asset(
                                   "assets/icons/cross.svg",
@@ -2096,75 +2097,75 @@ class _HotspotState extends State<Hotspot> {
 
     print("getHotspotLength2: " + getHostSpotList2.length.toString());
 
-    getHostSpotList2.forEach((element) {
-      if(element.business != null) {
-        print("ElementName " + element.business!.name.toString() + "^^");
-        print("element data " +
-            element.business!.name.replaceAll("@", "").trim().toLowerCase());
-        if (element.business!.name.toString()
-            .replaceAll("@", "")
-            .trim()
-            .toLowerCase()
-            .contains(key.toLowerCase())) {
-          getHostSpotList.add(element);
-        }
-      }
+    // getHostSpotList2.forEach((element) {
+    //   if(element.business != null) {
+    //     print("ElementName " + element.business!.name.toString() + "^^");
+    //     print("element data " +
+    //         element.business!.name.replaceAll("@", "").trim().toLowerCase());
+    //     if (element.business!.name.toString()
+    //         .replaceAll("@", "")
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(key.toLowerCase())) {
+    //       getHostSpotList.add(element);
+    //     }
+    //   }
 
-      if(element.business2 != null) {
-        print("ElementName " + element.business2!.name.toString() + "^^");
-        print("element data " +
-            element.business2!.name.replaceAll("@", "").trim().toLowerCase());
-        if (element.business2!.name.toString()
-            .replaceAll("@", "")
-            .trim()
-            .toLowerCase()
-            .contains(key.toLowerCase())) {
-          getHostSpotList.add(element);
-        }
-      }
+    //   if(element.business2 != null) {
+    //     print("ElementName " + element.business2!.name.toString() + "^^");
+    //     print("element data " +
+    //         element.business2!.name.replaceAll("@", "").trim().toLowerCase());
+    //     if (element.business2!.name.toString()
+    //         .replaceAll("@", "")
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(key.toLowerCase())) {
+    //       getHostSpotList.add(element);
+    //     }
+    //   }
 
-      if(element.business3 != null) {
-        print("ElementName " + element.business3!.name.toString() + "^^");
-        print("element data " +
-            element.business3!.name.replaceAll("@", "").trim().toLowerCase());
-        if (element.business3!.name.toString()
-            .replaceAll("@", "")
-            .trim()
-            .toLowerCase()
-            .contains(key.toLowerCase())) {
-          getHostSpotList.add(element);
-        }
-      }
+    //   if(element.business3 != null) {
+    //     print("ElementName " + element.business3!.name.toString() + "^^");
+    //     print("element data " +
+    //         element.business3!.name.replaceAll("@", "").trim().toLowerCase());
+    //     if (element.business3!.name.toString()
+    //         .replaceAll("@", "")
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(key.toLowerCase())) {
+    //       getHostSpotList.add(element);
+    //     }
+    //   }
 
-      if(element.business4 != null) {
-        print("ElementName " + element.business4!.name.toString() + "^^");
-        print("element data " +
-            element.business4!.name.replaceAll("@", "").trim().toLowerCase());
-        if (element.business4!.name.toString()
-            .replaceAll("@", "")
-            .trim()
-            .toLowerCase()
-            .contains(key.toLowerCase())) {
-          getHostSpotList.add(element);
-        }
-      }
+    //   if(element.business4 != null) {
+    //     print("ElementName " + element.business4!.name.toString() + "^^");
+    //     print("element data " +
+    //         element.business4!.name.replaceAll("@", "").trim().toLowerCase());
+    //     if (element.business4!.name.toString()
+    //         .replaceAll("@", "")
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(key.toLowerCase())) {
+    //       getHostSpotList.add(element);
+    //     }
+    //   }
 
-      if(element.business5 != null) {
-        print("ElementName " + element.business5!.name.toString() + "^^");
-        print("element data " +
-            element.business5!.name.replaceAll("@", "").trim().toLowerCase());
-        if (element.business5!.name.toString()
-            .replaceAll("@", "")
-            .trim()
-            .toLowerCase()
-            .contains(key.toLowerCase())) {
-          getHostSpotList.add(element);
-        }
-      }
-    });
-    print(getHostSpotList.length);
-    setState(() {});
-/*
+    //   if(element.business5 != null) {
+    //     print("ElementName " + element.business5!.name.toString() + "^^");
+    //     print("element data " +
+    //         element.business5!.name.replaceAll("@", "").trim().toLowerCase());
+    //     if (element.business5!.name.toString()
+    //         .replaceAll("@", "")
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(key.toLowerCase())) {
+    //       getHostSpotList.add(element);
+    //     }
+    //   }
+    // });
+    // print(getHostSpotList.length);
+    // setState(() {});
+
     var request = http.post(
         Uri.parse(RestDatasource.SEARCHDATA_URL
             // RestDatasource.SEND_OTP,
@@ -2236,7 +2237,7 @@ class _HotspotState extends State<Hotspot> {
 
           getHostSpotList.add(modelAgentSearch);
 
-          setState(() {});
+         
         }
 
         setState(() {
@@ -2251,7 +2252,7 @@ class _HotspotState extends State<Hotspot> {
 
 
 
-  */
+  
 
   }
 
@@ -2596,7 +2597,7 @@ class _HotspotState extends State<Hotspot> {
       print(jsonRes["status"]);
 
       final date2 = DateTime.now();
-
+ getHostSpotList.clear();
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
