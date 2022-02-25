@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -76,6 +77,7 @@ class _HotspotState extends State<Hotspot> {
   String fileName = "";
   String replyfileName = "";
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Timer? debounce;
 
   List<GetAllBusiness> getAllBusinessList = [];
   List<String> coments = [];
@@ -83,15 +85,17 @@ class _HotspotState extends State<Hotspot> {
   String str = '';
   String selectedName = "";
   String selectedvalue = "";
+  String searchText = "";
 
   @override
   void initState() {
+
     getId();
     getHotspotApi();
     getallBusinessDataApi();
 
     super.initState();
-
+    this.mesageTextController.addListener(_onSearchChanged);
 
 
     reviewControllerr = RichTextController(
@@ -134,6 +138,25 @@ class _HotspotState extends State<Hotspot> {
     );
   }
 
+  @override
+  void dispose() {
+    this._controller.removeListener(_onSearchChanged);
+    this.mesageTextController.dispose();
+    debounce?.cancel();
+
+    super.dispose();
+  }
+  _onSearchChanged() {
+    if (debounce?.isActive ?? false) debounce?.cancel();
+
+    debounce = Timer(const Duration(milliseconds: 500), () {
+      if (mesageTextController.text.toString().length == 0) {
+        getHotspotApi();
+      } else if (searchText != mesageTextController.text) {
+        searchData(mesageTextController.text);
+      }
+    });
+  }
   late var size;
 
   late var _height;
@@ -203,7 +226,12 @@ class _HotspotState extends State<Hotspot> {
                               color: kPrimaryColor,
                               fontWeight: FontWeight.bold),
                           controller: mesageTextController,
-                          onChanged: (value) {
+                         /*   onChanged: (value) {
+                              if (value.length == 0) {
+                                getHotspotApi();
+                              }
+                            },*/
+                         /* onChanged: (value) {
                             if (value.length > 0) {
                               getHostSpotList.clear();
                               searchData(value.toString());
@@ -212,7 +240,7 @@ class _HotspotState extends State<Hotspot> {
                               getHostSpotList.clear();
                               getHotspotApi();
                             }
-                          },
+                          },*/
                           validator: (val) {},
                           decoration: InputDecoration(
                             prefixIconConstraints: BoxConstraints(minWidth: 60),
@@ -2049,11 +2077,7 @@ class _HotspotState extends State<Hotspot> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
+
 
   String splitString() {
     /*  var a = sendReview.split("");
@@ -2097,75 +2121,75 @@ class _HotspotState extends State<Hotspot> {
 
     print("getHotspotLength2: " + getHostSpotList2.length.toString());
 
-    // getHostSpotList2.forEach((element) {
-    //   if(element.business != null) {
-    //     print("ElementName " + element.business!.name.toString() + "^^");
-    //     print("element data " +
-    //         element.business!.name.replaceAll("@", "").trim().toLowerCase());
-    //     if (element.business!.name.toString()
-    //         .replaceAll("@", "")
-    //         .trim()
-    //         .toLowerCase()
-    //         .contains(key.toLowerCase())) {
-    //       getHostSpotList.add(element);
-    //     }
-    //   }
+ /*   getHostSpotList2.forEach((element) {
+      if(element.business != null) {
+        print("ElementName " + element.business!.name.toString() + "^^");
+        print("element data " +
+            element.business!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
 
-    //   if(element.business2 != null) {
-    //     print("ElementName " + element.business2!.name.toString() + "^^");
-    //     print("element data " +
-    //         element.business2!.name.replaceAll("@", "").trim().toLowerCase());
-    //     if (element.business2!.name.toString()
-    //         .replaceAll("@", "")
-    //         .trim()
-    //         .toLowerCase()
-    //         .contains(key.toLowerCase())) {
-    //       getHostSpotList.add(element);
-    //     }
-    //   }
+      else if(element.business2 != null) {
+        print("ElementName " + element.business2!.name.toString() + "^^");
+        print("element data " +
+            element.business2!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business2!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
 
-    //   if(element.business3 != null) {
-    //     print("ElementName " + element.business3!.name.toString() + "^^");
-    //     print("element data " +
-    //         element.business3!.name.replaceAll("@", "").trim().toLowerCase());
-    //     if (element.business3!.name.toString()
-    //         .replaceAll("@", "")
-    //         .trim()
-    //         .toLowerCase()
-    //         .contains(key.toLowerCase())) {
-    //       getHostSpotList.add(element);
-    //     }
-    //   }
+      else if(element.business3 != null) {
+        print("ElementName " + element.business3!.name.toString() + "^^");
+        print("element data " +
+            element.business3!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business3!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
 
-    //   if(element.business4 != null) {
-    //     print("ElementName " + element.business4!.name.toString() + "^^");
-    //     print("element data " +
-    //         element.business4!.name.replaceAll("@", "").trim().toLowerCase());
-    //     if (element.business4!.name.toString()
-    //         .replaceAll("@", "")
-    //         .trim()
-    //         .toLowerCase()
-    //         .contains(key.toLowerCase())) {
-    //       getHostSpotList.add(element);
-    //     }
-    //   }
+      else if(element.business4 != null) {
+        print("ElementName " + element.business4!.name.toString() + "^^");
+        print("element data " +
+            element.business4!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business4!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
 
-    //   if(element.business5 != null) {
-    //     print("ElementName " + element.business5!.name.toString() + "^^");
-    //     print("element data " +
-    //         element.business5!.name.replaceAll("@", "").trim().toLowerCase());
-    //     if (element.business5!.name.toString()
-    //         .replaceAll("@", "")
-    //         .trim()
-    //         .toLowerCase()
-    //         .contains(key.toLowerCase())) {
-    //       getHostSpotList.add(element);
-    //     }
-    //   }
-    // });
-    // print(getHostSpotList.length);
-    // setState(() {});
-
+      else if(element.business5 != null) {
+        print("ElementName " + element.business5!.name.toString() + "^^");
+        print("element data " +
+            element.business5!.name.replaceAll("@", "").trim().toLowerCase());
+        if (element.business5!.name.toString()
+            .replaceAll("@", "")
+            .trim()
+            .toLowerCase()
+            .contains(key.toLowerCase())) {
+          getHostSpotList.add(element);
+        }
+      }
+    });
+    print(getHostSpotList.length);
+    setState(() {});
+*/
     var request = http.post(
         Uri.parse(RestDatasource.SEARCHDATA_URL
             // RestDatasource.SEND_OTP,
@@ -2184,8 +2208,8 @@ class _HotspotState extends State<Hotspot> {
 
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("Response:SearchData " + response.body.toString() + "_");
+      print("ResponseJSON:SearchData " + jsonRes.toString() + "_");
       jsonArray = jsonRes['data'];
     });
 
@@ -2345,7 +2369,7 @@ class _HotspotState extends State<Hotspot> {
       final JsonDecoder _decoder = new JsonDecoder();
 
       jsonRes = _decoder.convert(respone.toString());
-      print("Response: " + jsonRes.toString() + "_");
+      print("Response:AddHotspot " + jsonRes.toString() + "_");
       print(jsonRes["status"]);
 
       msg = jsonRes["message"].toString();
@@ -2460,7 +2484,7 @@ class _HotspotState extends State<Hotspot> {
       final JsonDecoder _decoder = new JsonDecoder();
 
       jsonRes = _decoder.convert(respone.toString());
-      print("Response: " + jsonRes.toString() + "_");
+      print("Response:ReplyOnHotspot " + jsonRes.toString() + "_");
       print(jsonRes["status"]);
 
       msg = jsonRes["message"].toString();
@@ -2520,8 +2544,8 @@ class _HotspotState extends State<Hotspot> {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("Response:GetAllBusinessData " + response.body.toString() + "_");
+      print("ResponseJSON:GetAllBusinessData " + jsonRes.toString() + "_");
       msg = jsonRes["message"].toString();
       jsonArray = jsonRes['data'];
     });
@@ -2572,9 +2596,7 @@ class _HotspotState extends State<Hotspot> {
   }
 
   Future<dynamic> getHotspotApi() async {
-    setState(() {
-      isloading = true;
-    });
+
 
     var request = http.get(Uri.parse(RestDatasource.GETHOTSPOT_URL));
 
@@ -2587,8 +2609,8 @@ class _HotspotState extends State<Hotspot> {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("Response:GetHotspot " + response.body.toString() + "_");
+      print("ResponseJSON:GetHotspot " + jsonRes.toString() + "_");
       msg = jsonRes["message"].toString();
       jsonArray = jsonRes['data'];
     });
