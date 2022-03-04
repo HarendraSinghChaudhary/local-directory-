@@ -1072,7 +1072,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           },
                                           minLines: 1,
                                           keyboardType:
-                                          TextInputType.multiline,
+                                          TextInputType.text,
+
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12.sp,

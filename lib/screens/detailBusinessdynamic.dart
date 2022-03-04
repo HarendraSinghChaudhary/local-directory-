@@ -1136,7 +1136,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           },
                                           minLines: 1,
                                           keyboardType:
-                                          TextInputType.multiline,
+                                          TextInputType.text,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12.sp,

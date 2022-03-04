@@ -240,7 +240,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                     if (EmailValidator.validate(email) ) {
-                        if (password != null ||  password.toString() != "null") {
+
+                        if (password != null ||  password.toString() != "null" || password.toString()=="") {
 
                             if (
                         password.length > 7 &&
@@ -256,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     } else {
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter password")));
+                          SnackBar(content: Text("Please enter a valid password")));
                     }
                           
                         } else {
