@@ -498,6 +498,16 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         SizedBox(
                           height: 2.h,
                         ),
+                        Text(
+                               nearby!.description.toString(),
+                               style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Color(0XFFCECECE),
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"
+                                    //fontFamily: "Segoepr"
+                                  ),
+                              ),
                         Center(
                           child: Text(
                             "Friday Night",
@@ -609,8 +619,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                             if(nearby!.checkIn_status=="1"){
                               checkInApi("2");
                             }else{
-                              checkInDialog2();
-
+                             // checkInDialog2();
+ checkInApi("1");
                             }
 
                           }
@@ -1467,8 +1477,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like restaurant\n"
-                            "after check in",
+                         "How do you like" "${nearby!.business_name.toString()}" "\n"
+                            "after check",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -2927,8 +2937,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like restaurant\n"
-                            "after check in",
+                        "How do you like "+nearby!.business_name.toString()+
+                            " after check in",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -4031,12 +4041,15 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
           if (nearby!.checkIn_status.toString() == "2") {
             checkInDialog();
-          }else {
-            checkoutApi(
-                rattingcheckin.toString(),
-                reviewController2.text.toString(),
-                check.toString());
+          
           }
+          
+          // else {
+          //   checkoutApi(
+          //       rattingcheckin.toString(),
+          //       reviewController2.text.toString(),
+          //       check.toString());
+          // }
         }else{
           if (nearby!.checkIn_status.toString() != "1") {
             Navigator.of(context, rootNavigator: true).pop();

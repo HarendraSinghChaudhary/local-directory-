@@ -69,6 +69,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   var replies_count = "";
   var clearFile = "";
   var videoLink = "";
+  var  description ="";
   bool isCheckinClicked = false;
   List<CommunityReviewAPI> communityReviewList = [];
 
@@ -422,6 +423,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 SizedBox(
                                   height: 2.h,
                                 ),
+                              Text(
+                              widget.nearBy.description.toString(),
+                               style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Color(0XFFCECECE),
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"
+                                    //fontFamily: "Segoepr"
+                                  ),
+                              ),
                                 Center(
                                   child: Text(
                                     "Friday Night",
@@ -525,7 +536,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {
+                                onTap: () async {
                                   ivStatus = "";
                                   fileName = "";
                                   file = null;
@@ -537,8 +548,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     isCheckinClicked = true;
                                    if( widget.nearBy.checkIn_status=="1"){
                                       checkInApi("2");
-                                    }else{
-                                     checkInDialog2();
+                                    }
+                                    
+                                    else{
+                                      await checkInApi("1");
 
                                    }
 
@@ -633,7 +646,15 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ? Padding(
                 padding: EdgeInsets.only(top: 13.h),
                 child: Center(
-                    child: Image.asset("assets/images/nodata.jpg")),
+                    child:Column(children: [
+  SvgPicture.asset("assets/icons/logo-2.svg"),
+  Padding(
+    padding: const EdgeInsets.only(top:50),
+    child: Text("Be the first to leave a review",style: TextStyle(color: Colors.white,fontSize:18,fontWeight:FontWeight.w600,)),
+  ),
+                    ],)
+                  
+                    ),
               )
                   : ListView.builder(
                 shrinkWrap: true,
@@ -2373,8 +2394,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like restaurant\n"
-                            "after check in",
+                        "How do you like"+widget.nearBy.business_name.toString()+
+                            " after check in",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -2898,6 +2919,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   checkInDialog2() {
+  
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -2905,7 +2927,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
         isCheckinClicked = false;
         return StatefulBuilder(builder: (context, setState) {
           print("check: " + check.toString());
+           print("check: " +widget.nearBy.business_name.toString());
           return AlertDialog(
+           
             scrollable: true,
             backgroundColor: Colors.black,
             shape: RoundedRectangleBorder(
@@ -2966,8 +2990,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like restaurant\n"
-                            "after check in",
+                        "How do you like" "${widget.nearBy.business_name
+                                            .toString()}" "\n"
+                            "after check",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -2977,6 +3002,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           //fontFamily: "Segoepr"
                         ),
                       ),
+                      
                       SizedBox(
                         height: 1.5.h,
                       ),
@@ -4067,15 +4093,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
         if(!jsonRes["message"].toString().contains("You are already")) {
           widget.nearBy.checkIn_status = jsonRes["check_status"].toString();
 
+          print("api status"+widget.nearBy.checkIn_status.toString()+"^^");
           if (widget.nearBy.checkIn_status.toString() == "2") {
 
             checkInDialog();
-          }else {
-            checkoutApi(
-                rattingcheckin.toString(),
-                reviewController2.text.toString(),
-                check.toString());
           }
+          // else {
+          //   checkoutApi(
+          //       rattingcheckin.toString(),
+          //       reviewController2.text.toString(),
+          //       check.toString());
+          // }
         }else{
           if (widget.nearBy.checkIn_status.toString() != "1") {
             Navigator.of(context, rootNavigator: true).pop();

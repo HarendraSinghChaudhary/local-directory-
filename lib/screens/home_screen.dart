@@ -150,7 +150,9 @@ class _HomeState extends State<Home> {
       category_name,
       distance;
   var giveawayDesc,
+      giveawaytitle,
       giveawayImage;
+      
   Future<void>? _initializeVideoPlayerFuture;
 
   Future<void>? _initializeVideoPlayerFuture2;
@@ -513,6 +515,15 @@ class _HomeState extends State<Home> {
                     ):SizedBox(
                       height: 0,
                     ),
+                    giveawaytitle.toString()!="null"?Padding(
+                      padding: EdgeInsets.symmetric(horizontal:4.w),
+                      child: Text("${giveawaytitle.toString()}",
+                       style: TextStyle(
+                              fontSize: 15.sp,
+                              color: kCyanColor,
+                              fontFamily: "Segoepr"),
+                      ),
+                    ):Container(),
                     giveawayDesc.toString()!="null"?Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Text(
@@ -743,6 +754,7 @@ class _HomeState extends State<Home> {
 
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
         giveawayImage = jsonRes["giweaways"]["image"].toString();
+        giveawaytitle = jsonRes["giweaways"]["name"].toString();
         print("giveawayDesc "+giveawayDesc.toString()+"^^");
         print("giveawayImage "+giveawayImage.toString()+"^^");
 
