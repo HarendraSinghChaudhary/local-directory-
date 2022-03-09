@@ -836,6 +836,18 @@ class NearBy {
   var checkIn_status = "";
   var opening_time = "";
   var closing_time = "";
+
+
+  NearBy();
+
+  NearBy.one(this.id, this.business_name, this.lat, this.long);
+
+  Map toJson() => {
+    'id': id,
+    'business_name': business_name,
+    'lat': lat,
+    'long': long,
+  };
 }
 
 class CustomSliderWidget extends StatefulWidget {

@@ -551,8 +551,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     }
                                     
                                     else{
-                                      await checkInApi("1");
-
+                                     // await checkInApi("1");
+                                      checkInDialog2();
                                    }
 
                                   }
@@ -2990,7 +2990,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like" "${widget.nearBy.business_name
+                        "How do you like " "${widget.nearBy.business_name
                                             .toString()}" "\n"
                             "after check",
                         textAlign: TextAlign.center,
@@ -4098,12 +4098,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
             checkInDialog();
           }
-          // else {
-          //   checkoutApi(
-          //       rattingcheckin.toString(),
-          //       reviewController2.text.toString(),
-          //       check.toString());
-          // }
+           else {
+             checkoutApi(
+                 rattingcheckin.toString(),
+                 reviewController2.text.toString(),
+                 check.toString());
+           }
         }else{
           if (widget.nearBy.checkIn_status.toString() != "1") {
             Navigator.of(context, rootNavigator: true).pop();

@@ -20,6 +20,8 @@ import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'dart:ui' as ui;
+import "package:collection/collection.dart";
+import 'package:supercharged/supercharged.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   var list;
@@ -119,6 +121,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   initilize(List<NearBy> businessList) {
     print("into the initalizer method");
     print("businessLength " + businessList.length.toString() + "");
+
     for (final business in businessList) {
       if (business.lat != null && business.long != null) {
         if (business.lat.toString() != "null" &&
@@ -447,8 +450,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
             child: InkWell(
               onTap: () {
 
-
-                          print("id hamari hai .... "+ids.toString());
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
@@ -869,6 +870,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       jsonArray = jsonRes['data'];
     });
 
+    print("JSON "+res.body.toString()+"^^");
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
 
@@ -929,7 +931,19 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         
 
         }
-
+        Map map = new Map();
+        final dataSet = [];
+        nearByRestaurantList.forEach((element) {
+          map = element.toJson();
+          dataSet.add(map);
+        });
+        print("DataSet "+dataSet.toString());
+        var groupbyDate;
+        final mapp = dataSet.groupBy<String, Map>((item) =>
+        item['lat'],
+          valueTransform: (item) => item..remove('lat'),
+        );
+        print("New Map "+mapp["26.8644739"]!.length.toString());
         setState(() {
           if (newGoogleMapController != null) {
             newGoogleMapController!.setMapStyle("[]");

@@ -62,6 +62,8 @@ dependencies:
   multi_image_picker: ^4.7.14
   rich_text_controller: ^1.4.0
   url_launcher: ^6.0.18
+  fluster: ^1.2.0
+  supercharged: ^2.1.1
   flutter_absolute_path:
     git:
       url: https://github.com/kornperkus/flutter_absolute_path.git

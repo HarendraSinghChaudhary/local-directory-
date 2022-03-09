@@ -183,6 +183,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         nearby?.checkIn_status = jsonArray["checkIn_status"].toString();
         nearby?.opening_time = jsonArray["opeing_hour"].toString();
         nearby?.closing_time = jsonArray["closing_hour"].toString();
+        nearby?.distance = jsonArray["distance"].toString();
 
         print("id: " + nearby!.id.toString());
         print("favvvv: " + jsonArray["fav"].toString());
@@ -619,8 +620,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                             if(nearby!.checkIn_status=="1"){
                               checkInApi("2");
                             }else{
-                             // checkInDialog2();
- checkInApi("1");
+                              checkInDialog2();
+ //checkInApi("1");
                             }
 
                           }
@@ -1477,7 +1478,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                         "How do you like" "${nearby!.business_name.toString()}" "\n"
+                         "How do you like " "${nearby!.business_name.toString()}" "\n"
                             "after check",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -1689,7 +1690,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         fileName = "";
                                         await pickImages().then((value) {
                                           images = value;
-                                          print("lengthhhhhh " + images.length.toString() + "*");
+                                          //print("lengthhhhhh " + images.length.toString() + "*");
                                         });
                                         if (images.length > 0) {
                                           image_video_status = "1";
@@ -4044,12 +4045,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           
           }
           
-          // else {
-          //   checkoutApi(
-          //       rattingcheckin.toString(),
-          //       reviewController2.text.toString(),
-          //       check.toString());
-          // }
+           else {
+             checkoutApi(
+                 rattingcheckin.toString(),
+                 reviewController2.text.toString(),
+                 check.toString());
+           }
         }else{
           if (nearby!.checkIn_status.toString() != "1") {
             Navigator.of(context, rootNavigator: true).pop();
