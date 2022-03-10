@@ -500,8 +500,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           height: 2.h,
                         ),
                         Text(
-                               nearby!.description.toString(),
-                               style: TextStyle(
+                          nearby!.description.toString()=="null"?"":nearby!.description.toString(),
+
+                          style: TextStyle(
                                       fontSize: 11.sp,
                                       color: Color(0XFFCECECE),
                                       // fontWeight: FontWeight.w500,

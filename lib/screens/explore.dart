@@ -836,18 +836,86 @@ class NearBy {
   var checkIn_status = "";
   var opening_time = "";
   var closing_time = "";
+  var countSame = 0;
 
 
   NearBy();
 
-  NearBy.one(this.id, this.business_name, this.lat, this.long);
+  NearBy.one(
+      this.id,
+      this.business_name,
+      this.business_images,
+      this.distance,
+      this.ratting,
+      this.description,
+      this.business_category,
+      this.user_count,
+      this.review_count,
+      this.location,
+      this.category_name,
+      this.fav,
+      this.lat,
+      this.long,
+      this.avgratting,
+      this.totalReviewusers,
+      this.countUserreview,
+      this.firecount,
+      this.okcount,
+      this.notcool_count,
+      this.checkIn_status,
+      this.opening_time,
+      this.closing_time
+      );
 
   Map toJson() => {
     'id': id,
     'business_name': business_name,
+    'business_images': business_images,
+    'distance': distance,
+    'ratting': ratting,
+    'description': description,
+    'business_category': business_category,
+    'user_count': user_count,
+    'review_count': review_count,
+    'location': location,
+    'category_name': category_name,
+    'fav': fav,
     'lat': lat,
     'long': long,
+    'avgratting': avgratting,
+    'totalReviewusers': totalReviewusers,
+    'countUserreview': countUserreview,
+    'firecount': firecount,
+    'okcount': okcount,
+    'notcool_count': notcool_count,
+    'checkIn_status': checkIn_status,
+    'opening_time': opening_time,
+    'closing_time': closing_time,
   };
+  NearBy.fromJson(Map<dynamic, dynamic> json)
+      : id = json['id'],
+        business_name =  json['business_name'],
+        business_images = json['business_images'],
+        distance=       json['distance'],
+        ratting =       json['ratting'],
+        description =   json['description'],
+        business_category = json['business_category'],
+        user_count =    json['user_count'],
+        review_count =  json['review_count'],
+        location =      json['location'],
+        category_name = json['category_name'],
+        fav =           json['fav'],
+        lat =  json['lat'] ?? "0.0",
+        long =  json['long'] ?? "0.0",
+        avgratting = json['avgratting'],
+        totalReviewusers = json['totalReviewusers'] ,
+        countUserreview = json['countUserreview'] ,
+        firecount = json['firecount']         ,
+        okcount =  json['okcount']         ,
+        notcool_count = json['notcool_count']    ,
+        checkIn_status =  json['checkIn_status'] ,
+        opening_time =   json['opening_time'] ,
+        closing_time =   json['closing_time'];
 }
 
 class CustomSliderWidget extends StatefulWidget {

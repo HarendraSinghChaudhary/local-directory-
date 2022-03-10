@@ -61,6 +61,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var firecount = 0;
   var okcount = 0;
   var notcool_count = 0;
+  List<NearBy> selectedList = [];
   double? lat;
   double? long;
 
@@ -74,7 +75,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   String searchText = "";
   LatLng sourceLocation = LatLng(26.862471, 75.762413);
   bool isloading = false;
-
+  Map map = new Map();
+  final dataSet = [];
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
 
   GoogleMapController? newGoogleMapController;
@@ -118,11 +120,50 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         .asUint8List();
   }
 
-  initilize(List<NearBy> businessList) {
+
+  Future<Uint8List> getBytesFromCanvas(int customNum, int width, int height) async  {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = kPrimaryColor;
+    final Radius radius = Radius.circular(width/2);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(),  height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      text: customNum.toString(), // your custom number here
+      style: TextStyle(fontSize: 25.0, color: Colors.white),
+    );
+
+    painter.layout();
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.5,
+            (height * .5) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data!.buffer.asUint8List();
+  }
+
+
+  initilize(List<NearBy> businessList) async {
     print("into the initalizer method");
     print("businessLength " + businessList.length.toString() + "");
 
     for (final business in businessList) {
+    if(map[business.lat].length>1){
+      print("Lengthhhh "+map[business.lat].length.toString()+"^^");
+      var length = map[business.lat].length;
+
+          Uint8List markerIcon = await getBytesFromCanvas(length, 40, 40);
+
       if (business.lat != null && business.long != null) {
         if (business.lat.toString() != "null" &&
             business.long.toString() != "null") {
@@ -145,6 +186,100 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                     long1 = double.parse(business.long);
                     okcount = business.okcount;
                     print("okok: " + okcount.toString());
+                    selectedList.clear();
+                    for(var k in map[business.lat]){
+                      NearBy nearBy = NearBy();
+                      nearBy = NearBy.fromJson(k);
+                      selectedList.add(nearBy);
+                    }
+
+                  });
+                },
+                markerId: MarkerId(business.id),
+                position: LatLng(
+                    double.parse(business.lat), double.parse(business.long)),
+                infoWindow: InfoWindow(
+                  title: business_name = business.business_name.toString(),
+                ),
+                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),*/
+                icon:BitmapDescriptor.fromBytes(markerIcon));
+
+            markers.add(firstMarker);
+          } else {
+            Marker firstMarker = Marker(
+                onTap: () {
+                  setState(() {
+                    viewVisible = true;
+                    business_name = business.business_name.toString();
+                    avgratting = business.avgratting.toString();
+                    firecount = business.firecount;
+                    notcool_count = business.notcool_count;
+                    user_count = business.user_count.toString();
+                    review_count = business.totalReviewusers.toString();
+                    business_images = business.business_images.toString();
+                    id = business.id.toString();
+                    lat1 = double.parse(business.lat);
+                    long1 = double.parse(business.long);
+                    okcount = business.okcount;
+                    print("okok: " + okcount.toString());
+                    selectedList.clear();
+                    for(var k in map[business.lat]){
+                      NearBy nearBy = NearBy();
+                      nearBy = NearBy.fromJson(k);
+                      selectedList.add(nearBy);
+                    }
+                    print(selectedList.length);
+                  });
+                },
+                markerId: MarkerId(business.id),
+                position: LatLng(
+                    double.parse(business.lat), double.parse(business.long)),
+                infoWindow: InfoWindow(
+                  title: business_name = business.business_name.toString(),
+                ),
+                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed),*/
+                icon:BitmapDescriptor.fromBytes(markerIcon));
+
+            markers.add(firstMarker);
+          }
+          print("markerslength: " + markers.length.toString());
+          print("business_lat: " + business.lat.toString());
+        }
+      }
+
+
+    }else{
+      if (business.lat != null && business.long != null) {
+        if (business.lat.toString() != "null" &&
+            business.long.toString() != "null") {
+          if (business.firecount == 0 &&
+              business.okcount == 0 &&
+              business.notcool_count == 0) {
+            Marker firstMarker = Marker(
+                onTap: () {
+                  setState(() {
+                    viewVisible = true;
+                    business_name = business.business_name.toString();
+                    avgratting = business.avgratting.toString();
+                    firecount = business.firecount;
+                    notcool_count = business.notcool_count;
+                    user_count = business.user_count.toString();
+                    review_count = business.totalReviewusers.toString();
+                    business_images = business.business_images.toString();
+                    id = business.id.toString();
+                    lat1 = double.parse(business.lat);
+                    long1 = double.parse(business.long);
+                    okcount = business.okcount;
+                    print("okok: " + okcount.toString());
+                    selectedList.clear();
+                    for(var k in map[business.lat]){
+                      NearBy nearBy = NearBy();
+                      nearBy = NearBy.fromJson(k);
+                      selectedList.add(nearBy);
+                    }
+                    print(selectedList.length);
                   });
                 },
                 markerId: MarkerId(business.id),
@@ -174,6 +309,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                     lat1 = double.parse(business.lat);
                     long1 = double.parse(business.long);
                     okcount = business.okcount;
+                    selectedList.clear();
+                    for(var k in map[business.lat]){
+                      NearBy nearBy = NearBy();
+                      nearBy = NearBy.fromJson(k);
+                      selectedList.add(nearBy);
+                    }
+                    print(selectedList.length);
                     print("okok: " + okcount.toString());
                   });
                 },
@@ -185,13 +327,13 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 ),
                 /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon: business.firecount > business.okcount
+                icon:business.firecount > business.okcount
                     ? business.firecount > business.notcool_count
-                        ? fireIcon!
-                        : notcoolIcon!
+                    ? fireIcon!
+                    : notcoolIcon!
                     : business.okcount > business.notcool_count
-                        ? okIcon!
-                        : notcoolIcon!);
+                    ? okIcon!
+                    : notcoolIcon!);
 
             markers.add(firstMarker);
           }
@@ -199,6 +341,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           print("business_lat: " + business.lat.toString());
         }
       }
+    }
     }
 
     if (lat1 != null) {
@@ -440,24 +583,31 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(left: 6.w),
-        child: Visibility(
-          visible: viewVisible,
-          child: Padding(
-            // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
-            padding: EdgeInsets.only(bottom: 7.h, right: 12.2.w),
-            child: InkWell(
-              onTap: () {
+      floatingActionButton: Visibility(
+        visible: viewVisible,
+        child: Padding(
+          // padding: EdgeInsets.only(top: 57.2.h, left: 13.5.w),
+          padding: EdgeInsets.only(left: 14.w,bottom: 7.h, right: 6.w),
+          child: Container(
+            height: 170,
+            child: ListView.builder(
+                itemCount: selectedList.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (con, i) {
 
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             DetailBussinessDynamic(id: id)));
-          
-              },
-              child: Container(
+             return Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: InkWell(
+                  onTap: () {
+
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) =>
+            //             DetailBussinessDynamic(id: id)));
+
+        },
+            child: Container(
                 height: 20.h,
                 width: 70.w,
                 decoration: BoxDecoration(
@@ -495,11 +645,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                     height: 0.6.h,
                                   ),
                                   Text(
-                                    "Fire(" + firecount.toString() + ")",
+                                    "Fire(" + selectedList[i].firecount.toString() + ")",
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       color: Colors.white,
-            
+
                                       //fontFamily: "Roboto"
                                     ),
                                   ),
@@ -528,11 +678,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                   SvgPicture.asset("assets/icons/bakance.svg",
                                       color: kokokColor, width: 10.w),
                                   Text(
-                                    "Ok Ok(" + okcount.toString() + ")",
+                                    "Ok Ok(" + selectedList[i].okcount.toString() + ")",
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       color: Colors.white,
-            
+
                                       //fontFamily: "Roboto"
                                     ),
                                   ),
@@ -561,11 +711,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                   SvgPicture.asset("assets/icons/snow.svg",
                                       color: kNotCoolColor, width: 8.w),
                                   Text(
-                                    "Not Cool(" + notcool_count.toString() + ")",
+                                    "Not Cool(" + selectedList[i].notcool_count.toString() + ")",
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       color: Colors.white,
-            
+
                                       //fontFamily: "Roboto"
                                     ),
                                   ),
@@ -584,11 +734,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                 ),
                                 Text(
                                   //"3.5",
-                                  avgratting.toString(),
+                                  selectedList[i].avgratting.toString(),
                                   style: TextStyle(
                                     fontSize: 11.sp,
                                     color: Colors.white,
-            
+
                                     //fontFamily: "Roboto"
                                   ),
                                 ),
@@ -611,7 +761,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      DetailBussinessDynamic(id: id)));
+                                      DetailBussinessDynamic(id: selectedList[i].id)));
                         }
                       },
                       child: Padding(
@@ -627,21 +777,21 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                     borderRadius: BorderRadius.circular(3.w),
                                     color: Colors.red,
                                     image: DecorationImage(image: NetworkImage(
-                                        //"assets/images/restaurant.jpeg"
-                                        business_images), fit: BoxFit.fill)),
+                                      //"assets/images/restaurant.jpeg"
+                                        selectedList[i].business_images), fit: BoxFit.fill)),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0, bottom: 10),
                                 child: Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
                                       width: 45.w,
                                       child: Text(
                                         //"Bar Name",
-                                        business_name.toString(),
+                                        selectedList[i].business_name.toString(),
                                         // widget.nearBy.business_name.toString() != "null"
                                         //     ? widget.nearBy.business_name.toString()
                                         //     : "Bar Name",
@@ -663,14 +813,14 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                           //         communityReviewList.length > 0
                                           //     ? communityReviewList.length.toString() +
                                           //         " Reviews "
-                                          review_count.toString() + " Reviews",
+                                          selectedList[i].totalReviewusers.toString() + " Reviews",
                                           style: TextStyle(
                                               fontSize: 10.sp,
                                               color: kPrimaryColor,
                                               // fontWeight: FontWeight.w500,
                                               fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
+                                            //fontFamily: "Segoepr"
+                                          ),
                                         ),
                                         Text(
                                           " | ",
@@ -679,19 +829,19 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                               color: kPrimaryColor,
                                               // fontWeight: FontWeight.w500,
                                               fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
+                                            //fontFamily: "Segoepr"
+                                          ),
                                         ),
                                         Text(
                                           // widget.nearBy.user_count.toString() +
-                                          user_count.toString() + " People",
+                                          selectedList[i].user_count.toString() + " People",
                                           style: TextStyle(
                                               fontSize: 10.sp,
                                               color: kPrimaryColor,
                                               // fontWeight: FontWeight.w500,
                                               fontFamily: "Roboto"
-                                              //fontFamily: "Segoepr"
-                                              ),
+                                            //fontFamily: "Segoepr"
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -705,9 +855,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                     )
                   ],
                 ),
-              ),
             ),
-          ),
+        ),
+             );}),
+          )
         ),
       ),
     );
@@ -931,19 +1082,21 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         
 
         }
-        Map map = new Map();
-        final dataSet = [];
+       Map mapp = new Map();
+        dataSet.clear();
         nearByRestaurantList.forEach((element) {
-          map = element.toJson();
-          dataSet.add(map);
+          mapp = element.toJson();
+          dataSet.add(mapp);
         });
         print("DataSet "+dataSet.toString());
         var groupbyDate;
-        final mapp = dataSet.groupBy<String, Map>((item) =>
+        map = dataSet.groupBy<String, Map>((item) =>
         item['lat'],
           valueTransform: (item) => item..remove('lat'),
         );
-        print("New Map "+mapp["26.8644739"]!.length.toString());
+        print("New Map "+map.toString());
+
+
         setState(() {
           if (newGoogleMapController != null) {
             newGoogleMapController!.setMapStyle("[]");
@@ -1137,6 +1290,22 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           nearByRestaurantList.add(modelAgentSearch);*/
 
           }
+
+          Map mapp = new Map();
+          dataSet.clear();
+          nearByRestaurantList.forEach((element) {
+            mapp = element.toJson();
+            dataSet.add(mapp);
+          });
+          print("DataSet "+dataSet.toString());
+          var groupbyDate;
+          map = dataSet.groupBy<String, Map>((item) =>
+          item['lat'],
+            valueTransform: (item) => item..remove('lat'),
+          );
+          print("New Map "+map.toString());
+
+
           print("FilterListLength " +
               nearByRestaurantList.length.toString() +
               "^^");

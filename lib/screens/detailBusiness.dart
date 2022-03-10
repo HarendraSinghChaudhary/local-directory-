@@ -424,7 +424,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   height: 2.h,
                                 ),
                               Text(
-                              widget.nearBy.description.toString(),
+                              widget.nearBy.description.toString()=="null"?"":widget.nearBy.description.toString(),
                                style: TextStyle(
                                       fontSize: 11.sp,
                                       color: Color(0XFFCECECE),
