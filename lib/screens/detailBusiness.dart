@@ -134,13 +134,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             width: double.infinity,
                             child: Stack(
                               children: [
-                                Container(
+                            widget.nearBy.business_images.toString()=="null"? Container(
+                                  height: 33.h,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage("assets/images/11.jpeg"),
+                                          fit: BoxFit.fill)),
+                                ):Container(
                                   height: 33.h,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: NetworkImage(
-                                              widget.nearBy.business_images
-                                                  .toString()),
+                                              widget.nearBy.business_images.toString()),
                                           fit: BoxFit.fill)),
                                 ),
                                 Positioned(
@@ -2394,8 +2399,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like"+widget.nearBy.business_name.toString()+
-                            " after check in",
+                        "How do you find "+widget.nearBy.business_name.toString()+
+                            " post check out",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -2990,9 +2995,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like " "${widget.nearBy.business_name
-                                            .toString()}" "\n"
-                            "after check",
+                        "How do you find " "${widget.nearBy.business_name
+                                            .toString()}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,

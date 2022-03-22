@@ -327,6 +327,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
         }
       } else if (image_video_status.toString() == "2") {
         if (file != null) {
+          print("Condition Video Upload "+file!.path.toString()+"");
           request.files
               .add(await http.MultipartFile.fromPath("image[]", file!.path));
         }
@@ -335,7 +336,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
 
     var jsonRes;
     var res = await request.send();
-
+    Navigator.of(context, rootNavigator: true).pop();
 
     if (res.statusCode == 200) {
       var respone = await res.stream.bytesToString();
@@ -356,7 +357,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
           isloading = false;
         });
         reviewList.clear();
-        Navigator.of(context, rootNavigator: true).pop();
+
 
         reviewListApi();
 
@@ -376,6 +377,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
 
         setState(() {
           isloading = false;
+          file = null;
         });
 
       } else {
@@ -803,6 +805,7 @@ Future<dynamic> reviewListApi() async {
 // temporary directory and image bytes from response is written to // that file.
     return file;
   }
+
   Future <File?> createFileList(int index) async {
     if(reviewList[index].business_review_image.length>0){
       reviewList[index].business_review_image.forEach((element) async {
@@ -2382,7 +2385,11 @@ Future<dynamic> reviewListApi() async {
       print("ImageLength "+reviewList[index].business_review_image.length.toString()+"%^%^");
       if(reviewList[index].business_review_image.length>0){
         //customDialogReview(index);
-        await getData(index);
+        if(reviewList[index].image_video_status=="1") {
+          await getData(index);
+        }else{
+          customDialogReview(index);
+        }
       }else{
         customDialogReview(index);
       }

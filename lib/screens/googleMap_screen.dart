@@ -64,7 +64,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   List<NearBy> selectedList = [];
   double? lat;
   double? long;
-
+  var isImageloaded = false;
   List<NearBy> nearByRestaurantList = [];
 
   BitmapDescriptor? customIcon;
@@ -87,9 +87,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   // late Position position;
   Timer? debounce;
 
-  void setCustomMarker() async {
-    mapMarker = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), "assets/images/fire.png");
+  Future setCustomMarker() async {
+  //  mapMarker = await BitmapDescriptor.fromAssetImage(ImageConfiguration(), "assets/images/fire.png");
 
     final Uint8List fireI =
         await getBytesFromAsset('assets/images/fire.png', 50);
@@ -99,15 +98,16 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         await getBytesFromAsset('assets/beckance/bakance.png', 50);
     final Uint8List placeholde =
         await getBytesFromAsset('assets/images/placeholder.png', 50);
-    fireIcon = BitmapDescriptor.fromBytes(fireI);
-    notcoolIcon = BitmapDescriptor.fromBytes(notcoolI);
-    okIcon = BitmapDescriptor.fromBytes(okI);
-    customIcon = BitmapDescriptor.fromBytes(placeholde);
+    fireIcon = await BitmapDescriptor.fromBytes(fireI);
+    notcoolIcon = await BitmapDescriptor.fromBytes(notcoolI);
+    okIcon = await BitmapDescriptor.fromBytes(okI);
+    customIcon = await BitmapDescriptor.fromBytes(placeholde);
     /*BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(1, 1)),
         'assets/images/fire.png')
         .then((d) {
       customIcon = d;
     });*/
+    return true;
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -126,6 +126,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint()..color = kPrimaryColor;
     final Radius radius = Radius.circular(width/2);
+
     canvas.drawRRect(
         RRect.fromRectAndCorners(
           Rect.fromLTWH(0.0, 0.0, width.toDouble(),  height.toDouble()),
@@ -152,196 +153,253 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     return data!.buffer.asUint8List();
   }
 
+  Future<Uint8List> getImagefromCanvas(int customNum, int width, int height) async  {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = kPrimaryColor;
+    final Radius radius = Radius.circular(width/2);
+    Image image = Image(image: AssetImage("assets/images/placeholder.png"));
 
+
+ /*   canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(),  height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);*/
+    Uint8List placeholde =
+    await getBytesFromAsset('assets/images/location-pin.png', 45);
+    ui.Image imagee = await loadImage(placeholde);
+    canvas.drawImage(imagee, Offset((10),
+        (8)), paint);
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      text: customNum.toString(), // your custom number here
+      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white),
+    );
+
+    painter.layout();
+
+
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.55,
+            (height * .4) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data!.buffer.asUint8List();
+  }
+  Future<ui.Image> loadImage(Uint8List img) async {
+    final Completer<ui.Image> completer = new Completer();
+    ui.decodeImageFromList(img, (ui.Image img) {
+      setState(() {
+        isImageloaded = true;
+      });
+      return completer.complete(img);
+    });
+    return completer.future;
+  }
   initilize(List<NearBy> businessList) async {
     print("into the initalizer method");
     print("businessLength " + businessList.length.toString() + "");
+    try{
+
 
     for (final business in businessList) {
-    if(map[business.lat].length>1){
-      print("Lengthhhh "+map[business.lat].length.toString()+"^^");
       var length = map[business.lat].length;
+      if(business.lat.toString()!="null") {
+        if (map[business.lat].length > 1) {
+          print("Lengthhhh " + map[business.lat].length.toString() + "^^");
 
-          Uint8List markerIcon = await getBytesFromCanvas(length, 40, 40);
 
-      if (business.lat != null && business.long != null) {
-        if (business.lat.toString() != "null" &&
-            business.long.toString() != "null") {
-          if (business.firecount == 0 &&
-              business.okcount == 0 &&
-              business.notcool_count == 0) {
-            Marker firstMarker = Marker(
-                onTap: () {
-                  setState(() {
-                    viewVisible = true;
-                    business_name = business.business_name.toString();
-                    avgratting = business.avgratting.toString();
-                    firecount = business.firecount;
-                    notcool_count = business.notcool_count;
-                    user_count = business.user_count.toString();
-                    review_count = business.totalReviewusers.toString();
-                    business_images = business.business_images.toString();
-                    id = business.id.toString();
-                    lat1 = double.parse(business.lat);
-                    long1 = double.parse(business.long);
-                    okcount = business.okcount;
-                    print("okok: " + okcount.toString());
-                    selectedList.clear();
-                    for(var k in map[business.lat]){
-                      NearBy nearBy = NearBy();
-                      nearBy = NearBy.fromJson(k);
-                      selectedList.add(nearBy);
-                    }
+          Uint8List markerIcon = await getImagefromCanvas(length, 70, 70);
 
-                  });
-                },
-                markerId: MarkerId(business.id),
-                position: LatLng(
-                    double.parse(business.lat), double.parse(business.long)),
-                infoWindow: InfoWindow(
-                  title: business_name = business.business_name.toString(),
-                ),
-                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+          if (business.lat != null && business.long != null) {
+            if (business.lat.toString() != "null" &&
+                business.long.toString() != "null") {
+              if (business.firecount == 0 &&
+                  business.okcount == 0 &&
+                  business.notcool_count == 0) {
+                Marker firstMarker = Marker(
+                    onTap: () {
+                      setState(() {
+                        viewVisible = true;
+                        business_name = business.business_name.toString();
+                        avgratting = business.avgratting.toString();
+                        firecount = business.firecount;
+                        notcool_count = business.notcool_count;
+                        user_count = business.user_count.toString();
+                        review_count = business.totalReviewusers.toString();
+                        business_images = business.business_images.toString();
+                        id = business.id.toString();
+                        lat1 = double.parse(business.lat);
+                        long1 = double.parse(business.long);
+                        okcount = business.okcount;
+                        print("okok: " + okcount.toString());
+                        selectedList.clear();
+                        for (var k in map[business.lat]) {
+                          NearBy nearBy = NearBy();
+                          nearBy = NearBy.fromJson(k);
+                          selectedList.add(nearBy);
+                        }
+                      });
+                    },
+                    markerId: MarkerId(business.id),
+                    position: LatLng(
+                        double.parse(business.lat),
+                        double.parse(business.long)),
+                    infoWindow: InfoWindow(
+                      title: business_name = business.business_name.toString(),
+                    ),
+                    /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon:BitmapDescriptor.fromBytes(markerIcon));
+                    icon: BitmapDescriptor.fromBytes(markerIcon));
 
-            markers.add(firstMarker);
-          } else {
-            Marker firstMarker = Marker(
-                onTap: () {
-                  setState(() {
-                    viewVisible = true;
-                    business_name = business.business_name.toString();
-                    avgratting = business.avgratting.toString();
-                    firecount = business.firecount;
-                    notcool_count = business.notcool_count;
-                    user_count = business.user_count.toString();
-                    review_count = business.totalReviewusers.toString();
-                    business_images = business.business_images.toString();
-                    id = business.id.toString();
-                    lat1 = double.parse(business.lat);
-                    long1 = double.parse(business.long);
-                    okcount = business.okcount;
-                    print("okok: " + okcount.toString());
-                    selectedList.clear();
-                    for(var k in map[business.lat]){
-                      NearBy nearBy = NearBy();
-                      nearBy = NearBy.fromJson(k);
-                      selectedList.add(nearBy);
-                    }
-                    print(selectedList.length);
-                  });
-                },
-                markerId: MarkerId(business.id),
-                position: LatLng(
-                    double.parse(business.lat), double.parse(business.long)),
-                infoWindow: InfoWindow(
-                  title: business_name = business.business_name.toString(),
-                ),
-                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                markers.add(firstMarker);
+              } else {
+                Marker firstMarker = Marker(
+                    onTap: () {
+                      setState(() {
+                        viewVisible = true;
+                        business_name = business.business_name.toString();
+                        avgratting = business.avgratting.toString();
+                        firecount = business.firecount;
+                        notcool_count = business.notcool_count;
+                        user_count = business.user_count.toString();
+                        review_count = business.totalReviewusers.toString();
+                        business_images = business.business_images.toString();
+                        id = business.id.toString();
+                        lat1 = double.parse(business.lat);
+                        long1 = double.parse(business.long);
+                        okcount = business.okcount;
+                        print("okok: " + okcount.toString());
+                        selectedList.clear();
+                        for (var k in map[business.lat]) {
+                          NearBy nearBy = NearBy();
+                          nearBy = NearBy.fromJson(k);
+                          selectedList.add(nearBy);
+                        }
+                        print(selectedList.length);
+                      });
+                    },
+                    markerId: MarkerId(business.id),
+                    position: LatLng(
+                        double.parse(business.lat),
+                        double.parse(business.long)),
+                    infoWindow: InfoWindow(
+                      title: business_name = business.business_name.toString(),
+                    ),
+                    /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon:BitmapDescriptor.fromBytes(markerIcon));
+                    icon: BitmapDescriptor.fromBytes(markerIcon));
 
-            markers.add(firstMarker);
+                markers.add(firstMarker);
+              }
+              print("markerslength: " + markers.length.toString());
+              print("business_lat: " + business.lat.toString());
+            }
           }
-          print("markerslength: " + markers.length.toString());
-          print("business_lat: " + business.lat.toString());
-        }
-      }
-
-
-    }else{
-      if (business.lat != null && business.long != null) {
-        if (business.lat.toString() != "null" &&
-            business.long.toString() != "null") {
-          if (business.firecount == 0 &&
-              business.okcount == 0 &&
-              business.notcool_count == 0) {
-            Marker firstMarker = Marker(
-                onTap: () {
-                  setState(() {
-                    viewVisible = true;
-                    business_name = business.business_name.toString();
-                    avgratting = business.avgratting.toString();
-                    firecount = business.firecount;
-                    notcool_count = business.notcool_count;
-                    user_count = business.user_count.toString();
-                    review_count = business.totalReviewusers.toString();
-                    business_images = business.business_images.toString();
-                    id = business.id.toString();
-                    lat1 = double.parse(business.lat);
-                    long1 = double.parse(business.long);
-                    okcount = business.okcount;
-                    print("okok: " + okcount.toString());
-                    selectedList.clear();
-                    for(var k in map[business.lat]){
-                      NearBy nearBy = NearBy();
-                      nearBy = NearBy.fromJson(k);
-                      selectedList.add(nearBy);
-                    }
-                    print(selectedList.length);
-                  });
-                },
-                markerId: MarkerId(business.id),
-                position: LatLng(
-                    double.parse(business.lat), double.parse(business.long)),
-                infoWindow: InfoWindow(
-                  title: business_name = business.business_name.toString(),
-                ),
-                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+        } else {
+          if (business.lat != null && business.long != null) {
+            if (business.lat.toString() != "null" &&
+                business.long.toString() != "null") {
+              if (business.firecount == 0 &&
+                  business.okcount == 0 &&
+                  business.notcool_count == 0) {
+                Marker firstMarker = Marker(
+                    onTap: () {
+                      setState(() {
+                        viewVisible = true;
+                        business_name = business.business_name.toString();
+                        avgratting = business.avgratting.toString();
+                        firecount = business.firecount;
+                        notcool_count = business.notcool_count;
+                        user_count = business.user_count.toString();
+                        review_count = business.totalReviewusers.toString();
+                        business_images = business.business_images.toString();
+                        id = business.id.toString();
+                        lat1 = double.parse(business.lat);
+                        long1 = double.parse(business.long);
+                        okcount = business.okcount;
+                        print("okok: " + okcount.toString());
+                        selectedList.clear();
+                        for (var k in map[business.lat]) {
+                          NearBy nearBy = NearBy();
+                          nearBy = NearBy.fromJson(k);
+                          selectedList.add(nearBy);
+                        }
+                        print(selectedList.length);
+                      });
+                    },
+                    markerId: MarkerId(business.id),
+                    position: LatLng(
+                        double.parse(business.lat),
+                        double.parse(business.long)),
+                    infoWindow: InfoWindow(
+                      title: business_name = business.business_name.toString(),
+                    ),
+                    /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon: customIcon!);
+                    icon: customIcon!);
 
-            markers.add(firstMarker);
-          } else {
-            Marker firstMarker = Marker(
-                onTap: () {
-                  setState(() {
-                    viewVisible = true;
-                    business_name = business.business_name.toString();
-                    avgratting = business.avgratting.toString();
-                    firecount = business.firecount;
-                    notcool_count = business.notcool_count;
-                    user_count = business.user_count.toString();
-                    review_count = business.totalReviewusers.toString();
-                    business_images = business.business_images.toString();
-                    id = business.id.toString();
-                    lat1 = double.parse(business.lat);
-                    long1 = double.parse(business.long);
-                    okcount = business.okcount;
-                    selectedList.clear();
-                    for(var k in map[business.lat]){
-                      NearBy nearBy = NearBy();
-                      nearBy = NearBy.fromJson(k);
-                      selectedList.add(nearBy);
-                    }
-                    print(selectedList.length);
-                    print("okok: " + okcount.toString());
-                  });
-                },
-                markerId: MarkerId(business.id),
-                position: LatLng(
-                    double.parse(business.lat), double.parse(business.long)),
-                infoWindow: InfoWindow(
-                  title: business_name = business.business_name.toString(),
-                ),
-                /* icon: BitmapDescriptor.defaultMarkerWithHue(
+                markers.add(firstMarker);
+              } else {
+                Marker firstMarker = Marker(
+                    onTap: () {
+                      setState(() {
+                        viewVisible = true;
+                        business_name = business.business_name.toString();
+                        avgratting = business.avgratting.toString();
+                        firecount = business.firecount;
+                        notcool_count = business.notcool_count;
+                        user_count = business.user_count.toString();
+                        review_count = business.totalReviewusers.toString();
+                        business_images = business.business_images.toString();
+                        id = business.id.toString();
+                        lat1 = double.parse(business.lat);
+                        long1 = double.parse(business.long);
+                        okcount = business.okcount;
+                        selectedList.clear();
+                        for (var k in map[business.lat]) {
+                          NearBy nearBy = NearBy();
+                          nearBy = NearBy.fromJson(k);
+                          selectedList.add(nearBy);
+                        }
+                        print(selectedList.length);
+                        print("okok: " + okcount.toString());
+                      });
+                    },
+                    markerId: MarkerId(business.id),
+                    position: LatLng(
+                        double.parse(business.lat),
+                        double.parse(business.long)),
+                    infoWindow: InfoWindow(
+                      title: business_name = business.business_name.toString(),
+                    ),
+                    /* icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueRed),*/
-                icon:business.firecount > business.okcount
-                    ? business.firecount > business.notcool_count
-                    ? fireIcon!
-                    : notcoolIcon!
-                    : business.okcount > business.notcool_count
-                    ? okIcon!
-                    : notcoolIcon!);
+                    icon: business.firecount > business.okcount
+                        ? business.firecount > business.notcool_count
+                        ? fireIcon!
+                        : notcoolIcon!
+                        : business.okcount > business.notcool_count
+                        ? okIcon!
+                        : notcoolIcon!);
 
-            markers.add(firstMarker);
+                markers.add(firstMarker);
+              }
+              print("markerslength: " + markers.length.toString());
+              print("business_lat: " + business.lat.toString());
+            }
           }
-          print("markerslength: " + markers.length.toString());
-          print("business_lat: " + business.lat.toString());
         }
       }
     }
+    }catch(error){
+      print("Error "+error.toString()+"");
     }
 
     if (lat1 != null) {
@@ -756,7 +814,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                   "Please login or signup first to view business profile")));
                         } else {
 
-                          print("id hamarti hai .... "+id);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -911,35 +968,42 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         nearByRestaurantList.clear();
         markers.clear();
         for (var i = 0; i < jsonArray.length; i++) {
-          NearBy modelAgentSearch = new NearBy();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name =
-              jsonArray[i]["business_name"].toString();
-          modelAgentSearch.business_images =
-              jsonArray[i]["business_images"].toString();
-          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
-          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
-          modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category =
-              jsonArray[i]["business_category "].toString();
-          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count =
-              jsonArray[i]["review_count"].toString();
-          modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name =
-              jsonArray[i]["category_name"].toString();
-          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
-          modelAgentSearch.long = jsonArray[i]["long"].toString();
-          modelAgentSearch.firecount = jsonArray[i]["firecount"];
-          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
-          modelAgentSearch.okcount = jsonArray[i]["okcount"];
-          print("lat: " + modelAgentSearch.lat.toString());
-          modelAgentSearch.totalReviewusers =
-              jsonArray[i]["totalReviewusers"].toString();
-          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+          if(jsonArray[i]["lat"].toString()!="null") {
+            NearBy modelAgentSearch = new NearBy();
+            modelAgentSearch.id = jsonArray[i]["id"].toString();
+            modelAgentSearch.business_name =
+                jsonArray[i]["business_name"].toString();
+            modelAgentSearch.business_images =
+                jsonArray[i]["business_images"].toString();
+            modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+            modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+            modelAgentSearch.description =
+                jsonArray[i]["description"].toString();
+            modelAgentSearch.business_category =
+                jsonArray[i]["business_category "].toString();
+            modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+            modelAgentSearch.review_count =
+                jsonArray[i]["review_count"].toString();
+            modelAgentSearch.location = jsonArray[i]["location"].toString();
+            modelAgentSearch.category_name =
+                jsonArray[i]["category_name"].toString();
+            modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+            modelAgentSearch.lat = jsonArray[i]["lat"].toString() == "null"
+                ? "0.0"
+                : jsonArray[i]["lat"].toString();
+            modelAgentSearch.long = jsonArray[i]["long"].toString() == "null"
+                ? "0.0"
+                : jsonArray[i]["long"].toString();
+            modelAgentSearch.firecount = jsonArray[i]["firecount"];
+            modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+            modelAgentSearch.okcount = jsonArray[i]["okcount"];
+            print("lat: " + modelAgentSearch.lat.toString());
+            modelAgentSearch.totalReviewusers =
+                jsonArray[i]["totalReviewusers"].toString();
+            modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
 
-          nearByRestaurantList.add(modelAgentSearch);
+            nearByRestaurantList.add(modelAgentSearch);
+          }
 
           // business_name = jsonArray[i]["business_name"].toString();
           // avgratting = jsonArray[i]["avgratting"].toString();
@@ -970,6 +1034,20 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
           setState(() {});
         }
+        Map mapp = new Map();
+        dataSet.clear();
+        nearByRestaurantList.forEach((element) {
+          mapp = element.toJson();
+          dataSet.add(mapp);
+        });
+        print("DataSet "+dataSet.toString());
+        var groupbyDate;
+        map = dataSet.groupBy<String, Map>((item) =>
+        item['lat'],
+          valueTransform: (item) => item..remove('lat'),
+        );
+        print("New Map "+map.toString());
+        print("Map length "+map.length.toString());
 
         setState(() {
           print("lengthis " + nearByRestaurantList.length.toString() + "^");
@@ -1023,49 +1101,50 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     print("JSON "+res.body.toString()+"^^");
     if (res.statusCode == 200) {
-      print(jsonRes["status"]);
+      print("Status "+jsonRes["status"].toString());
 
       if (jsonRes["status"].toString() == "true") {
         nearByRestaurantList.clear();
         markers.clear();
         for (var i = 0; i < jsonArray.length; i++) {
-          NearBy modelAgentSearch = new NearBy();
-          modelAgentSearch.id = jsonArray[i]["id"].toString();
-          modelAgentSearch.business_name =
-              jsonArray[i]["business_name"].toString();
-          modelAgentSearch.business_images =
-              jsonArray[i]["business_images"].toString();
-          modelAgentSearch.distance = jsonArray[i]["distance"].toString();
-          modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
-          modelAgentSearch.description = jsonArray[i]["description"].toString();
-          modelAgentSearch.business_category =
-              jsonArray[i]["business_category "].toString();
-          modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-          modelAgentSearch.review_count =
-              jsonArray[i]["review_count"].toString();
-          modelAgentSearch.location = jsonArray[i]["location"].toString();
-          modelAgentSearch.category_name =
-              jsonArray[i]["category_name"].toString();
-          modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-          modelAgentSearch.lat = jsonArray[i]["lat"].toString();
-          modelAgentSearch.long = jsonArray[i]["long"].toString();
-          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-          modelAgentSearch.firecount = jsonArray[i]["firecount"];
-          modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
-          modelAgentSearch.okcount = jsonArray[i]["okcount"];
-          modelAgentSearch.totalReviewusers =
-              jsonArray[i]["totalReviewusers"].toString();
-          modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-          modelAgentSearch.opening_time =
-              jsonArray[i]["opeing_hour"].toString();
-          modelAgentSearch.closing_time =
-              jsonArray[i]["closing_hour"].toString();
+          if(jsonArray[i]["lat"].toString()!="null") {
+            NearBy modelAgentSearch = new NearBy();
+            modelAgentSearch.id = jsonArray[i]["id"].toString();
+            modelAgentSearch.business_name =
+                jsonArray[i]["business_name"].toString();
+            modelAgentSearch.business_images =
+                jsonArray[i]["business_images"].toString();
+            modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+            modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+            modelAgentSearch.description =
+                jsonArray[i]["description"].toString();
+            modelAgentSearch.business_category =
+                jsonArray[i]["business_category "].toString();
+            modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
+            modelAgentSearch.review_count =
+                jsonArray[i]["review_count"].toString();
+            modelAgentSearch.location = jsonArray[i]["location"].toString();
+            modelAgentSearch.category_name =
+                jsonArray[i]["category_name"].toString();
+            modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+            modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+            modelAgentSearch.long = jsonArray[i]["long"].toString();
+            modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+            modelAgentSearch.firecount = jsonArray[i]["firecount"];
+            modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+            modelAgentSearch.okcount = jsonArray[i]["okcount"];
+            modelAgentSearch.totalReviewusers =
+                jsonArray[i]["totalReviewusers"].toString();
+            modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
+            modelAgentSearch.opening_time =
+                jsonArray[i]["opeing_hour"].toString();
+            modelAgentSearch.closing_time =
+                jsonArray[i]["closing_hour"].toString();
 
-          print("lat: " + modelAgentSearch.lat.toString());
-          if (modelAgentSearch.lat != null) {
-            nearByRestaurantList.add(modelAgentSearch);
-          }
-          /*       id = jsonArray[i]["id"].toString();
+
+              nearByRestaurantList.add(modelAgentSearch);
+
+            /*       id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());
           latlong_position = jsonArray[i]["lat"].toString() +
@@ -1076,10 +1155,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
           nearByRestaurantList.add(modelAgentSearch);*/
 
-          // print("lattttttt: " + lat.toString());
+            // print("lattttttt: " + lat.toString());
 
 
-        
+          }
 
         }
        Map mapp = new Map();
@@ -1247,37 +1326,41 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           nearByRestaurantList.clear();
           markers.clear();
           for (var i = 0; i < jsonArray.length; i++) {
-            NearBy modelAgentSearch = new NearBy();
-            modelAgentSearch.id = jsonArray[i]["id"].toString();
-            modelAgentSearch.business_name =
-                jsonArray[i]["business_name"].toString();
-            modelAgentSearch.business_images =
-                jsonArray[i]["business_images"].toString();
-            modelAgentSearch.distance = jsonArray[i]["distance"].toString();
-            modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
-            modelAgentSearch.avgratting = jsonArray[i]["avgratting"].toString();
-            modelAgentSearch.description =
-                jsonArray[i]["description"].toString();
-            modelAgentSearch.business_category =
-                jsonArray[i]["business_category "].toString();
-            modelAgentSearch.user_count = jsonArray[i]["user_count"].toString();
-            modelAgentSearch.review_count =
-                jsonArray[i]["review_count"].toString();
-            modelAgentSearch.totalReviewusers =
-                jsonArray[i]["totalReviewusers"].toString();
+            if(jsonArray[i]["lat"].toString()!="null") {
+              NearBy modelAgentSearch = new NearBy();
+              modelAgentSearch.id = jsonArray[i]["id"].toString();
+              modelAgentSearch.business_name =
+                  jsonArray[i]["business_name"].toString();
+              modelAgentSearch.business_images =
+                  jsonArray[i]["business_images"].toString();
+              modelAgentSearch.distance = jsonArray[i]["distance"].toString();
+              modelAgentSearch.ratting = jsonArray[i]["ratting"].toString();
+              modelAgentSearch.avgratting =
+                  jsonArray[i]["avgratting"].toString();
+              modelAgentSearch.description =
+                  jsonArray[i]["description"].toString();
+              modelAgentSearch.business_category =
+                  jsonArray[i]["business_category "].toString();
+              modelAgentSearch.user_count =
+                  jsonArray[i]["user_count"].toString();
+              modelAgentSearch.review_count =
+                  jsonArray[i]["review_count"].toString();
+              modelAgentSearch.totalReviewusers =
+                  jsonArray[i]["totalReviewusers"].toString();
 
-            modelAgentSearch.location = jsonArray[i]["location"].toString();
-            modelAgentSearch.category_name =
-                jsonArray[i]["category_name"].toString();
-            modelAgentSearch.fav = jsonArray[i]["fav"].toString();
-            modelAgentSearch.lat = jsonArray[i]["lat"].toString();
-            modelAgentSearch.long = jsonArray[i]["long"].toString();
-            modelAgentSearch.firecount = jsonArray[i]["firecount"];
-            modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
-            modelAgentSearch.okcount = jsonArray[i]["okcount"];
-            print("lat: " + modelAgentSearch.lat.toString());
+              modelAgentSearch.location = jsonArray[i]["location"].toString();
+              modelAgentSearch.category_name =
+                  jsonArray[i]["category_name"].toString();
+              modelAgentSearch.fav = jsonArray[i]["fav"].toString();
+              modelAgentSearch.lat = jsonArray[i]["lat"].toString();
+              modelAgentSearch.long = jsonArray[i]["long"].toString();
+              modelAgentSearch.firecount = jsonArray[i]["firecount"];
+              modelAgentSearch.notcool_count = jsonArray[i]["notcool_count"];
+              modelAgentSearch.okcount = jsonArray[i]["okcount"];
+              print("lat: " + modelAgentSearch.lat.toString());
 
-            nearByRestaurantList.add(modelAgentSearch);
+              nearByRestaurantList.add(modelAgentSearch);
+            }
 /*          id = jsonArray[i]["id"].toString();
           business_name = jsonArray[i]["business_name"].toString();
           print("Bussiness: " + business_name.toString());

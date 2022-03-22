@@ -213,7 +213,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   @override
   Widget build(BuildContext context) {
 
-    print("new id "+widget.id.toString());
     return Scaffold(
       body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
@@ -231,14 +230,20 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                     width: double.infinity,
                     child: Stack(
                       children: [
-                        Container(
+                        nearby!.business_images.toString()=="null"? Container(
                           height: 33.h,
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      nearby!.business_images.toString()),
+                                  image: AssetImage("assets/images/11.jpeg"),
                                   fit: BoxFit.fill)),
-                        ),
+                        ):Container(
+                      height: 33.h,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  nearby!.business_images.toString()),
+                              fit: BoxFit.fill)),
+                    ),
                         Positioned(
                           left: 2.w,
                           top: 1.h,
@@ -1479,8 +1484,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                         "How do you like " "${nearby!.business_name.toString()}" "\n"
-                            "after check",
+                         "How do you find " "${nearby!.business_name.toString()}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -2939,8 +2943,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you like "+nearby!.business_name.toString()+
-                            " after check in",
+                        "How do you find "+nearby!.business_name.toString()+
+                            " post check out",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
