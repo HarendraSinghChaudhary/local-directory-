@@ -327,7 +327,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
         }
       } else if (image_video_status.toString() == "2") {
         if (file != null) {
-          print("Condition Video Upload "+file!.path.toString()+"");
+
           request.files
               .add(await http.MultipartFile.fromPath("image[]", file!.path));
         }
@@ -2146,7 +2146,7 @@ Future<dynamic> reviewListApi() async {
                         child: Visibility(
                             visible: isVisible,
                             child: Text(
-                              fileName,
+                              fileName.toString(),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                               style: TextStyle(
@@ -2382,11 +2382,13 @@ Future<dynamic> reviewListApi() async {
   }
   doNothing(int index) async {
     reviewController.text = reviewList[index].review;
+    print("Ye hai "+reviewList[index].image_video_status.toString()+"^^");
       print("ImageLength "+reviewList[index].business_review_image.length.toString()+"%^%^");
       if(reviewList[index].business_review_image.length>0){
         //customDialogReview(index);
-        if(reviewList[index].image_video_status=="1") {
-          await getData(index);
+
+        if(reviewList[index].image_video_status.toString()=="1"){
+        await getData(index);
         }else{
           customDialogReview(index);
         }
