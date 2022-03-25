@@ -289,33 +289,42 @@ class _HomeState extends State<Home> {
                     ),
 
 
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                        // "“Lorem Ipsum”",
-                        quoatestitle.toString() != "null"
-                            ? "'" + quoatestitle.toString().trim() + "'"
-                            : "",
-                        style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.white,
-                            fontFamily: "Segoepr"),
+                    Visibility(
+                      visible: quoatestitle.toString() != "null",
+                      child: SizedBox(
+                        height: 2.h,
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                        //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus euismod. Dictum fusce ut placerat orci nulla. Tincidunt ornare massa eget egestas purus viverra accumsan in nisl. Tempor id eu nisl nunc mi ipsum faucibus. Fusce id velit ut tortor pretium. Massa ultricies mi quis hendrerit dolor magna eget. Nullam eget felis eget nunc lobortis. Faucibus ornare suspendisse sed",
-                        quoatesdescription.toString() != "null"
-                            ? quoatesdescription.toString()
-                            : "",
-                        style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Color(0xFFCECECE),
-                            fontFamily: "Roboto"),
+                    Visibility(
+                      visible: quoatestitle.toString() != "null",
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Text(
+                          // "“Lorem Ipsum”",
+                          quoatestitle.toString() != "null"
+                              ? "'" + quoatestitle.toString().trim() + "'"
+                              : "",
+                          style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                              fontFamily: "Segoepr"),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: quoatesdescription.toString() != "null",
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Text(
+                          //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus euismod. Dictum fusce ut placerat orci nulla. Tincidunt ornare massa eget egestas purus viverra accumsan in nisl. Tempor id eu nisl nunc mi ipsum faucibus. Fusce id velit ut tortor pretium. Massa ultricies mi quis hendrerit dolor magna eget. Nullam eget felis eget nunc lobortis. Faucibus ornare suspendisse sed",
+                          quoatesdescription.toString() != "null"
+                              ? quoatesdescription.toString()
+                              : "",
+                          style: TextStyle(
+                              fontSize: 11.sp,
+                              color: Color(0xFFCECECE),
+                              fontFamily: "Roboto"),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -334,134 +343,158 @@ class _HomeState extends State<Home> {
                         showVideoProgressIndicator: true,
                       ),*/
 
-                    SizedBox(
-                      height: 2.h,
+                    Visibility(
+                      visible: image.toString()!="null",
+                      child: SizedBox(
+                        height: 2.h,
+                      ),
                     ),
                     Stack(
                       children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4.w),
-                          height: 20.h,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3.w),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  //"assets/images/restaurant.jpeg"
-                                  image.toString()),
-                              fit: BoxFit.fill,
+                        Visibility(
+                          visible: image.toString()!="null",
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            height: 20.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3.w),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    //"assets/images/restaurant.jpeg"
+                                    image.toString()),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            // child: Image.asset(),
+                          ),
+                        ),
+                        Visibility(
+                          visible: business_name.toString()!="null",
+                          child: Positioned(
+                            bottom: 2.h,
+                            left: 8.w,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  // "Business",
+
+                                  business_name.toString(),
+
+                                  style: TextStyle(
+                                      fontSize: 21.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
+                                Text(
+                                  // "Restaurant Name",
+                                  category_name.toString() != "null"
+                                      ? category_name.toString()
+                                      : "",
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colors.white,
+                                    //fontWeight: FontWeight.w700
+                                    //fontFamily: "Segoepr"
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          // child: Image.asset(),
                         ),
-                        Positioned(
-                          bottom: 2.h,
-                          left: 8.w,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                // "Business",
-
-                                business_name.toString(),
-
-                                style: TextStyle(
-                                    fontSize: 21.sp,
+                        Visibility(
+                          visible: ratting.toString() !="null",
+                          child: Positioned(
+                            bottom: 3.h,
+                            right: 6.w,
+                            child: Row(
+                              children: [
+                                Text(
+                                  //"4.5",
+                                  ratting.toString(),
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w700
+                                    //fontWeight: FontWeight.w700
                                     //fontFamily: "Segoepr"
-                                    ),
-                              ),
-                              Text(
-                                // "Restaurant Name",
-                                category_name.toString() != "null"
-                                    ? category_name.toString()
-                                    : "",
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: Colors.white,
-                                  //fontWeight: FontWeight.w700
-                                  //fontFamily: "Segoepr"
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 3.h,
-                          right: 6.w,
-                          child: Row(
-                            children: [
-                              Text(
-                                //"4.5",
-                                ratting.toString(),
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: Colors.white,
-                                  //fontWeight: FontWeight.w700
-                                  //fontFamily: "Segoepr"
+                                SizedBox(
+                                  width: 1.w,
                                 ),
-                              ),
-                              SizedBox(
-                                width: 1.w,
-                              ),
-                              SvgPicture.asset(
-                                "assets/icons/star.svg",
-                                color: Color(0xFFE8CD73),
-                              )
-                            ],
+                                SvgPicture.asset(
+                                  "assets/icons/star.svg",
+                                  color: Color(0xFFE8CD73),
+                                )
+                              ],
+                            ),
                           ),
                         )
                       ],
                     ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Open time: " + opeing_hour.toString() + " AM",
-                                style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.w500
-                                    //fontFamily: "Segoepr"
-                                    ),
-                              ),
-                              Text(
-                                "Close time: " +
-                                    closing_hour.toString() +
-                                    " PM",
-                                style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.w500
-                                    //fontFamily: "Segoepr"
-                                    ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 1.5.h,
-                          ),
-                          Text(
-                            "Distance: " + distance.toString() + " mi",
-                            style: TextStyle(
-                                fontSize: 11.sp,
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w500
-                                //fontFamily: "Segoepr"
-                                ),
-                          ),
-                        ],
+                    Visibility(
+                      visible: opeing_hour.toString()!="null",
+                      child: SizedBox(
+                        height: 2.h,
                       ),
                     ),
+                     Visibility(
+                       visible: opeing_hour.toString()!="null",
+                       child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Open time: " + opeing_hour.toString() + " AM",
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.w500
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
+                                Text(
+                                  "Close time: " +
+                                      closing_hour.toString() +
+                                      " PM",
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.w500
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
+                              ],
+                            ),
+                            Visibility(
+                              visible: distance.toString()!="null",
+                              child: SizedBox(
+                                height: 1.5.h,
+                              ),
+                            ),
+                            Visibility(
+                              visible: distance.toString()!="null",
+                              child: Text(
+                                "Distance: " + distance.toString() + " mi",
+                                style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.w500
+                                    //fontFamily: "Segoepr"
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ),
+                     ),
                     SizedBox(
                       height: 2.h,
                     ),
