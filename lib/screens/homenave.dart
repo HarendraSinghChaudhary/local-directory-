@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wemarkthespot/richText.dart';
 
 import 'package:wemarkthespot/screens/account.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 
 import 'package:wemarkthespot/screens/home_screen.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
-import 'package:wemarkthespot/screens/inTheKnow.dart';
-
-import 'package:wemarkthespot/screens/mapScreen.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
-import 'package:wemarkthespot/screens/testingsheet.dart';
 
 
 class HomeNav extends StatefulWidget {

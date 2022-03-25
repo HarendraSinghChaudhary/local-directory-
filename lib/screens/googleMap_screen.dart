@@ -23,6 +23,8 @@ import 'dart:ui' as ui;
 import "package:collection/collection.dart";
 import 'package:supercharged/supercharged.dart';
 
+import 'mainnnn.dart';
+
 class GoogleMapScreen extends StatefulWidget {
   var list;
   var route;
@@ -82,6 +84,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   GoogleMapController? newGoogleMapController;
   late Position currentPosition;
   List<Marker> markers = [];
+  bool visible = false;
 
   late BitmapDescriptor mapMarker;
   // late Position position;
@@ -192,6 +195,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     final data = await img.toByteData(format: ui.ImageByteFormat.png);
     return data!.buffer.asUint8List();
   }
+
   Future<ui.Image> loadImage(Uint8List img) async {
     final Completer<ui.Image> completer = new Completer();
     ui.decodeImageFromList(img, (ui.Image img) {
@@ -202,6 +206,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     });
     return completer.future;
   }
+
   initilize(List<NearBy> businessList) async {
     print("into the initalizer method");
     print("businessLength " + businessList.length.toString() + "");
@@ -548,7 +553,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               onTap: (latLong) {
                 setState(() {
                   viewVisible = false;
-                  print("MarkersLength " + markers.length.toString() + "^^");
+                  visible = false;
                 });
               },
               initialCameraPosition: _currentPosition,
@@ -566,75 +571,82 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               markers: markers.map((e) => e).toSet(),
             ),
             Padding(
-              padding: EdgeInsets.only(right: 25.0, top: 8),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 8.w),
-                height: 6.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3.w),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black54,
-                        offset: Offset(2, 3),
-                        blurRadius: 10,
-                        spreadRadius: 1)
-                  ],
-                ),
-                child: TextFormField(
-                  controller: mesageTextController,
-                  onChanged: (value) {
+              padding: EdgeInsets.only(right: 25.0, top: 8, left: 10),
+              child: ListView(
+                shrinkWrap: true,
 
-
-                    if (value.length == 0) {
-                      nearBy();
-                    }
-                  },
-                  validator: (val) {},
-                  style: TextStyle(
-                      color: kPrimaryColor,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w700),
-                  decoration: InputDecoration(
-                    suffixIconConstraints: BoxConstraints(minWidth: 50),
-                    prefixIconConstraints: BoxConstraints(minWidth: 50),
-                    contentPadding: EdgeInsets.only(top: 3),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    hintText: "Search",
-                    hintStyle: TextStyle(
-                        color: kPrimaryColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w700),
-                    suffixIcon: InkWell(
-                      onTap: () {
-                        mesageTextController.clear();
-                        nearByRestaurantList.clear();
-                        markers.clear();
-                      
-                        // getHostSpotList.clear();
-
-                        // getHotspotApi();
-                      },
-                      child: SvgPicture.asset(
-                        "assets/icons/cross.svg",
-                        width: 15,
-                        color: kPrimaryColor,
-                      ),
-
-                      // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.w),
+                    height: 6.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3.w),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black54,
+                            offset: Offset(2, 3),
+                            blurRadius: 10,
+                            spreadRadius: 1)
+                      ],
                     ),
-                    prefixIcon: SvgPicture.asset(
-                      "assets/icons/-search.svg",
-                      width: 20,
-                      color: kPrimaryColor,
+                    child: TextFormField(
+                      controller: mesageTextController,
+                      onChanged: (value) {
+                        if (value.length == 0) {
+                          nearBy();
+                        }
+                      },
+                      validator: (val) {},
+                      style: TextStyle(
+                          color: kPrimaryColor,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700),
+                      decoration: InputDecoration(
+                        suffixIconConstraints: BoxConstraints(minWidth: 50),
+                        prefixIconConstraints: BoxConstraints(minWidth: 50),
+                        contentPadding: EdgeInsets.only(top: 3),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: "Search",
+                        hintStyle: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            mesageTextController.clear();
+                            nearByRestaurantList.clear();
+                            markers.clear();
+
+                            // getHostSpotList.clear();
+
+                            // getHotspotApi();
+                          },
+                          child: SvgPicture.asset(
+                            "assets/icons/cross.svg",
+                            width: 15,
+                            color: kPrimaryColor,
+                          ),
+
+                          // child: SearchPrefixIcon(svgIcon: "assets/icons/cross.svg")
+                        ),
+                        prefixIcon: SvgPicture.asset(
+                          "assets/icons/-search.svg",
+                          width: 20,
+                          color: kPrimaryColor,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+
+                  mesageTextController.text.length>0? buildSuggestions(context)
+                      :Container(height: 0,)
+                ],
               ),
             ),
           ],
@@ -921,6 +933,78 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     );
   }
 
+  List<String> _oldFilters = [];
+  OnSearchChanged? onSearchChanged;
+  Widget buildSuggestions(BuildContext context) {
+    return Visibility(
+      visible: _oldFilters.length>0?visible:false,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8.w),
+        color:Colors.white,height: 300,
+        child: ListView.builder(
+          itemCount: _oldFilters.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: Icon(Icons.restore),
+              title: Text("${_oldFilters[index]}"),
+              onTap: () {
+                setState(() {
+                  mesageTextController.text = _oldFilters[index].toString();
+                  mesageTextController.selection = TextSelection.fromPosition(TextPosition(offset: mesageTextController.text.length));
+
+                  Future.delayed(const Duration(seconds: 1), () {
+
+
+
+                    setState(() {
+                      visible = false;
+                    });
+
+                  });
+
+
+                  //searchData(_oldFilters[index].toString());
+                });
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<List<String>> _getRecentSearchesLike(String query) async {
+    _oldFilters.clear();
+    final pref = await SharedPreferences.getInstance();
+    final allSearches = pref.getStringList("recentSearches");
+   var list = allSearches!.where((search) => search.startsWith(query)).toList();
+
+   if(list.length>0){
+     _oldFilters.addAll(list);
+     setState(() {
+       visible = true;
+
+     });
+
+   }
+    return list;
+  }
+
+  Future<void> _saveToRecentSearches(String searchText) async {
+    if (searchText == null) return; //Should not be null
+    final pref = await SharedPreferences.getInstance();
+
+    //Use `Set` to avoid duplication of recentSearches
+    Set<String> allSearches =
+        pref.getStringList("recentSearches")?.toSet() ?? {};
+/*    if(allSearches.length>4){
+      allSearches.remove(allSearches.last);
+    }*/
+
+    //Place it at first in the set
+    allSearches = {searchText, ...allSearches};
+    pref.setStringList("recentSearches", allSearches.toList());
+  }
   _onSearchChanged() {
     if (debounce?.isActive ?? false) debounce?.cancel();
 
@@ -928,7 +1012,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       if (mesageTextController.text.toString().length == 0) {
         nearBy();
       } else if (searchText != mesageTextController.text) {
+        _getRecentSearchesLike(mesageTextController.text);
         searchData(mesageTextController.text);
+
       }
     });
   }
@@ -959,7 +1045,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       print("ResponseJSON: " + jsonRes.toString() + "_");
       jsonArray = jsonRes['data'];
     });
-
+    if(mesageTextController.text.length>0) {
+      await _saveToRecentSearches(mesageTextController.text);
+    }
     if (res!.statusCode == 200) {
       setState(() {
         viewVisible = false;
@@ -1032,8 +1120,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
           // print("lattttttt: " + lat.toString());
 
-          setState(() {});
+
         }
+        setState(() {});
         Map mapp = new Map();
         dataSet.clear();
         nearByRestaurantList.forEach((element) {
@@ -1066,6 +1155,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     }
 
     searchText = mesageTextController.text;
+
   }
 
   Future<dynamic> nearBy() async {
@@ -1184,6 +1274,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           initilize(nearByRestaurantList);
           isloading = false;
         });
+
       } else {
         setState(() {
           isloading = false;
