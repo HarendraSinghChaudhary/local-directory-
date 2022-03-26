@@ -14,6 +14,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
@@ -349,91 +350,97 @@ class _HomeState extends State<Home> {
                         height: 2.h,
                       ),
                     ),
-                    Stack(
-                      children: [
-                        Visibility(
-                          visible: image.toString()!="null",
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 4.w),
-                            height: 20.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3.w),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    //"assets/images/restaurant.jpeg"
-                                    image.toString()),
-                                fit: BoxFit.fill,
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: dataid)));
+
+                      },
+                      child: Stack(
+                        children: [
+                          Visibility(
+                            visible: image.toString()!="null",
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 4.w),
+                              height: 20.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3.w),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      //"assets/images/restaurant.jpeg"
+                                      image.toString()),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                              // child: Image.asset(),
+                            ),
+                          ),
+                          Visibility(
+                            visible: business_name.toString()!="null",
+                            child: Positioned(
+                              bottom: 2.h,
+                              left: 8.w,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    // "Business",
+                    
+                                    business_name.toString(),
+                    
+                                    style: TextStyle(
+                                        fontSize: 21.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700
+                                        //fontFamily: "Segoepr"
+                                        ),
+                                  ),
+                                  Text(
+                                    // "Restaurant Name",
+                                    category_name.toString() != "null"
+                                        ? category_name.toString()
+                                        : "",
+                                    style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colors.white,
+                                      //fontWeight: FontWeight.w700
+                                      //fontFamily: "Segoepr"
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            // child: Image.asset(),
                           ),
-                        ),
-                        Visibility(
-                          visible: business_name.toString()!="null",
-                          child: Positioned(
-                            bottom: 2.h,
-                            left: 8.w,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  // "Business",
-
-                                  business_name.toString(),
-
-                                  style: TextStyle(
-                                      fontSize: 21.sp,
+                          Visibility(
+                            visible: ratting.toString() !="null",
+                            child: Positioned(
+                              bottom: 3.h,
+                              right: 6.w,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    //"4.5",
+                                    ratting.toString(),
+                                    style: TextStyle(
+                                      fontSize: 11.sp,
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w700
+                                      //fontWeight: FontWeight.w700
                                       //fontFamily: "Segoepr"
-                                      ),
-                                ),
-                                Text(
-                                  // "Restaurant Name",
-                                  category_name.toString() != "null"
-                                      ? category_name.toString()
-                                      : "",
-                                  style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: Colors.white,
-                                    //fontWeight: FontWeight.w700
-                                    //fontFamily: "Segoepr"
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: ratting.toString() !="null",
-                          child: Positioned(
-                            bottom: 3.h,
-                            right: 6.w,
-                            child: Row(
-                              children: [
-                                Text(
-                                  //"4.5",
-                                  ratting.toString(),
-                                  style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: Colors.white,
-                                    //fontWeight: FontWeight.w700
-                                    //fontFamily: "Segoepr"
+                                  SizedBox(
+                                    width: 1.w,
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 1.w,
-                                ),
-                                SvgPicture.asset(
-                                  "assets/icons/star.svg",
-                                  color: Color(0xFFE8CD73),
-                                )
-                              ],
+                                  SvgPicture.asset(
+                                    "assets/icons/star.svg",
+                                    color: Color(0xFFE8CD73),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                     Visibility(
                       visible: opeing_hour.toString()!="null",
@@ -777,6 +784,10 @@ class _HomeState extends State<Home> {
         opeing_hour = jsonRes["data"]["opeing_hour"].toString();
         closing_hour = jsonRes["data"]["closing_hour"].toString();
         description = jsonRes["data"]["description"].toString();
+        dataid = jsonRes["data"]["user_id"].toString();
+
+
+        print("data id: "+dataid.toString());
 
         image = jsonRes["data"]["business_images"].toString();
         distance = jsonRes["data"]["distance"].toString();
