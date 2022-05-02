@@ -712,37 +712,26 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Explore()));
-              },
-              child: SvgPicture.asset(
-                "assets/icons/explore.svg",
-                width: 26,
-                color: Colors.white,
-              ),
-            ),
-
-            SizedBox(
-              width: 4.h,
-            ),
-
-            //Image.asset("assets/images/logo_name.png"),
-
-            Text(
-              "WE MARK THE SPOT",
-              style: GoogleFonts.gothicA1(
-                  fontSize: 18.sp,
+        leading:  Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Explore()));
+                },
+                child: SvgPicture.asset(
+                  "assets/icons/explore.svg",
+                  width: 10,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            )
-          ],
+                ),
+              ),
         ),
+        title:   Text(
+              "MAP",
+       style: TextStyle(fontFamily: 'Segoepr', fontWeight: FontWeight.w600),
+            ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 3.w),
@@ -798,7 +787,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                     height: 6.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3.w),
+                      borderRadius: BorderRadius.circular(12.w),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(

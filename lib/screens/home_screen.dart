@@ -185,49 +185,34 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
    return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () {
-                  if(videoPlayerController!=null) {
-                    if (videoPlayerController!.value.isInitialized) {
-                      videoPlayerController?.pause();
+          leading:    Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: InkWell(
+                  onTap: () {
+                    if(videoPlayerController!=null) {
+                      if (videoPlayerController!.value.isInitialized) {
+                        videoPlayerController?.pause();
+                      }
                     }
-                  }
 
         if(videoPlayerController2!=null) {
-          if (videoPlayerController2!.value.isInitialized) {
-            videoPlayerController2?.pause();
-          }
+            if (videoPlayerController2!.value.isInitialized) {
+              videoPlayerController2?.pause();
+            }
         }
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BusFav()));
-                },
-                child: SvgPicture.asset(
-                  "assets/icons/heart1.svg",
-                  width: 26,
-                  color: Colors.white,
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => BusFav()));
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/heart1.svg",
+                    width: 26,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-
-              SizedBox(
-                width: 4.h,
-              ),
-
-              //Image.asset("assets/images/logo_name.png"),
-
-              Text(
-                "WE MARK THE SPOT",
-                style: GoogleFonts.gothicA1(
-                  fontSize: 18.sp,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-                ),
-              )
-            ],
           ),
+          title:  SvgPicture.asset("assets/icons/Layer.svg", width: 50.w,),
         ),
         body: isloading
             ? Align(
@@ -236,6 +221,15 @@ class _HomeState extends State<Home> {
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                 
+                 
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
