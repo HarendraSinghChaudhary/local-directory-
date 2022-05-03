@@ -641,7 +641,6 @@ class _ExploreState extends State<Explore> {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
       msg = jsonRes["message"].toString();
       jsonArray = jsonRes['data'];
@@ -679,18 +678,13 @@ class _ExploreState extends State<Explore> {
           modelAgentSearch.opening_time = jsonArray[i]["opeing_hour"].toString();
           modelAgentSearch.closing_time = jsonArray[i]["closing_hour"].toString();
 
-          print("id: " + modelAgentSearch.id.toString());
-
-          print("favvvv: " + jsonArray[i]["fav"].toString());
-          print("ratting: " + modelAgentSearch.avgratting.toString());
 
           nearByRestaurantList.add(modelAgentSearch);
         }
-        SchedulerBinding.instance!.addPostFrameCallback((_) {
         setState(() {
           isloading = false;
         });
-        });
+
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
@@ -798,8 +792,8 @@ class _ExploreState extends State<Explore> {
       } else {
         setState(() {
           isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(jsonRes["message"].toString())));
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //     SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {

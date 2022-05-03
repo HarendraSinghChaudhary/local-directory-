@@ -777,15 +777,14 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               markers: markers.map((e) => e).toSet(),
             ),
             Padding(
-              padding: EdgeInsets.only(right: 25.0, top: 8, left: 10),
+              padding: EdgeInsets.only( top: 8, left: 10,right: 50 ),
               child: ListView(
                 shrinkWrap: true,
 
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8.w),
                     height: 6.h,
-                    width: double.infinity,
+                    margin: EdgeInsets.only(top: 3, left: 5, right: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.w),
                       color: Colors.white,
@@ -813,7 +812,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                       decoration: InputDecoration(
                         suffixIconConstraints: BoxConstraints(minWidth: 50),
                         prefixIconConstraints: BoxConstraints(minWidth: 50),
-                        contentPadding: EdgeInsets.only(top: 3),
+                        contentPadding: EdgeInsets.only(top: 0),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
