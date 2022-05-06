@@ -1575,9 +1575,9 @@ Future<dynamic> reviewListApi() async {
                           height: 6.h,
                           text: "Submit",
                           press: () {
-                           if (reviewController.text.toString() ==
+                           if (reviewController.text.toString().trim() ==
                                 "" ||
-                                reviewController.text.toString() ==
+                                reviewController.text.toString().trim() ==
                                     "null") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

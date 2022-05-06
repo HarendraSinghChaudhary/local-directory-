@@ -763,7 +763,7 @@ class _HotspotState extends State<Hotspot> {
                                                                         index]
                                                                     .messageController
                                                                     .text
-                                                                    .toString();
+                                                                    .toString().trim();
 
                                                                 if (mesage ==
                                                                         "" ||
@@ -1596,14 +1596,14 @@ class _HotspotState extends State<Hotspot> {
                               fontSize: 12.sp,
                             ),
                             suffixIcon: Visibility(
-                              visible: reviewController.text.toString() == "" ||
-                                      reviewController.text.toString() == "null"
+                              visible: reviewController.text.toString().trim() == "" ||
+                                      reviewController.text.toString().trim() == "null"
                                   ? false
                                   : true,
                               child: InkWell(
                                   onTap: () {
                                     var mesage =
-                                        reviewController.text.toString();
+                                        reviewController.text.toString().trim();
 
                                     if (reviewEnable == true) {
                                       if (mesage == "" || mesage == "null") {

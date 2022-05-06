@@ -3484,7 +3484,21 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   SnackBar(
                                       content: Text("Please select tag")));
                             } else {
-                              if (currentPath != "") {
+
+                              var message = reviewController2.toString().trim();
+
+
+                              if (message == "" || message == "null") {
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please enter review")));
+
+
+                                
+                              } else {
+
+                                 if (currentPath != "") {
                                 file = File(currentPath.toString());
                                 fileName = path.basename(file!.path);
                                 print("Filename " + fileName.toString());
@@ -3495,6 +3509,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 checkInDialog2();
                               });
                               await checkInApi("1");
+                              }
+
+
+
+                             
 
                             }
                           })
@@ -3955,9 +3974,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 SnackBar(
                                     content:
                                     Text("Please select rating")));
-                          } else if (reviewController.text.toString() ==
+                          } else if (reviewController.text.toString().trim() ==
                               "" ||
-                              reviewController.text.toString() ==
+                              reviewController.text.toString().trim() ==
                                   "null") {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
