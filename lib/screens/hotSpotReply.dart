@@ -1080,7 +1080,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
 
 
-                            var messge = messageController.text.toString();
+                            var messge = messageController.text.toString().trim();
 
                             if (messge == "" || messge == "null") {
                               ScaffoldMessenger.of(context).showSnackBar(

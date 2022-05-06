@@ -3905,9 +3905,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                   SnackBar(
                                       content:
                                       Text("Please select rating")));
-                            } else if (reviewController.text.toString() ==
+                            } else if (reviewController.text.toString().trim() ==
                                 "" ||
-                                reviewController.text.toString() ==
+                                reviewController.text.toString().trim() ==
                                     "null") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
