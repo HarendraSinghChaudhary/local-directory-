@@ -748,7 +748,7 @@ class _HomeState extends State<Home> {
         body: {
           "id": id.toString(),
           "lat":  latPosition.toString(),//"26.8546714985159",
-          "long":longPosition.toString(),//"75.76675952576491",
+          "long":longPosition.toString(),//"75.76675952576491"
         });
 
     var jsonRes;

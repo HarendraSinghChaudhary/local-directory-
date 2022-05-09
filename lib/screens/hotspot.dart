@@ -803,6 +803,7 @@ class _HotspotState extends State<Hotspot> {
                                                     hintStyle: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white)),
+                                                textInputAction: TextInputAction.done,
                                               ),
                                             ),
                                           )

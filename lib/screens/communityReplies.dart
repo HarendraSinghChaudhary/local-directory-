@@ -755,10 +755,10 @@ class _CommunityRepliesState extends State<CommunityReplies> {
                   ),
                   InkWell(
                       onTap: () {
-                        if (messageController.text != "" &&
-                            messageController.text != "null") {
+                        if (messageController.text.toString().trim() != "" &&
+                            messageController.text.toString().trim()  != "null") {
                           replyOnHotspotReplyApi(tabOne.toString(),
-                              messageController.text.toString());
+                              messageController.text.toString().trim());
 
                           setState(() {
                             messageController.text = "";

@@ -183,79 +183,89 @@ class _ReviewsState extends State<Reviews> {
                                   color: kBackgroundColor),
                               child: Row(
                                 children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(bottom: 0.h, left: 2.w),
-                                    child: reviewList[index].business_images.toString()!="null"?CircleAvatar(
-                                      radius: 6.w,
-                                      backgroundImage: NetworkImage(reviewList[index].business_images.toString()
-                                            ),
-                                    )
-                                        :CircleAvatar(
-                                      radius: 6.w,
-                                      backgroundImage: AssetImage("assets/images/resimage.jpg"
+                                  Flexible(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.only(bottom: 0.h, left: 2.w),
+                                      child: reviewList[index].business_images.toString()!="null"?CircleAvatar(
+                                        radius: 6.w,
+                                        backgroundImage: NetworkImage(reviewList[index].business_images.toString()
+                                              ),
+                                      )
+                                          :CircleAvatar(
+                                        radius: 6.w,
+                                        backgroundImage: AssetImage("assets/images/resimage.jpg"
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Container(
-                                    width: 55.w,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width:50.w,
-                                          child: Text(
-                                            busId=  reviewList[index].business_name.toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: 11.sp,
-                                                color: kCyanColor,
-                                                fontFamily: "Segoepr"),
+
+                                  Flexible(
+                                    flex: 6,
+                                    child: Container(
+                                      width: 55.w,
+                                      margin: EdgeInsets.only(left: 5),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width:50.w,
+                                            child: Text(
+                                              busId=  reviewList[index].business_name.toString(),
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: kCyanColor,
+                                                  fontFamily: "Segoepr"),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 0.1.h,
-                                        ),
-                                        Container(
-                                          width: 45.w,
-                                          child: Text(
-                                            reviewList[index].review.toString(),
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              //overflow: TextOverflow.ellipsis,
-                                                fontSize: 10.2.sp,
-                                                color: Color(0xFFCECECE),
-                                                fontFamily: 'Roboto'),
+                                          SizedBox(
+                                            height: 0.1.h,
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 2.h,
-                                        ),
-                                      ],
+                                          Container(
+                                            width: 45.w,
+                                            child: Text(
+                                              reviewList[index].review.toString(),
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                //overflow: TextOverflow.ellipsis,
+                                                  fontSize: 10.2.sp,
+                                                  color: Color(0xFFCECECE),
+                                                  fontFamily: 'Roboto'),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2.h,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Container(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          reviewList[index].timedelay.toString(),
-                                          style: TextStyle(
-                                            fontSize: 8.sp,
-                                            color: kPrimaryColor,
+                                  Flexible(
+                                    flex: 2,
+                                    child: Container(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            reviewList[index].timedelay.toString(),
+
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 8.sp,
+                                              color: kPrimaryColor,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(height: 1.h,),
-                                        reviewList[index].assets.toString()!=""?
-                                        SvgPicture.asset(reviewList[index].assets.toString(),
-                                            color: reviewList[index].assetscolor, width: reviewList[index].assetswidth,):
-                                        Container(height: 25, width: 10,)
-                                      ],
+                                          SizedBox(height: 1.h,),
+                                          reviewList[index].assets.toString()!=""?
+                                          SvgPicture.asset(reviewList[index].assets.toString(),
+                                              color: reviewList[index].assetscolor, width: reviewList[index].assetswidth,):
+                                          Container(height: 25, width: 10,)
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
