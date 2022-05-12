@@ -15,8 +15,13 @@ class HomeNav extends StatefulWidget {
   int index;
   var selectedList;
   String route= "home";
+  var business_type;
+  var hablamos_espanol ;
+  var religious_spiritual;
+  var current_promotion;
+
   HomeNav({Key? key, required this.index}):super(key:key);
-  HomeNav.one(this.index,this.selectedList, this.route);
+  HomeNav.one(this.index,this.selectedList, this.route, this.business_type, this.hablamos_espanol, this.religious_spiritual, this.current_promotion );
   @override
   _HomeNavState createState() => _HomeNavState();
 }
@@ -24,6 +29,10 @@ class HomeNav extends StatefulWidget {
 class _HomeNavState extends State<HomeNav> {
   int _index = 0;
   var list;
+  var business_type = "";
+  var hablamos_espanol = "";
+  var religious_spiritual = "";
+  var current_promotion = "";
   List widgets = [];
   var route = "home";
   //LanguageChange languageChange = new LanguageChange();
@@ -34,11 +43,16 @@ class _HomeNavState extends State<HomeNav> {
     _index = widget.index;
     list = widget.selectedList;
     route = widget.route;
+    hablamos_espanol = widget.hablamos_espanol.toString();
+    religious_spiritual = widget.religious_spiritual.toString();
+    business_type = widget.business_type.toString();
+    current_promotion = widget.current_promotion.toString();
 
     widgets = <Widget>[
       Home(),
       //Scaffold(),
-      GoogleMapScreen(list: list,route: route),
+      GoogleMapScreen(list: list,route: route, business_type: business_type.toString(), hablamos_espanol: hablamos_espanol.toString(), religious_spiritual: religious_spiritual.toString(), current_promotion: current_promotion.toString(),),
+    
      // ExampleRichText(),
       //AApp(),
       Hotspot(),

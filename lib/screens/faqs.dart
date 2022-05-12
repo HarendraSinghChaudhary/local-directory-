@@ -89,6 +89,7 @@ bool isloading = false;
               controller: _controller,
               itemCount: faqList.length,
               itemBuilder: (BuildContext context, int index) {
+               var abc = faqList[index];
                 return ExpandableNotifier(
                     child: Padding(
                   padding: const EdgeInsets.all(10),

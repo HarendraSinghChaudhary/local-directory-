@@ -28,8 +28,13 @@ import 'mainnnn.dart';
 class GoogleMapScreen extends StatefulWidget {
   var list;
   var route;
+  var business_type;
+  var hablamos_espanol;
+  var religious_spiritual;
+  var current_promotion;
 
-  GoogleMapScreen({Key? key, this.list, this.route}) : super(key: key);
+
+  GoogleMapScreen({Key? key, this.list, this.route, this.business_type, this.hablamos_espanol, this.religious_spiritual, this.current_promotion}) : super(key: key);
   @override
   _GoogleMapLocationTestingState createState() =>
       _GoogleMapLocationTestingState();
@@ -659,7 +664,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         } else {
           print("Filter Condition");
           // locatePosition();
-          filterData(widget.list);
+        
+          filterData(widget.list, widget.business_type, widget.hablamos_espanol, widget.religious_spiritual, widget.current_promotion);
           isFilter = true;
         }
       } else {
@@ -709,6 +715,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 }
   @override
   Widget build(BuildContext context) {
+    print("online one : "+ widget.business_type.toString());
+    print("hablamos one : "+ widget.hablamos_espanol.toString());
+    print("religious one : "+ widget.religious_spiritual.toString());
+    print("current_promotion one : "+ widget.current_promotion.toString());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -1560,7 +1571,12 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     }
   }
 
-  Future<dynamic> filterData(List<LifeStyle> key) async {
+  Future<dynamic> filterData(List<LifeStyle> key, String business_type,
+  String hablamos_espanol,
+  String religious_spiritual,
+  String current_promotion,
+
+  ) async {
     print("Filter");
 
     List<String> list = [];
@@ -1598,6 +1614,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           ),
           body: {
             "key": list.toString(),
+            "business_type": "",
+            "hablamos_espanol": "",
+            "religious_spiritual": "",
+            "current_promotion": "",
           });
       String msg = "";
       var jsonArray;

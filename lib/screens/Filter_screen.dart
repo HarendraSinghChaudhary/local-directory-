@@ -28,6 +28,11 @@ class _FliterScreenState extends State<FliterScreen> {
   bool statusOnly = false;
   bool statusCp = false;
   bool statusHe = false;
+  bool isReligious = false;
+  String onlineOnly = "";
+  String currentP = "";
+  String habEsp = "";
+  String resSpri = "0";
 
   List data = [];
   List areas = [];
@@ -195,6 +200,14 @@ class _FliterScreenState extends State<FliterScreen> {
                         onToggle: (val) {
                           setState(() {
                             statusOnly = val;
+                            if (statusOnly == true) {
+
+                              onlineOnly = "1";
+
+                              print("online 1 : "+onlineOnly.toString());
+                              
+                            } 
+                            print("status online: "+statusOnly.toString());
                           });
                         },
                       ),
@@ -234,6 +247,16 @@ class _FliterScreenState extends State<FliterScreen> {
                         onToggle: (val) {
                           setState(() {
                             statusCp = val;
+
+                            if (statusCp == true) {
+
+                              currentP = "1";
+
+                              print("current postion: "+currentP.toString());
+
+
+                              
+                            }
                           });
                         },
                       ),
@@ -273,6 +296,16 @@ class _FliterScreenState extends State<FliterScreen> {
                         onToggle: (val) {
                           setState(() {
                             statusHe = val;
+
+                            if (statusHe == true) {
+
+                              habEsp = "1";
+
+                              print("hablamos: "+habEsp.toString());
+
+
+                              
+                            }
                           });
                         },
                       ),
@@ -281,6 +314,63 @@ class _FliterScreenState extends State<FliterScreen> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 3.h,
+            ),
+
+               Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Religious Spiritual ",
+                    style: TextStyle(
+                        color: kCyanColor,
+                        fontSize: 13.sp,
+                        fontFamily: 'Roboto'),
+                  ),
+                  Center(
+                    child: Container(
+                      child: FlutterSwitch(
+                        activeColor: kPrimaryColor,
+                        width: 12.w,
+                        height: 3.h,
+                        valueFontSize: 0.0,
+                        toggleSize: 20.0,
+                        toggleColor: Colors.black,
+                        value: isReligious,
+                        borderRadius: 30.0,
+                        //padding: 8.0,
+                        showOnOff: true,
+                        onToggle: (val) {
+                          setState(() {
+                            isReligious = val;
+
+                            if (isReligious == true) {
+
+                              resSpri = "1";
+
+
+                              print("Relegios: "+resSpri.toString());
+
+
+                              
+                            } else 
+                            {
+                              resSpri = "0";
+
+                              print("Relegios: "+resSpri.toString());
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             SizedBox(
               height: 3.h,
             ),
@@ -319,7 +409,13 @@ class _FliterScreenState extends State<FliterScreen> {
                       width: 45.w, height: 7.h, text: "Apply", press: () {
 
                      Navigator.pushAndRemoveUntil(context,
-                         MaterialPageRoute(builder: (context) => HomeNav.one(1,lifeStyleList, "filter")), (r)=> false);
+                         MaterialPageRoute(builder: (context) =>
+                         HomeNav.one(1, lifeStyleList, "filter", 
+                         onlineOnly.toString() == "null" || onlineOnly.toString() == "" ? "0" : onlineOnly.toString() ,
+                         habEsp.toString() == "null" || habEsp.toString() == "" ? "0" : habEsp.toString() ,
+                         resSpri.toString() == "null" || resSpri.toString() == "" ? "0" : resSpri.toString() ,
+                         currentP.toString() == "null" || currentP.toString() == "" ? "0" : currentP.toString() ,)
+                ), (r)=> false);
                   })
                 ],
               ),

@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/guest_account.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/account.dart';
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
@@ -137,7 +138,7 @@ class _FavoritesState extends State<Favorites> {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussiness()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: favouriteRestaurantList[index].id.toString())));
               },
               child: Container(
                 width: double.infinity,
