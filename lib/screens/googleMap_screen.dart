@@ -1614,10 +1614,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           ),
           body: {
             "key": list.toString(),
-            "business_type": "",
-            "hablamos_espanol": "",
-            "religious_spiritual": "",
-            "current_promotion": "",
+            "business_type": widget.business_type.toString(),
+            "hablamos_espanol": widget.hablamos_espanol.toString(),
+            "religious_spiritual": widget.religious_spiritual.toString(),
+            "current_promotion": widget.current_promotion.toString(),
           });
       String msg = "";
       var jsonArray;
