@@ -47,6 +47,7 @@ class RestDatasource {
   static final GETBUISNESSDETAIL_URL = BASE_URL + "getbusinessDetails";
   static final FILTER = BASE_URL + "filter";
   static final CHANGEPASSWORD_URL = BASE_URL + "changepassword";
+  static final PRIVACYANDPOLICY_URL = BASE_URL + "privacypolicy";
 
    
 

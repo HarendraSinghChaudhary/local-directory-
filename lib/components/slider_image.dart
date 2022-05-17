@@ -36,8 +36,7 @@ class _CustomSliderWidgetState extends State<HotspotImageSlider> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
-      children: <Widget>[
+       clipBehavior: Clip.none, children: <Widget>[
         CarouselSlider(
           options: CarouselOptions(
             autoPlay: true,

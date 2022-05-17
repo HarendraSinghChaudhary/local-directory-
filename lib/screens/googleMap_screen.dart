@@ -647,7 +647,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     this.mesageTextController.addListener(_onSearchChanged);
     if (widget.route.toString() == "home") {
       print("RunHomeRoute");
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         locatePosition();
       });
 

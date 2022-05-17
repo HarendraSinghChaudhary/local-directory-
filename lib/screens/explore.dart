@@ -945,8 +945,7 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
-      children: <Widget>[
+      clipBehavior: Clip.none, children: <Widget>[
         Container(
           width: MediaQuery.of(context).size.width,
           child: CarouselSlider(
