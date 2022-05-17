@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/screens/editProfile.dart';
+import 'package:wemarkthespot/screens/payment_gateway.dart';
 
 
 
@@ -15,8 +17,16 @@ class Donation extends StatefulWidget {
 }
 
 class _DonationState extends State<Donation> {
+  var id = "";
 
   TextEditingController donationController = new TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
 
 
   @override
@@ -58,6 +68,21 @@ class _DonationState extends State<Donation> {
                 height: 6.h, 
                 text: "Donate", 
                 press: () {
+
+                 String msg = donationController.text.toString().trim();
+
+                  if(msg.toString() != "" ) {
+
+
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentGateway(price: donationController.text.toString().trim() , id: id.toString())));
+
+                  } else {
+                      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter donation amount')));
+
+                  }
+
+
                   
                 })
 
@@ -106,4 +131,11 @@ class _DonationState extends State<Donation> {
       ),
     );
   }
+
+  getData () async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    id = prefs.getString("id").toString();
+    print("id Print: " + id.toString());
+  }
+
 }
