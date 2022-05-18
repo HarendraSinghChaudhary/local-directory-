@@ -65,17 +65,35 @@ class _WebViewExampleState extends State<PaymentGateway> {
       // We're using a Builder here so we have a context that is below the Scaffold
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
+
         return WebView(
+     
           initialUrl: 'https://myprojectdesk.tech/development/wemarkthespot/payments/'+widget.id.toString()+"/"+widget.price.toString(),
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
+            print("this is :" + webViewController.toString());
+             print("this is1 :" + _controller.toString());
+             
           },
        
        
-        
+          onPageStarted: (String value){
+           
+          },
+          onPageFinished: (value){
+             print(",,,,,,"+value.toString());
+            if(value.toString()== "https://myprojectdesk.tech/development/wemarkthespot/strippayment"){
+              Future.delayed(const Duration(seconds: 2), () {
+                
+Navigator.of(context, rootNavigator: true).pop();
+
+});
+              
+            }
+          },
           gestureNavigationEnabled: true,
-          backgroundColor: const Color(0x00000000),
+          backgroundColor:  Colors.black,
         );
       }),
     
@@ -83,6 +101,11 @@ class _WebViewExampleState extends State<PaymentGateway> {
   }
 
 
+
+@override
+  void dispose() {
+    super.dispose();
+  }
 
 }
 

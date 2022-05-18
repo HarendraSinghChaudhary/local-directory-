@@ -74,7 +74,7 @@ class _DonationState extends State<Donation> {
                   if(msg.toString() != "" ) {
 
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentGateway(price: donationController.text.toString().trim() , id: id.toString())));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PaymentGateway(price: donationController.text.toString().trim() , id: id.toString())));
 
                   } else {
                       ScaffoldMessenger.of(context)
