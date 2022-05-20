@@ -81,15 +81,14 @@ class _WebViewExampleState extends State<PaymentGateway> {
           onPageStarted: (String value){
            
           },
-          onPageFinished: (value){
-             print(",,,,,,"+value.toString());
-            if(value.toString()== "https://myprojectdesk.tech/development/wemarkthespot/strippayment"){
-              Future.delayed(const Duration(seconds: 2), () {
-                
-Navigator.of(context, rootNavigator: true).pop();
-
-});
-              
+         onPageFinished: (value) {
+            if (value.toString() ==
+                    "https://myprojectdesk.tech/development/wemarkthespot/strippayment" ||
+                value.toString() ==
+                    "https://myprojectdesk.tech/development/wemarkthespot/payment_failed") {
+              Future.delayed(const Duration(seconds: 5), () {
+                Navigator.of(context, rootNavigator: true).pop();
+              });
             }
           },
           gestureNavigationEnabled: true,

@@ -167,6 +167,9 @@ class _CheckInState extends State<CheckIn> {
                   );
                 },
               ),
+          
+          
+          
           ],
         ),
       ),
@@ -292,6 +295,8 @@ class _CheckInState extends State<CheckIn> {
       });
     }
   }
+
+
 }
 
 

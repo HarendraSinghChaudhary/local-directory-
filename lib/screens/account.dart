@@ -271,7 +271,7 @@ class _UserAccountState extends State<UserAccount> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Reviews()));
+                      MaterialPageRoute(builder: (context) => Reviews(name: name.toString())));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -48,6 +48,7 @@ class RestDatasource {
   static final FILTER = BASE_URL + "filter";
   static final CHANGEPASSWORD_URL = BASE_URL + "changepassword";
   static final PRIVACYANDPOLICY_URL = BASE_URL + "privacypolicy";
+  static final DONATIONHISTORY_URl = BASE_URL + "donationhistory/";
 
    
 

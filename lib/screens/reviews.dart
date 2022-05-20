@@ -18,6 +18,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:wemarkthespot/screens/communityReplies.dart';
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
@@ -26,7 +27,8 @@ import 'package:path/path.dart' as path;
 import '../main.dart';
 
 class Reviews extends StatefulWidget {
-  const Reviews({Key? key}) : super(key: key);
+ var name;
+ Reviews ({required this.name});
 
   @override
   _ReviewsState createState() => _ReviewsState();
@@ -113,7 +115,17 @@ class _ReviewsState extends State<Reviews> {
                 BuildContext context,
                 int index,
               ) {
-                return cardList(index);
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityReplies(
+                      review_id: reviewList[index].business_reviews_id.toString(), 
+                      image: image, 
+                      username: widget.name.toString(), 
+                      message: reviewList[index].review.toString(), 
+                      buisness_id: reviewList[index].business_id.toString(), 
+                      )));
+                  },
+                  child: cardList(index));
               },
             ),
           ],
