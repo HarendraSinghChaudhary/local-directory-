@@ -655,14 +655,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       initilize(nearByRestaurantList);
     } else {
       if (widget.list != null) {
-        print("widget Length: " + widget.list.length.toString());
-        print("widget list: " + widget.list.toString());
         if (widget.list.length.toString() == "0") {
           locatePosition();
           nearBy();
           initilize(nearByRestaurantList);
         } else {
-          print("Filter Condition");
           // locatePosition();
         
           filterData(widget.list, widget.business_type, widget.hablamos_espanol, widget.religious_spiritual, widget.current_promotion);

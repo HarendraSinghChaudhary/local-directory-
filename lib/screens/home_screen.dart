@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,8 @@ import 'package:wemarkthespot/screens/video_player_widgett.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -34,15 +37,14 @@ class _HomeState extends State<Home> {
   bool isloading = false;
   VideoPlayerController? videoPlayerController;
   VideoPlayerController? videoPlayerController2;
-  var latPosition;
 
-  var longPosition;
 
   late Future gethomedata;
   late Position currentPosition;
-
+  FirebaseMessaging? messaging;
   fetchLocation() async {
     isloading = true;
+
     await Geolocator.checkPermission().then((value) async {
       print("Check Permission " + value.toString() + "__");
 
@@ -53,15 +55,15 @@ class _HomeState extends State<Home> {
             await Geolocator.getCurrentPosition().then((value) {
               print("Lat " + value.latitude.toString());
               print("Long " + value.longitude.toString());
-              latPosition = value.latitude;
-              longPosition = value.longitude;
+              lat = value.latitude.toString();
+              long = value.longitude.toString();
             });
           } else if (value == LocationPermission.whileInUse) {
             await Geolocator.getCurrentPosition().then((value) {
               print("Lat " + value.latitude.toString());
               print("Long " + value.longitude.toString());
-              latPosition = value.latitude;
-              longPosition = value.longitude;
+              lat = value.latitude.toString();
+              long = value.longitude.toString();
             });
           }
         });
@@ -69,15 +71,15 @@ class _HomeState extends State<Home> {
         await Geolocator.getCurrentPosition().then((value) {
           print("Lat " + value.latitude.toString());
           print("Long " + value.longitude.toString());
-          latPosition = value.latitude;
-          longPosition = value.longitude;
+          lat = value.latitude.toString();
+          long = value.longitude.toString();
         });
       } else if (value == LocationPermission.whileInUse) {
         await Geolocator.getCurrentPosition().then((value) {
           print("Lat " + value.latitude.toString());
           print("Long " + value.longitude.toString());
-          latPosition = value.latitude;
-          longPosition = value.longitude;
+          lat = value.latitude.toString();
+          long = value.longitude.toString();
         });
       } else if (value == LocationPermission.deniedForever) {
         await Geolocator.requestPermission().then((value) async {
@@ -86,15 +88,15 @@ class _HomeState extends State<Home> {
             await Geolocator.getCurrentPosition().then((value) {
               print("Lat " + value.latitude.toString());
               print("Long " + value.longitude.toString());
-              latPosition = value.latitude;
-              longPosition = value.longitude;
+              lat = value.latitude.toString();
+              long = value.longitude.toString();
             });
           } else if (value == LocationPermission.whileInUse) {
             await Geolocator.getCurrentPosition().then((value) {
               print("Lat " + value.latitude.toString());
               print("Long " + value.longitude.toString());
-              latPosition = value.latitude;
-              longPosition = value.longitude;
+              lat = value.latitude.toString();
+              long = value.longitude.toString();
             });
           }
         });
@@ -112,22 +114,7 @@ class _HomeState extends State<Home> {
   var isPlaying = false;
   var isInitialized = false;
   var isInitialized2 = false;
-  void locatePosition() async {
-    await Geolocator.checkPermission();
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
 
-    currentPosition = position;
-
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
-    print("lat: " + position.latitude.toString());
-    print("long " + position.longitude.toString());
-
-    latPosition = position.latitude.toString();
-    longPosition = position.longitude.toString();
-
-    homeApi();
-  }
 
   var quoatesid,
       quoatesname,
@@ -160,11 +147,19 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     //locatePosition();
-    fetchLocation();
+    print("lat "+lat.toString()+"^^");
+    if(lat.toString().trim()!="" && lat.toString().trim() != "null") {
+      print("case1");
+      homeApi();
+    }else{
+      print("case2");
+      fetchLocation();
+    }
     isPlaying = true;
 
 
     super.initState();
+    messaging = FirebaseMessaging.instance;
   }
 
 /*
@@ -729,12 +724,16 @@ class _HomeState extends State<Home> {
 
 
   Future<dynamic> homeApi() async {
+    FirebaseMessaging.instance.getToken().then((value) {
+      fcm_token = value.toString();
+      print("FCM "+fcm_token.toString()+"^^");
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-    print("id lat: " + latPosition.toString());
-    print("id long: " + longPosition.toString());
+    print("id lat: " + lat.toString());
+    print("id long: " + long.toString());
     if(mounted) {
       setState(() {
         isloading = true;
@@ -747,8 +746,9 @@ class _HomeState extends State<Home> {
         ),
         body: {
           "id": id.toString(),
-          "lat":  latPosition.toString(),//"26.8546714985159",
-          "long":longPosition.toString(),//"75.76675952576491"
+          "lat":  lat.toString(),//"26.8546714985159",
+          "long":long.toString(),//"75.76675952576491"
+          "fcm_token":fcm_token.toString()
         });
 
     var jsonRes;

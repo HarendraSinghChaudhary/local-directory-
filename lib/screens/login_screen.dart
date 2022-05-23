@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:email_validator/email_validator.dart';
@@ -16,6 +17,8 @@ import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/screens/otp_Screen.dart';
 import 'package:wemarkthespot/screens/signup_Screen.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -228,16 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     String password = "";
                     var email = emailController.text.toString().trim();
                    password = passwordController.text.toString().trim();
-                    
-
-
-
-                  
-
-
-
-
-
 
                     if (EmailValidator.validate(email) ) {
 
@@ -496,6 +489,10 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
   Future<dynamic> loginApi(String email, String password, ) async {
+    FirebaseMessaging.instance.getToken().then((value) {
+      fcm_token = value.toString();
+      print("FCM "+fcm_token.toString()+"^^");
+    });
     setState(() {
       isloading = true;
     });
@@ -513,7 +510,8 @@ class _LoginScreenState extends State<LoginScreen> {
         body: {
           "email": email.toString().trim(),
           "password": password.toString().trim(),
-          
+          "fcm_token": fcm_token.toString().trim(),
+
         });
 
     await request.then((http.Response response) {

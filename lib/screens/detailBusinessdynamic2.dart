@@ -25,25 +25,27 @@ import 'package:wemarkthespot/main.dart';
 import 'package:wemarkthespot/models/community_review_api_model.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
 import 'package:path/path.dart' as path;
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
-import 'package:wemarkthespot/screens/testingsheet2.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
-class DetailBussiness extends StatefulWidget {
-  NearBy nearBy;
+import 'detailBusiness.dart';
 
-  DetailBussiness({required this.nearBy});
+class DetailBussinessDynamicReview extends StatefulWidget {
+  var id;
+  var reviewId;
+  DetailBussinessDynamicReview({required this.id, this.reviewId});
 
   @override
-  _DetailBussinessState createState() => _DetailBussinessState();
+  _DetailBussinessDynamicReviewState createState() => _DetailBussinessDynamicReviewState();
 }
 
-class _DetailBussinessState extends State<DetailBussiness> {
+class _DetailBussinessDynamicReviewState extends State<DetailBussinessDynamicReview> {
   var ivStatus = "";
 
   // String fire = "Fire";
@@ -51,7 +53,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   // String notCool = "Not Cool";
 
   var communityId = "";
-
+  NearBy? nearby;
   //var ratting = "";
   var name = "";
   var check = "";
@@ -69,14 +71,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
   var replies_count = "";
   var clearFile = "";
   var videoLink = "";
-  var  description ="";
   bool isCheckinClicked = false;
+  static const double minExtent = 0.12;
+  static const double maxExtent = 0.95;
+
+  bool isExpanded = false;
+  double initialExtent = minExtent;
+  BuildContext? draggableSheetContext;
+
   List<CommunityReviewAPI> communityReviewList = [];
 
   late VideoPlayerController _controllerr;
 
   @override
   void initState() {
+    isloadingNew = true;
+    nearBy();
     communityReviewApi();
     print("vi: " + videoLink.toString());
 
@@ -113,336 +123,401 @@ class _DetailBussinessState extends State<DetailBussiness> {
   //get kPrimaryColor => null;
 
   bool isloading = false;
+  bool isloadingNew = false;
   final formkey = GlobalKey<FormState>();
   ScrollController _controller = new ScrollController();
   var image_video_status = "0";
 
-  static const double minExtent = 0.12;
-  static const double maxExtent = 0.95;
 
-  bool isExpanded = false;
-  double initialExtent = minExtent;
-  BuildContext? draggableSheetContext;
+
+
+  Future<dynamic> nearBy() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("id");
+    print("widgetid Print: " + widget.id.toString());
+    print("id Print: " + id.toString());
+    setState(() {
+      isloadingNew = true;
+    });
+
+    var request = http.post(
+        Uri.parse(
+          RestDatasource.GETBUISNESSDETAIL_URL,
+        ),
+        body: {
+          "id": widget.id.toString(),
+          "user_id": id
+        });
+    String msg = "";
+    var jsonArray;
+    var jsonRes;
+    var res;
+
+    await request.then((http.Response response) {
+      res = response;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      msg = jsonRes["message"].toString();
+      jsonArray = jsonRes['data'];
+    });
+
+    if (res.statusCode == 200) {
+      print(jsonRes["status"]);
+      if (jsonRes["status"].toString() == "true") {
+        nearby = new NearBy();
+        nearby?.id = jsonArray["id"].toString();
+        nearby?.business_name =
+            jsonArray["business_name"].toString();
+        nearby?.business_images =
+            jsonArray["business_images"].toString();
+        nearby?.ratting = jsonArray["ratting"].toString();
+        nearby?.description = jsonArray["description"].toString();
+        nearby?.business_category =
+            jsonArray["business_category "].toString();
+        nearby?.user_count = jsonArray["user_count"].toString();
+        nearby?.review_count =
+            jsonArray["review_count"].toString();
+        nearby?.location = jsonArray["location"].toString();
+        nearby?.category_name =
+            jsonArray["category_name"].toString();
+        nearby?.fav = jsonArray["fav"].toString();
+
+        nearby?.lat = jsonArray["lat"].toString();
+        nearby?.long = jsonArray["long"].toString();
+        nearby?.avgratting = jsonArray["avgratting"].toString();
+        nearby?.countUserreview = jsonArray["totalReviewusers"].toString();
+        nearby?.checkIn_status = jsonArray["checkIn_status"].toString();
+        nearby?.opening_time = jsonArray["opeing_hour"].toString();
+        nearby?.closing_time = jsonArray["closing_hour"].toString();
+        nearby?.distance = jsonArray["distance"].toString();
+
+        print("id: " + nearby!.id.toString());
+        print("favvvv: " + jsonArray["fav"].toString());
+        print("ratting: " + nearby!.avgratting.toString());
+
+
+
+        setState(() {
+          isloadingNew = false;
+        });
+
+      } else {
+        setState(() {
+          isloadingNew = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
+        });
+      }
+    } else {
+      setState(() {
+        isloadingNew = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Please try later")));
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      body: Stack(
+      body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
+      nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
         children: <Widget>[
           SizedBox.expand(
               child: SafeArea(
                   child: ListView(
-                    shrinkWrap: true,
-                    controller: _controller,
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            height: 33.h,
-                            width: double.infinity,
-                            child: Stack(
-                              children: [
-                            widget.nearBy.business_images.toString()=="null"? Container(
-                                  height: 33.h,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage("assets/images/11.jpeg"),
-                                          fit: BoxFit.fill)),
-                                ):Container(
-                                  height: 33.h,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              widget.nearBy.business_images.toString()),
-                                          fit: BoxFit.fill)),
-                                ),
-                                Positioned(
-                                  left: 2.w,
-                                  top: 1.h,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_back_ios_new_outlined,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                                Positioned(
-                                  top: 2.h,
-                                  left: 85.w,
-                                  child: InkWell(
-                                    onTap: () {
-                                      var favv = widget.nearBy.fav.toString() ==
-                                          "1"
-                                          ? "0"
-                                          : "1";
-                                      setState(() {
-                                        widget.nearBy.fav = favv;
-                                      });
+            shrinkWrap: true,
+            controller: _controller,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 33.h,
+                    width: double.infinity,
+                    child: Stack(
+                      children: [
+                        nearby!.business_images.toString()=="null"? Container(
+                          height: 33.h,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/images/11.jpeg"),
+                                  fit: BoxFit.fill)),
+                        ):Container(
+                      height: 33.h,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  nearby!.business_images.toString()),
+                              fit: BoxFit.fill)),
+                    ),
+                        Positioned(
+                          left: 2.w,
+                          top: 1.h,
+                          child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                Icons.arrow_back_ios_new_outlined,
+                                color: Colors.white,
+                              )),
+                        ),
+                        Positioned(
+                          top: 2.h,
+                          left: 85.w,
+                          child: InkWell(
+                            onTap: () {
+                              var favv = nearby!.fav.toString() == "1"
+                                  ? "0"
+                                  : "1";
+                              setState(() {
+                                nearby!.fav = favv;
+                              });
 
-                                      businessFavApi(
-                                          widget.nearBy.id.toString(), favv);
-                                    },
-                                    child: widget.nearBy.fav.toString() == "1"
-                                        ? SvgPicture.asset(
-                                      "assets/icons/active-hear.svg",
+                              businessFavApi(nearby!.id.toString(), favv);
+                            },
+                            child: nearby!.fav.toString() == "1"
+                                ? SvgPicture.asset(
+                                    "assets/icons/active-hear.svg",
 
-                                      // color: _hasBeenPressed ? kCyanColor : Colors.white,
-                                    )
-                                        : SvgPicture.asset(
-                                      "assets/icons/-heart.svg",
-                                    ),
+                                    // color: _hasBeenPressed ? kCyanColor : Colors.white,
+                                  )
+                                : SvgPicture.asset(
+                                    "assets/icons/-heart.svg",
                                   ),
-                                )
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 85.h,
+                          child: Text(
+                            //"Bar Name",
+                            nearby!.business_name.toString() != "null"
+                                ? nearby!.business_name.toString()
+                                : "Business Name",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color: kCyanColor,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Segoepr"),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Spacer(),
+                            Text(
+                              // "3.5",
+                              nearby!.avgratting.toString() != "null"
+                                  ? nearby!.avgratting.toString()
+                                  : "0",
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.w500
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                            SizedBox(
+                              width: 1.w,
+                            ),
+                            SvgPicture.asset(
+                              "assets/icons/star.svg",
+                              color: kPrimaryColor,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              //"Bar",
+                              nearby!.category_name.toString() != "null"
+                                  ? nearby!.category_name.toString()
+                                  : "",
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: kPrimaryColor,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  communityReviewList != null &&
+                                          communityReviewList.length > 0
+                                      ? communityReviewList.length.toString() +
+                                          " Reviews "
+                                      : "0 Reviews",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: kPrimaryColor,
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
+                                Text(
+                                  " | ",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: kPrimaryColor,
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
+                                Text(
+                                  nearby!.user_count.toString() +
+                                      " People",
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: kPrimaryColor,
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"
+                                      //fontFamily: "Segoepr"
+                                      ),
+                                ),
                               ],
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width*.75,
-                                      child: Text(
-                                        //"Bar Name",
-                                        widget.nearBy.business_name.toString() !=
-                                            "null"
-                                            ? widget.nearBy.business_name
-                                            .toString()
-                                            : "Business Name",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: kCyanColor,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Segoepr"),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          // "3.5",
-                                          widget.nearBy.avgratting.toString() !=
-                                              "null"
-                                              ? widget.nearBy.avgratting
-                                              .toString()
-                                              : "0",
-                                          style: TextStyle(
-                                              fontSize: 12.sp,
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w500
-                                            //fontFamily: "Segoepr"
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 1.w,
-                                        ),
-                                        SvgPicture.asset(
-                                          "assets/icons/star.svg",
-                                          color: kPrimaryColor,
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                          ],
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 0.1.h),
+                              child: Container(
+                                width: 55.w,
+                                child: Text(
+                                  //"1230 Roosvelt Road, Wichita",
+                                  nearby!.opening_time
+                                      .toString() !=
+                                      "null"
+                                      ? "Opening Hours: "+nearby!.opening_time.toString()
+                                      : "",
+
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colors.white,
+                                      // fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Container(
-                                        width: 200,
+                              ),
+                            ),
+                            Text(
+                              //Distance
+                              nearby!.closing_time.toString()!="null"?
+                              "Closing Hours: " +nearby!.closing_time.toString()
+                                  : " ",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                //fontFamily: "Segoepr"
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                double lat = double.parse(nearby!.lat);
+                                double long = double.parse(nearby!.long);
+                                openMap(lat, long);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/location-.svg",
+                                    color: kCyanColor,
+                                    width: 4.w,
+                                  ),
+                                  SizedBox(
+                                    width: 1.w,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0.1.h),
+                                    child: Container(
+                                      width: 55.w,
                                       child: Text(
-                                        //"Bar",
-                                        widget.nearBy.category_name.toString() !=
-                                            "null"
-                                            ? widget.nearBy.category_name
-                                            .toString()
+                                        //"1230 Roosvelt Road, Wichita",
+                                        nearby!.location.toString() !=
+                                                "null"
+                                            ? nearby!.location.toString()
                                             : "",
-                                        overflow: TextOverflow.ellipsis,
+
+                                        maxLines: 3,
+                                        textAlign: TextAlign.start,
                                         style: TextStyle(
-                                            fontSize: 14.sp,
-                                            color: kPrimaryColor,
+                                            fontSize: 11.sp,
+                                            color: Colors.white,
                                             // fontWeight: FontWeight.w500,
                                             fontFamily: "Roboto"),
                                       ),
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          communityReviewList != null &&
-                                              communityReviewList.length > 0
-                                              ? communityReviewList.length
-                                              .toString() +
-                                              " Reviews "
-                                              : "0 Reviews",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                            //fontFamily: "Segoepr"
-                                          ),
-                                        ),
-                                        Text(
-                                          " | ",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                            //fontFamily: "Segoepr"
-                                          ),
-                                        ),
-                                        Text(
-                                          widget.nearBy.user_count.toString() +
-                                              " People",
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: kPrimaryColor,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"
-                                            //fontFamily: "Segoepr"
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 1.h,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 0.1.h),
-                                      child: Container(
-                                        width: 55.w,
-                                        child: Text(
-                                          //"1230 Roosvelt Road, Wichita",
-                                          widget.nearBy.opening_time
-                                              .toString() !=
-                                              "null"
-                                              ? "Opening Hours: "+widget.nearBy.opening_time
-                                              .toString()
-                                              : "",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              //Distance
+                              "Distance: " +
+                                  nearby!.distance.toString() +
+                                  " mi",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
+                                  ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Container(
+                          height: 1,
+                          width: double.infinity,
+                          color: Color(0XFF7A7A7A),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Text(
+                          nearby!.description.toString()=="null"?"":nearby!.description.toString(),
 
-                                          maxLines: 3,
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                              fontSize: 11.sp,
-                                              color: Colors.white,
-                                              // fontWeight: FontWeight.w500,
-                                              fontFamily: "Roboto"),
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      //Distance
-                                        widget.nearBy.closing_time.toString()!="null"?
-                                        "Closing Hours: " +widget.nearBy.closing_time.toString()
-                                         : " ",
-                                      style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"
-                                        //fontFamily: "Segoepr"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: (){
-                                        double lat = double.parse(widget.nearBy.lat);
-                                        double long = double.parse(widget.nearBy.long);
-                                        openMap(lat, long);
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          SvgPicture.asset(
-                                            "assets/icons/location-.svg",
-                                            color: kCyanColor,
-                                            width: 4.w,
-                                          ),
-                                          SizedBox(
-                                            width: 1.w,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 0.1.h),
-                                            child: Container(
-                                              width: 55.w,
-                                              child: Text(
-                                                //"1230 Roosvelt Road, Wichita",
-                                                widget.nearBy.location
-                                                    .toString() !=
-                                                    "null"
-                                                    ? widget.nearBy.location
-                                                    .toString()
-                                                    : "",
-
-                                                maxLines: 3,
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                    fontSize: 11.sp,
-                                                    color: Colors.white,
-                                                    // fontWeight: FontWeight.w500,
-                                                    fontFamily: "Roboto"),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Text(
-                                      //Distance
-                                      "Distance: " +
-                                          widget.nearBy.distance.toString() +
-                                          " mi",
-                                      style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"
-                                        //fontFamily: "Segoepr"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                Container(
-                                  height: 1,
-                                  width: double.infinity,
-                                  color: Color(0XFF7A7A7A),
-                                ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                              Text(
-                              widget.nearBy.description.toString()=="null"?"":widget.nearBy.description.toString(),
-                               style: TextStyle(
+                          style: TextStyle(
                                       fontSize: 11.sp,
                                       color: Color(0XFFCECECE),
                                       // fontWeight: FontWeight.w500,
@@ -450,162 +525,153 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     //fontFamily: "Segoepr"
                                   ),
                               ),
-                                Center(
-                                  child: Text(
-                                    "Friday Night",
-                                    style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Segoepr"),
+                        Center(
+                          child: Text(
+                            "Friday Night",
+                            style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Segoepr"),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Text(
+                          "Happy Hours",
+                          style: TextStyle(
+                              fontSize: 12.sp,
+                              color: kCyanColor,
+                              fontFamily: "Roboto"),
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Start Date: 12/08/2021",
+                              style: TextStyle(
+                                  fontSize: 11.5.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"),
+                            ),
+                            Text(
+                              "End Date: 14/08/2021",
+                              style: TextStyle(
+                                  fontSize: 11.5.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 1.h,
-                                ),
-                                Text(
-                                  "Happy Hours",
-                                  style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: kCyanColor,
-                                      fontFamily: "Roboto"),
-                                ),
-                                SizedBox(
-                                  height: 1.h,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Start Date: 12/08/2021",
-                                      style: TextStyle(
-                                          fontSize: 11.5.sp,
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"),
-                                    ),
-                                    Text(
-                                      "End Date: 14/08/2021",
-                                      style: TextStyle(
-                                          fontSize: 11.5.sp,
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"
-                                        //fontFamily: "Segoepr"
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                Text(
-                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus euismod. Dictum fusce ut placerat orci nulla. Tincidunt ornare massa eget egestas purus viverra accumsan in nisl. Tempor id eu nisl nunc mi ipsum faucibus. Fusce id velit ut tortor pretium. Massa ultricies mi quis hendrerit dolor magna eget. Nullam eget felis eget nunc lobortis. Faucibus ornare suspendisse sed nisi. Sagittis eu volutpat odio facilisis mauris sit amet massa. Erat velit",
-                                  style: TextStyle(
-                                      fontSize: 11.sp,
-                                      color: Color(0XFFCECECE),
-                                      // fontWeight: FontWeight.w500,
-                                      fontFamily: "Roboto"
-                                    //fontFamily: "Segoepr"
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Text(
+                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus euismod. Dictum fusce ut placerat orci nulla. Tincidunt ornare massa eget egestas purus viverra accumsan in nisl. Tempor id eu nisl nunc mi ipsum faucibus. Fusce id velit ut tortor pretium. Massa ultricies mi quis hendrerit dolor magna eget. Nullam eget felis eget nunc lobortis. Faucibus ornare suspendisse sed nisi. Sagittis eu volutpat odio facilisis mauris sit amet massa. Erat velit",
+                          style: TextStyle(
+                              fontSize: 11.sp,
+                              color: Color(0XFFCECECE),
+                              // fontWeight: FontWeight.w500,
+                              fontFamily: "Roboto"
+                              //fontFamily: "Segoepr"
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          ivStatus = "";
+                          fileName = "";
+                          file = null;
+
+                          customDialog();
+                        },
+                        child: Container(
+                          height: 7.h,
+                          width: 44.w,
+                          decoration: BoxDecoration(
+                              //color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(12.w),
+                              border: Border.all(color: kPrimaryColor)),
+                          child: Center(
+                            child: Text(
+                              "Leave a Review",
+                              style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: kPrimaryColor,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
                                   ),
-                                ),
-                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 4.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  ivStatus = "";
-                                  fileName = "";
-                                  file = null;
-                                  fileList.clear();
-                                  images.clear();
-                                  currentPath = "";
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          ivStatus = "";
+                          fileName = "";
+                          file = null;
+                          fileList.clear();
+                          images.clear();
+                          currentPath = "";
 
+                          if (!isCheckinClicked) {
+                            isCheckinClicked = true;
+                            if(nearby!.checkIn_status=="1"){
+                              checkInApi("2");
+                            }else{
+                              checkInDialog2();
+ //checkInApi("1");
+                            }
 
-                                  customDialog();
-                                },
-                                child: Container(
-                                  height: 7.h,
-                                  width: 44.w,
-                                  decoration: BoxDecoration(
-                                    //color: kPrimaryColor,
-                                      borderRadius: BorderRadius.circular(12.w),
-                                      border: Border.all(color: kPrimaryColor)),
-                                  child: Center(
-                                    child: Text(
-                                      "Leave a Review",
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          color: kPrimaryColor,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"
-                                        //fontFamily: "Segoepr"
-                                      ),
-                                    ),
+                          }
+
+                        },
+                        child: Container(
+                          height: 7.h,
+                          width: 44.w,
+                          decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(12.w)),
+                          child: Center(
+                            child: Text(
+                              nearby!.checkIn_status =="1"? "Check Out":"Check In",
+                              style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  // fontWeight: FontWeight.w500,
+                                  fontFamily: "Roboto"
+                                  //fontFamily: "Segoepr"
                                   ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  ivStatus = "";
-                                  fileName = "";
-                                  file = null;
-                                  fileList.clear();
-                                  images.clear();
-                                  currentPath = "";
-
-                                  if (!isCheckinClicked) {
-                                    isCheckinClicked = true;
-                                   if( widget.nearBy.checkIn_status=="1"){
-                                      checkInApi("2");
-                                    }
-                                    
-                                    else{
-                                     // await checkInApi("1");
-                                      checkInDialog2();
-                                   }
-
-                                  }
-                                },
-                                child: Container(
-                                  height: 7.h,
-                                  width: 44.w,
-                                  decoration: BoxDecoration(
-                                      color: kPrimaryColor,
-                                      borderRadius: BorderRadius.circular(
-                                          12.w)),
-                                  child: Center(
-                                    child: Text(
-                                      widget.nearBy.checkIn_status == "1"
-                                          ? "Check Out"
-                                          : "Check In",
-                                      style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto"
-                                        //fontFamily: "Segoepr"
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                          SizedBox(
-                            height: 14.h,
-                          ),
-                        ],
+                        ),
                       )
                     ],
-                  ))),
+                  ),
+                  SizedBox(
+                    height: 14.h,
+                  ),
+                ],
+              )
+            ],
+          ))),
           _buildDraggableScrollableSheet(),
         ],
       ),
@@ -613,10 +679,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   DraggableScrollableSheet _buildDraggableScrollableSheet() {
-
     return DraggableScrollableSheet(
       key: Key(initialExtent.toString()),
-     /* initialChildSize: 0.12,
+      /* initialChildSize: 0.12,
       minChildSize: 0.12,
       maxChildSize: 0.95,*/
       minChildSize: minExtent,
@@ -637,7 +702,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
           ),
           child: ListView(
             controller: scrollController,
-            shrinkWrap: true,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -670,15 +734,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   ? Padding(
                 padding: EdgeInsets.only(top: 13.h),
                 child: Center(
-                    child:Column(children: [
-  SvgPicture.asset("assets/icons/logo-2.svg"),
-  Padding(
-    padding: const EdgeInsets.only(top:50),
-    child: Text("Be the first to leave a review",style: TextStyle(color: Colors.white,fontSize:18,fontWeight:FontWeight.w600,)),
-  ),
-                    ],)
-
-                    ),
+                    child: Image.asset("assets/images/nodata.jpg")),
               )
                   : ListView.builder(
                 shrinkWrap: true,
@@ -686,8 +742,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 controller: scrollController,
                 itemCount: communityReviewList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return
 
+                  return
+                    // communityReviewList.length == "0" ? Center(child: Text("Please type a message", style: TextStyle(color: Colors.white, fontSize: 20), ))
+                    // :
                     Column(
                       children: [
                         Card(
@@ -807,21 +865,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     .toString() ==
                                     "2"
                                     ? communityReviewList[index]
-                                    .business_review_image != null
-                                    ? communityReviewList[index]
-                                    .business_review_image.length > 0
-                                    ? SizedBox(
+                                    .business_review_image!=null?communityReviewList[index]
+                                    .business_review_image.length>0?SizedBox(
                                     height: 200,
                                     child: VideoItems(
-                                      videoPlayerController: VideoPlayerController
-                                          .network(communityReviewList[index]
-                                          .business_review_image[0]),
-
-
-                                    )
-                                )
-                                    : Container()
-                                    : Container()
+                                      videoPlayerController:
+                                      VideoPlayerController.network(
+                                          communityReviewList[index]
+                                              .business_review_image[0]
+                                      ),
+                                    )):Container():Container()
                                     : communityReviewList[index]
                                     .image_video_status
                                     .toString() ==
@@ -833,8 +886,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       items:
                                       communityReviewList[index]
                                           .business_review_image,
-                                    )
-                                )
+                                    ))
                                     : Container(
                                   width: 0,
                                   height: 0,
@@ -859,7 +911,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                     index]
                                                         .like_status
                                                         .toString() ==
-                                                        "1") {} else {
+                                                        "1") {
+                                                    } else {
                                                       likeApi(
                                                           communityReviewList[
                                                           index]
@@ -917,7 +970,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                     index]
                                                         .like_status
                                                         .toString() ==
-                                                        "2") {} else {
+                                                        "2") {
+                                                    } else {
                                                       likeApi(
                                                           communityReviewList[
                                                           index]
@@ -1069,8 +1123,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                           index]
                                                               .image
                                                               .toString(),
-                                                          buisness_id: widget
-                                                              .nearBy.id,
+                                                          buisness_id: widget.id,
                                                         ))).then((value) {
                                               communityReviewApi();
                                             });
@@ -1101,12 +1154,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       SizedBox(
                                         width: 65.w,
                                         child: TextField(
-                                          controller: communityReviewList[index]
-                                              .messageTextController,
+                                          controller: communityReviewList[index].messageTextController,
                                           onChanged: (val) {
                                             if (val.toString() == " ") {
-                                              communityReviewList[index]
-                                                  .messageTextController.text =
+                                              communityReviewList[index].messageTextController.text =
                                               "";
                                             }
                                             print(val);
@@ -1118,7 +1169,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           minLines: 1,
                                           keyboardType:
                                           TextInputType.text,
-
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12.sp,
@@ -1139,8 +1189,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
                                               hintText: "Reply",
                                               suffixIcon: Padding(
-                                                padding: EdgeInsets.only(
-                                                    right: 8.0),
+                                                padding: EdgeInsets.only(right: 8.0),
                                                 child: Row(
                                                   mainAxisSize:
                                                   MainAxisSize.min,
@@ -1148,18 +1197,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
                                                     InkWell(
                                                         onTap: () {
-                                                          communityReviewList[index]
-                                                              .reply_image_video_status =
+                                                          communityReviewList[index].reply_image_video_status =
                                                           "0";
-                                                          communityReviewList[index]
-                                                              .replyfile = null;
-                                                          communityReviewList[index]
-                                                              .replyfileName =
-                                                          "";
+                                                          communityReviewList[index].replyfile = null;
+                                                          communityReviewList[index].replyfileName = "";
                                                           currentPath = "";
                                                           setState(() {});
-                                                          getFileDialogReply(
-                                                              index);
+                                                          getFileDialogReply(index);
                                                         },
                                                         child: Icon(
                                                             Icons
@@ -1170,27 +1214,23 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                     SizedBox(width: 2.w),
 
 
+
                                                     InkWell(
                                                         onTap: () {
                                                           var mesage =
-                                                          communityReviewList[index]
-                                                              .messageTextController
+                                                          communityReviewList[index].messageTextController
                                                               .text
                                                               .toString();
 
                                                           if (mesage == "" ||
-                                                              mesage ==
-                                                                  "null") {
-                                                            ScaffoldMessenger
-                                                                .of(
+                                                              mesage == "null") {
+                                                            ScaffoldMessenger.of(
                                                                 context)
-                                                                .showSnackBar(
-                                                                SnackBar(
-                                                                    content: Text(
-                                                                        "Please enter message")));
+                                                                .showSnackBar(SnackBar(
+                                                                content: Text(
+                                                                    "Please enter message")));
                                                           } else {
-                                                            FocusScope.of(
-                                                                context)
+                                                            FocusScope.of(context)
                                                                 .unfocus();
                                                             communityReplyOnReviewApi(
                                                                 communityReviewList[
@@ -1200,10 +1240,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                                 communityReviewList[
                                                                 index]
                                                                     .messageText
-                                                                    .toString(),
-                                                                index);
+                                                                    .toString(),index);
                                                           }
-                                                          communityReviewList[index]
+
+                                                           communityReviewList[index]
                                                               .messageTextController.clear();
                                                         },
                                                         child: Icon(Icons.send,
@@ -1224,14 +1264,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                   height: 2.h,
                                 ),
 
-                                communityReviewList[index]
-                                    .reply_image_video_status == "1"
-                                    ? Visibility(
-                                  visible: communityReviewList[index]
-                                      .replyfileList != null
-                                      ? communityReviewList[index].replyfileList
-                                      .length > 0 ? true : false
-                                      : false,
+                                communityReviewList[index].reply_image_video_status=="1"?Visibility(
+                                  visible: communityReviewList[index].replyfileList!=null?communityReviewList[index].replyfileList.length>0?true:false:false,
                                   child: Container(
                                     margin: EdgeInsets.only(left: 10),
                                     height: 8.h,
@@ -1240,11 +1274,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       shrinkWrap: true,
                                       controller: _controller,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: communityReviewList[index]
-                                          .replyfileList.length == 0
-                                          ? 0
-                                          : communityReviewList[index]
-                                          .replyfileList.length,
+                                      itemCount: communityReviewList[index].replyfileList.length==0?0:communityReviewList[index].replyfileList.length,
                                       itemBuilder: (BuildContext context,
                                           int i) {
                                         return Row(
@@ -1260,9 +1290,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                           .circular(
                                                           2.w),
                                                       image: DecorationImage(
-                                                          image: FileImage(
-                                                              communityReviewList[index]
-                                                                  .replyfileList[i]),
+                                                          image: FileImage(communityReviewList[index].replyfileList[i]),
                                                           fit:
                                                           BoxFit.fill)),
                                                 ),
@@ -1281,33 +1309,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                     child: Center(
                                                       child: InkWell(
                                                         onTap: () {
-                                                          communityReviewList[index]
-                                                              .replyfileList
-                                                              .removeAt(i);
-                                                          communityReviewList[index]
-                                                              .replyimages
-                                                              .removeAt(i);
-                                                          if (communityReviewList[index]
-                                                              .replyfileList !=
-                                                              null) {
-                                                            if (communityReviewList[index]
-                                                                .replyfileList
-                                                                .length == 0) {
-                                                              communityReviewList[index]
-                                                                  .replyimages
-                                                                  .clear();
-                                                              communityReviewList[index]
-                                                                  .replyfileList
-                                                                  .clear();
-                                                              communityReviewList[index]
-                                                                  .replyfile =
-                                                              null;
-                                                              communityReviewList[index]
-                                                                  .replyfileName =
-                                                              "null";
-                                                              communityReviewList[index]
-                                                                  .reply_image_video_status =
-                                                              "0";
+                                                          communityReviewList[index].replyfileList.removeAt(i);
+                                                          communityReviewList[index].replyimages.removeAt(i);
+                                                          if(communityReviewList[index].replyfileList !=null){
+                                                            if(communityReviewList[index].replyfileList.length==0){
+                                                              communityReviewList[index].replyimages.clear();
+                                                              communityReviewList[index].replyfileList.clear();
+                                                              communityReviewList[index].replyfile = null;
+                                                              communityReviewList[index].replyfileName = "null";
+                                                              communityReviewList[index].reply_image_video_status = "0";
+
                                                             }
                                                           }
                                                           setState(() {
@@ -1335,11 +1346,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                       },
                                     ),
                                   ),
-                                )
-                                    : Container(width: 0, height: 0,),
-                                communityReviewList[index]
-                                    .reply_image_video_status == "2"
-                                    ? Visibility(
+                                ):Container(width: 0,height: 0,),
+                                communityReviewList[index].reply_image_video_status=="2"? Visibility(
                                     visible: true,
                                     child: Container(
                                       height: 100,
@@ -1352,34 +1360,24 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .end,
+                                            mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.all(
-                                                    8.0),
+                                                padding: const EdgeInsets.all(8.0),
                                                 child: InkWell(
                                                   onTap: () {
                                                     setState(() {
-                                                      communityReviewList[index]
-                                                          .replyfileList
-                                                          .clear();
-                                                      communityReviewList[index]
-                                                          .replyfile = null;
-                                                      communityReviewList[index]
-                                                          .replyfileName = "";
+                                                      communityReviewList[index].replyfileList.clear();
+                                                      communityReviewList[index].replyfile = null;
+                                                      communityReviewList[index].replyfileName = "";
                                                       base64Image = "";
-                                                      communityReviewList[index]
-                                                          .reply_image_video_status =
-                                                      "0";
+                                                      communityReviewList[index].reply_image_video_status = "0";
                                                       currentPath = "";
-                                                      communityReviewList[index]
-                                                          .replyimages.clear();
+                                                      communityReviewList[index].replyimages.clear();
                                                     });
                                                   },
                                                   child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .only(
+                                                    padding: const EdgeInsets.only(
                                                         right: 5.0),
                                                     child: SvgPicture.asset(
                                                       "assets/icons/cross.svg",
@@ -1395,27 +1393,22 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             height: 1.5.h,
                                           ),
                                           Container(
-                                            width: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width,
+                                            width: MediaQuery.of(context).size.width,
                                             height: 50,
                                             child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
+                                              padding: const EdgeInsets.only(left: 8.0),
                                               child: Text(
                                                 fileName,
                                                 maxLines: 3,
-                                                style: TextStyle(
-                                                    color: Colors.black),
+                                                style: TextStyle(color: Colors.black),
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     )
-                                )
-                                    : Container(width: 0, height: 0,),
+                                ):Container(width: 0,height: 0,),
+
 
 
                                 SizedBox(
@@ -1445,6 +1438,586 @@ class _DetailBussinessState extends State<DetailBussiness> {
       DraggableScrollableActuator.reset(draggableSheetContext!);
     }
   }
+
+  checkInDialog2() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        isCheckinClicked = false;
+        return StatefulBuilder(builder: (context, setState) {
+          print("check: " + check.toString());
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            title: isloading == true
+                ? Column(
+              children: [
+                Center(
+                    child: Platform.isIOS
+                        ? CupertinoActivityIndicator()
+                        : CircularProgressIndicator()),
+                Text(
+                  "Please wait....",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                )
+              ],
+            )
+                : SingleChildScrollView(
+                child: Card(
+                  color: Colors.black,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop();
+
+                              reviewController2.clear();
+                              file = null;
+                              fileName = "";
+                              image_video_status = "0";
+                              ivStatus = "";
+                              currentPath = "";
+                              rattingcheckin = 0.0;
+                              check = "";
+                              fileList.clear();
+                              images.clear();
+                            },
+                            child: Container(
+                              height: 10.w,
+                              width: 10.w,
+                              color: Colors.transparent,
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  color: Colors.white,
+                                  width: 4.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 0.2.h,
+                      ),
+                      Text(
+                         "How do you find " "${nearby!.business_name.toString()}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.white,
+                            // fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"
+                          //fontFamily: "Segoepr"
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "fire";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/file.svg",
+                                    color: check == "fire"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.2.h,
+                                  ),
+                                  Text(
+                                    "Fire",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "fire"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+
+                          InkWell(
+                            onTap: () {
+                              print("tab");
+                              setState(() {
+                                check = "OkOk";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/bakance.svg",
+                                    color: check == "OkOk"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "OkOk",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "OkOk"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                check = "Not Cool";
+                              });
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/snow.svg",
+                                    color: check == "Not Cool"
+                                        ? kPrimaryColor
+                                        : kIconBackgroundColor,
+                                  ),
+                                  Text(
+                                    "Not Cool",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: check == "Not Cool"
+                                          ? kPrimaryColor
+                                          : Colors.white,
+
+                                      //fontFamily: "Roboto"
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // StatefulBuilder(builder: (context, setState) {
+                          //   return
+                          // }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        height: 2.5.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Your Overall Rating",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 0.6.h,
+                              ),
+                              RatingBar.builder(
+                                itemSize: 24,
+                                unratedColor: Color(0XFFCECECE),
+                                initialRating: rattingcheckin,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding:
+                                EdgeInsets.symmetric(horizontal: 0.0),
+                                itemBuilder: (context, _) =>
+                                    Icon(
+                                      Icons.star,
+                                      size: 6.w,
+                                      color: kPrimaryColor,
+                                    ),
+                                onRatingUpdate: (rating) {
+                                  print("Ratting :" + rating.toString());
+                                  rattingcheckin = rating;
+                                  //rat = rattingController.text.toString();
+                                  print("Rat: " + rattingcheckin.toString());
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Add Images/Video",
+                                style: TextStyle(
+                                  fontSize: 9.sp,
+                                  color: kCyanColor,
+
+                                  //fontFamily: "Roboto"
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      if (image_video_status == "2") {
+                                        final snackBar = SnackBar(
+                                            content: Text(
+                                                'Either image or video can be post at a time'));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          snackBar,
+                                        );
+                                      } else {
+                                        fileList.clear();
+                                        images.clear();
+                                        file = null;
+                                        fileName = "";
+                                        await pickImages().then((value) {
+                                          images = value;
+                                          //print("lengthhhhhh " + images.length.toString() + "*");
+                                        });
+                                        if (images.length > 0) {
+                                          image_video_status = "1";
+                                          ivStatus = "1";
+                                          images.forEach((element) async {
+                                            var path = await FlutterAbsolutePath.getAbsolutePath(
+                                                element.identifier.toString());
+                                            print("pathhh " + path.toString() + "*");
+
+                                            file = File(path.toString());
+                                            fileName = file!
+                                                .path
+                                                .split("/")
+                                                .last;
+                                            fileList.add(file!);
+                                            setState(() {
+
+                                            });
+                                          });
+
+
+                                        } else {
+                                          image_video_status = "0";
+                                          ivStatus = "0";
+                                          images.clear();
+                                          fileList.clear();
+                                        }
+                                        //getCheckInImage();
+                                      }
+                                      //                              ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             if (fileName.toString() != "null" || fileName.toString() != "") {
+                                      //                               ScaffoldMessenger.of(context)
+                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
+
+                                      //                             }
+                                    },
+                                    child: file == null
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : file!.path
+                                        .toString()
+                                        .endsWith("mp4")
+                                        ? Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg"))
+                                        : Container(
+                                        child: SvgPicture.asset(
+                                            "assets/icons/image.svg")),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  InkWell(
+                                      onTap: () async {
+                                        if (image_video_status == "1") {
+                                          final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Either image or video can be post at a time'));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            snackBar,
+                                          );
+                                        } else {
+                                          File file1;
+                                          trimFileName = "";
+                                          trimFile = null;
+                                          file = null;
+                                          fileName = "";
+                                          currentPath = "";
+                                          fileList.clear();
+                                          images.clear();
+                                          image_video_status = "0";
+                                          setState(() {
+
+                                          });
+                                          FilePickerResult? result =
+                                          await FilePicker.platform
+                                              .pickFiles(
+                                            type: FileType.video,
+                                            allowCompression: false,
+                                          );
+                                          if (result != null) {
+                                            file1 = File(
+                                                result.files.single.path!);
+
+
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TrimmerView(file1);
+                                                  }),
+                                            );
+                                            Navigator.of(context,
+                                                rootNavigator: true)
+                                                .pop();
+                                            setState(() {
+                                              if (currentPath.toString() !=
+                                                  "") {
+                                                ivStatus = "2";
+                                                file = File(
+                                                    currentPath.toString());
+                                                fileName = path.basename(
+                                                    file!.path.toString());
+                                                image_video_status = "2";
+                                              } else {
+                                                trimFileName = "";
+                                                trimFile = null;
+                                                file = null;
+                                                fileName = "";
+                                                currentPath = "";
+                                                fileList.clear();
+                                                images.clear();
+                                                image_video_status = "0";
+                                              }
+
+                                              if (fileName == "" ||
+                                                  fileName == null) {
+                                                fileName = "File:- ";
+                                                isVisible = false;
+                                              } else {
+                                                fileName = "File:- " + fileName;
+                                                isVisible = true;
+                                              }
+                                            });
+                                            checkInDialog2();
+                                          }
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                          "assets/icons/video.svg")),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Container(
+                        height: 12.h,
+                        width: 85.w,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(3.w)),
+                        child: TextFormField(
+                          controller: reviewController2,
+                          style: TextStyle(color: Color(0XFFCECECE)),
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 2.w, vertical: .2.h),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              hintText: "Type a Review...",
+                              hintStyle: TextStyle(
+                                  fontSize: 12.sp, color: Color(0XFFCECECE))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.2.h,
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          height: 8.h,
+                          width: 80.w,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                            fileList.length == 0 ? 0 : fileList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                              return Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 7.h,
+                                        width: 9.h,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(2.w),
+                                            image: DecorationImage(
+                                                image: FileImage(
+                                                    fileList[i]),
+                                                fit: BoxFit.fill)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 11.w, bottom: 5.h),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            fileList.removeAt(i);
+                                            images.removeAt(i);
+
+                                            if (fileList.length == 0) {
+                                              file = null;
+                                              fileName = "";
+                                              fileList.clear();
+                                              images.clear();
+                                              ivStatus = "0";
+                                              image_video_status = "0";
+                                            }
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 4.h,
+                                            width: 4.h,
+                                            color: Colors.transparent,
+                                            child: Center(
+                                              child: Container(
+                                                height: 2.h,
+                                                width: 2.h,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.white),
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/cross.svg",
+                                                    width: 8,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.0),
+                        child: Visibility(
+                            visible: isVisible,
+                            child: Text(
+                              fileName,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      DefaultButton(
+                          width: 35.w,
+                          height: 6.h,
+                          text: "Submit",
+                          press: () async {
+                            if (check.toString() == "" ||
+                                check.toString() == "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Please select tag")));
+                            } else {
+                              if (currentPath != "") {
+                                file = File(currentPath.toString());
+                                fileName = path.basename(file!.path);
+                                print("Filename " + fileName.toString());
+                              }
+                              Navigator.of(context, rootNavigator: true).pop();
+                              setState(() {
+                                isloading = true;
+                                checkInDialog2();
+                              });
+                              await checkInApi("1");
+
+                            }
+                          })
+                    ],
+                  ),
+                )),
+          );
+        });
+      },
+    );
+  }
+
   getFileDialogReply(int index) {
     showDialog(
       context: context,
@@ -1473,8 +2046,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               communityReviewList[index].replyimages.clear();
                               communityReviewList[index].replyfileList.clear();
                               communityReviewList[index].replyfile = null;
-                              communityReviewList[index]
-                                  .reply_image_video_status = "0";
+                              communityReviewList[index].reply_image_video_status = "0";
                               Navigator.of(context, rootNavigator: true).pop();
                             },
                             child: SvgPicture.asset(
@@ -1507,8 +2079,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           height: 6.h,
                           text: "Image",
                           press: () {
-                            if (communityReviewList[index]
-                                .reply_image_video_status == "2") {
+                            if (communityReviewList[index].reply_image_video_status == "2") {
                               final snackBar = SnackBar(
                                   content: Text(
                                       'Either image or video can be post at a time'));
@@ -1517,15 +2088,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               );
                             } else {
                               //getCheckInImage();
-                              communityReviewList[index].replyfile = null;
-                              communityReviewList[index].replyfileName = "";
-                              communityReviewList[index]
-                                  .reply_image_video_status = "0";
-                              communityReviewList[index].replyfileList.clear();
-                              communityReviewList[index].replyimages.clear();
-
 
                               pickImagesSlider(index);
+
+
                             }
                           }),
                       SizedBox(
@@ -1537,8 +2103,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           text: "Video",
                           press: () async {
                             File file1;
-                            if (communityReviewList[index]
-                                .reply_image_video_status == "1") {
+                            if (communityReviewList[index].reply_image_video_status == "1") {
                               final snackBar = SnackBar(
                                   content: Text(
                                       'Either image or video can be post at a time'));
@@ -1588,26 +2153,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 });
 
 
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop();
-                                print("2secpath " + currentPath.toString());
+                                Navigator.of(context, rootNavigator: true).pop();
+                                print("2secpath "+currentPath.toString());
                                 if (currentPath != "") {
-                                  communityReviewList[index].replyfile =
-                                      File(currentPath.toString());
-                                  fileName = path.basename(
-                                      communityReviewList[index].replyfile!
-                                          .path);
-                                  print("Filename " +
-                                      communityReviewList[index].replyfileName
-                                          .toString());
-                                  communityReviewList[index]
-                                      .reply_image_video_status = "2";
+                                  communityReviewList[index].replyfile = File(currentPath.toString());
+                                  fileName = path.basename(communityReviewList[index].replyfile!.path);
+                                  print("Filename " + communityReviewList[index].replyfileName.toString());
+                                  communityReviewList[index].reply_image_video_status = "2";
                                   setState(() {});
                                 } else {
                                   communityReviewList[index].replyfile = null;
                                   communityReviewList[index].replyfileName = "";
-                                  communityReviewList[index]
-                                      .reply_image_video_status = "0";
+                                  communityReviewList[index].reply_image_video_status = "0";
                                   setState(() {});
                                 }
                               }
@@ -1639,10 +2196,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
               element.identifier.toString());
 
           file = File(path.toString());
-          fileName = file!
-              .path
-              .split("/")
-              .last;
+          fileName = file!.path.split("/").last;
           fileList.add(file!);
           setState(() {
 
@@ -1664,32 +2218,41 @@ class _DetailBussinessState extends State<DetailBussiness> {
   Future<void> pickImagesSlider(int index) async {
     await pickImages().then((value) {
       communityReviewList[index].replyimages = value;
-      print("lengthhhhhh " +
-          communityReviewList[index].replyimages.length.toString() + "*");
+      print("lengthhhhhh "+communityReviewList[index].replyimages.length.toString()+"*");
+
     });
-    if (communityReviewList[index].replyimages.length > 0) {
+    if(communityReviewList[index].replyimages.length>0){
       communityReviewList[index].reply_image_video_status = "1";
-      communityReviewList[index].replyimages.forEach((element) async {
-        var path = await FlutterAbsolutePath.getAbsolutePath(
-            element.identifier.toString());
-        print("pathhh " + path.toString() + "*");
+      communityReviewList[index].replyimages.forEach((element) async{
+
+        var path =  await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+        print("pathhh "+path.toString()+"*");
 
         communityReviewList[index].replyfile = File(path.toString());
-        communityReviewList[index].replyfileName =
-            communityReviewList[index].replyfile!
-                .path
-                .split("/")
-                .last;
-        communityReviewList[index].replyfileList.add(
-            communityReviewList[index].replyfile!);
+        communityReviewList[index].replyfileName = communityReviewList[index].replyfile!.path.split("/").last;
+        communityReviewList[index].replyfileList.add(communityReviewList[index].replyfile!);
         setState(() {
 
         });
       });
-      Navigator.pop(context);
-    } else {
+
+
+    }else{
       communityReviewList[index].reply_image_video_status = "0";
       communityReviewList[index].replyimages.clear();
+    }
+    Navigator.pop(context);
+
+
+
+  }
+
+  Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
     }
   }
 
@@ -1715,8 +2278,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 )
               ],
-            )
-                : SingleChildScrollView(
+            ) : SingleChildScrollView(
                 child: SizedBox(
                   height: 18.h,
                   width: 95.w,
@@ -1770,14 +2332,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
       },
     );
   }
-  Future<void> openMap(double latitude, double longitude) async {
-    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    if (await canLaunch(googleUrl)) {
-      await launch(googleUrl);
-    } else {
-      throw 'Could not open the map.';
-    }
-  }
 
   Future<dynamic> addReportApi(String comId, int index) async {
     reportEnable = false;
@@ -1785,7 +2339,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community sdfdfsd id: " + comId.toString());
-    print("business community id: " + widget.nearBy.id.toString());
+    print("business community id: " + widget.id.toString());
     setState(() {
       // isloading = true;
     });
@@ -1796,7 +2350,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.nearBy.id.toString(),
+          "business_id": widget.id.toString(),
           "review_id": comId
         });
     String msg = "";
@@ -1842,8 +2396,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
   }
 
-  Future<dynamic> businessFavApi(String business_id,
-      String fav,) async {
+  Future<dynamic> businessFavApi(
+      String business_id,
+      String fav,
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -1890,9 +2446,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
             SnackBar(content: Text(jsonRes["message"].toString())));
       } else {
         if (fav == "1") {
-          widget.nearBy.fav = "0";
+          nearby!.fav = "0";
         } else {
-          widget.nearBy.fav = "1";
+          nearby!.fav = "1";
         }
         setState(() {
           isloading = false;
@@ -1915,7 +2471,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community id: " + comId.toString());
-    print("business community id: " + widget.nearBy.id.toString());
+    print("business community id: " + nearby!.id.toString());
     setState(() {
       isloading = true;
     });
@@ -1927,7 +2483,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         body: {
           "user_id": id.toString(),
           "likedislike": likeStatus.toString(),
-          "business_id": widget.nearBy.id.toString(),
+          "business_id": nearby!.id.toString(),
           "businessreview_id": comId
         });
     String msg = "";
@@ -1985,31 +2541,30 @@ class _DetailBussinessState extends State<DetailBussiness> {
         print("pathhh " + path.toString() + "*");
 
         file = File(path.toString());
-        fileName = file!
-            .path
-            .split("/")
-            .last;
+        fileName = file!.path.split("/").last;
         fileList.add(file!);
         setState(() {
 
         });
       });
-      /* if (type == "checkin") {
-        checkInDialog();
-      } else {
-        customDialog();
-      }*/
+      Navigator.pop(context);
 
     } else {
       image_video_status = "0";
       ivStatus = "0";
       images.clear();
-      fileList.clear();
+    }
+
+
+    if (type == "checkin") {
+      checkInDialog();
+    } else {
+      customDialog();
     }
   }
 
-  Future<dynamic> communityReplyOnReviewApi(String review_id,
-      String messageText, int index) async {
+  Future<dynamic> communityReplyOnReviewApi(
+      String review_id, String messageText, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("user_id: " + id.toString());
@@ -2018,7 +2573,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     print("type: " + "REVIEW");
     print("message: " + messageText);
     print("video_image_status: " + id.toString());
-    print("business_id: " + widget.nearBy.id);
+    print("business_id: " + nearby!.id);
     setState(() {
       isloading = true;
     });
@@ -2029,21 +2584,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
       ),
     );
 
-    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["review_id"] = review_id;
     request.fields["reply_id"] = "0";
     request.fields["type"] = "REVIEW";
     request.fields["message"] = messageText;
-    request.fields["video_image_status"] =
-        communityReviewList[index].reply_image_video_status;
+    request.fields["video_image_status"] = communityReviewList[index].reply_image_video_status;
 
     request.fields["video_image_status"] =
-    communityReviewList[index].reply_image_video_status.toString() != ""
-        ? communityReviewList[index].reply_image_video_status.toString()
-        : "0";
-    print("ivStatus: " +
-        communityReviewList[index].reply_image_video_status.toString());
+    communityReviewList[index].reply_image_video_status.toString() != "" ? communityReviewList[index].reply_image_video_status.toString() : "0";
+    print("ivStatus: " + communityReviewList[index].reply_image_video_status.toString());
     if (communityReviewList[index].reply_image_video_status.toString() == "1") {
       if (communityReviewList[index].replyfileList != null) {
         communityReviewList[index].replyfileList.forEach((element) async {
@@ -2051,12 +2602,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
               .add(await http.MultipartFile.fromPath("image[]", element.path));
         });
       }
-    } else
-    if (communityReviewList[index].reply_image_video_status.toString() == "2") {
+    } else if (communityReviewList[index].reply_image_video_status.toString() == "2") {
       if (communityReviewList[index].replyfile != null) {
         request.files
-            .add(await http.MultipartFile.fromPath(
-            "image[]", communityReviewList[index].replyfile!.path));
+            .add(await http.MultipartFile.fromPath("image[]", communityReviewList[index].replyfile!.path));
       }
     }
     String msg = "";
@@ -2106,7 +2655,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-    print("buisness Id: " + widget.nearBy.id.toString());
     setState(() {
       isloading = false;
     });
@@ -2117,7 +2665,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.nearBy.id.toString()
+          "business_id": widget.id.toString()
         });
     String msg = "";
     var jsonArray;
@@ -2172,10 +2720,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
               "video id: " + jsonArray[i]["business_review_image"].toString());
 
           communityReviewList.add(modelAgentSearch);
+
         }
-        if(mounted){
         setState(() {});
-        }
+
       } else {
         setState(() {
           // isloading = false;
@@ -2192,8 +2740,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
     }
   }
 
-  Future<dynamic> businessReviewApi(String rattingg,
-      String review,) async {
+  Future<dynamic> businessReviewApi(
+      String rattingg,
+      String review,
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -2228,7 +2778,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     //   request.fields["image_video_status"] = "0";
     // }
 
-    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["type"] = "REVIEW";
     request.fields["image_video_status"] =
@@ -2271,7 +2821,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         Navigator.pushReplacement(
             context,
             new MaterialPageRoute(
-                builder: (builder) => DetailBussiness(nearBy: widget.nearBy)));
+                builder: (builder) => DetailBussiness(nearBy: nearby!)));
 
         reviewController.clear();
         file = null;
@@ -2291,7 +2841,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
       } else {
         setState(() {
           isloading = false;
-          Navigator.of(context, rootNavigator: true).pop();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
@@ -2320,10 +2869,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       ivStatus = "";
     }
 
-    fileName = file!
-        .path
-        .split("/")
-        .last;
+    fileName = file!.path.split("/").last;
     print("ImageName: " + fileName.toString() + "_");
     print("Image: " + base64Image.toString() + "_");
     Navigator.pop(context);
@@ -2346,10 +2892,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       image_video_status = "0";
     }
 
-    fileName = file!
-        .path
-        .split("/")
-        .last;
+    fileName = file!.path.split("/").last;
     print("ImageName: " + fileName.toString() + "_");
     print("Image: " + base64Image.toString() + "_");
     Navigator.pop(context);
@@ -2357,7 +2900,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
   }
 
   checkInDialog() {
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -2425,7 +2967,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you find "+widget.nearBy.business_name.toString()+
+                        "How do you find "+nearby!.business_name.toString()+
                             " post check out",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -2949,18 +3491,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
     );
   }
 
-  checkInDialog2() {
-  
+  customDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        isCheckinClicked = false;
         return StatefulBuilder(builder: (context, setState) {
-          print("check: " + check.toString());
-           print("check: " +widget.nearBy.business_name.toString());
           return AlertDialog(
-           
             scrollable: true,
             backgroundColor: Colors.black,
             shape: RoundedRectangleBorder(
@@ -2981,6 +3518,8 @@ class _DetailBussinessState extends State<DetailBussiness> {
                 : SingleChildScrollView(
                 child: Card(
                   color: Colors.black,
+                  // height: 49.h,
+                  // width: 95.w,
                   child: Column(
                     children: [
                       Row(
@@ -2988,23 +3527,23 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop();
+                              Navigator.pop(context);
 
-                              reviewController2.clear();
+                              reviewController.clear();
                               file = null;
                               fileName = "";
-                              image_video_status = "0";
+                              trimFile = null;
+                              trimFileName = "";
                               ivStatus = "";
+                              image_video_status = "";
+                              ratting = 0.0;
                               currentPath = "";
-                              rattingcheckin = 0.0;
-                              check = "";
                               fileList.clear();
                               images.clear();
                             },
                             child: Container(
-                              height: 10.w,
-                              width: 10.w,
+                              height: 8.w,
+                              width: 8.w,
                               color: Colors.transparent,
                               child: Center(
                                 child: SvgPicture.asset(
@@ -3018,144 +3557,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         ],
                       ),
                       SizedBox(
-                        height: 0.2.h,
-                      ),
-                      Text(
-                        "How do you find " "${widget.nearBy.business_name
-                                            .toString()}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 13.sp,
-                            color: Colors.white,
-                            // fontWeight: FontWeight.w500,
-                            fontFamily: "Roboto"
-                          //fontFamily: "Segoepr"
-                        ),
-                      ),
-                      
-                      SizedBox(
-                        height: 1.5.h,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          // StatefulBuilder(builder: (context, setState) {
-                          //   return
-                          // }),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                check = "fire";
-                              });
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/file.svg",
-                                    color: check == "fire"
-                                        ? kPrimaryColor
-                                        : kIconBackgroundColor,
-                                  ),
-                                  SizedBox(
-                                    height: 1.2.h,
-                                  ),
-                                  Text(
-                                    "Fire",
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: check == "fire"
-                                          ? kPrimaryColor
-                                          : Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // StatefulBuilder(builder: (context, setState) {
-                          //   return
-                          // }),
-
-                          InkWell(
-                            onTap: () {
-                              print("tab");
-                              setState(() {
-                                check = "OkOk";
-                              });
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/bakance.svg",
-                                    color: check == "OkOk"
-                                        ? kPrimaryColor
-                                        : kIconBackgroundColor,
-                                  ),
-                                  Text(
-                                    "OkOk",
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: check == "OkOk"
-                                          ? kPrimaryColor
-                                          : Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                check = "Not Cool";
-                              });
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/snow.svg",
-                                    color: check == "Not Cool"
-                                        ? kPrimaryColor
-                                        : kIconBackgroundColor,
-                                  ),
-                                  Text(
-                                    "Not Cool",
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: check == "Not Cool"
-                                          ? kPrimaryColor
-                                          : Colors.white,
-
-                                      //fontFamily: "Roboto"
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // StatefulBuilder(builder: (context, setState) {
-                          //   return
-                          // }),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 2.5.h,
-                      ),
-                      Container(
-                        height: 0.5,
-                        width: double.infinity,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        height: 2.5.h,
+                        height: 1.h,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -3178,7 +3580,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                               RatingBar.builder(
                                 itemSize: 24,
                                 unratedColor: Color(0XFFCECECE),
-                                initialRating: rattingcheckin,
+                                initialRating: ratting,
                                 minRating: 1,
                                 direction: Axis.horizontal,
                                 allowHalfRating: false,
@@ -3193,9 +3595,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                     ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
-                                  rattingcheckin = rating;
+                                  ratting = rating;
                                   //rat = rattingController.text.toString();
-                                  print("Rat: " + rattingcheckin.toString());
+                                  print("Rat: " + ratting.toString());
                                 },
                               ),
                             ],
@@ -3219,7 +3621,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                 children: [
                                   InkWell(
                                     onTap: () async {
-                                      if (image_video_status == "2") {
+                                      if (ivStatus == "2") {
                                         final snackBar = SnackBar(
                                             content: Text(
                                                 'Either image or video can be post at a time'));
@@ -3228,6 +3630,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           snackBar,
                                         );
                                       } else {
+                                        // getImage();
                                         fileList.clear();
                                         images.clear();
                                         file = null;
@@ -3255,44 +3658,50 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             });
                                           });
 
-
                                         } else {
                                           image_video_status = "0";
                                           ivStatus = "0";
                                           images.clear();
                                           fileList.clear();
                                         }
-                                        //getCheckInImage();
+
+                                        /* await pickImagess("review");
+                                    setState(() {});*/
                                       }
-                                      //                              ScaffoldMessenger.of(context)
-                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
-
-                                      //                             if (fileName.toString() != "null" || fileName.toString() != "") {
-                                      //                               ScaffoldMessenger.of(context)
-                                      // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
-
-                                      //                             }
                                     },
-                                    child: file == null
-                                        ? Container(
+                                    child: /* file == null
+                                          ? Container(
+                                              child: SvgPicture.asset(
+                                                  "assets/icons/image.svg"))
+                                          : file!.path
+                                                  .toString()
+                                                  .endsWith("mp4")
+                                              ? */
+                                    Container(
                                         child: SvgPicture.asset(
                                             "assets/icons/image.svg"))
-                                        : file!.path
-                                        .toString()
-                                        .endsWith("mp4")
-                                        ? Container(
-                                        child: SvgPicture.asset(
-                                            "assets/icons/image.svg"))
-                                        : Container(
-                                        child: SvgPicture.asset(
-                                            "assets/icons/image.svg")),
+                                    /* : Container(
+                                                  height: 3.h,
+                                                  width: 3.h,
+                                                  decoration: BoxDecoration(
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(3.w),
+                                                      border: Border.all(
+                                                        color: Colors.grey,
+                                                        //Color(0xffD5D5D5)
+                                                      ),
+                                                      image: DecorationImage(
+                                                          image: FileImage(File(
+                                                              file!.path)))),
+                                                )*/
+                                    ,
                                   ),
                                   SizedBox(
                                     width: 3.w,
                                   ),
                                   InkWell(
                                       onTap: () async {
-                                        if (image_video_status == "1") {
+                                        if (ivStatus == "1") {
                                           final snackBar = SnackBar(
                                               content: Text(
                                                   'Either image or video can be post at a time'));
@@ -3301,7 +3710,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             snackBar,
                                           );
                                         } else {
-                                          File file1;
                                           trimFileName = "";
                                           trimFile = null;
                                           file = null;
@@ -3310,9 +3718,11 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           fileList.clear();
                                           images.clear();
                                           image_video_status = "0";
+                                          ivStatus = "0";
                                           setState(() {
 
                                           });
+                                          File file1;
                                           FilePickerResult? result =
                                           await FilePicker.platform
                                               .pickFiles(
@@ -3330,18 +3740,17 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                     return TrimmerView(file1);
                                                   }),
                                             );
+
                                             Navigator.of(context,
                                                 rootNavigator: true)
                                                 .pop();
                                             setState(() {
                                               if (currentPath.toString() !=
                                                   "") {
-                                                ivStatus = "2";
-                                                file = File(
-                                                    currentPath.toString());
+                                                file = File(currentPath.toString());
                                                 fileName = path.basename(
                                                     file!.path.toString());
-                                                image_video_status = "2";
+                                                ivStatus = "2";
                                               } else {
                                                 trimFileName = "";
                                                 trimFile = null;
@@ -3350,9 +3759,9 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                 currentPath = "";
                                                 fileList.clear();
                                                 images.clear();
+                                                ivStatus = "0";
                                                 image_video_status = "0";
                                               }
-
                                               if (fileName == "" ||
                                                   fileName == null) {
                                                 fileName = "File:- ";
@@ -3362,7 +3771,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                                 isVisible = true;
                                               }
                                             });
-                                            checkInDialog2();
+                                            customDialog();
                                           }
                                         }
                                       },
@@ -3384,7 +3793,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             color: Colors.grey.withOpacity(0.6),
                             borderRadius: BorderRadius.circular(3.w)),
                         child: TextFormField(
-                          controller: reviewController2,
+                          controller: reviewController,
                           style: TextStyle(color: Color(0XFFCECECE)),
                           maxLines: 5,
                           decoration: InputDecoration(
@@ -3404,7 +3813,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                         height: 1.2.h,
                       ),
                       Visibility(
-                        visible: true,
+                        visible: image_video_status == "1" ? true : false,
                         child: Container(
                           height: 8.h,
                           width: 80.w,
@@ -3412,8 +3821,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                             shrinkWrap: true,
                             controller: _controller,
                             scrollDirection: Axis.horizontal,
-                            itemCount:
-                            fileList.length == 0 ? 0 : fileList.length,
+                            itemCount: fileList.length,
                             itemBuilder: (BuildContext context, int i) {
                               return Row(
                                 children: [
@@ -3439,12 +3847,14 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                             images.removeAt(i);
 
                                             if (fileList.length == 0) {
+                                              trimFile = null;
+                                              trimFileName = "";
+                                              ivStatus = "0";
+                                              image_video_status = "0";
                                               file = null;
                                               fileName = "";
                                               fileList.clear();
                                               images.clear();
-                                              ivStatus = "0";
-                                              image_video_status = "0";
                                             }
                                             setState(() {
 
@@ -3484,542 +3894,61 @@ class _DetailBussinessState extends State<DetailBussiness> {
                           ),
                         ),
                       ),
+
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 3.0),
+                        padding: EdgeInsets.all(3.0),
                         child: Visibility(
                             visible: isVisible,
-                            child: Text(
-                              fileName,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12),
+                            child: Container(
+                              height: 40,
+                              width: 85.w,
+                              child: Text(
+                                fileName,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
                             )),
                       ),
-                      SizedBox(
-                        height: 1.h,
-                      ),
-                      DefaultButton(
+                      isloading
+                          ? Align(
+                          alignment: Alignment.center,
+                          child: Platform.isAndroid
+                              ? CircularProgressIndicator()
+                              : CupertinoActivityIndicator())
+                          : DefaultButton(
                           width: 35.w,
                           height: 6.h,
                           text: "Submit",
-                          press: () async {
-                            if (check.toString() == "" ||
-                                check.toString() == "null") {
+                          press: () {
+                            print("ratting " + ratting.toString());
+                            if (ratting.toString() == "0.0" ||
+                                ratting.toString() == "null") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text("Please select tag")));
-                            } else {
-
-                              var message = reviewController2.toString().trim();
-
-
-                              if (message == "" || message == "null") {
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      content:
+                                      Text("Please select rating")));
+                            } else if (reviewController.text.toString().trim() ==
+                                "" ||
+                                reviewController.text.toString().trim() ==
+                                    "null") {
+                              ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text("Please enter review")));
-
-
-                                
-                              } else {
-
-                                 if (currentPath != "") {
+                                      content:
+                                      Text("Please enter review")));
+                            } else {
+                              print("NowPath " + currentPath.toString());
+                              print("statussss " + ivStatus.toString());
+                              if (currentPath != "") {
                                 file = File(currentPath.toString());
                                 fileName = path.basename(file!.path);
-                                print("Filename " + fileName.toString());
-                              }
-                              Navigator.of(context, rootNavigator: true).pop();
-                              setState(() {
-                                isloading = true;
-                                checkInDialog2();
-                              });
-                              await checkInApi("1");
                               }
 
-
-
-                             
-
+                              businessReviewApi(ratting.toString(),
+                                  reviewController.text.toString());
                             }
                           })
-                    ],
-                  ),
-                )),
-          );
-        });
-      },
-    );
-  }
-
-  customDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return AlertDialog(
-            scrollable: true,
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.w)),
-            title: isloading == true
-                ? Column(
-              children: [
-                Center(
-                    child: Platform.isIOS
-                        ? CupertinoActivityIndicator()
-                        : CircularProgressIndicator()),
-                Text(
-                  "Please wait....",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                )
-              ],
-            )
-                : SingleChildScrollView(
-                child: Card(
-                  color: Colors.black,
-                  // height: 49.h,
-                  // width: 95.w,
-                  child: Column(
-                    children: [
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-
-                          reviewController.clear();
-                          file = null;
-                          fileName = "";
-                          trimFile = null;
-                          trimFileName = "";
-                          ivStatus = "";
-                          image_video_status = "";
-                          ratting = 0.0;
-                          currentPath = "";
-                          fileList.clear();
-                          images.clear();
-                        },
-                        child: Container(
-                          height: 8.w,
-                          width: 8.w,
-                          color: Colors.transparent,
-                          child: Center(
-                            child: SvgPicture.asset(
-                              "assets/icons/cross.svg",
-                              color: Colors.white,
-                              width: 4.w,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 1.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Your Overall Rating",
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              color: kCyanColor,
-
-                              //fontFamily: "Roboto"
-                            ),
-                          ),
-                          SizedBox(
-                            height: 0.6.h,
-                          ),
-                          RatingBar.builder(
-                            itemSize: 24,
-                            unratedColor: Color(0XFFCECECE),
-                            initialRating: ratting,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: false,
-                            itemCount: 5,
-                            itemPadding:
-                            EdgeInsets.symmetric(horizontal: 0.0),
-                            itemBuilder: (context, _) =>
-                                Icon(
-                                  Icons.star,
-                                  size: 6.w,
-                                  color: kPrimaryColor,
-                                ),
-                            onRatingUpdate: (rating) {
-                              print("Ratting :" + rating.toString());
-                              ratting = rating;
-                              //rat = rattingController.text.toString();
-                              print("Rat: " + ratting.toString());
-                            },
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Add Images/Video",
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              color: kCyanColor,
-
-                              //fontFamily: "Roboto"
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () async {
-                                  if (ivStatus == "2") {
-                                    final snackBar = SnackBar(
-                                        content: Text(
-                                            'Either image or video can be post at a time'));
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                      snackBar,
-                                    );
-                                  } else {
-                                    // getImage();
-                                    fileList.clear();
-                                    images.clear();
-                                    file = null;
-                                    fileName = "";
-                                    await pickImages().then((value) {
-                                      images = value;
-                                      print("lengthhhhhh " + images.length.toString() + "*");
-                                    });
-                                    if (images.length > 0) {
-                                      image_video_status = "1";
-                                      ivStatus = "1";
-                                      images.forEach((element) async {
-                                        var path = await FlutterAbsolutePath.getAbsolutePath(
-                                            element.identifier.toString());
-                                        print("pathhh " + path.toString() + "*");
-
-                                        file = File(path.toString());
-                                        fileName = file!
-                                            .path
-                                            .split("/")
-                                            .last;
-                                        fileList.add(file!);
-                                        setState(() {
-
-                                        });
-                                      });
-
-                                    } else {
-                                      image_video_status = "0";
-                                      ivStatus = "0";
-                                      images.clear();
-                                      fileList.clear();
-                                    }
-
-                                   /* await pickImagess("review");
-                                    setState(() {});*/
-                                  }
-                                },
-                                child: /* file == null
-                                          ? Container(
-                                              child: SvgPicture.asset(
-                                                  "assets/icons/image.svg"))
-                                          : file!.path
-                                                  .toString()
-                                                  .endsWith("mp4")
-                                              ? */
-                                Container(
-                                    child: SvgPicture.asset(
-                                        "assets/icons/image.svg"))
-                                /* : Container(
-                                                  height: 3.h,
-                                                  width: 3.h,
-                                                  decoration: BoxDecoration(
-                                                      // borderRadius:
-                                                      //     BorderRadius.circular(3.w),
-                                                      border: Border.all(
-                                                        color: Colors.grey,
-                                                        //Color(0xffD5D5D5)
-                                                      ),
-                                                      image: DecorationImage(
-                                                          image: FileImage(File(
-                                                              file!.path)))),
-                                                )*/
-                                ,
-                              ),
-                              SizedBox(
-                                width: 3.w,
-                              ),
-                              InkWell(
-                                  onTap: () async {
-                                    if (ivStatus == "1") {
-                                      final snackBar = SnackBar(
-                                          content: Text(
-                                              'Either image or video can be post at a time'));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        snackBar,
-                                      );
-                                    } else {
-                                      trimFileName = "";
-                                      trimFile = null;
-                                      file = null;
-                                      fileName = "";
-                                      currentPath = "";
-                                      fileList.clear();
-                                      images.clear();
-                                      image_video_status = "0";
-                                      ivStatus = "0";
-                                      setState(() {
-
-                                      });
-                                      File file1;
-                                      FilePickerResult? result =
-                                      await FilePicker.platform
-                                          .pickFiles(
-                                        type: FileType.video,
-                                        allowCompression: false,
-                                      );
-                                      if (result != null) {
-
-                                        file1 = File(
-                                            result.files.single.path!);
-
-
-                                        await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) {
-                                                return TrimmerView(file1);
-                                              }),
-                                        );
-
-                                        Navigator.of(context,
-                                            rootNavigator: true)
-                                            .pop();
-                                        setState(() {
-                                          if (currentPath.toString() !=
-                                              "") {
-                                            file = File(currentPath.toString());
-                                            fileName = path.basename(
-                                                file!.path.toString());
-                                            ivStatus = "2";
-                                          } else {
-                                            trimFileName = "";
-                                            trimFile = null;
-                                            file = null;
-                                            fileName = "";
-                                            currentPath = "";
-                                            fileList.clear();
-                                            images.clear();
-                                            ivStatus = "0";
-                                          }
-                                          if (fileName == "" ||
-                                              fileName == null) {
-                                            fileName = "File:- ";
-                                            isVisible = false;
-                                          } else {
-                                            fileName = "File:- " + fileName;
-                                            isVisible = true;
-                                          }
-                                        });
-                                        customDialog();
-                                      }else{
-                                        trimFileName = "";
-                                        trimFile = null;
-                                        file = null;
-                                        fileName = "";
-                                        currentPath = "";
-                                        fileList.clear();
-                                        images.clear();
-                                        ivStatus = "0";
-                                        image_video_status = "0";
-                                      }
-                                    }
-                                  },
-                                  child: SvgPicture.asset(
-                                      "assets/icons/video.svg")),
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
-                  Container(
-                    height: 12.h,
-                    width: 85.w,
-                    decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(3.w)),
-                    child: TextFormField(
-                      controller: reviewController,
-                      style: TextStyle(color: Color(0XFFCECECE)),
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 2.w, vertical: .2.h),
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: "Type a Review...",
-                          hintStyle: TextStyle(
-                              fontSize: 12.sp, color: Color(0XFFCECECE))),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 1.2.h,
-                  ),
-                    Visibility(
-                      visible: image_video_status == "1" ? true : false,
-                      child: Container(
-                        height: 8.h,
-                        width: 80.w,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          controller: _controller,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: fileList.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 7.h,
-                                      width: 9.h,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(2.w),
-                                          image: DecorationImage(
-                                              image: FileImage(
-                                                  fileList[i]),
-                                              fit: BoxFit.fill)),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 11.w, bottom: 5.h),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          fileList.removeAt(i);
-                                          images.removeAt(i);
-
-                                          if (fileList.length == 0) {
-                                            trimFile = null;
-                                            trimFileName = "";
-                                            ivStatus = "0";
-                                            image_video_status = "0";
-                                            file = null;
-                                            fileName = "";
-                                            fileList.clear();
-                                            images.clear();
-                                          }
-                                          setState(() {
-
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 4.h,
-                                          width: 4.h,
-                                          color: Colors.transparent,
-                                          child: Center(
-                                            child: Container(
-                                              height: 2.h,
-                                              width: 2.h,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.white),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  "assets/icons/cross.svg",
-                                                  width: 8,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 2.w,
-                                )
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.all(3.0),
-                      child: Visibility(
-                          visible: isVisible,
-                          child: Container(
-                            height: 40,
-                            width: 85.w,
-                            child: Text(
-                              fileName,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12),
-                            ),
-                          )),
-                    ),
-                    isloading
-                        ? Align(
-                        alignment: Alignment.center,
-                        child: Platform.isAndroid
-                            ? CircularProgressIndicator()
-                            : CupertinoActivityIndicator())
-                        : DefaultButton(
-                        width: 35.w,
-                        height: 6.h,
-                        text: "Submit",
-                        press: () {
-                          print("ratting " + ratting.toString());
-                          if (ratting.toString() == "0.0" ||
-                              ratting.toString() == "null") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                    Text("Please select rating")));
-                          } else if (reviewController.text.toString().trim() ==
-                              "" ||
-                              reviewController.text.toString().trim() ==
-                                  "null") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                    Text("Please enter review")));
-                          } else {
-                            print("NowPath " + currentPath.toString());
-                            print("statussss " + ivStatus.toString());
-                            if (currentPath != "") {
-                              file = File(currentPath.toString());
-                              fileName = path.basename(file!.path);
-                            }
-
-                            businessReviewApi(ratting.toString(),
-                                reviewController.text.toString());
-                          }
-                        })
                     ],
                   ),
                 )),
@@ -4038,7 +3967,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("user_id Prinnt: " + id.toString());
-    print("id Prinnt: " + widget.nearBy.id.toString().toString());
+    print("id Prinnt: " + nearby!.id.toString().toString());
     setState(() {
       isloading = true;
     });
@@ -4047,7 +3976,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         Uri.parse(
           RestDatasource.CHECKINAPI,
         ),
-        body: {"id": widget.nearBy.id.toString(), "user_id": id.toString()});
+        body: {"id": nearby!.id.toString(), "user_id": id.toString()});
 
     var res;
     var jsonRes;
@@ -4071,7 +4000,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
       image_video_status = "0";
 
       if (jsonRes["status"].toString() == "true") {
-        widget.nearBy.checkIn_status = "1";
+        nearby!.checkIn_status = "1";
         reviewController.clear();
         file = null;
         setState(() {
@@ -4105,7 +4034,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("user_id Prinnt: " + id.toString());
-    print("id Prinnt: " + widget.nearBy.id.toString().toString());
+    print("id Prinnt: " +nearby!.id.toString().toString());
     print("status Prinnt: " + checkinstatus.toString().toString());
     setState(() {
       isloading = true;
@@ -4117,7 +4046,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         Uri.parse(
           RestDatasource.CHECKINAPI,
         ),
-        body: {"id": widget.nearBy.id.toString(), "user_id": id.toString(), "type":checkinstatus});
+        body: {"id":nearby!.id.toString(), "user_id": id.toString(), "type":checkinstatus});
 
     await request.then((http.Response response) {
       res = response;
@@ -4130,23 +4059,21 @@ class _DetailBussinessState extends State<DetailBussiness> {
     });
 
     if (res?.statusCode == 200) {
+
       isCheckinClicked = false;
 
       if (jsonRes["status"].toString() == "true") {
-        reviewController.clear();
-        file = null;
-
         setState(() {
           isloading = false;
         });
         if(!jsonRes["message"].toString().contains("You are already")) {
-          widget.nearBy.checkIn_status = jsonRes["check_status"].toString();
+          nearby!.checkIn_status = jsonRes["check_status"].toString();
 
-          print("api status"+widget.nearBy.checkIn_status.toString()+"^^");
-          if (widget.nearBy.checkIn_status.toString() == "2") {
-
+          if (nearby!.checkIn_status.toString() == "2") {
             checkInDialog();
+          
           }
+          
            else {
              checkoutApi(
                  rattingcheckin.toString(),
@@ -4154,7 +4081,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
                  check.toString());
            }
         }else{
-          if (widget.nearBy.checkIn_status.toString() != "1") {
+          if (nearby!.checkIn_status.toString() != "1") {
             Navigator.of(context, rootNavigator: true).pop();
           }
         }
@@ -4186,10 +4113,13 @@ class _DetailBussinessState extends State<DetailBussiness> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-
+    setState(() {
+      isloading = true;
+      Navigator.of(context, rootNavigator: true).pop();
+      checkInDialog();
+    });
 
     print("id " + id.toString() + "");
-    print("review " + review.toString() + "");
 
     var request = http.MultipartRequest(
       "POST",
@@ -4212,10 +4142,10 @@ class _DetailBussinessState extends State<DetailBussiness> {
       print("tag1: " + tag.toString());
     }
     request.fields["type"] = "CHECK_IN";
-    request.fields["business_id"] = widget.nearBy.id.toString();
+    request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
     request.fields["image_video_status"] = image_video_status.toString();
-    print("ImageVideoStatus " + image_video_status.toString() + "^^");
+    print("ImageVideoSattus "+image_video_status.toString()+"^^");
     if (image_video_status.toString() == "1") {
       if (fileList != null) {
         fileList.forEach((element) async {
@@ -4255,11 +4185,12 @@ class _DetailBussinessState extends State<DetailBussiness> {
         communityReviewApi();
         reviewController.clear();
         file = null;
+
         Navigator.of(context, rootNavigator: true).pop();
         Navigator.pushReplacement(
             context,
             new MaterialPageRoute(
-                builder: (builder) => DetailBussiness(nearBy: widget.nearBy)));
+                builder: (builder) => DetailBussinessDynamic(id: nearby!.id)));
         setState(() {
           isloading = false;
         });

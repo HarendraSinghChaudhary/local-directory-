@@ -165,6 +165,7 @@ class _HotspotState extends State<Hotspot> {
   void _scrollToIndex(index) {
     _controller.animateTo(_height * index,
         duration: Duration(seconds: 2), curve: Curves.easeIn);
+
   }
 
   @override
@@ -2721,12 +2722,13 @@ class _HotspotState extends State<Hotspot> {
 
           getHostSpotList.add(modelAgentSearch);
           getHostSpotList2.add(modelAgentSearch);
-          setState(() {});
-        }
 
-        setState(() {
-          isloading = false;
-        });
+        }
+        if(mounted) {
+          setState(() {
+            isloading = false;
+          });
+        }
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>828058802410-phl7jnevf8n2pmnaa3k4fcjjuk6gkrq7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.828058802410-phl7jnevf8n2pmnaa3k4fcjjuk6gkrq7</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>828058802410-mb8n3vkgvsehukvr0tae1tt8dei50bf1.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDccREQzrXzR6WSX4g1pjAuxZzwtL0pjmc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>828058802410</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.wemarkthespot.wemarkthespot</string>
+	<key>PROJECT_ID</key>
+	<string>wemarkthespot-333811</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wemarkthespot-333811.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:828058802410:ios:b7dc7f97821131f28e1f93</string>
+</dict>
+</plist>

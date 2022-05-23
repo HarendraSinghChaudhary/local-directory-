@@ -117,6 +117,7 @@ class _ReviewsState extends State<Reviews> {
               ) {
                 return InkWell(
                   onTap: (){
+
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityReplies(
                       review_id: reviewList[index].business_reviews_id.toString(), 
                       image: image, 
@@ -204,6 +205,7 @@ class _ReviewsState extends State<Reviews> {
                                         radius: 6.w,
                                         backgroundImage: NetworkImage(reviewList[index].business_images.toString()
                                               ),
+
                                       )
                                           :CircleAvatar(
                                         radius: 6.w,

@@ -71,6 +71,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   var clearFile = "";
   var videoLink = "";
   bool isCheckinClicked = false;
+  static const double minExtent = 0.12;
+  static const double maxExtent = 0.95;
+
+  bool isExpanded = false;
+  double initialExtent = minExtent;
+  BuildContext? draggableSheetContext;
 
   List<CommunityReviewAPI> communityReviewList = [];
 
@@ -84,6 +90,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     print("vi: " + videoLink.toString());
 
     super.initState();
+    toggleDraggableScrollableSheet();
   }
 
   @override
@@ -670,10 +677,15 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
   DraggableScrollableSheet _buildDraggableScrollableSheet() {
     return DraggableScrollableSheet(
-      initialChildSize: 0.12,
+      key: Key(initialExtent.toString()),
+      /* initialChildSize: 0.12,
       minChildSize: 0.12,
-      maxChildSize: 0.95,
+      maxChildSize: 0.95,*/
+      minChildSize: minExtent,
+      maxChildSize: maxExtent,
+      initialChildSize: initialExtent,
       builder: (BuildContext context, ScrollController scrollController) {
+        draggableSheetContext = context;
         return Container(
           padding: EdgeInsets.zero,
           margin: EdgeInsets.zero,
@@ -1415,6 +1427,14 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     );
   }
 
+  void toggleDraggableScrollableSheet() {
+    if (draggableSheetContext != null) {
+      setState(() {
+        initialExtent = isExpanded ? minExtent : maxExtent;
+      });
+      DraggableScrollableActuator.reset(draggableSheetContext!);
+    }
+  }
   checkInDialog2() {
     showDialog(
       context: context,

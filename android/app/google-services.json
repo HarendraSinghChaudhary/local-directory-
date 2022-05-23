@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "828058802410",
+    "project_id": "wemarkthespot-333811",
+    "storage_bucket": "wemarkthespot-333811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828058802410:android:7da841feaf3b582e8e1f93",
+        "android_client_info": {
+          "package_name": "com.wemarkthespot.wemarkthespot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "828058802410-mb8n3vkgvsehukvr0tae1tt8dei50bf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wemarkthespot.wemarkthespot",
+            "certificate_hash": "5505472042f3991399e0e9f72098798e758ef45d"
+          }
+        },
+        {
+          "client_id": "828058802410-1dvqqqje09pe9mrs4n9u47ta7rsuv7ht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgTuxPS2YggfIDxbagXa3Ag5T3_IA7aTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "828058802410-1dvqqqje09pe9mrs4n9u47ta7rsuv7ht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

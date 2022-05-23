@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ import 'package:wemarkthespot/screens/otpSignUpScreen.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:http/http.dart' as http;
 import '../constant.dart';
+import '../main.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -384,7 +386,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<dynamic> userRegister(
+
       String username, String email, String password) async {
+    FirebaseMessaging.instance.getToken().then((value) {
+      fcm_token = value.toString();
+      print("FCM "+fcm_token.toString()+"^^");
+    });
     setState(() {
       isloading = true;
     });
@@ -401,7 +408,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         body: {
           "username": username.toString(),
           "email": email.toString(),
-          "password": password.toString()
+          "password": password.toString(),
+          "fcm_token": fcm_token.toString()
         });
 
     await request.then((http.Response response) {
