@@ -214,6 +214,8 @@ class _LocationSelectorState extends State<LocationSelector> {
     print("id Print: " + id.toString());
     print("id lat: " + lat.toString());
     print("id long: " + long.toString());
+    print("fcm token: " + fcm_token.toString());
+
     if(mounted) {
       setState(() {
         isloading = true;

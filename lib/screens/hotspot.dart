@@ -13,6 +13,7 @@ import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
@@ -37,7 +38,9 @@ import '../main.dart';
 import 'detailBusinessdynamic.dart';
 
 class Hotspot extends StatefulWidget {
-  const Hotspot({Key? key}) : super(key: key);
+  String? reviewId;
+
+  Hotspot({Key? key, this.reviewId}) : super(key: key);
 
   @override
   _HotspotState createState() => _HotspotState();
@@ -86,7 +89,9 @@ class _HotspotState extends State<Hotspot> {
   String selectedName = "";
   String selectedvalue = "";
   String searchText = "";
-
+  ItemScrollController _scrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+  ItemPositionsListener.create();
   @override
   void initState() {
 
@@ -209,7 +214,6 @@ class _HotspotState extends State<Hotspot> {
               children: [
                 ListView(
                   shrinkWrap: true,
-                  controller: _controller,
                   children: [
                     SizedBox(
                       height: 2.h,
@@ -236,7 +240,7 @@ class _HotspotState extends State<Hotspot> {
                             if (value.length > 0) {
                               getHostSpotList.clear();
                               searchData(value.toString());
-                            } 
+                            }
                             else {
                               getHostSpotList.clear();
                               getHotspotApi();
@@ -259,10 +263,11 @@ class _HotspotState extends State<Hotspot> {
                                 fontWeight: FontWeight.w700),
                             suffixIcon: InkWell(
                                 onTap: () {
-                                  mesageTextController.clear();
-                                  getHostSpotList.clear();
-                                  print("Clicked");
-                                   getHotspotApi();
+                                  _scrollController.scrollTo(index: 6, duration: Duration(seconds: 2));
+                                  // mesageTextController.clear();
+                                  // getHostSpotList.clear();
+                                  // print("Clicked");
+                                  //  getHotspotApi();
                                 },
                                 child: SvgPicture.asset(
                                   "assets/icons/cross.svg",
@@ -281,13 +286,17 @@ class _HotspotState extends State<Hotspot> {
                     SizedBox(
                       height: 3.5.h,
                     ),
-                    ListView.builder(
+                    ScrollablePositionedList.builder(
                       shrinkWrap: true,
-                      controller: _controller,
+                      itemScrollController: _scrollController,
+                      itemPositionsListener: itemPositionsListener,
                       itemCount: getHostSpotList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        print(
-                            "insdsk " + getHostSpotList[index].str.toString());
+                        if(isloading==false){
+                          if(getHostSpotList.length>6) {
+                            _scrollController.scrollTo(index: 6, duration: Duration(seconds: 1));
+                          }
+                        }
                         return Column(
                           children: [
                             GestureDetector(
@@ -2729,6 +2738,7 @@ class _HotspotState extends State<Hotspot> {
             isloading = false;
           });
         }
+
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
         //     SnackBar(content: Text(jsonRes["message"].toString())));
@@ -2736,7 +2746,18 @@ class _HotspotState extends State<Hotspot> {
         //Navigator.pop(context);
 
         // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
+        if(widget.reviewId.toString()!="null" && widget.reviewId.toString()!=""){
+          for(int i=0; i<getHostSpotList.length; i++){
+            print(widget.reviewId.toString());
+            print(getHostSpotList[i].id.toString());
+            if(widget.reviewId.toString()==getHostSpotList[i].id.toString()){
+            print("Condition true");
+              _controller.animateTo(400,
+                  duration: Duration(seconds: 2), curve: Curves.easeIn);
+            }
+          }
 
+        }
       } else {
         setState(() {
           isloading = false;

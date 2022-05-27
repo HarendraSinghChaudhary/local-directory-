@@ -470,6 +470,8 @@ class _SettingsState extends State<Settings> {
     print("id Print: " + id.toString());
     print("id lat: " + lat.toString());
     print("id long: " + long.toString());
+    print("fcm token: " + fcm_token.toString());
+
     if(mounted) {
       setState(() {
         isloading = true;

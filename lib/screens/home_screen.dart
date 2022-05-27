@@ -724,7 +724,7 @@ class _HomeState extends State<Home> {
 
 
   Future<dynamic> homeApi() async {
-    FirebaseMessaging.instance.getToken().then((value) {
+   await FirebaseMessaging.instance.getToken().then((value) {
       fcm_token = value.toString();
       print("FCM "+fcm_token.toString()+"^^");
     });
@@ -734,6 +734,7 @@ class _HomeState extends State<Home> {
     print("id Print: " + id.toString());
     print("id lat: " + lat.toString());
     print("id long: " + long.toString());
+    print("fcm token: " + fcm_token.toString());
     if(mounted) {
       setState(() {
         isloading = true;

@@ -13,6 +13,7 @@ import 'package:wemarkthespot/screens/googleMap_screen.dart';
 
 class HomeNav extends StatefulWidget {
   int index;
+  String? review_id;
   var selectedList;
   String route= "home";
   var business_type;
@@ -21,6 +22,7 @@ class HomeNav extends StatefulWidget {
   var current_promotion;
 
   HomeNav({Key? key, required this.index}):super(key:key);
+  HomeNav.two({Key? key, required this.index, this.review_id}):super(key:key);
   HomeNav.one(this.index,this.selectedList, this.route, this.business_type, this.hablamos_espanol, this.religious_spiritual, this.current_promotion );
   @override
   _HomeNavState createState() => _HomeNavState();
@@ -55,7 +57,7 @@ class _HomeNavState extends State<HomeNav> {
     
      // ExampleRichText(),
       //AApp(),
-      Hotspot(),
+      Hotspot(reviewId: widget.review_id,),
       Explore(),
       Account()
     ];
