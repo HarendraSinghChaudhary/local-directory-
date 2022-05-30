@@ -447,7 +447,7 @@ class _UserAccountState extends State<UserAccount> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Settings()));
+                      MaterialPageRoute(builder: (context) => Settings(name: name.toString(),)));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

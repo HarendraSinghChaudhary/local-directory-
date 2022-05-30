@@ -147,7 +147,7 @@ class _LocationSelectorState extends State<LocationSelector> {
         //                                         ),
 
         CustommSurffixIcon(
-          svgIcon: "assets/icons/dollar.svg",
+          svgIcon: "assets/icons/location-.svg",
         ),
       ),
       onChanged: (value) {

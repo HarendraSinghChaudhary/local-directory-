@@ -264,10 +264,10 @@ class _HotspotState extends State<Hotspot> {
                             suffixIcon: InkWell(
                                 onTap: () {
                                   _scrollController.scrollTo(index: 6, duration: Duration(seconds: 2));
-                                  // mesageTextController.clear();
-                                  // getHostSpotList.clear();
-                                  // print("Clicked");
-                                  //  getHotspotApi();
+                                  mesageTextController.clear();
+                                  getHostSpotList.clear();
+                                  print("Clicked");
+                                   getHotspotApi();
                                 },
                                 child: SvgPicture.asset(
                                   "assets/icons/cross.svg",
@@ -308,7 +308,8 @@ class _HotspotState extends State<Hotspot> {
                                   currentFocus.unfocus();
                                 }
                               },
-                              child: Card(
+                              child: 
+                              Card(
                                   margin: EdgeInsets.symmetric(horizontal: 2.w),
                                   color: kBackgroundColor,
                                   child: Column(
@@ -931,7 +932,7 @@ class _HotspotState extends State<Hotspot> {
                                           : Visibility(
                                               visible: false,
                                               child: SizedBox()),
-                                      SizedBox(height: 25),
+                                      // SizedBox(height: 25),
                                       getHostSpotList[index].coments.length > 0
                                           ? ListView.builder(
                                               shrinkWrap: true,
@@ -1221,6 +1222,8 @@ class _HotspotState extends State<Hotspot> {
                                               width: 0,
                                               height: 0,
                                             ),
+
+                                            SizedBox(height: 1.h,)
                                     ],
                                   )),
                             ),
@@ -1233,7 +1236,7 @@ class _HotspotState extends State<Hotspot> {
                       },
                     ),
                     SizedBox(
-                      height: 5.h,
+                      height: 7.h,
                     ),
                   ],
                 ),

@@ -998,7 +998,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                       SizedBox(
                         width: 74.w,
                         height: 6.h,
-                        child: TextField(
+                        child: TextFormField(
                           controller: messageController,
                           style: TextStyle(color: Colors.white, fontSize: 12.sp),
                           maxLines: 1,
@@ -2744,7 +2744,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                           width: 35.w,
                           height: 6.h,
                           text: "Image",
-                          press: () {
+                          press: ()  {
 
                             if (image_video_status == "2") {
                               final snackBar = SnackBar(
@@ -2855,12 +2855,18 @@ class _HotSpotReplyState extends State<HotSpotReply> {
           file = File(path.toString());
           fileName = file!.path.split("/").last;
           fileList.add(file!);
+
+         
           setState(() {
 
 
           });
+
+            Navigator.of(context, rootNavigator: false)
+                                  .pop();
         });
-        Navigator.pop(context);
+
+       
 
       }else{
         image_video_status = "0";

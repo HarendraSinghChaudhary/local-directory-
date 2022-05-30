@@ -23,7 +23,8 @@ import '../main.dart';
 import '../services/api_client.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+  var name;
+  Settings({required this.name});
 
   @override
   _SettingsState createState() => _SettingsState();
@@ -132,7 +133,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   InkWell(
                     onTap: () {
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUs()));
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUs(name: widget.name.toString(),)));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -307,7 +308,8 @@ class _SettingsState extends State<Settings> {
               height: 40,
               decoration: BoxDecoration(
                 color: kPrimaryColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+                
 
               ),
               child: Center(

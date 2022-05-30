@@ -1435,6 +1435,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       DraggableScrollableActuator.reset(draggableSheetContext!);
     }
   }
+ 
+ 
+ 
+ 
+ 
   checkInDialog2() {
     showDialog(
       context: context,
@@ -2237,7 +2242,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       communityReviewList[index].reply_image_video_status = "0";
       communityReviewList[index].replyimages.clear();
     }
-    Navigator.pop(context);
+   Navigator.pop(context);
 
 
 
@@ -3918,9 +3923,13 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           height: 6.h,
                           text: "Submit",
                           press: () {
+                             ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("Please select rating")));
                             print("ratting " + ratting.toString());
                             if (ratting.toString() == "0.0" ||
-                                ratting.toString() == "null") {
+                                ratting.toString() == "") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
@@ -3928,7 +3937,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                             } else if (reviewController.text.toString().trim() ==
                                 "" ||
                                 reviewController.text.toString().trim() ==
-                                    "null") {
+                                    "") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:

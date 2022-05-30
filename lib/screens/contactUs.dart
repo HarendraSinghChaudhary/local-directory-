@@ -16,7 +16,8 @@ import 'package:wemarkthespot/services/api_client.dart';
 
 
 class ContactUs extends StatefulWidget {
-  const ContactUs({ Key? key }) : super(key: key);
+  var name;
+  ContactUs({required this.name});
 
   @override
   _ContactUsState createState() => _ContactUsState();
@@ -31,8 +32,18 @@ class _ContactUsState extends State<ContactUs> {
   TextEditingController phoneController = new TextEditingController();
   TextEditingController commentController = new TextEditingController();
 
+
+
+  @override
+  void initState() {
+    nameController.text = widget.name.toString();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("name: "+widget.name.toString());
     return Scaffold(
 
 
@@ -159,7 +170,7 @@ class _ContactUsState extends State<ContactUs> {
          SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-      print("code Print: " + code.toString());
+      print("code Print: " + nameController.text.toString());
     setState(() {
       isloading = true;
     });
@@ -208,6 +219,11 @@ class _ContactUsState extends State<ContactUs> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(jsonRes["message"])),
         );
+
+
+        Navigator.pop(context);
+
+        //  Navigator.of(context, rootNavigator: true ).pop();
 
         // print('getotp1: ' + getotp.toString());
        

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -108,6 +110,14 @@ class _DonationState extends State<Donation> {
                     SizedBox(
                       height: 2.h,
                     ),
+
+                    isloading
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :
                     ListView.builder(
                       shrinkWrap: true,
                       controller: _controller,
