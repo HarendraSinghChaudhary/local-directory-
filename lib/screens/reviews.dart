@@ -19,12 +19,14 @@ import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
 import 'package:path/path.dart' as path;
 
 import '../main.dart';
+import '../models/body.dart';
 
 class Reviews extends StatefulWidget {
  var name;
@@ -117,14 +119,14 @@ class _ReviewsState extends State<Reviews> {
               ) {
                 return InkWell(
                   onTap: (){
+                    NotificationModel model = NotificationModel();
+                    model.review_id = reviewList[index].business_id.toString();
+                    model.type = "";
+                    model.reply_id = "";
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityReplies(
-                      review_id: reviewList[index].business_reviews_id.toString(), 
-                      image: image, 
-                      username: widget.name.toString(), 
-                      message: reviewList[index].review.toString(), 
-                      buisness_id: reviewList[index].business_id.toString(), 
-                      )));
+                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                   },
                   child: cardList(index));
               },
@@ -337,6 +339,7 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
     }
     request.fields["reviews_id"] = reviews_id;
     request.fields["user_id"] = id.toString();
+    if(fileList.length>0){
     print("ImageVideoStatus Print1: " + image_video_status.toString());
     if(image_video_status!="") {
       request.fields["image_video_status"] = image_video_status.toString();
@@ -351,11 +354,15 @@ Future<dynamic> editReviewApi(String reviews_id, String review, int index) async
         }
       } else if (image_video_status.toString() == "2") {
         if (file != null) {
-
           request.files
               .add(await http.MultipartFile.fromPath("image[]", file!.path));
         }
       }
+    }
+    }else{
+      image_video_status = "0";
+      request.fields["image_video_status"] = image_video_status.toString();
+      print("ImageVideoStatus " + image_video_status.toString() + "^^");
     }
 
     var jsonRes;
@@ -1146,19 +1153,24 @@ Future<dynamic> reviewListApi() async {
                                         images.clear();
                                         file = null;
                                         fileName = "";
-                                        int lengt = 3 - fileList.length;
-                                        print("lengthFile "+fileList.length.toString()+"^^");
+                                        int lengt = 3;
+                                        if(fileList.length>0) {
+                                          lengt = 3 - fileList.length;
+                                        }
+                                        print("lengthFile "+lengt.toString()+"^^");
                                         if(fileList.length<3) {
                                           await pickImagesMultiple(lengt).then((
                                               value) {
+
                                             images = value;
+                                            image_video_status = "1";
+                                            ivStatus = "1";
                                             print("lengthhhhhh " +
                                                 images.length.toString() + "*");
                                           });
 
                                           if (images.length > 0) {
-                                            image_video_status = "1";
-                                            ivStatus = "1";
+
 
                                             images.forEach((element) async {
                                               var path = await FlutterAbsolutePath
@@ -1180,10 +1192,7 @@ Future<dynamic> reviewListApi() async {
                                               });
                                             });
                                           } else {
-                                            image_video_status = "0";
-                                            ivStatus = "0";
                                             images.clear();
-                                            fileList.clear();
                                           }
                                         }
 
@@ -1273,6 +1282,7 @@ Future<dynamic> reviewListApi() async {
                                                     file!.path.toString());
                                                 ivStatus = "2";
                                                 image_video_status = "2";
+                                                fileList.add(file!);
                                                 print("FileName "+fileName+"");
                                               } else {
                                                 trimFileName = "";
@@ -1345,98 +1355,99 @@ Future<dynamic> reviewListApi() async {
                       SizedBox(
                         height: 1.2.h,
                       ),
-                      Visibility(
-                        visible: image_video_status == "1" ? true : false,
-                        child: Container(
-                          height: 8.h,
-                          width: 80.w,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            controller: _controller,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: fileList.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              print("sdksndksan "+fileList[i].path.toString());
-                              return Row(
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        height: 7.h,
-                                        width: 9.h,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(2.w),
-                                            image: DecorationImage(
-                                                image: FileImage(
-                                                    fileList[i]),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 11.w, bottom: 5.h),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            fileList.removeAt(i);
-                                     /*       if(reviewList[index].business_review_image.length>i) {
-                                              deleteImageApi(index,
-                                                  reviewList[index]
-                                                      .business_reviews_id,
-                                                  reviewList[index]
-                                                      .business_review_image[i]);
-                                              reviewList[index]
-                                                  .business_review_image
-                                                  .removeAt(i);
-                                            }
-*/
-                                            if (fileList.length == 0) {
-                                              trimFile = null;
-                                              trimFileName = "";
-                                              ivStatus = "0";
-                                              image_video_status = "0";
-                                              file = null;
-                                              fileName = "";
-                                              fileList.clear();
-                                              images.clear();
-                                            }
-                                            setState(() {
+                  Visibility(
+                          visible: image_video_status == "1" ? true : false,
+                          child: Container(
+                            height: 8.h,
+                            width: 80.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              controller: _controller,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: fileList.length,
+                              itemBuilder: (BuildContext context, int i) {
+                                return Row(
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          height: 7.h,
+                                          width: 9.h,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(2.w),
+                                              image: DecorationImage(
+                                                  image: FileImage(
+                                                      fileList[i]),
+                                                  fit: BoxFit.fill)),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 11.w, bottom: 5.h),
+                                          child: GestureDetector(
+                                            onTap: () {
 
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 4.h,
-                                            width: 4.h,
-                                            color: Colors.transparent,
-                                            child: Center(
-                                              child: Container(
-                                                height: 2.h,
-                                                width: 2.h,
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.white),
-                                                child: Center(
-                                                  child: SvgPicture.asset(
-                                                    "assets/icons/cross.svg",
-                                                    width: 8,
-                                                    color: Colors.black,
+                                              fileList.removeAt(i);
+
+                                       /*       if(reviewList[index].business_review_image.length>i) {
+                                                deleteImageApi(index,
+                                                    reviewList[index]
+                                                        .business_reviews_id,
+                                                    reviewList[index]
+                                                        .business_review_image[i]);
+                                                reviewList[index]
+                                                    .business_review_image
+                                                    .removeAt(i);
+                                              }
+*/
+                                              if (fileList.length == 0) {
+                                                trimFile = null;
+                                                trimFileName = "";
+                                                ivStatus = "0";
+                                                image_video_status = "0";
+                                                file = null;
+                                                fileName = "";
+                                                fileList.clear();
+                                                images.clear();
+                                              }
+                                              setState(() {
+                                              });
+                                            },
+                                            child: Container(
+                                              height: 4.h,
+                                              width: 4.h,
+                                              color: Colors.transparent,
+                                              child: Center(
+                                                child: Container(
+                                                  height: 2.h,
+                                                  width: 2.h,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.white),
+                                                  child: Center(
+                                                    child: SvgPicture.asset(
+                                                      "assets/icons/cross.svg",
+                                                      width: 8,
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  )
-                                ],
-                              );
-                            },
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 2.w,
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
+
                 /*      ivStatus=="1"?  Container(
 
                         child: Row(

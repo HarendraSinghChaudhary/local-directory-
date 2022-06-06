@@ -1,4 +1,4 @@
-import 'dart:convert';
+import  'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,11 +22,9 @@ import 'package:wemarkthespot/services/api_client.dart';
 import '../main.dart';
 import 'package:path/path.dart' as path;
 
-class CommunityRepliesById extends StatefulWidget {
-  var review_id;
+import '../models/body.dart';
 
-  CommunityRepliesById(
-      {required this.review_id,});
+class CommunityRepliesById extends StatefulWidget {
 
   @override
   _CommunityRepliesByIdState createState() => _CommunityRepliesByIdState();
@@ -52,17 +50,33 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
   var selectedIndex = -1;
   List<Asset> images = [];
   List<File> fileList = [];
-
+  var replyId = "";
+  var reviewId = "";
   @override
   void initState() {
     getDetailsofReview();
-    getReplyOnCommunityApi();
+
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute
+          .of(context)!
+          .settings
+          .arguments as NotificationModel;
+      if (args != null) {
+        print("review_id " + args.review_id.toString());
+        print("reply_id " + args.reply_id.toString());
+        replyId = args.reply_id;
+        review_id = args.review_id;
+        if (review_id.toString() != "" && review_id.toString() != "null") {
+          getDetailsofReview();
+          getReplyOnCommunityApi();
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("ID: " + widget.review_id.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kCyanColor,
@@ -784,7 +798,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
   }
 
   Future<dynamic> getDetailsofReview() async {
-    print("Widget Id " + widget.review_id);
+    print("Widget Id " + review_id);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -795,7 +809,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
     var request = http.get(
       Uri.parse(RestDatasource.GETREVIEBYID +
           // "3"
-          widget.review_id.toString() ),
+          review_id.toString() ),
     );
     String msg = "";
     var jsonArray;
@@ -818,7 +832,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
 
         detail.reviewId = jsonRes["data"]["id"].toString();
         detail.buisness_id = jsonRes["data"]["business_id"].toString();
-        detail.business_name = jsonRes["data"]["business_name"].toString();
+        detail.business_name1 = jsonRes["data"]["business_name"].toString();
         detail.review = jsonRes["data"]["review"].toString();
         detail.review_user_name = jsonRes["data"]["name"].toString();
         detail.image = jsonRes["data"]["image"].toString();
@@ -844,7 +858,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
     }
   }
   Future<dynamic> getReplyOnCommunityApi() async {
-    print("Widget Id " + widget.review_id);
+    print("Widget Id " + review_id);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
@@ -855,7 +869,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
     var request = http.get(
       Uri.parse(RestDatasource.GETREPLYONCOMMUNITYREVIEW_URL +
           // "3"
-          widget.review_id.toString() +
+          review_id.toString() +
           "&type=" +
           "REVIEW"),
     );
@@ -920,7 +934,6 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
               }
             }
           }
-          print("difference is " + modelAgentSearch.timedelay.toString());
           jsonErray = jsonRes['data'][i]['user'];
           UserData modelcheckIn = new UserData();
 
@@ -1943,7 +1956,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
     });
 
     print("id: " + id.toString());
-    print("review_id: " + widget.review_id.toString());
+    print("review_id: " + review_id.toString());
     print("reply_id: " + reply_id.toString());
     print("type: " + "REVIEW");
     print("message: " + messageText.toString());
@@ -1955,7 +1968,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
       ),
     );
     request.fields["user_id"] = id.toString();
-    request.fields["review_id"] = widget.review_id.toString();
+    request.fields["review_id"] = review_id.toString();
     request.fields["reply_id"] = reply_id;
     request.fields["type"] = "REVIEW";
     request.fields["message"] = messageText;
@@ -2220,7 +2233,15 @@ class UserData {
 class ReviewDetail{
   var reviewId = "";
   var buisness_id = "";
-  var business_name = "";
+  var business_id2 = "";
+  var business_id3 = "";
+  var business_id4 = "";
+  var business_id5 = "";
+  var business_name5 = "";
+  var business_name1 = "";
+  var business_name2 = "";
+  var business_name3 = "";
+  var business_name4 = "";
   var review_user_name = "";
   var image = "";
   var username = "";

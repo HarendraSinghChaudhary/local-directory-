@@ -17,7 +17,7 @@ class _MyAppState extends State<TestApp> {
         onWillPop: () async => !await _navigatorKey.currentState!.maybePop(),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            WidgetsBinding.instance!.addPostFrameCallback((_) => _insertOverlay(context));
+            WidgetsBinding.instance.addPostFrameCallback((_) => _insertOverlay(context));
             return Navigator(
               key: _navigatorKey,
               onGenerateRoute: (RouteSettings settings) {

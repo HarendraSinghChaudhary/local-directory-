@@ -28,6 +28,7 @@ import 'package:path/path.dart' as path;
 import 'package:wemarkthespot/services/modelProvider.dart';
 
 import '../main.dart';
+import '../models/body.dart';
 import 'detailBusinessdynamic.dart';
 import 'hotspot.dart';
 
@@ -355,9 +356,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business!.id)));
+                                                                            NotificationModel model = NotificationModel();
+                                                                            model.review_id = getReplyOnHotspotList[index].business!.id;
+                                                                            model.reply_id = "";
+                                                                            model.type = "business";
+
+                                                                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                       }):TextSpan(text: ""),
                                                                 getReplyOnHotspotList[
                                                                 index]
@@ -370,9 +375,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business2!.id)));
+                                                                            NotificationModel model = NotificationModel();
+                                                                            model.review_id = getReplyOnHotspotList[index].business2!.id;
+                                                                            model.reply_id = "";
+                                                                            model.type = "business";
+
+                                                                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                       }):TextSpan(text: ""),
                                                                 getReplyOnHotspotList[
                                                                 index]
@@ -385,9 +394,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business3!.id)));
+                                                                            NotificationModel model = NotificationModel();
+                                                                            model.review_id = getReplyOnHotspotList[index].business3!.id;
+                                                                            model.reply_id = "";
+                                                                            model.type = "business";
+
+                                                                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                       }):TextSpan(text: ""),
                                                                 getReplyOnHotspotList[
                                                                 index]
@@ -400,9 +413,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business4!.id)));
+                                                                            NotificationModel model = NotificationModel();
+                                                                            model.review_id = getReplyOnHotspotList[index].business4!.id;
+                                                                            model.reply_id = "";
+                                                                            model.type = "business";
+
+                                                                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                       }):TextSpan(text: ""),
                                                                 getReplyOnHotspotList[
                                                                 index]
@@ -415,9 +432,13 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () {
-                                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                                            builder: (builder) =>
-                                                                                DetailBussinessDynamic(id: getReplyOnHotspotList[index].business5!.id)));
+                                                                            NotificationModel model = NotificationModel();
+                                                                            model.review_id = getReplyOnHotspotList[index].business5!.id;
+                                                                            model.reply_id = "";
+                                                                            model.type = "business";
+
+                                                                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                       }):TextSpan(text: "")
                                                               ])),
                                                     ),
@@ -1115,6 +1136,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
     isRefresh = true;
     getReplyOnHotspotApi();
   }
+
   String splitString() {
     /*  var a = sendReview.split("");
     print("abnbnbn "+a.toString()+"^^");
@@ -1268,6 +1290,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       });
     }
   }
+
 
   Future<dynamic> getReplyOnHotspotApi() async {
     print("getreplyonhotspotapi " + "Running");
@@ -1799,10 +1822,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       TapGestureRecognizer()
                                                         ..onTap =
                                                             () {
-                                                          Navigator.of(context).push(new MaterialPageRoute(
-                                                              builder: (builder) =>
-                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                      .childrenList[index].business!.id)));
+                                                              NotificationModel model = NotificationModel();
+                                                              model.review_id = getReplyOnHotspotList[i]
+                                                                  .childrenList[index].business!.id;
+                                                              model.reply_id = "";
+                                                              model.type = "business";
+
+                                                              Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                                                         }):TextSpan(text: ""),
                                                   getReplyOnHotspotList[i]
                                                       .childrenList[index]
@@ -1815,10 +1843,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       TapGestureRecognizer()
                                                         ..onTap =
                                                             () {
-                                                          Navigator.of(context).push(new MaterialPageRoute(
-                                                              builder: (builder) =>
-                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                      .childrenList[index].business2!.id)));
+                                                              NotificationModel model = NotificationModel();
+                                                              model.review_id = getReplyOnHotspotList[i]
+                                                                  .childrenList[index].business2!.id;
+                                                              model.reply_id = "";
+                                                              model.type = "business";
+
+                                                              Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                         }):TextSpan(text: ""),
                                                   getReplyOnHotspotList[i]
                                                       .childrenList[index]
@@ -1831,10 +1863,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       TapGestureRecognizer()
                                                         ..onTap =
                                                             () {
-                                                          Navigator.of(context).push(new MaterialPageRoute(
-                                                              builder: (builder) =>
-                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                      .childrenList[index].business3!.id)));
+                                                              NotificationModel model = NotificationModel();
+                                                              model.review_id = getReplyOnHotspotList[i]
+                                                                  .childrenList[index].business3!.id;
+                                                              model.reply_id = "";
+                                                              model.type = "business";
+
+                                                              Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                         }):TextSpan(text: ""),
                                                   getReplyOnHotspotList[i]
                                                       .childrenList[index]
@@ -1847,10 +1883,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       TapGestureRecognizer()
                                                         ..onTap =
                                                             () {
-                                                          Navigator.of(context).push(new MaterialPageRoute(
-                                                              builder: (builder) =>
-                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                      .childrenList[index].business4!.id)));
+                                                              NotificationModel model = NotificationModel();
+                                                              model.review_id = getReplyOnHotspotList[i]
+                                                                  .childrenList[index].business4!.id;
+                                                              model.reply_id = "";
+                                                              model.type = "business";
+
+                                                              Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                         }):TextSpan(text: ""),
                                                   getReplyOnHotspotList[i]
                                                       .childrenList[index]
@@ -1863,10 +1903,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                       TapGestureRecognizer()
                                                         ..onTap =
                                                             () {
-                                                          Navigator.of(context).push(new MaterialPageRoute(
-                                                              builder: (builder) =>
-                                                                  DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                      .childrenList[index].business5!.id)));
+                                                              NotificationModel model = NotificationModel();
+                                                              model.review_id =  getReplyOnHotspotList[i]
+                                                                  .childrenList[index].business5!.id;
+                                                              model.reply_id = "";
+                                                              model.type = "business";
+
+                                                              Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                                                         }):TextSpan(text: "")
                                                 ])),
                                       ),
@@ -2098,10 +2143,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   TapGestureRecognizer()
                                                                     ..onTap =
                                                                         () {
-                                                                      Navigator.of(context).push(new MaterialPageRoute(
-                                                                          builder: (builder) =>
-                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                  .childrenList[index].childrenList[k].business!.id)));
+                                                                          NotificationModel model = NotificationModel();
+                                                                          model.review_id =  getReplyOnHotspotList[i]
+                                                                              .childrenList[index].childrenList[k].business!.id;
+                                                                          model.reply_id = "";
+                                                                          model.type = "business";
+
+                                                                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                                                                     }):TextSpan(text: ""),
                                                               getReplyOnHotspotList[i]
                                                                   .childrenList[index]
@@ -2116,10 +2166,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   TapGestureRecognizer()
                                                                     ..onTap =
                                                                         () {
-                                                                      Navigator.of(context).push(new MaterialPageRoute(
-                                                                          builder: (builder) =>
-                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                  .childrenList[index].childrenList[k].business2!.id)));
+                                                                          NotificationModel model = NotificationModel();
+                                                                          model.review_id = getReplyOnHotspotList[i]
+                                                                              .childrenList[index].childrenList[k].business2!.id;
+                                                                          model.reply_id = "";
+                                                                          model.type = "business";
+
+                                                                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                     }):TextSpan(text: ""),
                                                               getReplyOnHotspotList[i]
                                                                   .childrenList[index]
@@ -2134,10 +2188,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   TapGestureRecognizer()
                                                                     ..onTap =
                                                                         () {
-                                                                      Navigator.of(context).push(new MaterialPageRoute(
-                                                                          builder: (builder) =>
-                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                  .childrenList[index].childrenList[k].business3!.id)));
+                                                                          NotificationModel model = NotificationModel();
+                                                                          model.review_id = getReplyOnHotspotList[i]
+                                                                              .childrenList[index].childrenList[k].business3!.id;
+                                                                          model.reply_id = "";
+                                                                          model.type = "business";
+
+                                                                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                     }):TextSpan(text: ""),
                                                               getReplyOnHotspotList[i]
                                                                   .childrenList[index]
@@ -2152,10 +2210,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   TapGestureRecognizer()
                                                                     ..onTap =
                                                                         () {
-                                                                      Navigator.of(context).push(new MaterialPageRoute(
-                                                                          builder: (builder) =>
-                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                  .childrenList[index].childrenList[k].business4!.id)));
+                                                                          NotificationModel model = NotificationModel();
+                                                                          model.review_id = getReplyOnHotspotList[i]
+                                                                              .childrenList[index].childrenList[k].business4!.id;
+                                                                          model.reply_id = "";
+                                                                          model.type = "business";
+
+                                                                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                     }):TextSpan(text: ""),
                                                               getReplyOnHotspotList[i]
                                                                   .childrenList[index]
@@ -2170,10 +2232,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                   TapGestureRecognizer()
                                                                     ..onTap =
                                                                         () {
-                                                                      Navigator.of(context).push(new MaterialPageRoute(
-                                                                          builder: (builder) =>
-                                                                              DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                  .childrenList[index].childrenList[k].business5!.id)));
+                                                                          NotificationModel model = NotificationModel();
+                                                                          model.review_id =   getReplyOnHotspotList[i]
+                                                                              .childrenList[index].childrenList[k].business5!.id;
+                                                                          model.reply_id = "";
+                                                                          model.type = "business";
+
+                                                                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                     }):TextSpan(text: "")
                                                             ])),
                                                   ),
@@ -2440,10 +2506,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                             TapGestureRecognizer()
                                                                               ..onTap =
                                                                                   () {
-                                                                                Navigator.of(context).push(new MaterialPageRoute(
-                                                                                    builder: (builder) =>
-                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                            .childrenList[index].childrenList[k].childrenList[j].business!.id)));
+                                                                                    NotificationModel model = NotificationModel();
+                                                                                    model.review_id =  getReplyOnHotspotList[i]
+                                                                                        .childrenList[index].childrenList[k].childrenList[j].business!.id;
+                                                                                    model.reply_id = "";
+                                                                                    model.type = "business";
+
+                                                                                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                               }):TextSpan(text: ""),
                                                                         getReplyOnHotspotList[i]
                                                                             .childrenList[index]
@@ -2460,10 +2530,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                             TapGestureRecognizer()
                                                                               ..onTap =
                                                                                   () {
-                                                                                Navigator.of(context).push(new MaterialPageRoute(
-                                                                                    builder: (builder) =>
-                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                            .childrenList[index].childrenList[k].childrenList[j].business2!.id)));
+                                                                                    NotificationModel model = NotificationModel();
+                                                                                    model.review_id =   getReplyOnHotspotList[i]
+                                                                                        .childrenList[index].childrenList[k].childrenList[j].business2!.id;
+                                                                                    model.reply_id = "";
+                                                                                    model.type = "business";
+
+                                                                                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                               }):TextSpan(text: ""),
                                                                         getReplyOnHotspotList[i]
                                                                             .childrenList[index]
@@ -2480,10 +2554,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                             TapGestureRecognizer()
                                                                               ..onTap =
                                                                                   () {
-                                                                                Navigator.of(context).push(new MaterialPageRoute(
-                                                                                    builder: (builder) =>
-                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                            .childrenList[index].childrenList[k].childrenList[j].business3!.id)));
+                                                                                    NotificationModel model = NotificationModel();
+                                                                                    model.review_id = getReplyOnHotspotList[i]
+                                                                                        .childrenList[index].childrenList[k].childrenList[j].business3!.id;
+                                                                                    model.reply_id = "";
+                                                                                    model.type = "business";
+
+                                                                                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                               }):TextSpan(text: ""),
                                                                         getReplyOnHotspotList[i]
                                                                             .childrenList[index]
@@ -2500,10 +2578,15 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                             TapGestureRecognizer()
                                                                               ..onTap =
                                                                                   () {
-                                                                                Navigator.of(context).push(new MaterialPageRoute(
-                                                                                    builder: (builder) =>
-                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                            .childrenList[index].childrenList[k].childrenList[j].business4!.id)));
+                                                                                    NotificationModel model = NotificationModel();
+                                                                                    model.review_id =  getReplyOnHotspotList[i]
+                                                                                        .childrenList[index].childrenList[k].childrenList[j].business4!.id;
+                                                                                    model.reply_id = "";
+                                                                                    model.type = "business";
+
+                                                                                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                                                                               }):TextSpan(text: ""),
                                                                         getReplyOnHotspotList[i]
                                                                             .childrenList[index]
@@ -2520,10 +2603,14 @@ class _HotSpotReplyState extends State<HotSpotReply> {
                                                                             TapGestureRecognizer()
                                                                               ..onTap =
                                                                                   () {
-                                                                                Navigator.of(context).push(new MaterialPageRoute(
-                                                                                    builder: (builder) =>
-                                                                                        DetailBussinessDynamic(id: getReplyOnHotspotList[i]
-                                                                                            .childrenList[index].childrenList[k].childrenList[j].business5!.id)));
+                                                                                    NotificationModel model = NotificationModel();
+                                                                                    model.review_id =   getReplyOnHotspotList[i]
+                                                                                        .childrenList[index].childrenList[k].childrenList[j].business5!.id;
+                                                                                    model.reply_id = "";
+                                                                                    model.type = "business";
+
+                                                                                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                                                                               }):TextSpan(text: "")
                                                                       ])),
                                                             ),
@@ -2862,11 +2949,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
           });
 
-            Navigator.of(context, rootNavigator: false)
-                                  .pop();
+
         });
 
-       
+        Navigator.pop(context);
 
       }else{
         image_video_status = "0";
@@ -2877,6 +2963,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
 
   }
+
   Future<dynamic> getallBusinessDataApi() async {
     setState(() {
       isloading = true;
@@ -2965,13 +3052,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
   }
 
-  Future getImagePath() async {
-    if(currentPath==""){
-      getImagePath();
-    }else{
-      return currentPath;
-    }
-  }
+
 }
 class Count extends StatelessWidget {
   const Count({Key? key}) : super(key: key);

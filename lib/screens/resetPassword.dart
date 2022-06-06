@@ -29,14 +29,14 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   bool obscure = true;
   bool obscure1 = true;
-
+  bool opacity = false;
 
   @override
   Widget build(BuildContext context) {
 
     print("email: "+widget.email.toString());
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor:opacity==true?Colors.grey.shade500.withOpacity(0.6):Colors.transparent,
 
           body: SingleChildScrollView(
             child: Column(
@@ -243,18 +243,15 @@ class _ResetPasswordState extends State<ResetPassword> {
         // prefs.setString('id', jsonRes["data"]["id"].toString());
         // prefs.setString('email', jsonRes["data"]["email"].toString());
         // prefs.commit();
-
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(fontSize: 18),)));
-
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-            (route) => false);
-
         setState(() {
           isloading = false;
+          opacity = true;
         });
+
+        popUps(context, "Successful Password Reset" ," Your password has been updated succesfully, please login with the new password", "Done", onTapp);
+
+
+
       }else{
         setState(() {
           isloading = false;
@@ -271,7 +268,15 @@ class _ResetPasswordState extends State<ResetPassword> {
       });
     }
   }
-
+  void onTapp() async{
+    setState(() {
+      opacity = false;
+    });
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+  }
 
 
 }

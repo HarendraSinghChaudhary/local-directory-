@@ -74,6 +74,10 @@ class _DonationState extends State<Donation> {
                     height: 6.h,
                     text: "Donate",
                     press: () {
+                      if(int.parse(donationController.text.toString().trim())<=0){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter a valid amount"),));
+                        return false;
+                      }
                       String msg = donationController.text.toString().trim();
 
                       if (msg.toString() != "") {
@@ -197,7 +201,7 @@ class _DonationState extends State<Donation> {
                                           Row(
                                             children: [
                                               Text(
-                                                "Transaction Id: "+ donatioList[a].order_id.toString(),
+                                                "Order Id: "+ donatioList[a].order_id.toString(),
                                                 style: TextStyle(
                                                     fontSize: 10.sp,
                                                     color: kPrimaryColor,

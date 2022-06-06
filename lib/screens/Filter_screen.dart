@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
@@ -10,6 +11,7 @@ import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
 import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+import 'package:wemarkthespot/services/modelProvider.dart';
 
 class FliterScreen extends StatefulWidget {
    var list;
@@ -29,9 +31,9 @@ class _FliterScreenState extends State<FliterScreen> {
   bool statusCp = false;
   bool statusHe = false;
   bool isReligious = false;
-  String onlineOnly = "";
-  String currentP = "";
-  String habEsp = "";
+  String onlineOnly = "0";
+  String currentP = "0";
+  String habEsp = "0";
   String resSpri = "0";
 
   List data = [];
@@ -57,6 +59,37 @@ class _FliterScreenState extends State<FliterScreen> {
   @override
   Widget build(BuildContext context) {
     // print("object "+widget.list);
+    var count = '${context.watch<Counter>().isOnline}';
+    print("count "+count.toString());
+    if(count == "1"){
+      statusOnly = true;
+    }else{
+      statusOnly = false;
+    }
+
+    var count1 = '${context.watch<Counter>().isCurrent}';
+    print("count1 "+count1.toString());
+    if(count1 == "1"){
+      statusCp = true;
+    }else{
+      statusCp = false;
+    }
+
+    var count2 = '${context.watch<Counter>().isHablamos}';
+    print("count2 "+count2.toString());
+    if(count2 == "1"){
+      statusHe = true;
+    }else{
+      statusHe = false;
+    }
+
+    var count3 = '${context.watch<Counter>().isReligious}';
+    print("count3 "+count3.toString());
+    if(count3 == "1"){
+      isReligious = true;
+    }else{
+      isReligious = false;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -205,8 +238,13 @@ class _FliterScreenState extends State<FliterScreen> {
                               onlineOnly = "1";
 
                               print("online 1 : "+onlineOnly.toString());
+                              context.read<Counter>().setisOnline("1");
+
                               
-                            } 
+                            } else{
+                              context.read<Counter>().setisOnline("0");
+                              onlineOnly = "0";
+                            }
                             print("status online: "+statusOnly.toString());
                           });
                         },
@@ -253,9 +291,12 @@ class _FliterScreenState extends State<FliterScreen> {
                               currentP = "1";
 
                               print("current postion: "+currentP.toString());
-
+                              context.read<Counter>().setisCurrent("1");
 
                               
+                            }else{
+                              currentP = "0";
+                              context.read<Counter>().setisCurrent("0");
                             }
                           });
                         },
@@ -303,8 +344,11 @@ class _FliterScreenState extends State<FliterScreen> {
 
                               print("hablamos: "+habEsp.toString());
 
-
+                              context.read<Counter>().setisHablamos("1");
                               
+                            }else{
+                              context.read<Counter>().setisHablamos("0");
+                              habEsp = "0";
                             }
                           });
                         },
@@ -353,7 +397,7 @@ class _FliterScreenState extends State<FliterScreen> {
 
 
                               print("Relegios: "+resSpri.toString());
-
+                              context.read<Counter>().setisReligious("1");
 
                               
                             } else 
@@ -361,6 +405,7 @@ class _FliterScreenState extends State<FliterScreen> {
                               resSpri = "0";
 
                               print("Relegios: "+resSpri.toString());
+                              context.read<Counter>().setisReligious("0");
                             }
                           });
                         },
@@ -411,10 +456,10 @@ class _FliterScreenState extends State<FliterScreen> {
                      Navigator.pushAndRemoveUntil(context,
                          MaterialPageRoute(builder: (context) =>
                          HomeNav.one(1, lifeStyleList, "filter", 
-                         onlineOnly.toString() == "null" || onlineOnly.toString() == "" ? "0" : onlineOnly.toString() ,
-                         habEsp.toString() == "null" || habEsp.toString() == "" ? "0" : habEsp.toString() ,
-                         resSpri.toString() == "null" || resSpri.toString() == "" ? "0" : resSpri.toString() ,
-                         currentP.toString() == "null" || currentP.toString() == "" ? "0" : currentP.toString() ,)
+                         /*onlineOnly.toString() == "null" || onlineOnly.toString() == "" ? "0" : */onlineOnly.toString() ,
+                        /* habEsp.toString() == "null" || habEsp.toString() == "" ? "0" : */habEsp.toString() ,
+                         /*resSpri.toString() == "null" || resSpri.toString() == "" ? "0" : */resSpri.toString() ,
+                         /*currentP.toString() == "null" || currentP.toString() == "" ? "0" : */currentP.toString() ,)
                 ), (r)=> false);
                   })
                 ],

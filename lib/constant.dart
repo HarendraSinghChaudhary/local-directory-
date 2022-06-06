@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:sizer/sizer.dart';
+
+import 'components/default_button.dart';
 
 
 const kPrimaryColor = Color(0xFFD66821);
@@ -115,4 +119,64 @@ Future<List<Asset>> pickImagesMultiple(int maxImage) async {
   }
 
 
+}
+
+
+
+popUps(BuildContext context, title, description, buttonName, onTap) async {
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    useSafeArea: true,
+
+    builder: (BuildContext context) {
+      return StatefulBuilder(builder: (context, setState2) {
+        return AlertDialog(
+          scrollable: true,
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3.w)),
+          titlePadding: EdgeInsets.all(0),
+          title: Container(
+            width: double.infinity,
+            height: 40,
+            decoration: BoxDecoration(
+              color: kPrimaryColor,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+
+
+            ),
+            child: Center(
+              child: Text(
+                title.toString(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Segoepr', fontWeight: FontWeight.w600
+
+                ),
+              ),
+            ),
+          ),
+          content:Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                description,
+                maxLines: 5,
+                style: TextStyle(
+                    color: kCyanColor,
+                    fontSize: 13.sp,
+                    fontFamily: 'Roboto'),
+              ),
+              SizedBox(height: 20,),
+
+              DefaultButton(height: 40,text: buttonName, press:onTap, width: 120,)
+            ],
+          ),
+        );
+      });
+    },
+  );
 }

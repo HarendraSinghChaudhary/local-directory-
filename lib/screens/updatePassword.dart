@@ -10,6 +10,8 @@ import 'package:wemarkthespot/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
 
+import 'login_screen.dart';
+
 class UpdatePassword extends StatefulWidget {
   const UpdatePassword({ Key? key }) : super(key: key);
 
@@ -31,14 +33,15 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   TextEditingController oldPasswordController= new TextEditingController();
   TextEditingController newPasswordController= new TextEditingController();
   TextEditingController confirmPasswordController= new TextEditingController();
-
+  bool opacity = false;
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:opacity==true?Colors.grey.shade500.withOpacity(0.6):Colors.transparent,
 
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: kCyanColor,
         title: Center(
           child: Padding(
@@ -76,19 +79,19 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
             SizedBox(height: 3.h,),
 
-            
+
             isloading
                   ? Align(
                       alignment: Alignment.center,
                       child: Platform.isAndroid
                           ? CircularProgressIndicator()
                           : CupertinoActivityIndicator())
-                  :  
-            
+                  :
+
             DefaultButton(
-              width: 40.w, 
-              height: 7.h, 
-              text: "Save", 
+              width: 40.w,
+              height: 7.h,
+              text: "Save",
               press: () {
 
               var old = oldPasswordController.text.trim().toString();
@@ -111,7 +114,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         if (newPass.toString() == confirm.toString()) {
 
                           changePassword(old.toString(), confirm.toString());
-                          
+
                         } else {
 
                            ScaffoldMessenger.of(context).showSnackBar(
@@ -124,7 +127,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
 
 
-                        
+
                       } else {
 
                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -137,7 +140,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
 
 
-                      
+
                     } else {
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -149,7 +152,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
 
 
-                    
+
                   } else {
 
 
@@ -162,24 +165,14 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                   }
 
 
-
-
-
-
-
-                  
                 } else {
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Please enter new password')));
 
 
-
-
                 }
 
-
-                
               } else {
 
                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -187,13 +180,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
 
               }
-
-
-
-
-
-
-
 
               })
           ],
@@ -217,7 +203,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         return null;
       },
       style: TextStyle(color: Colors.white),
-      obscureText: obscure,
+      obscureText: !obscure,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "Old Password",
@@ -227,11 +213,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           child: IconButton(
                                   icon: obscure
                                       ? Icon(
-                                          Icons.visibility_outlined,
+                                          Icons.visibility_off_outlined,
                                           color: Colors.grey,
                                         )
                                       : Icon(
-                                          Icons.visibility_off_outlined,
+                                          Icons.visibility_outlined,
                                           color: kPrimaryColor,
                                         ),
                                   onPressed: () {
@@ -262,7 +248,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         return null;
       },
       style: TextStyle(color: Colors.white),
-      obscureText: obscure1,
+      obscureText: !obscure1,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "New Password",
@@ -272,11 +258,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           child: IconButton(
                                   icon: obscure1
                                       ? Icon(
-                                          Icons.visibility_outlined,
+                                          Icons.visibility_off_outlined,
                                           color: Colors.grey,
                                         )
                                       : Icon(
-                                          Icons.visibility_off_outlined,
+                                          Icons.visibility_outlined,
                                           color: kPrimaryColor,
                                         ),
                                   onPressed: () {
@@ -307,7 +293,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         return null;
       },
       style: TextStyle(color: Colors.white),
-      obscureText: obscure2,
+      obscureText: !obscure2,
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: "Re-type New Password",
@@ -317,11 +303,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           child: IconButton(
                                   icon: obscure2
                                       ? Icon(
-                                          Icons.visibility_outlined,
+                                          Icons.visibility_off_outlined,
                                           color: Colors.grey,
                                         )
                                       : Icon(
-                                          Icons.visibility_off_outlined,
+                                          Icons.visibility_outlined,
                                           color: kPrimaryColor,
                                         ),
                                   onPressed: () {
@@ -377,16 +363,17 @@ class _UpdatePasswordState extends State<UpdatePassword> {
       print("status: " + jsonRes["status"].toString() + "_");
 
       if (jsonRes["status"] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(jsonRes["message"].toString())),
-        );
-
-        // print('getotp1: ' + getotp.toString());
-        Navigator.pop(context);
-
         setState(() {
           isloading = false;
+          opacity = true;
         });
+        popUps(context, "Password Changed" ," You've succesfully changed your password, please login with the new password to access the appplication", "Done", onTapp);
+
+
+        // print('getotp1: ' + getotp.toString());
+
+
+
       }
       if (jsonRes["status"] == false) {
         setState(() {
@@ -408,7 +395,15 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
 
 
-
+  void onTapp() async{
+    setState(() {
+      opacity = false;
+    });
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+  }
 
 
 }

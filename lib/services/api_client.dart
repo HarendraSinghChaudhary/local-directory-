@@ -16,6 +16,7 @@ class RestDatasource {
   static final PASSWORDUPDATE_URL = BASE_URL + "password_update";
   static final EDITPROFILE_URL = BASE_URL + "profile_update";
   static final HOMEAPI_URL = BASE_URL + "get_homedata";
+  static final USER_NOTIFICATION_STATUS = BASE_URL + "usernotificationstatus";
   static final NEARBYRESTAURANT_URL = BASE_URL + "getnearby";
   static final BUSINESSREVIEW_URL = BASE_URL + "business_review";
   static final CHECKINAPI = BASE_URL + "checkinAPi";
@@ -27,6 +28,7 @@ class RestDatasource {
   static final GETHOTSPOT_URL = BASE_URL + "gethotspot";
   static final GETREPLYONCOMMUNITYREVIEW_URL = BASE_URL + "get_replies_community_reviews?review_id=";
   static final GETREVIEBYID = BASE_URL + "getreviewDetailsbyId/";
+  static final GETHOTSPOTDETAILBYID = BASE_URL + "gethotspotDetailsbyId/";
   static final REPLYONHOTSPOTREPLY_URL = BASE_URL + "replies_community_reviews";
   static final LIKECOMMUNITYREVIEW_URL = BASE_URL + "Businesslikedislike";
   static final SEARCHDATA_URL = BASE_URL + "Businesssearch";
@@ -49,6 +51,7 @@ class RestDatasource {
   static final FILTER = BASE_URL + "filter";
   static final CHANGEPASSWORD_URL = BASE_URL + "changepassword";
   static final PRIVACYANDPOLICY_URL = BASE_URL + "privacypolicy";
+  static final TANDC = BASE_URL + "getterms_conditions";
   static final DONATIONHISTORY_URl = BASE_URL + "donationhistory/";
 
    

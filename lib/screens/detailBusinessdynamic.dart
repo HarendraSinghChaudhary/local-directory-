@@ -33,12 +33,10 @@ import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
+import '../models/body.dart';
 import 'detailBusiness.dart';
 
 class DetailBussinessDynamic extends StatefulWidget {
-  var id;
-
-  DetailBussinessDynamic({required this.id});
 
   @override
   _DetailBussinessDynamicState createState() => _DetailBussinessDynamicState();
@@ -81,16 +79,26 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   List<CommunityReviewAPI> communityReviewList = [];
 
   late VideoPlayerController _controllerr;
-
+  var businessid = "";
   @override
   void initState() {
     isloadingNew = true;
-    nearBy();
-    communityReviewApi();
-    print("vi: " + videoLink.toString());
-
     super.initState();
     toggleDraggableScrollableSheet();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute
+          .of(context)!
+          .settings
+          .arguments as NotificationModel;
+      if (args != null) {
+        print("review_id " + args.review_id.toString());
+        businessid = args.review_id;
+        if (businessid.toString() != "" && businessid.toString() != "null") {
+          nearBy();
+          communityReviewApi();
+        }
+      }
+    });
   }
 
   @override
@@ -128,13 +136,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   var image_video_status = "0";
 
 
-
+  bool opacity = false;
 
   Future<dynamic> nearBy() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
-    print("widgetid Print: " + widget.id.toString());
-    print("id Print: " + id.toString());
     setState(() {
       isloadingNew = true;
     });
@@ -144,7 +150,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           RestDatasource.GETBUISNESSDETAIL_URL,
         ),
         body: {
-          "id": widget.id.toString(),
+          "id": businessid.toString(),
           "user_id": id
         });
     String msg = "";
@@ -221,6 +227,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor:opacity==true?Colors.grey.shade700.withOpacity(0.6):Colors.transparent,
       body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
         children: <Widget>[
@@ -339,16 +346,20 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              //"Bar",
-                              nearby!.category_name.toString() != "null"
-                                  ? nearby!.category_name.toString()
-                                  : "",
-                              style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: kPrimaryColor,
-                                  // fontWeight: FontWeight.w500,
-                                  fontFamily: "Roboto"),
+                            Container(
+                              width:200,
+                              child: Text(
+                                //"Bar",
+                                nearby!.category_name.toString() != "null"
+                                    ? nearby!.category_name.toString()
+                                    : "",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: kPrimaryColor,
+                                    // fontWeight: FontWeight.w500,
+                                    fontFamily: "Roboto"),
+                              ),
                             ),
                             Row(
                               children: [
@@ -1120,7 +1131,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                           index]
                                                               .image
                                                               .toString(),
-                                                          buisness_id: widget.id,
+                                                          buisness_id: businessid,
                                                         ))).then((value) {
                                               communityReviewApi();
                                             });
@@ -1435,11 +1446,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       DraggableScrollableActuator.reset(draggableSheetContext!);
     }
   }
- 
- 
- 
- 
- 
+
+
+
+
+
   checkInDialog2() {
     showDialog(
       context: context,
@@ -1447,7 +1458,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       builder: (BuildContext context) {
         isCheckinClicked = false;
         return StatefulBuilder(builder: (context, setState) {
-          print("check: " + check.toString());
           return AlertDialog(
             scrollable: true,
             backgroundColor: Colors.black,
@@ -1509,7 +1519,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                         "How do you find " "${nearby!.business_name.toString()}",
+                        "How do you find "
+                            "${nearby!.business_name.toString()}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 13.sp,
@@ -1671,12 +1682,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 itemCount: 5,
                                 itemPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                                itemBuilder: (context, _) =>
-                                    Icon(
-                                      Icons.star,
-                                      size: 6.w,
-                                      color: kPrimaryColor,
-                                    ),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  size: 6.w,
+                                  color: kPrimaryColor,
+                                ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   rattingcheckin = rating;
@@ -1714,39 +1724,42 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           snackBar,
                                         );
                                       } else {
-                                        fileList.clear();
                                         images.clear();
                                         file = null;
                                         fileName = "";
-                                        await pickImages().then((value) {
-                                          images = value;
-                                          //print("lengthhhhhh " + images.length.toString() + "*");
-                                        });
-                                        if (images.length > 0) {
-                                          image_video_status = "1";
-                                          ivStatus = "1";
-                                          images.forEach((element) async {
-                                            var path = await FlutterAbsolutePath.getAbsolutePath(
-                                                element.identifier.toString());
-                                            print("pathhh " + path.toString() + "*");
-
-                                            file = File(path.toString());
-                                            fileName = file!
-                                                .path
-                                                .split("/")
-                                                .last;
-                                            fileList.add(file!);
-                                            setState(() {
-
-                                            });
+                                        int lengt = 3;
+                                        if (fileList.length > 0) {
+                                          lengt = 3 - fileList.length;
+                                        }
+                                        print("lengthFile " +
+                                            lengt.toString() +
+                                            "^^");
+                                        if (fileList.length < 3) {
+                                          await pickImagesMultiple(lengt).then((value) {
+                                            images = value;
+                                            image_video_status = "1";
+                                            ivStatus = "1";
                                           });
+                                          if (images.length > 0) {
+                                            images.forEach((element) async {
+                                              var path =
+                                              await FlutterAbsolutePath
+                                                  .getAbsolutePath(element
+                                                  .identifier
+                                                  .toString());
+                                              print("pathhh " +
+                                                  path.toString() +
+                                                  "*");
 
-
-                                        } else {
-                                          image_video_status = "0";
-                                          ivStatus = "0";
-                                          images.clear();
-                                          fileList.clear();
+                                              file = File(path.toString());
+                                              fileName =
+                                                  file!.path.split("/").last;
+                                              fileList.add(file!);
+                                              setState(() {});
+                                            });
+                                          } else {
+                                            images.clear();
+                                          }
                                         }
                                         //getCheckInImage();
                                       }
@@ -1796,9 +1809,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           fileList.clear();
                                           images.clear();
                                           image_video_status = "0";
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                           FilePickerResult? result =
                                           await FilePicker.platform
                                               .pickFiles(
@@ -1808,7 +1819,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           if (result != null) {
                                             file1 = File(
                                                 result.files.single.path!);
-
 
                                             await Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -1828,6 +1838,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 fileName = path.basename(
                                                     file!.path.toString());
                                                 image_video_status = "2";
+                                                fileList.add(file!);
                                               } else {
                                                 trimFileName = "";
                                                 trimFile = null;
@@ -1844,7 +1855,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 fileName = "File:- ";
                                                 isVisible = false;
                                               } else {
-                                                fileName = "File:- " + fileName;
+                                                fileName =
+                                                    "File:- " + fileName;
                                                 isVisible = true;
                                               }
                                             });
@@ -1890,7 +1902,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 1.2.h,
                       ),
                       Visibility(
-                        visible: true,
+                        visible: image_video_status == "1" ? true : false,
                         child: Container(
                           height: 8.h,
                           width: 80.w,
@@ -1898,8 +1910,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                             shrinkWrap: true,
                             controller: _controller,
                             scrollDirection: Axis.horizontal,
-                            itemCount:
-                            fileList.length == 0 ? 0 : fileList.length,
+                            itemCount:fileList.length,
                             itemBuilder: (BuildContext context, int i) {
                               return Row(
                                 children: [
@@ -1912,8 +1923,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             borderRadius:
                                             BorderRadius.circular(2.w),
                                             image: DecorationImage(
-                                                image: FileImage(
-                                                    fileList[i]),
+                                                image: FileImage(fileList[i]),
                                                 fit: BoxFit.fill)),
                                       ),
                                       Padding(
@@ -1922,7 +1932,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         child: GestureDetector(
                                           onTap: () {
                                             fileList.removeAt(i);
-                                            images.removeAt(i);
 
                                             if (fileList.length == 0) {
                                               file = null;
@@ -1932,9 +1941,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                               ivStatus = "0";
                                               image_video_status = "0";
                                             }
-                                            setState(() {
-
-                                            });
+                                            setState(() {});
                                           },
                                           child: Container(
                                             height: 4.h,
@@ -1996,18 +2003,28 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                   SnackBar(
                                       content: Text("Please select tag")));
                             } else {
-                              if (currentPath != "") {
-                                file = File(currentPath.toString());
-                                fileName = path.basename(file!.path);
-                                print("Filename " + fileName.toString());
-                              }
-                              Navigator.of(context, rootNavigator: true).pop();
-                              setState(() {
-                                isloading = true;
-                                checkInDialog2();
-                              });
-                              await checkInApi("1");
+                              var message =
+                              reviewController2.toString().trim();
 
+                              if (message == "" || message == "null") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                        Text("Please enter review")));
+                              } else {
+                                if (currentPath != "") {
+                                  file = File(currentPath.toString());
+                                  fileName = path.basename(file!.path);
+                                  print("Filename " + fileName.toString());
+                                }
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                setState(() {
+                                  isloading = true;
+                                  checkInDialog2();
+                                });
+                                await checkInApi("1");
+                              }
                             }
                           })
                     ],
@@ -2340,7 +2357,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
     print("id community sdfdfsd id: " + comId.toString());
-    print("business community id: " + widget.id.toString());
+    print("business community id: " + businessid.toString());
     setState(() {
       // isloading = true;
     });
@@ -2351,7 +2368,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.id.toString(),
+          "business_id": businessid.toString(),
           "review_id": comId
         });
     String msg = "";
@@ -2666,7 +2683,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         ),
         body: {
           "user_id": id.toString(),
-          "business_id": widget.id.toString()
+          "business_id": businessid.toString()
         });
     String msg = "";
     var jsonArray;
@@ -2819,25 +2836,14 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
       if (jsonRes["status"].toString() == "true") {
         Navigator.of(context, rootNavigator: true).pop();
-        Navigator.pushReplacement(
-            context,
-            new MaterialPageRoute(
-                builder: (builder) => DetailBussiness(nearBy: nearby!)));
-
-        reviewController.clear();
-        file = null;
-
-        communityReviewApi();
-
-        // prefs.setString('phone', jsonRes["data"]["phone"].toString());
-        prefs.commit();
         setState(() {
           isloading = false;
+          opacity = true;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(jsonRes["message"].toString())));
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => TotalUserList(customers: widget.customers)));
+        popUps(context, "Review submitted successfully" ," Your review has been posted successfully on "+nearby!.business_name, "Done", onTapp);
+
+
 
       } else {
         setState(() {
@@ -2854,7 +2860,18 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       });
     }
   }
+  void onTapp() async{
+    setState(() {
+      opacity = false;
+    });
 
+    Navigator.pushReplacement(
+        context,
+        new MaterialPageRoute(
+            builder: (builder) => DetailBussiness(nearBy: nearby!)));
+
+
+  }
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
@@ -2968,7 +2985,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 0.2.h,
                       ),
                       Text(
-                        "How do you find "+nearby!.business_name.toString()+
+                        "How do you find " +
+                            nearby!.business_name.toString() +
                             " post check out",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -3131,12 +3149,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 itemCount: 5,
                                 itemPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                                itemBuilder: (context, _) =>
-                                    Icon(
-                                      Icons.star,
-                                      size: 6.w,
-                                      color: kPrimaryColor,
-                                    ),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  size: 6.w,
+                                  color: kPrimaryColor,
+                                ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   rattingcheckin = rating;
@@ -3174,41 +3191,44 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           snackBar,
                                         );
                                       } else {
-                                        fileList.clear();
                                         images.clear();
                                         file = null;
                                         fileName = "";
-                                        await pickImages().then((value) {
-                                          images = value;
-                                          print("lengthhhhhh " + images.length.toString() + "*");
-                                        });
-                                        if (images.length > 0) {
-                                          image_video_status = "1";
-                                          ivStatus = "1";
-                                          images.forEach((element) async {
-                                            var path = await FlutterAbsolutePath.getAbsolutePath(
-                                                element.identifier.toString());
-                                            print("pathhh " + path.toString() + "*");
-
-                                            file = File(path.toString());
-                                            fileName = file!
-                                                .path
-                                                .split("/")
-                                                .last;
-                                            fileList.add(file!);
-                                            setState(() {
-
-                                            });
-                                          });
-
-
-                                        } else {
-                                          image_video_status = "0";
-                                          ivStatus = "0";
-                                          images.clear();
-                                          fileList.clear();
+                                        int lengt = 3;
+                                        if (fileList.length > 0) {
+                                          lengt = 3 - fileList.length;
                                         }
-                                        //getCheckInImage();
+                                        print("lengthFile " +
+                                            lengt.toString() +
+                                            "^^");
+                                        if (fileList.length < 3) {
+                                          await pickImagesMultiple(lengt).then((value) {
+                                            images = value;
+
+                                          });
+                                          if (images.length > 0) {
+                                            image_video_status = "1";
+                                            ivStatus = "1";
+                                            images.forEach((element) async {
+                                              var path =
+                                              await FlutterAbsolutePath
+                                                  .getAbsolutePath(element
+                                                  .identifier
+                                                  .toString());
+                                              file = File(path.toString());
+                                              fileName =
+                                                  file!
+                                                      .path
+                                                      .split("/")
+                                                      .last;
+                                              fileList.add(file!);
+                                              setState(() {});
+                                            });
+                                          } else {
+                                            images.clear();
+                                          }
+                                          //getCheckInImage();
+                                        }
                                       }
                                       //                              ScaffoldMessenger.of(context)
                                       // .showSnackBar(SnackBar(content: Text("You can select either images or video")));
@@ -3230,8 +3250,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         child: SvgPicture.asset(
                                             "assets/icons/image.svg"))
                                         : Container(
-                                        child: SvgPicture.asset(
-                                            "assets/icons/image.svg")),
+                                        child: SvgPicture.asset("assets/icons/image.svg")),
                                   ),
                                   SizedBox(
                                     width: 3.w,
@@ -3256,9 +3275,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           fileList.clear();
                                           images.clear();
                                           image_video_status = "0";
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                           FilePickerResult? result =
                                           await FilePicker.platform
                                               .pickFiles(
@@ -3268,7 +3285,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           if (result != null) {
                                             file1 = File(
                                                 result.files.single.path!);
-
 
                                             await Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -3288,6 +3304,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 fileName = path.basename(
                                                     file!.path.toString());
                                                 image_video_status = "2";
+                                                fileList.add(file!);
                                               } else {
                                                 trimFileName = "";
                                                 trimFile = null;
@@ -3304,7 +3321,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 fileName = "File:- ";
                                                 isVisible = false;
                                               } else {
-                                                fileName = "File:- " + fileName;
+                                                fileName =
+                                                    "File:- " + fileName;
                                                 isVisible = true;
                                               }
                                             });
@@ -3350,7 +3368,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                         height: 1.2.h,
                       ),
                       Visibility(
-                        visible: true,
+                        visible: image_video_status == "1"?true:false,
                         child: Container(
                           height: 8.h,
                           width: 80.w,
@@ -3358,8 +3376,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                             shrinkWrap: true,
                             controller: _controller,
                             scrollDirection: Axis.horizontal,
-                            itemCount:
-                            fileList.length == 0 ? 0 : fileList.length,
+                            itemCount:fileList.length,
                             itemBuilder: (BuildContext context, int i) {
                               return Row(
                                 children: [
@@ -3372,8 +3389,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             borderRadius:
                                             BorderRadius.circular(2.w),
                                             image: DecorationImage(
-                                                image: FileImage(
-                                                    fileList[i]),
+                                                image: FileImage(fileList[i]),
                                                 fit: BoxFit.fill)),
                                       ),
                                       Padding(
@@ -3392,9 +3408,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                               ivStatus = "0";
                                               image_video_status = "0";
                                             }
-                                            setState(() {
-
-                                            });
+                                            setState(() {});
                                           },
                                           child: Container(
                                             height: 4.h,
@@ -3472,7 +3486,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 fileName = path.basename(file!.path);
                                 print("Filename " + fileName.toString());
                               }
-                              Navigator.of(context, rootNavigator: true).pop();
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop();
                               setState(() {
                                 isloading = true;
                                 checkInDialog();
@@ -3491,6 +3506,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       },
     );
   }
+
+
+
 
   customDialog() {
     showDialog(
@@ -3588,12 +3606,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                 itemCount: 5,
                                 itemPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                                itemBuilder: (context, _) =>
-                                    Icon(
-                                      Icons.star,
-                                      size: 6.w,
-                                      color: kPrimaryColor,
-                                    ),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  size: 6.w,
+                                  color: kPrimaryColor,
+                                ),
                                 onRatingUpdate: (rating) {
                                   print("Ratting :" + rating.toString());
                                   ratting = rating;
@@ -3632,40 +3649,41 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         );
                                       } else {
                                         // getImage();
-                                        fileList.clear();
                                         images.clear();
                                         file = null;
                                         fileName = "";
-                                        await pickImages().then((value) {
-                                          images = value;
-                                          print("lengthhhhhh " + images.length.toString() + "*");
-                                        });
-                                        if (images.length > 0) {
-                                          image_video_status = "1";
-                                          ivStatus = "1";
-                                          images.forEach((element) async {
-                                            var path = await FlutterAbsolutePath.getAbsolutePath(
-                                                element.identifier.toString());
-                                            print("pathhh " + path.toString() + "*");
-
-                                            file = File(path.toString());
-                                            fileName = file!
-                                                .path
-                                                .split("/")
-                                                .last;
-                                            fileList.add(file!);
-                                            setState(() {
-
-                                            });
-                                          });
-
-                                        } else {
-                                          image_video_status = "0";
-                                          ivStatus = "0";
-                                          images.clear();
-                                          fileList.clear();
+                                        int lengt = 3;
+                                        if (fileList.length > 0) {
+                                          lengt = 3 - fileList.length;
                                         }
+                                        print("lengthFile " +
+                                            lengt.toString() +
+                                            "^^");
+                                        if (fileList.length < 3) {
+                                          await pickImagesMultiple(lengt)
+                                              .then((value) {
+                                            images = value;
+                                            image_video_status = "1";
+                                            ivStatus = "1";
+                                          });
+                                          if (images.length > 0) {
+                                            images.forEach((element) async {
+                                              var path =
+                                              await FlutterAbsolutePath
+                                                  .getAbsolutePath(element
+                                                  .identifier
+                                                  .toString());
 
+                                              file = File(path.toString());
+                                              fileName =
+                                                  file!.path.split("/").last;
+                                              fileList.add(file!);
+                                              setState(() {});
+                                            });
+                                          } else {
+                                            images.clear();
+                                          }
+                                        }
                                         /* await pickImagess("review");
                                     setState(() {});*/
                                       }
@@ -3720,9 +3738,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           images.clear();
                                           image_video_status = "0";
                                           ivStatus = "0";
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                           File file1;
                                           FilePickerResult? result =
                                           await FilePicker.platform
@@ -3733,7 +3749,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                           if (result != null) {
                                             file1 = File(
                                                 result.files.single.path!);
-
 
                                             await Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -3748,10 +3763,12 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             setState(() {
                                               if (currentPath.toString() !=
                                                   "") {
-                                                file = File(currentPath.toString());
+                                                file = File(
+                                                    currentPath.toString());
                                                 fileName = path.basename(
                                                     file!.path.toString());
                                                 ivStatus = "2";
+                                                fileList.add(file!);
                                               } else {
                                                 trimFileName = "";
                                                 trimFile = null;
@@ -3761,18 +3778,28 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                                 fileList.clear();
                                                 images.clear();
                                                 ivStatus = "0";
-                                                image_video_status = "0";
                                               }
                                               if (fileName == "" ||
                                                   fileName == null) {
                                                 fileName = "File:- ";
                                                 isVisible = false;
                                               } else {
-                                                fileName = "File:- " + fileName;
+                                                fileName =
+                                                    "File:- " + fileName;
                                                 isVisible = true;
                                               }
                                             });
                                             customDialog();
+                                          } else {
+                                            trimFileName = "";
+                                            trimFile = null;
+                                            file = null;
+                                            fileName = "";
+                                            currentPath = "";
+                                            fileList.clear();
+                                            images.clear();
+                                            ivStatus = "0";
+                                            image_video_status = "0";
                                           }
                                         }
                                       },
@@ -3835,8 +3862,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             borderRadius:
                                             BorderRadius.circular(2.w),
                                             image: DecorationImage(
-                                                image: FileImage(
-                                                    fileList[i]),
+                                                image: FileImage(fileList[i]),
                                                 fit: BoxFit.fill)),
                                       ),
                                       Padding(
@@ -3844,8 +3870,10 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             left: 11.w, bottom: 5.h),
                                         child: GestureDetector(
                                           onTap: () {
+                                            print("Length " +
+                                                fileList.length.toString() +
+                                                "^^");
                                             fileList.removeAt(i);
-                                            images.removeAt(i);
 
                                             if (fileList.length == 0) {
                                               trimFile = null;
@@ -3858,7 +3886,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                               images.clear();
                                             }
                                             setState(() {
-
+                                              print("Length Now " +
+                                                  fileList.length.toString() +
+                                                  "^^");
                                             });
                                           },
                                           child: Container(
@@ -3895,7 +3925,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.all(3.0),
                         child: Visibility(
@@ -3923,21 +3952,19 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                           height: 6.h,
                           text: "Submit",
                           press: () {
-                             ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                      Text("Please select rating")));
                             print("ratting " + ratting.toString());
                             if (ratting.toString() == "0.0" ||
-                                ratting.toString() == "") {
+                                ratting.toString() == "null") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
                                       Text("Please select rating")));
-                            } else if (reviewController.text.toString().trim() ==
+                            } else if (reviewController.text
+                                .toString()
+                                .trim() ==
                                 "" ||
                                 reviewController.text.toString().trim() ==
-                                    "") {
+                                    "null") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
@@ -3962,6 +3989,8 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
       },
     );
   }
+
+
 
   void setPath(String path) {
     print("tis Path " + path.toString() + "^");
@@ -4118,13 +4147,9 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
     print("id Print: " + id.toString());
-    setState(() {
-      isloading = true;
-      Navigator.of(context, rootNavigator: true).pop();
-      checkInDialog();
-    });
 
     print("id " + id.toString() + "");
+    print("review " + review.toString() + "");
 
     var request = http.MultipartRequest(
       "POST",
@@ -4149,20 +4174,24 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     request.fields["type"] = "CHECK_IN";
     request.fields["business_id"] = nearby!.id.toString();
     request.fields["user_id"] = id.toString();
-    request.fields["image_video_status"] = image_video_status.toString();
-    print("ImageVideoSattus "+image_video_status.toString()+"^^");
-    if (image_video_status.toString() == "1") {
-      if (fileList != null) {
-        fileList.forEach((element) async {
+    if (fileList.length > 0) {
+      request.fields["image_video_status"] = image_video_status.toString();
+      print("ImageVideoStatus " + image_video_status.toString() + "^^");
+      if (image_video_status.toString() == "1") {
+        if (fileList != null) {
+          fileList.forEach((element) async {
+            request.files.add(
+                await http.MultipartFile.fromPath("image[]", element.path));
+          });
+        }
+      } else if (image_video_status.toString() == "2") {
+        if (file != null) {
           request.files
-              .add(await http.MultipartFile.fromPath("image[]", element.path));
-        });
+              .add(await http.MultipartFile.fromPath("image[]", file!.path));
+        }
       }
-    } else if (image_video_status.toString() == "2") {
-      if (file != null) {
-        request.files
-            .add(await http.MultipartFile.fromPath("image[]", file!.path));
-      }
+    } else {
+      request.fields["image_video_status"] = "0";
     }
 
     var jsonRes;
@@ -4190,12 +4219,11 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
         communityReviewApi();
         reviewController.clear();
         file = null;
-
         Navigator.of(context, rootNavigator: true).pop();
         Navigator.pushReplacement(
             context,
             new MaterialPageRoute(
-                builder: (builder) => DetailBussinessDynamic(id: nearby!.id)));
+                builder: (builder) => DetailBussiness(nearBy: nearby!)));
         setState(() {
           isloading = false;
         });

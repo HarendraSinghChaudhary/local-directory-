@@ -35,6 +35,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../main.dart';
+import '../models/body.dart';
 import 'detailBusinessdynamic.dart';
 
 class Hotspot extends StatefulWidget {
@@ -404,11 +405,14 @@ class _HotspotState extends State<Hotspot> {
                         content: Text(
                         "Please login or signup first to view business profile")));
                         }else {
-                          Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (builder) =>
-                                  DetailBussinessDynamic(
-                                      id: getHostSpotList[index].business!
-                                          .id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = getHostSpotList[index].business!
+                              .id.toString();
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                         } })
                                                                   : TextSpan(
                                                                       text: ""),
@@ -430,11 +434,14 @@ class _HotspotState extends State<Hotspot> {
                         content: Text(
                         "Please login or signup first to view business profile")));
                         }else {
-                          Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (builder) =>
-                                  DetailBussinessDynamic(
-                                      id: getHostSpotList[index].business2!
-                                          .id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = getHostSpotList[index].business2!.id.toString();
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                         }  })
                                                                   : TextSpan(
                                                                       text: ""),
@@ -456,11 +463,14 @@ class _HotspotState extends State<Hotspot> {
                         content: Text(
                         "Please login or signup first to view business profile")));
                         }else {
-                          Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (builder) =>
-                                  DetailBussinessDynamic(
-                                      id: getHostSpotList[index].business3!
-                                          .id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = getHostSpotList[index].business3!
+                              .id;
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                         }   })
                                                                   : TextSpan(
                                                                       text: ""),
@@ -482,11 +492,15 @@ class _HotspotState extends State<Hotspot> {
                         content: Text(
                         "Please login or signup first to view business profile")));
                         }else {
-                          Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (builder) =>
-                                  DetailBussinessDynamic(
-                                      id: getHostSpotList[index].business4!
-                                          .id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = getHostSpotList[index].business4!
+                              .id;
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
+
                         } })
                                                                   : TextSpan(
                                                                       text: ""),
@@ -508,11 +522,13 @@ class _HotspotState extends State<Hotspot> {
                         content: Text(
                         "Please login or signup first to view business profile")));
                         }else {
-                          Navigator.of(context).push(new MaterialPageRoute(
-                              builder: (builder) =>
-                                  DetailBussinessDynamic(
-                                      id: getHostSpotList[index].business5!
-                                          .id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = getHostSpotList[index].business5!.id;
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+
                         }})
                                                                   : TextSpan(
                                                                       text: "")

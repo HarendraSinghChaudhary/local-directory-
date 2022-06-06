@@ -11,6 +11,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:wemarkthespot/constant.dart';
@@ -36,10 +37,11 @@ class PaymentGateway extends StatefulWidget {
 class _WebViewExampleState extends State<PaymentGateway> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-
+  var name = "";
   @override
   void initState() {
     super.initState();
+    getData();
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
     }
@@ -82,9 +84,12 @@ class _WebViewExampleState extends State<PaymentGateway> {
            
           },
          onPageFinished: (value) {
+
+            if(value.toString() == "https://myprojectdesk.tech/development/wemarkthespot/strippayment" ){
+              popUps(context, "Payment Successful" ,r"$"+widget.price.toString()+" is successfully donated to We Mark The Spot app", "Done", onTapp);
+
+            }
             if (value.toString() ==
-                    "https://myprojectdesk.tech/development/wemarkthespot/strippayment" ||
-                value.toString() ==
                     "https://myprojectdesk.tech/development/wemarkthespot/payment_failed") {
               Future.delayed(const Duration(seconds: 5), () {
                 Navigator.of(context, rootNavigator: true).pop();
@@ -104,6 +109,18 @@ class _WebViewExampleState extends State<PaymentGateway> {
 @override
   void dispose() {
     super.dispose();
+  }
+
+  void getData() async{
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    name = pref.getString("name").toString();
+  }
+
+  void onTapp() async{
+
+    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context).pop();
   }
 
 }

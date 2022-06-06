@@ -5,11 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/communityRepliesById.dart';
+import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
+import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/screens/hotSpotReply.dart';
 import 'package:wemarkthespot/services/modelProvider.dart';
 
 import '../main.dart';
+import '../models/body.dart';
 import 'communityReplies.dart';
 import 'hotSpotReplyById.dart';
 
@@ -27,6 +30,7 @@ class _NotificationsState extends State<Notifications> {
   List<String> isread = [];
   List<String> reviewList = [];
   List<String> typeList = [];
+  List<String> replyIdList = [];
 
   ScrollController _controller = new ScrollController();
 
@@ -39,7 +43,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: kCyanColor,
         title: Center(
@@ -67,48 +71,74 @@ class _NotificationsState extends State<Notifications> {
                 itemBuilder: (BuildContext context, int index) {
                   final item = titleList[index];
                   return Dismissible(
-                    key:Key(item),
+                    key:UniqueKey(),
                     onDismissed: (direction) async {
                       titleList.removeAt(index);
                       bodyList.removeAt(index);
                       isread.removeAt(index);
                       typeList.removeAt(index);
                       reviewList.removeAt(index);
+                      replyIdList.removeAt(index);
                       SharedPreferences pref = await SharedPreferences.getInstance();
                       pref.setStringList("titleList", titleList);
                       pref.setStringList("bodyList", bodyList);
                       pref.setStringList("isRead", isread);
                       pref.setStringList("typeList", typeList);
                       pref.setStringList("reviewIdList", reviewList);
+                      pref.setStringList("replyIdList", reviewList);
                       setState(() {
 
                       });
                     },
                     child: GestureDetector(
                       onTap: (){
-                        if(typeList[index].toString().toLowerCase()=="review") {
-                          print("Review Id " + reviewList[index].toString());
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  CommunityRepliesById(
-                                    review_id: reviewList[index].toString(),
-                                  )));
-                        }else if(typeList[index].toString().toLowerCase()=="hotspot"){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  HotSpotReplyById(
-                                    id: reviewList[index].toString(),
+                        switch(typeList[index].toString().toLowerCase()){
+                          case "review":
+                            NotificationModel model = NotificationModel();
+                            model.review_id = reviewList[index].toString();
+                            model.type = typeList[index].toString();
+                            model.reply_id = replyIdList[index].toString();
+                            navigatorKey.currentState!.pushNamed("/hotspotreply", arguments: model);
+                            break;
+                          case "hotspot":
+                            NotificationModel model = NotificationModel();
+                            model.review_id = reviewList[index].toString();
+                            model.type = typeList[index].toString();
+                            model.reply_id = replyIdList[index].toString();
+                            navigatorKey.currentState!.pushNamed("/hotspotreply", arguments: model);
+                            break;
+                          case "addhotspot":
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    HomeNav(index: 2,)));
+                            break;
+                          case "giveaway":
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    HomeNav(index: 0,)));
+                            break;
+                          case "sendmail":
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    HomeNav(index: 0,)));
+                            break;
+                          case "business":
+                            NotificationModel model = NotificationModel();
+                            model.review_id = reviewList[index].toString();
+                            model.type = typeList[index].toString();
+                            model.reply_id = replyIdList[index].toString();
 
-                                  )));
-                        }else if(typeList[index].toString().toLowerCase()=="addhotspot"){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeNav.two(
-                                    index: 2,
-                                    review_id: "666",
+                            Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
 
-                                  )));
+                            break;
+
+                          case "businesslist":
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    Explore()));
+                            break;
                         }
+
                       },
                       child: Column(
                         children: [
@@ -217,6 +247,7 @@ class _NotificationsState extends State<Notifications> {
       isread = preferences.getStringList("isRead")!;
       typeList = preferences.getStringList("typeList")!;
       reviewList = preferences.getStringList("reviewIdList")!;
+      replyIdList = preferences.getStringList("replyIdList")!;
       isread.forEach((element) {
         isRead.add("true");
       });
@@ -232,6 +263,7 @@ class _NotificationsState extends State<Notifications> {
       bodyList = bodyList.reversed.toList();
       typeList = typeList.reversed.toList();
       reviewList = reviewList.reversed.toList();
+      replyIdList = replyIdList.reversed.toList();
     });
   }
 

@@ -15,6 +15,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/communityRepliesById.dart';
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/favourites.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
@@ -25,6 +26,7 @@ import 'package:wemarkthespot/services/api_client.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
+import '../models/body.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -160,6 +162,9 @@ class _HomeState extends State<Home> {
 
     super.initState();
     messaging = FirebaseMessaging.instance;
+
+
+
   }
 
 /*
@@ -341,8 +346,12 @@ class _HomeState extends State<Home> {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: dataid)));
+                        NotificationModel model = NotificationModel();
+                        model.review_id = dataid;
+                        model.reply_id = "";
+                        model.type = "business";
 
+                        Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
                       },
                       child: Stack(
                         children: [
@@ -758,13 +767,14 @@ class _HomeState extends State<Home> {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
+      print("ResponseHome: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
     });
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
-
+      notification_status = jsonRes["notification_status"].toString();
+      print("notification status "+jsonRes["notification_status"].toString()+"^^");
       if (jsonRes["status"].toString() == "true") {
         quoatesid = jsonRes["quoatesdata"]["id"].toString();
         print("id:" + quoatesid.toString());

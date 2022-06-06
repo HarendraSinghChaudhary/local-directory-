@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
@@ -17,12 +18,15 @@ import 'package:wemarkthespot/screens/Filter_screen.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
+import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 import 'dart:ui' as ui;
 import "package:collection/collection.dart";
 import 'package:supercharged/supercharged.dart';
+import 'package:wemarkthespot/services/modelProvider.dart';
 
+import '../models/body.dart';
 import 'mainnnn.dart';
 
 class GoogleMapScreen extends StatefulWidget {
@@ -43,7 +47,10 @@ class GoogleMapScreen extends StatefulWidget {
 class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   bool viewVisible = false;
   var check = "";
-
+  var business_type;
+  var hablamos_espanol;
+  var religious_spiritual;
+  var current_promotion;
   bool _hasBeenPressed = true;
   var ids = "";
   var id = "";
@@ -662,7 +669,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         } else {
           // locatePosition();
         
-          filterData(widget.list, widget.business_type, widget.hablamos_espanol, widget.religious_spiritual, widget.current_promotion);
+          filterData(context, widget.list, widget.business_type, widget.hablamos_espanol, widget.religious_spiritual, widget.current_promotion);
           isFilter = true;
         }
       } else {
@@ -695,9 +702,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     CameraPosition cameraPosition =
         new CameraPosition(target: latLngPosition, zoom: 12);
-
-    newGoogleMapController!
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    if(newGoogleMapController!=null) {
+      newGoogleMapController!
+          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    }
   }
 
   static final CameraPosition _currentPosition =
@@ -712,10 +720,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 }
   @override
   Widget build(BuildContext context) {
-    print("online one : "+ widget.business_type.toString());
-    print("hablamos one : "+ widget.hablamos_espanol.toString());
-    print("religious one : "+ widget.religious_spiritual.toString());
-    print("current_promotion one : "+ widget.current_promotion.toString());
+   business_type = '${context.watch<Counter>().isOnline}';
+    hablamos_espanol = '${context.watch<Counter>().isHablamos}';
+    religious_spiritual = '${context.watch<Counter>().isReligious}';
+    current_promotion = '${context.watch<Counter>().isCurrent}';
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -726,8 +735,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           padding: const EdgeInsets.all(12.0),
           child: InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Explore()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => HomeNav(index:3)));
                 },
                 child: SvgPicture.asset(
                   "assets/icons/explore.svg",
@@ -1040,11 +1049,12 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                                   "Please login or signup first to view business profile")));
                         } else {
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DetailBussinessDynamic(id: selectedList[i].id)));
+                          NotificationModel model = NotificationModel();
+                          model.review_id = selectedList[i].id.toString();
+                          model.reply_id = "";
+                          model.type = "business";
+
+                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
                         }
                       },
                       child: Padding(
@@ -1256,8 +1266,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
       res = response;
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
-      print("ResponseJSON: " + jsonRes.toString() + "_");
+      print("ResponseSearch: " + response.body.toString() + "_");
+      print("ResponseJSON Search: " + jsonRes.toString() + "_");
       jsonArray = jsonRes['data'];
     });
     if(mesageTextController.text.length>0) {
@@ -1357,7 +1367,11 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           viewVisible = false;
         });
       } else {
+        nearByRestaurantList.clear();
+        markers.clear();
         setState(() {
+          newGoogleMapController!.setMapStyle("[]");
+          locatePosition();
           isloading = false;
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(jsonRes["message"])));
@@ -1568,13 +1582,18 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     }
   }
 
-  Future<dynamic> filterData(List<LifeStyle> key, String business_type,
+  Future<dynamic> filterData(BuildContext context, List<LifeStyle> key, String business_type,
   String hablamos_espanol,
   String religious_spiritual,
   String current_promotion,
 
   ) async {
     print("Filter");
+
+    print("business_type "+business_type.toString()+"^^");
+    print("hablamos_espanol "+hablamos_espanol.toString()+"^^");
+    print("religious_spiritual "+religious_spiritual.toString()+"^^");
+    print("current_promotion " +current_promotion.toString()+"^^");
 
     List<String> list = [];
     key.forEach((element) {
@@ -1591,15 +1610,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
     String s = list.join(', ');
     print("ssss " + s.toString());
-    print(list.toString());
-    if (list.length == 0) {
-      locatePosition();
-      nearBy();
-      initilize(nearByRestaurantList);
-    } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      user_id = prefs.getString("id").toString();
       print("key Print: " + list.toString());
       setState(() {
         isloading = true;
@@ -1611,10 +1622,10 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           ),
           body: {
             "key": list.toString(),
-            "business_type": widget.business_type.toString(),
-            "hablamos_espanol": widget.hablamos_espanol.toString(),
-            "religious_spiritual": widget.religious_spiritual.toString(),
-            "current_promotion": widget.current_promotion.toString(),
+            "business_type": business_type.toString(),
+            "hablamos_espanol": hablamos_espanol.toString(),
+            "religious_spiritual": religious_spiritual.toString(),
+            "current_promotion": current_promotion.toString(),
           });
       String msg = "";
       var jsonArray;
@@ -1625,7 +1636,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
         res = response;
         final JsonDecoder _decoder = new JsonDecoder();
         jsonRes = _decoder.convert(response.body.toString());
-        print("Response: " + response.body.toString() + "_");
+        print("ResponseFilter: " + response.body.toString() + "_");
         print("ResponseJSON: " + jsonRes.toString() + "_");
         msg = jsonRes["message"].toString();
         jsonArray = jsonRes['data'];
@@ -1673,16 +1684,6 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
 
               nearByRestaurantList.add(modelAgentSearch);
             }
-/*          id = jsonArray[i]["id"].toString();
-          business_name = jsonArray[i]["business_name"].toString();
-          print("Bussiness: " + business_name.toString());
-          latlong_position = jsonArray[i]["lat"].toString() +
-              "," +
-              " " +
-              jsonArray[i]["long"].toString();
-          print("lay: " + latlong_position.toString());
-
-          nearByRestaurantList.add(modelAgentSearch);*/
 
           }
 
@@ -1722,7 +1723,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
               .showSnackBar(SnackBar(content: Text("Please try later")));
         });
       }
-    }
+
   }
 
   Future<dynamic> checkoutApi(String buisnessid, String tag) async {

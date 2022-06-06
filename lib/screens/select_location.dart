@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
@@ -73,7 +75,7 @@ class _LocationSelectorState extends State<LocationSelector> {
             padding: const EdgeInsets.all(8.0),
             child: buildDonationFormField(),
           ),
-          SizedBox(
+          /*SizedBox(
             height: 5.h,
           ),
           Center(
@@ -84,12 +86,12 @@ class _LocationSelectorState extends State<LocationSelector> {
                 press: () {
 
                 }),
-          ),
+          ),*/
           SizedBox(
             height: 4.h,
           ),
 
-          Container(
+          isloading==true?Center(child: Platform.isIOS?CupertinoActivityIndicator(color: Colors.white,):CircularProgressIndicator(color: Colors.white,),):Container(
             height: 200.h,
             child: ListView.builder(
               itemCount: predictions.length,

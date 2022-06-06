@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/models/body.dart';
 import 'package:wemarkthespot/screens/account.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:http/http.dart' as http;
@@ -681,9 +682,11 @@ class _ExploreState extends State<Explore> {
 
           nearByRestaurantList.add(modelAgentSearch);
         }
-        setState(() {
-          isloading = false;
-        });
+        if(mounted) {
+          setState(() {
+            isloading = false;
+          });
+        }
 
         //Navigator.pop(context);
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -776,7 +779,7 @@ class _ExploreState extends State<Explore> {
 
           featuresBusinessList.add(modelAgentSearch);
         }
-        SchedulerBinding.instance!.addPostFrameCallback((_) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           setState(() {
             isloading = false;
           });
@@ -966,16 +969,12 @@ class _CustomSliderWidgetState extends State<CustomSliderWidget> {
                   return InkWell(
                     onTap: () {
                       if (widget.id.toString() != '72') {
-                        Navigator.of(context)
-                            .push(
-                          new MaterialPageRoute(
-                              builder: (_) => new DetailBussinessDynamic(
-                                   id: featuresBusinessList.id,
-                                  )),
-                        )
-                            .then((value) {
+                        NotificationModel model = NotificationModel();
+                        model.review_id = featuresBusinessList.id;
+                        model.reply_id = "";
+                        model.type = "business";
 
-                        });
+                        Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
 
 
        

@@ -108,7 +108,7 @@ class UserAccount extends StatefulWidget {
 
 class _UserAccountState extends State<UserAccount> {
   var name, email, id, country_code, phone, dob, image;
-
+  bool opacity = false;
   @override
   void initState() {
     getUserList();
@@ -117,387 +117,393 @@ class _UserAccountState extends State<UserAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(top: 4.h, left: 5.w),
-          child: Row(
-            children: [
-              image == null
-                  ? CircleAvatar(
-                      radius: 15.w,
-                      backgroundImage: AssetImage('assets/images/Profile.png'),
-                    )
-                  : CircleAvatar(
-                      radius: 15.w,
-                      backgroundImage: NetworkImage(image.toString()),
-                    ),
+    return Scaffold(
+      backgroundColor: opacity==true?Colors.grey.shade500.withOpacity(0.6):Colors.transparent,
+      body: SingleChildScrollView(
+          child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 4.h, left: 5.w),
+            child: Row(
+              children: [
+                image == null
+                    ? CircleAvatar(
+                        radius: 15.w,
+                        backgroundImage: AssetImage('assets/images/Profile.png'),
+                      )
+                    : CircleAvatar(
+                        radius: 15.w,
+                        backgroundImage: NetworkImage(image.toString()),
+                      ),
 
-              SizedBox(
-                width: 5.w,
-              ),
+                SizedBox(
+                  width: 5.w,
+                ),
 
-              Container(
-                width: 55.w,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      
-                      name.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SizedBox(
-                      height: 0.8.h,
-                    ),
-                    Visibility(
-                      visible: id != null
-                          ? id == "72"
-                              ? false
-                              : true
-                          : false,
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/mail1.svg",
-                            width: 3.5.w,
-                          ),
-                          SizedBox(
-                            width: 2.w,
-                          ),
-                          Container(
-                            width: 48.w,
-                            child: Text(
-                              email.toString(),
-                              overflow: TextOverflow.ellipsis,
+                Container(
+                  width: 55.w,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+
+                        name.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SizedBox(
+                        height: 0.8.h,
+                      ),
+                      Visibility(
+                        visible: id != null
+                            ? id == "72"
+                                ? false
+                                : true
+                            : false,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/mail1.svg",
+                              width: 3.5.w,
+                            ),
+                            SizedBox(
+                              width: 2.w,
+                            ),
+                            Container(
+                              width: 48.w,
+                              child: Text(
+                                email.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Roboto'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 0.7.h,
+                      ),
+
+                      Visibility(
+                        visible: id != null
+                            ? id == "72"
+                                ? false
+                                : true
+                            : false,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/-calendar.svg",
+                              width: 3.5.w,
+                            ),
+                            SizedBox(
+                              width: 2.w,
+                            ),
+                            Text(
+                              dob == "null" ? "DD/MM/YYYY" : dob.toString(),
                               style: TextStyle(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12.sp,
                                   fontFamily: 'Roboto'),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 0.7.h,
-                    ),
-             
-                    Visibility(
-                      visible: id != null
-                          ? id == "72"
-                              ? false
-                              : true
-                          : false,
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            "assets/icons/-calendar.svg",
-                            width: 3.5.w,
-                          ),
-                          SizedBox(
-                            width: 2.w,
-                          ),
-                          Text(
-                            dob == "null" ? "DD/MM/YYYY" : dob.toString(),
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12.sp,
-                                fontFamily: 'Roboto'),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
 
-             
-            ],
+
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          height: 3.h,
-        ),
-        DefaultButton(
-            width: 42.w,
-            height: 6.h,
-            text: "Edit",
-            press: () {
-              if (id != null) {
-                if (id != "72") {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditProfile(
-                                id: id.toString(),
-                                name: name.toString(),
-                                email: email.toString(),
-                                country_code: country_code.toString(),
-                                phone: phone.toString(),
-                                dob: dob.toString(),
-                                image: image.toString(),
-                              ))).then((value) {
-                    getUserList();
-                  });
+          SizedBox(
+            height: 3.h,
+          ),
+          DefaultButton(
+              width: 42.w,
+              height: 6.h,
+              text: "Edit",
+              press: () {
+                if (id != null) {
+                  if (id != "72") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProfile(
+                                  id: id.toString(),
+                                  name: name.toString(),
+                                  email: email.toString(),
+                                  country_code: country_code.toString(),
+                                  phone: phone.toString(),
+                                  dob: dob.toString(),
+                                  image: image.toString(),
+                                ))).then((value) {
+                      getUserList();
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please Login First")));
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Please Login First")));
                 }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Please Login First")));
-              }
-            }),
-        SizedBox(
-          height: 3.h,
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 3.w),
-          child: Column(
-            children: [
-         
-              SizedBox(
-                height: 1.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Reviews(name: name.toString())));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "View Reviews",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CheckIn()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "View Check-ins",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UpdatePassword()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Change Password",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              // SizedBox(
-              //   height: 3.h,
-              // ),
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => ChilPage()));
-              //   },
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Text(
-              //         "Add Close Friends",
-              //         style: TextStyle(
-              //             color: kCyanColor,
-              //             fontSize: 13.sp,
-              //             fontFamily: 'Roboto'),
-              //       ),
-              //       SvgPicture.asset(
-              //         "assets/icons/-right.svg",
-              //         width: 2.5.w,
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 3.h,
-              // ),
-              // InkWell(
-              //   onTap: () {
-              //    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApplication()));
-              //   },
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Text(
-              //         "Block Users",
-              //         style: TextStyle(
-              //             color: kCyanColor,
-              //             fontSize: 13.sp,
-              //             fontFamily: 'Roboto'),
-              //       ),
-              //       SvgPicture.asset(
-              //         "assets/icons/-right.svg",
-              //         width: 2.5.w,
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Notifications()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Notifications",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Donation()));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Donations",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Settings(name: name.toString(),)));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Settings",
-                      style: TextStyle(
-                          color: kCyanColor,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.sp,
-                          fontFamily: 'Roboto'),
-                    ),
-                    SvgPicture.asset(
-                      "assets/icons/-right.svg",
-                      width: 2.5.w,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 3.h,
-              ),
-              DefaultButton(
-                  width: 45.w,
-                  height: 6.5.h,
-                  text: id != null
-                      ? id != "72"
-                          ? "Log out"
-                          : "Signup"
-                      : "Signup",
-                  press: () async {
-                    if (id != null) {
-                      if (id != "72") {
-                        var pref = await SharedPreferences.getInstance();
-                        pref.remove('id');
-                        pref.remove('email');
-                        pref.remove('name');
-                        pref.remove('country_code');
-                        pref.remove('phone');
-                        pref.remove('dob');
-                        pref.remove('image');
-                        pref.commit();
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) => LoginScreen()),
-                            (route) => false);
+              }),
+          SizedBox(
+            height: 3.h,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 3.w),
+            child: Column(
+              children: [
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Logged out successfully')));
+                SizedBox(
+                  height: 1.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Reviews(name: name.toString())));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "View Reviews",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CheckIn()));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "View Check-ins",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UpdatePassword()));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Change Password",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                // SizedBox(
+                //   height: 3.h,
+                // ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: (context) => ChilPage()));
+                //   },
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         "Add Close Friends",
+                //         style: TextStyle(
+                //             color: kCyanColor,
+                //             fontSize: 13.sp,
+                //             fontFamily: 'Roboto'),
+                //       ),
+                //       SvgPicture.asset(
+                //         "assets/icons/-right.svg",
+                //         width: 2.5.w,
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 3.h,
+                // ),
+                // InkWell(
+                //   onTap: () {
+                //    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApplication()));
+                //   },
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         "Block Users",
+                //         style: TextStyle(
+                //             color: kCyanColor,
+                //             fontSize: 13.sp,
+                //             fontFamily: 'Roboto'),
+                //       ),
+                //       SvgPicture.asset(
+                //         "assets/icons/-right.svg",
+                //         width: 2.5.w,
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Notifications()));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Notifications",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Donation()));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Donations",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Settings(name: name.toString(),)));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Settings",
+                        style: TextStyle(
+                            color: kCyanColor,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 13.sp,
+                            fontFamily: 'Roboto'),
+                      ),
+                      SvgPicture.asset(
+                        "assets/icons/-right.svg",
+                        width: 2.5.w,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                DefaultButton(
+                    width: 45.w,
+                    height: 6.5.h,
+                    text: id != null
+                        ? id != "72"
+                            ? "Log out"
+                            : "Signup"
+                        : "Signup",
+                    press: () async {
+                      if (id != null) {
+                        if (id != "72") {
+                          setState((){
+                            opacity = true;
+                          });
+                          customDialogReview();
+
+                        } else {
+                          var pref = await SharedPreferences.getInstance();
+                          pref.remove('id');
+                          pref.remove('email');
+                          pref.remove('name');
+                          pref.remove('country_code');
+                          pref.remove('phone');
+                          pref.remove('dob');
+                          pref.remove('image');
+                          pref.commit();
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => SignUpScreen()),
+                              (route) => false);
+                        }
                       } else {
                         var pref = await SharedPreferences.getInstance();
                         pref.remove('id');
@@ -514,7 +520,84 @@ class _UserAccountState extends State<UserAccount> {
                                 builder: (context) => SignUpScreen()),
                             (route) => false);
                       }
-                    } else {
+                    }),
+                SizedBox(
+                  height: 3.h,
+                ),
+              ],
+            ),
+          )
+        ],
+      )),
+    );
+  }
+
+  customDialogReview() async {
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      useSafeArea: true,
+
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState2) {
+          return AlertDialog(
+            scrollable: true,
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.w)),
+            titlePadding: EdgeInsets.all(0),
+            title: Container(
+              width: double.infinity,
+              height: 40,
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+
+
+              ),
+              child: Center(
+                child: Text(
+                  "Alert!",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Segoepr', fontWeight: FontWeight.w600
+
+                  ),
+                ),
+              ),
+            ),
+            content:Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(height: 10,),
+                Text(
+                  "Are you sure you want to exit?",
+                  maxLines: 2,
+                  style: TextStyle(
+                      color: kCyanColor,
+                      fontSize: 15.sp,
+                      fontFamily: 'Roboto'),
+                ),
+
+                SizedBox(height: 20,),
+
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DefaultButton(height: 40,text: "Cancel", press: (){
+
+
+                      Navigator.of(context, rootNavigator: true).pop();
+                      setState((){
+                        opacity = false;
+                      });
+                    }, width: 100,),
+                    SizedBox(width: 20,),
+                    DefaultButton(height: 40,text: "Logout", press: () async {
+
                       var pref = await SharedPreferences.getInstance();
                       pref.remove('id');
                       pref.remove('email');
@@ -524,23 +607,29 @@ class _UserAccountState extends State<UserAccount> {
                       pref.remove('dob');
                       pref.remove('image');
                       pref.commit();
+
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Logged out successfully')));
+                      Navigator.of(context, rootNavigator: true).pop();
+                      setState((){
+                        opacity = false;
+                      });
                       Navigator.pushAndRemoveUntil(
                           context,
                           new MaterialPageRoute(
-                              builder: (context) => SignUpScreen()),
-                          (route) => false);
-                    }
-                  }),
-              SizedBox(
-                height: 3.h,
-              ),
-            ],
-          ),
-        )
-      ],
-    ));
+                              builder: (context) => LoginScreen()),
+                              (route) => false);
+                    }, width: 100,),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+      },
+    );
   }
-
   Future<dynamic> getUserList() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     id = pref.getString("id").toString();

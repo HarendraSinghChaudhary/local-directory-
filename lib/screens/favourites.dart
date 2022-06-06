@@ -14,6 +14,8 @@ import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/services/api_client.dart';
 
+import '../models/body.dart';
+
 
 
 
@@ -138,7 +140,15 @@ class _FavoritesState extends State<Favorites> {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBussinessDynamic(id: favouriteRestaurantList[index].id.toString())));
+                NotificationModel model = NotificationModel();
+                model.review_id = favouriteRestaurantList[index].id.toString();
+                model.reply_id = "";
+                model.type = "business";
+
+                Navigator.pushNamed(context, "/detailedbusiness", arguments: model).then((value) {
+                  getFavourite();
+                });
+
               },
               child: Container(
                 width: double.infinity,
@@ -456,6 +466,7 @@ class _FavoritesState extends State<Favorites> {
       print(jsonRes["status"]);
 
       if (jsonRes["status"].toString() == "true") {
+        favouriteRestaurantList.clear();
         for (var i = 0; i < jsonArray.length; i++) {
           NearBy modelAgentSearch = new NearBy();
           modelAgentSearch.id = jsonArray[i]["id"].toString();

@@ -1,5 +1,10 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
@@ -9,6 +14,11 @@ import 'package:wemarkthespot/screens/explore.dart';
 import 'package:wemarkthespot/screens/home_screen.dart';
 import 'package:wemarkthespot/screens/hotspot.dart';
 import 'package:wemarkthespot/screens/googleMap_screen.dart';
+import 'package:wemarkthespot/services/modelProvider.dart';
+
+import '../main.dart';
+import '../models/receivedNotification.dart';
+import 'notifications.dart';
 
 
 class HomeNav extends StatefulWidget {
@@ -62,6 +72,8 @@ class _HomeNavState extends State<HomeNav> {
       Account()
     ];
     super.initState();
+
+
   }
 
   @override
@@ -138,6 +150,8 @@ class _HomeNavState extends State<HomeNav> {
           ]),
     );
   }
+
+
 
   Future<dynamic> getUserList() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
