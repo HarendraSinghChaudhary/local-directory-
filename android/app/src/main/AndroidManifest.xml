@@ -10,7 +10,7 @@
    
    <application
         android:label="wemarkthespot"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcherrr">
         <activity
             android:name=".MainActivity"
             android:exported="true"

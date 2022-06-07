@@ -98,7 +98,7 @@ class _NotificationsState extends State<Notifications> {
                             model.review_id = reviewList[index].toString();
                             model.type = typeList[index].toString();
                             model.reply_id = replyIdList[index].toString();
-                            navigatorKey.currentState!.pushNamed("/hotspotreply", arguments: model);
+                            navigatorKey.currentState!.pushNamed("/communityReplyId", arguments: model);
                             break;
                           case "hotspot":
                             NotificationModel model = NotificationModel();

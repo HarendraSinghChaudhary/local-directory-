@@ -377,7 +377,6 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
 
     //fetchLocation();
 
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('Running onMessage'); //_showNotification(message);
       if(message!=null){
@@ -459,12 +458,12 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
-            initialRoute: widget.route,
+           // initialRoute: widget.route,
             debugShowCheckedModeBanner: false,
             title: 'We Mark The Spot',
             theme: theme(),
             navigatorKey: navigatorKey,
-
+            home: Splash(),
             routes: <String, WidgetBuilder>{
             Splash.routeName: (_) => Splash(),
             "/notification": (_) => Notifications(),
@@ -572,7 +571,7 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
               model.type = type;
               model.reply_id = reply_id;
               navigatorKey.currentState!.pushNamed("/communityReplyId", arguments: model);
-              flutterLocalNotificationsPlugin.cancelAll();
+
               break;
             case "hotspot":
               NotificationModel model = NotificationModel();

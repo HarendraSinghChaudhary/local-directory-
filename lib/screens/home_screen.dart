@@ -163,6 +163,111 @@ class _HomeState extends State<Home> {
     super.initState();
     messaging = FirebaseMessaging.instance;
 
+    FirebaseMessaging.instance.getInitialMessage().then((message) async {
+      print('Running Get Initial Message');
+
+      if(message!=null) {
+        print('Running Get Initial Message is '+message.data.toString()+"^^");
+        if (message.data != null) {
+
+          var listdata = await breakPayload(message.data.toString());
+          var type = "";
+          var review_id = "";
+          var reply_id = "";
+          listdata.forEach((element) {
+
+            if(element.contains("type")){
+              int i = element.indexOf(":")+2;
+              print("Type "+element.substring(i)+"^^");
+              type = element.substring(i).toString();
+            }
+
+            if(element.contains("businessreview_id")){
+              int i = element.indexOf(":")+2;
+              print("businessreview_id "+element.substring(i)+"^^");
+              review_id = element.substring(i).toString();
+            }
+
+            if(element.contains("reply_id")){
+              int i = element.indexOf(":")+2;
+              print("reply_id "+element.substring(i)+"^^");
+              reply_id = element.substring(i).toString();
+            }
+          });
+
+          switch(type.toLowerCase()){
+            case "review":
+              NotificationModel model = NotificationModel();
+              model.review_id = review_id;
+              model.type = type;
+              model.reply_id = reply_id;
+              Navigator.pushNamed(context, "/communityReplyId", arguments: model);
+
+              break;
+            case "hotspot":
+              NotificationModel model = NotificationModel();
+              model.review_id = review_id;
+              model.type = type;
+              model.reply_id = reply_id;
+              Navigator.pushNamed(context, "/hotspotreply", arguments: model);
+
+              break;
+            case "addhotspot":
+              await flutterLocalNotificationsPlugin.cancelAll();
+              Navigator.pushNamed(context,"/addhotspot");
+
+              break;
+            case "giveaway":
+
+
+              break;
+            case "sendmail":
+
+
+              break;
+            case "business":
+              NotificationModel model = NotificationModel();
+              model.review_id = review_id.toString();
+              model.reply_id = "";
+              model.type = "business";
+
+              Navigator.pushNamed( context,"/detailedbusiness", arguments: model);
+              break;
+
+            case "businesslist":
+              Navigator.pushReplacementNamed(context,"/explore");
+
+              break;
+
+            default:Navigator.pushNamed(context,"/notification");
+          }
+          Map<String, dynamic> map = message.data;
+          print(map.toString());
+          createListMap(map);
+          /*     const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+            'user_channel',
+            'user_channel',
+            channelDescription: 'User channel',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+            enableLights: true,
+            enableVibration: true,
+            playSound: true,
+          );
+          const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+            10,
+            message.data["title"].toString(),
+            message.data["body"].toString(),
+            platformChannelSpecifics,
+            payload: map.toString(),
+          );*/
+        }
+      }
+    });
 
 
   }
