@@ -250,7 +250,7 @@ Future<void> backgroundMessagehandler(RemoteMessage message) async {
 */
 
 Future<void> createListMap(Map<String, dynamic> map) async {
-  print("ListSaveMap");
+
   SharedPreferences preferences = await SharedPreferences.getInstance();
   List<String>? titleList = preferences.getStringList('titleList');
   List<String>? bodyList = preferences.getStringList('bodyList');

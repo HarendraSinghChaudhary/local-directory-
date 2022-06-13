@@ -92,10 +92,10 @@ class _HotspotState extends State<Hotspot> {
   String searchText = "";
   ItemScrollController _scrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
-  ItemPositionsListener.create();
+      ItemPositionsListener.create();
+
   @override
   void initState() {
-
     getId();
     getHotspotApi();
     getallBusinessDataApi();
@@ -103,24 +103,27 @@ class _HotspotState extends State<Hotspot> {
     super.initState();
     this.mesageTextController.addListener(_onSearchChanged);
 
-
     reviewControllerr = RichTextController(
       patternMatchMap: {
         //
         //* Returns every Hashtag with red color
         //
-        RegExp(r"\B#[a-zA-Z0-9]+\b"):TextStyle(color:Colors.red),
+        RegExp(r"\B#[a-zA-Z0-9]+\b"): TextStyle(color: Colors.red),
         //
         //* Returns every Mention with blue color and bold style.
         //
-        RegExp(r"\B@[a-zA-Z0-9]+\b"):TextStyle(fontWeight: FontWeight.w800 ,color:Colors.blue,),
+        RegExp(r"\B@[a-zA-Z0-9]+\b"): TextStyle(
+          fontWeight: FontWeight.w800,
+          color: Colors.blue,
+        ),
         //
         //* Returns every word after '!' with yellow color and italic style.
         //
-        RegExp(r"\B![a-zA-Z0-9]+\b"):TextStyle(color:Colors.yellow, fontStyle:FontStyle.italic),
+        RegExp(r"\B![a-zA-Z0-9]+\b"):
+            TextStyle(color: Colors.yellow, fontStyle: FontStyle.italic),
 
-
-        RegExp(r"\B@@[a-zA-Z0-9##]+\b"):TextStyle(color:Colors.yellow, fontStyle:FontStyle.italic),
+        RegExp(r"\B@@[a-zA-Z0-9##]+\b"):
+            TextStyle(color: Colors.yellow, fontStyle: FontStyle.italic),
         // add as many expressions as you need!
       },
       //* starting v1.2.0
@@ -134,13 +137,12 @@ class _HotspotState extends State<Hotspot> {
       //* starting v1.1.0
       //* Now you have an onMatch callback that gives you access to a List<String>
       //* which contains all matched strings
-      onMatch: (List<String> matches){
+      onMatch: (List<String> matches) {
         // Do something with matches.
         //! P.S
         // as long as you're typing, the controller will keep updating the list.
       },
       deleteOnBack: true,
-
     );
   }
 
@@ -152,6 +154,7 @@ class _HotspotState extends State<Hotspot> {
 
     super.dispose();
   }
+
   _onSearchChanged() {
     if (debounce?.isActive ?? false) debounce?.cancel();
 
@@ -163,6 +166,7 @@ class _HotspotState extends State<Hotspot> {
       }
     });
   }
+
   late var size;
 
   late var _height;
@@ -171,7 +175,6 @@ class _HotspotState extends State<Hotspot> {
   void _scrollToIndex(index) {
     _controller.animateTo(_height * index,
         duration: Duration(seconds: 2), curve: Curves.easeIn);
-
   }
 
   @override
@@ -232,12 +235,12 @@ class _HotspotState extends State<Hotspot> {
                               color: kPrimaryColor,
                               fontWeight: FontWeight.bold),
                           controller: mesageTextController,
-                         /*   onChanged: (value) {
+                          /*   onChanged: (value) {
                               if (value.length == 0) {
                                 getHotspotApi();
                               }
                             },*/
-                         /* onChanged: (value) {
+                          /* onChanged: (value) {
                             if (value.length > 0) {
                               getHostSpotList.clear();
                               searchData(value.toString());
@@ -264,11 +267,12 @@ class _HotspotState extends State<Hotspot> {
                                 fontWeight: FontWeight.w700),
                             suffixIcon: InkWell(
                                 onTap: () {
-                                  _scrollController.scrollTo(index: 6, duration: Duration(seconds: 2));
+                                  _scrollController.scrollTo(
+                                      index: 6, duration: Duration(seconds: 2));
                                   mesageTextController.clear();
                                   getHostSpotList.clear();
                                   print("Clicked");
-                                   getHotspotApi();
+                                  getHotspotApi();
                                 },
                                 child: SvgPicture.asset(
                                   "assets/icons/cross.svg",
@@ -287,17 +291,11 @@ class _HotspotState extends State<Hotspot> {
                     SizedBox(
                       height: 3.5.h,
                     ),
-                    ScrollablePositionedList.builder(
+                    ListView.builder(
                       shrinkWrap: true,
-                      itemScrollController: _scrollController,
-                      itemPositionsListener: itemPositionsListener,
                       itemCount: getHostSpotList.length,
+                      controller: _controller,
                       itemBuilder: (BuildContext context, int index) {
-                        if(isloading==false){
-                          if(getHostSpotList.length>6) {
-                            _scrollController.scrollTo(index: 6, duration: Duration(seconds: 1));
-                          }
-                        }
                         return Column(
                           children: [
                             GestureDetector(
@@ -309,8 +307,7 @@ class _HotspotState extends State<Hotspot> {
                                   currentFocus.unfocus();
                                 }
                               },
-                              child: 
-                              Card(
+                              child: Card(
                                   margin: EdgeInsets.symmetric(horizontal: 2.w),
                                   color: kBackgroundColor,
                                   child: Column(
@@ -400,20 +397,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                        if(user_id == "72"){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                        "Please login or signup first to view business profile")));
-                        }else {
-                          NotificationModel model = NotificationModel();
-                          model.review_id = getHostSpotList[index].business!
-                              .id.toString();
-                          model.reply_id = "";
-                          model.type = "business";
+                                                                              if (user_id == "72") {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please login or signup first to view business profile")));
+                                                                              } else {
+                                                                                NotificationModel model = NotificationModel();
+                                                                                model.review_id = getHostSpotList[index].business!.id.toString();
+                                                                                model.reply_id = "";
+                                                                                model.type = "business";
 
-                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-                        } })
+                                                                                Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                                                                              }
+                                                                            })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -429,20 +423,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                        if(user_id == "72"){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                        "Please login or signup first to view business profile")));
-                        }else {
-                          NotificationModel model = NotificationModel();
-                          model.review_id = getHostSpotList[index].business2!.id.toString();
-                          model.reply_id = "";
-                          model.type = "business";
+                                                                              if (user_id == "72") {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please login or signup first to view business profile")));
+                                                                              } else {
+                                                                                NotificationModel model = NotificationModel();
+                                                                                model.review_id = getHostSpotList[index].business2!.id.toString();
+                                                                                model.reply_id = "";
+                                                                                model.type = "business";
 
-                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-
-                        }  })
+                                                                                Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                                                                              }
+                                                                            })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -458,20 +449,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                        if(user_id == "72"){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                        "Please login or signup first to view business profile")));
-                        }else {
-                          NotificationModel model = NotificationModel();
-                          model.review_id = getHostSpotList[index].business3!
-                              .id;
-                          model.reply_id = "";
-                          model.type = "business";
+                                                                              if (user_id == "72") {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please login or signup first to view business profile")));
+                                                                              } else {
+                                                                                NotificationModel model = NotificationModel();
+                                                                                model.review_id = getHostSpotList[index].business3!.id;
+                                                                                model.reply_id = "";
+                                                                                model.type = "business";
 
-                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-                        }   })
+                                                                                Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                                                                              }
+                                                                            })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -487,21 +475,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                        if(user_id == "72"){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                        "Please login or signup first to view business profile")));
-                        }else {
-                          NotificationModel model = NotificationModel();
-                          model.review_id = getHostSpotList[index].business4!
-                              .id;
-                          model.reply_id = "";
-                          model.type = "business";
+                                                                              if (user_id == "72") {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please login or signup first to view business profile")));
+                                                                              } else {
+                                                                                NotificationModel model = NotificationModel();
+                                                                                model.review_id = getHostSpotList[index].business4!.id;
+                                                                                model.reply_id = "";
+                                                                                model.type = "business";
 
-                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-
-                        } })
+                                                                                Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                                                                              }
+                                                                            })
                                                                   : TextSpan(
                                                                       text: ""),
                                                               getHostSpotList[index]
@@ -517,19 +501,17 @@ class _HotspotState extends State<Hotspot> {
                                                                           TapGestureRecognizer()
                                                                             ..onTap =
                                                                                 () {
-                        if(user_id == "72"){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                        "Please login or signup first to view business profile")));
-                        }else {
-                          NotificationModel model = NotificationModel();
-                          model.review_id = getHostSpotList[index].business5!.id;
-                          model.reply_id = "";
-                          model.type = "business";
+                                                                              if (user_id == "72") {
+                                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please login or signup first to view business profile")));
+                                                                              } else {
+                                                                                NotificationModel model = NotificationModel();
+                                                                                model.review_id = getHostSpotList[index].business5!.id;
+                                                                                model.reply_id = "";
+                                                                                model.type = "business";
 
-                          Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-                        }})
+                                                                                Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                                                                              }
+                                                                            })
                                                                   : TextSpan(
                                                                       text: "")
                                                             ])),
@@ -607,7 +589,7 @@ class _HotspotState extends State<Hotspot> {
                                               ))
                                           : getHostSpotList[index]
                                                       .video_image_status
-                                          .toString() ==
+                                                      .toString() ==
                                                   "1"
                                               ? Container(
                                                   child: HotspotImageSlider(
@@ -667,7 +649,9 @@ class _HotspotState extends State<Hotspot> {
                                                             .timedelay
                                                             .toString(),
                                                       ),
-                                                    ));
+                                                    )).then((value) {
+                                                      FocusScope.of(context).unfocus();
+                                                });
                                               },
                                               child: Text(
                                                 "View Replies",
@@ -790,7 +774,8 @@ class _HotspotState extends State<Hotspot> {
                                                                         index]
                                                                     .messageController
                                                                     .text
-                                                                    .toString().trim();
+                                                                    .toString()
+                                                                    .trim();
 
                                                                 if (mesage ==
                                                                         "" ||
@@ -830,7 +815,8 @@ class _HotspotState extends State<Hotspot> {
                                                     hintStyle: TextStyle(
                                                         fontSize: 9.sp,
                                                         color: Colors.white)),
-                                                textInputAction: TextInputAction.done,
+                                                textInputAction:
+                                                    TextInputAction.done,
                                               ),
                                             ),
                                           )
@@ -1239,7 +1225,9 @@ class _HotspotState extends State<Hotspot> {
                                               height: 0,
                                             ),
 
-                                            SizedBox(height: 1.h,)
+                                      SizedBox(
+                                        height: 1.h,
+                                      )
                                     ],
                                   )),
                             ),
@@ -1285,7 +1273,8 @@ class _HotspotState extends State<Hotspot> {
                                   selectedList.add(s.business_id);
 
                                   setState(() {
-                                    reviewController.text = reviewController.text
+                                    reviewController.text = reviewController
+                                        .text
                                         .toString()
                                         .substring(
                                             0,
@@ -1293,14 +1282,14 @@ class _HotspotState extends State<Hotspot> {
                                                     .toString()
                                                     .length -
                                                 tmp.length);
-                                    reviewController.text += s.business_name ;
-                                       /* "@@" +
+                                    reviewController.text += s.business_name;
+                                    /* "@@" +
                                         s.business_id +
                                         "##";*/
                                     //reviewController.text += s.business_name.substring(s.business_name.indexOf(tmp)+tmp.length,s.business_name.length).replaceAll(' ','_');
                                     sendReview =
                                         reviewController.text.toString();
-                               /*     if (reviewController!.value.text.contains("@@")) {
+                                    /*     if (reviewController!.value.text.contains("@@")) {
                                       splitString();
                                     }*/
                                     reviewController.selection =
@@ -1626,8 +1615,12 @@ class _HotspotState extends State<Hotspot> {
                               fontSize: 12.sp,
                             ),
                             suffixIcon: Visibility(
-                              visible: reviewController.text.toString().trim() == "" ||
-                                      reviewController.text.toString().trim() == "null"
+                              visible: reviewController.text
+                                              .toString()
+                                              .trim() ==
+                                          "" ||
+                                      reviewController.text.toString().trim() ==
+                                          "null"
                                   ? false
                                   : true,
                               child: InkWell(
@@ -2107,8 +2100,6 @@ class _HotspotState extends State<Hotspot> {
     );
   }
 
-
-
   String splitString() {
     /*  var a = sendReview.split("");
     print("abnbnbn "+a.toString()+"^^");
@@ -2151,7 +2142,7 @@ class _HotspotState extends State<Hotspot> {
 
     print("getHotspotLength2: " + getHostSpotList2.length.toString());
 
- /*   getHostSpotList2.forEach((element) {
+    /*   getHostSpotList2.forEach((element) {
       if(element.business != null) {
         print("ElementName " + element.business!.name.toString() + "^^");
         print("element data " +
@@ -2290,8 +2281,6 @@ class _HotspotState extends State<Hotspot> {
           print("Bussiness: " + modelAgentSearch.person_name.toString());
 
           getHostSpotList.add(modelAgentSearch);
-
-         
         }
 
         setState(() {
@@ -2303,11 +2292,6 @@ class _HotspotState extends State<Hotspot> {
         });
       }
     }
-
-
-
-  
-
   }
 
   Future<dynamic> addHotspotReviewApi(String message,
@@ -2509,7 +2493,6 @@ class _HotspotState extends State<Hotspot> {
     var res = await request.send();
 
     if (res.statusCode == 200) {
-
       var respone = await res.stream.bytesToString();
       final JsonDecoder _decoder = new JsonDecoder();
 
@@ -2626,8 +2609,6 @@ class _HotspotState extends State<Hotspot> {
   }
 
   Future<dynamic> getHotspotApi() async {
-
-
     var request = http.get(Uri.parse(RestDatasource.GETHOTSPOT_URL));
 
     String msg = "";
@@ -2649,7 +2630,7 @@ class _HotspotState extends State<Hotspot> {
       print(jsonRes["status"]);
 
       final date2 = DateTime.now();
- getHostSpotList.clear();
+      getHostSpotList.clear();
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
           GetHotSpotClass modelAgentSearch = new GetHotSpotClass();
@@ -2721,7 +2702,7 @@ class _HotspotState extends State<Hotspot> {
           modelAgentSearch.business_id = jsonArray[i]["business_id"].toString();
           modelAgentSearch.message = jsonArray[i]["message"].toString();
           modelAgentSearch.created_at = jsonArray[i]["created_at"].toString();
-          print("CurrentDate "+modelAgentSearch.created_at.toString()+"^^");
+          print("CurrentDate " + modelAgentSearch.created_at.toString() + "^^");
           var difference = date2
               .difference(DateTime.parse(modelAgentSearch.created_at))
               .inSeconds;
@@ -2750,9 +2731,8 @@ class _HotspotState extends State<Hotspot> {
 
           getHostSpotList.add(modelAgentSearch);
           getHostSpotList2.add(modelAgentSearch);
-
         }
-        if(mounted) {
+        if (mounted) {
           setState(() {
             isloading = false;
           });
@@ -2765,17 +2745,18 @@ class _HotspotState extends State<Hotspot> {
         //Navigator.pop(context);
 
         // Navigator.push(context, MaterialPageRoute(builder: (context) => Banners()));
-        if(widget.reviewId.toString()!="null" && widget.reviewId.toString()!=""){
-          for(int i=0; i<getHostSpotList.length; i++){
+        if (widget.reviewId.toString() != "null" &&
+            widget.reviewId.toString() != "") {
+          for (int i = 0; i < getHostSpotList.length; i++) {
             print(widget.reviewId.toString());
             print(getHostSpotList[i].id.toString());
-            if(widget.reviewId.toString()==getHostSpotList[i].id.toString()){
-            print("Condition true");
+            if (widget.reviewId.toString() ==
+                getHostSpotList[i].id.toString()) {
+              print("Condition true");
               _controller.animateTo(400,
                   duration: Duration(seconds: 2), curve: Curves.easeIn);
             }
           }
-
         }
       } else {
         setState(() {

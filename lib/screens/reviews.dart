@@ -43,6 +43,7 @@ class _ReviewsState extends State<Reviews> {
   bool isloading = false;
 
   List<ReviewClass> reviewList = [];
+  List<HotspotModel> hotspotList = [];
 
   var editBox = "";
   var ivStatus = "";
@@ -102,6 +103,7 @@ class _ReviewsState extends State<Reviews> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 3.h,
@@ -109,7 +111,69 @@ class _ReviewsState extends State<Reviews> {
             isLoading==true?Padding(
               padding: const EdgeInsets.only(top:20.0),
               child: Center(child: CircularProgressIndicator(),),
-            ):ListView.builder(
+            ):
+
+            Visibility(
+              visible: !isLoading?hotspotList.length>0?true:false:false,
+              child: Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: Text(
+                  "Hotspot ",
+                  style: TextStyle(
+                      fontSize: 14.5.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Segoepr"),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            Visibility(
+              visible: !isLoading?hotspotList.length>0?true:false:false,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  controller: _controller,
+                  itemCount: hotspotList.length,
+                  itemBuilder: (BuildContext context, int i){
+                    return InkWell(
+                        onTap: (){
+                          if(hotspotList[i].business_id!=null) {
+                            NotificationModel model = NotificationModel();
+                            model.review_id =
+                                hotspotList[i].business_id.toString();
+                            model.type = "";
+                            model.reply_id = "";
+
+                            Navigator.pushNamed(
+                                context, "/detailedbusiness", arguments: model);
+                          }
+                        },
+                        child: hotspotCard(i));
+
+
+
+              }),
+            ),
+            Visibility(
+              visible: !isLoading,
+              child: Padding(
+                padding: const EdgeInsets.only(left:8.0),
+                child: Text(
+                  "Reviews ",
+                  style: TextStyle(
+                      fontSize: 14.5.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Segoepr"),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            ListView.builder(
               shrinkWrap: true,
               controller: _controller,
               itemCount: reviewList.length,
@@ -119,14 +183,16 @@ class _ReviewsState extends State<Reviews> {
               ) {
                 return InkWell(
                   onTap: (){
-                    NotificationModel model = NotificationModel();
-                    model.review_id = reviewList[index].business_id.toString();
-                    model.type = "";
-                    model.reply_id = "";
+                    if(reviewList[index].business_id!=null) {
+                      NotificationModel model = NotificationModel();
+                      model.review_id =
+                          reviewList[index].business_id.toString();
+                      model.type = "";
+                      model.reply_id = "";
 
-                    Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
-
-
+                      Navigator.pushNamed(
+                          context, "/detailedbusiness", arguments: model);
+                    }
                   },
                   child: cardList(index));
               },
@@ -134,6 +200,166 @@ class _ReviewsState extends State<Reviews> {
           ],
         ),
       ),
+    );
+  }
+
+  Column hotspotCard(int index) {
+    return Column(
+      children: [
+        Slidable(
+          key: ValueKey(hotspotList[index]),
+
+          // The start action pane is the one at the left or the top side.
+      /*    startActionPane: ActionPane(
+            // A motion is a widget used to control how the pane animates.
+            motion: ScrollMotion(),
+
+            // A pane can dismiss the Slidable.
+            *//*   dismissible: DismissiblePane(onDismissed: () {
+                        reviewList.removeAt(index);
+                      }),*//*
+
+            // All actions are defined in the children parameter.
+            children: [
+              // A SlidableAction can have an icon and/or a label.
+              SlidableAction(
+                flex: 1,
+                onPressed: (_) => doNothing(index),
+                backgroundColor: kCyanColor,
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Edit',
+              ),
+            ],
+          ),*/
+
+          // The end action pane is the one at the right or the bottom side.
+          endActionPane: ActionPane(
+            motion: ScrollMotion(),
+            children: [
+              SlidableAction(
+                flex: 1,
+                // An action can be bigger than the others.
+
+                onPressed: (_) => hotspotDelete(index),
+                backgroundColor: kPrimaryColor,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Delete',
+              ),
+            ],
+          ),
+
+          child: Column(
+            children: [
+              Card(
+                color: kBackgroundColor,
+                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3.w)),
+                child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.w),
+                        color: kBackgroundColor),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 2,
+                          child: Padding(
+                            padding:
+                            EdgeInsets.only(bottom: 0.h, left: 2.w),
+                            child: /*hotspotList[index].image.toString()!="null"?CircleAvatar(
+                              radius: 6.w,
+                              backgroundImage: NetworkImage(reviewList[index].business_images.toString()
+                              ),
+
+                            )
+                                :*/CircleAvatar(
+                              radius: 6.w,
+                              backgroundImage: AssetImage("assets/images/resimage.jpg"
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Flexible(
+                          flex: 6,
+                          child: Container(
+                            width: 55.w,
+                            margin: EdgeInsets.only(left: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:50.w,
+                                  child: Text(
+                                  hotspotList[index].name.toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 11.sp,
+                                        color: kCyanColor,
+                                        fontFamily: "Segoepr"),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.1.h,
+                                ),
+                                Container(
+                                  width: 45.w,
+                                  child: Text(
+                                    hotspotList[index].message.toString(),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      //overflow: TextOverflow.ellipsis,
+                                        fontSize: 10.2.sp,
+                                        color: Color(0xFFCECECE),
+                                        fontFamily: 'Roboto'),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  hotspotList[index].timedelay.toString(),
+
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 8.sp,
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                SizedBox(height: 1.h,),
+                                Container(height: 25, width: 10,)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+              //       SizedBox(
+              //   height: 1.h,
+              // ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 2.h,
+        ),
+      ],
     );
   }
 
@@ -554,6 +780,49 @@ Future<dynamic> reviewListApi() async {
       final date2 = DateTime.now();
 
       if (jsonRes["status"].toString() == "true") {
+        hotspotList.clear();
+        reviewList.clear();
+        var hotspot = jsonRes["Hotspot"];
+        if(hotspot!=null){
+          if(hotspot.length>0){
+            for (var i = 0; i < hotspot.length; i++) {
+              HotspotModel hotspotModel = new HotspotModel();
+              hotspotModel.id = hotspot[i]["id"].toString();
+              hotspotModel.business_id = hotspot[i]["business_id"].toString();
+              hotspotModel.user_id = hotspot[i]["user_id"].toString();
+              hotspotModel.name = hotspot[i]["review_user_name"].toString();
+              hotspotModel.type = hotspot[i]["type"].toString();
+              hotspotModel.review_id = hotspot[i]["review_id"].toString();
+              hotspotModel.reply_id = hotspot[i]["reply_id"].toString();
+              hotspotModel.business_id2 = hotspot[i]["business_id2"].toString();
+              hotspotModel.business_id3 = hotspot[i]["business_id3"].toString();
+              hotspotModel.business_id4 = hotspot[i]["business_id4"].toString();
+              hotspotModel.business_id5 = hotspot[i]["business_id5"].toString();
+              hotspotModel.message = hotspot[i]["message"].toString();
+              hotspotModel.video_image_status = hotspot[i]["video_image_status"].toString();
+              hotspotModel.image = hotspot[i]["image"].toString();
+              hotspotModel.created_at = hotspot[i]["created_at"].toString();
+              hotspotModel.updated_at = hotspot[i]["updated_at"].toString();
+              print("Created At "+hotspotModel.created_at+"^");
+              var difference = date2.difference(DateTime.parse(hotspotModel.created_at)).inSeconds;
+              hotspotModel.timedelay = difference.toString()+" seconds ago";
+              if(difference>60){
+                var difference = date2.difference(DateTime.parse(hotspotModel.created_at)).inMinutes;
+                hotspotModel.timedelay = difference.toString()+ " minutes ago";
+
+                if(difference>60){
+                  var difference = date2.difference(DateTime.parse(hotspotModel.created_at)).inHours;
+                  hotspotModel.timedelay = difference.toString()+" hours ago";
+
+                  if(difference > 24){
+                    hotspotModel.timedelay = hotspotModel.created_at.toString().substring(0,10);
+                  }
+                }
+              }
+              hotspotList.add(hotspotModel);
+            }
+          }
+        }
         for (var i = 0; i < jsonArray.length; i++) {
 
           ReviewClass modelAgentSearch = new ReviewClass();
@@ -626,6 +895,9 @@ Future<dynamic> reviewListApi() async {
           
 
         }
+
+
+
         print("FileLength "+fileList.length.toString());
 
         setState(() {
@@ -2367,6 +2639,135 @@ Future<dynamic> reviewListApi() async {
     );
   }
 
+  hotspotDeleteDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                scrollable: true,
+                backgroundColor: Colors.black,
+                shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                title: SingleChildScrollView(
+                    child: SizedBox(
+                      height: 20.h,
+                      width: 95.w,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/icons/cross.svg",
+                                  color: Colors.white,
+                                  width: 4.w,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 1.h,
+                          ),
+                          Text(
+                            "Are you sure you\n"
+                                "want to delete this review?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      height: 5.h,
+                                      width: 25.w,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.circular(9.w),
+                                          border: Border.all(
+                                              color: kPrimaryColor
+                                          )
+                                      ),
+                                      child: Center(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                          },
+                                          child: Text(
+                                            "No",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                            TextStyle(fontSize: 12.sp, color: kPrimaryColor),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+
+
+
+
+
+                                  isloading
+                                      ? Align(
+                                      alignment: Alignment.center,
+                                      child: Platform.isAndroid
+                                          ? CircularProgressIndicator()
+                                          : CupertinoActivityIndicator())
+                                      :
+                                  InkWell(
+                                    onTap: () {
+
+                                    deleteReviewApi(" ", hotspotList[index].id.toString());
+                                    },
+                                    child: Container(
+                                      height: 5.h,
+                                      width: 25.w,
+                                      decoration: BoxDecoration(
+                                          color: kPrimaryColor,
+                                          borderRadius: BorderRadius.circular(9.w)),
+                                      child: Center(
+                                        child: Text(
+                                          "Yes",
+                                          textAlign: TextAlign.center,
+                                          style:
+                                          TextStyle(fontSize: 12.sp, color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ),
+                    )),
+              );
+            }
+        );
+
+
+
+      },
+    );
+  }
   Future<List<File>> getData(int index) async{
     setState(() {
       isloading = true;
@@ -2449,6 +2850,9 @@ Future<dynamic> reviewListApi() async {
  deleteNothing(int index) {
     customDeleteDialog(index);
   }
+  hotspotDelete(int index) {
+    hotspotDeleteDialog(index);
+  }
 }
 
 class ReviewClass {
@@ -2470,6 +2874,12 @@ class ReviewClass {
   var created_at = "";
   var timedelay = "Seconds";
 
+}
+
+
+
+class HotspotModel{
+  var id , business_id, name, user_id, type, review_id, reply_id, business_id2, business_id3, business_id4, business_id5, message, video_image_status, image,timedelay, created_at, updated_at;
 }
 
 
