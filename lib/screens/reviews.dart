@@ -20,6 +20,7 @@ import 'package:wemarkthespot/constant.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:wemarkthespot/screens/communityReplies.dart';
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
+import 'package:wemarkthespot/screens/homenave.dart';
 import 'package:wemarkthespot/screens/testing.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/services/api_client.dart';
@@ -139,16 +140,7 @@ class _ReviewsState extends State<Reviews> {
                   itemBuilder: (BuildContext context, int i){
                     return InkWell(
                         onTap: (){
-                          if(hotspotList[i].business_id!=null) {
-                            NotificationModel model = NotificationModel();
-                            model.review_id =
-                                hotspotList[i].business_id.toString();
-                            model.type = "";
-                            model.reply_id = "";
-
-                            Navigator.pushNamed(
-                                context, "/detailedbusiness", arguments: model);
-                          }
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder)=> HomeNav(index: 2)), (route) => false);
                         },
                         child: hotspotCard(i));
 
@@ -269,13 +261,13 @@ class _ReviewsState extends State<Reviews> {
                           child: Padding(
                             padding:
                             EdgeInsets.only(bottom: 0.h, left: 2.w),
-                            child: /*hotspotList[index].image.toString()!="null"?CircleAvatar(
+                            child: hotspotList[index].user_Image.toString()!="null"?CircleAvatar(
                               radius: 6.w,
-                              backgroundImage: NetworkImage(reviewList[index].business_images.toString()
+                              backgroundImage: NetworkImage(hotspotList[index].user_Image.toString()
                               ),
 
                             )
-                                :*/CircleAvatar(
+                                :CircleAvatar(
                               radius: 6.w,
                               backgroundImage: AssetImage("assets/images/resimage.jpg"
                               ),
@@ -803,6 +795,7 @@ Future<dynamic> reviewListApi() async {
               hotspotModel.image = hotspot[i]["image"].toString();
               hotspotModel.created_at = hotspot[i]["created_at"].toString();
               hotspotModel.updated_at = hotspot[i]["updated_at"].toString();
+              hotspotModel.user_Image = hotspot[i]["userImage"].toString();
               print("Created At "+hotspotModel.created_at+"^");
               var difference = date2.difference(DateTime.parse(hotspotModel.created_at)).inSeconds;
               hotspotModel.timedelay = difference.toString()+" seconds ago";
@@ -2879,7 +2872,7 @@ class ReviewClass {
 
 
 class HotspotModel{
-  var id , business_id, name, user_id, type, review_id, reply_id, business_id2, business_id3, business_id4, business_id5, message, video_image_status, image,timedelay, created_at, updated_at;
+  var id , business_id, name, user_id, type, review_id, reply_id, business_id2, business_id3, business_id4, business_id5, message, video_image_status, image,timedelay, created_at, updated_at, user_Image;
 }
 
 
