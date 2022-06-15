@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/components/default_button.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/screens/aboutUs.dart';
+import 'package:wemarkthespot/screens/bussineslist.dart';
 import 'package:wemarkthespot/screens/contactUs.dart';
 import 'package:wemarkthespot/screens/faqs.dart';
 import 'package:wemarkthespot/screens/privacy.dart';
@@ -98,7 +99,7 @@ class _SettingsState extends State<Settings> {
             ),
             InkWell(
               onTap: () {
-                //  Navigator.push(context, MaterialPageRoute(builder: (context) => CheckIn()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => Businesslist()));
 
               },
               child: Row(

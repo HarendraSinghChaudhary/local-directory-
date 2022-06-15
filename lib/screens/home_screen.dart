@@ -238,6 +238,10 @@ class _HomeState extends State<Home> {
               Navigator.pushReplacementNamed(context,"/explore");
 
               break;
+               case "latest":
+              Navigator.pushReplacementNamed(context,"/latestbusiness");
+
+              break;
 
             default:Navigator.pushNamed(context,"/notification");
           }

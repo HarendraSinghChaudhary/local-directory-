@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wemarkthespot/constant.dart';
+import 'package:wemarkthespot/screens/bussineslist.dart';
 import 'package:wemarkthespot/screens/communityRepliesById.dart';
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
@@ -136,6 +137,11 @@ class _NotificationsState extends State<Notifications> {
                             Navigator.pushReplacement(context, MaterialPageRoute(
                                 builder: (context) =>
                                     Explore()));
+                            break;
+                            case "latest":
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    Businesslist()));
                             break;
                         }
 

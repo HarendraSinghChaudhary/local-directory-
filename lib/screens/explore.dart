@@ -465,6 +465,10 @@ class _ExploreState extends State<Explore> {
     );
   }
 
+
+
+
+
   give() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");

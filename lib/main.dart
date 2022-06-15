@@ -473,6 +473,7 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
             "/addhotspot": (_) => HomeNav(index: 2),
             "/explore": (_) => HomeNav(index: 3),
             "/detailedbusiness": (_) => DetailBussinessDynamic(),
+             "/latestbusiness": (_) => DetailBussinessDynamic(),
           },
         );
       },
@@ -597,6 +598,9 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
                 "review_id":review_id,
                 "reply_id":reply_id
               });
+              break;
+               case "latest":
+              navigatorKey.currentState!.pushNamed("/latestbusiness");
               break;
 
             case "businesslist":
