@@ -77,6 +77,9 @@ class _DonationState extends State<Donation> {
                       if(int.parse(donationController.text.toString().trim())<=0){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter a valid amount"),));
                         return false;
+                      }else if(int.parse(donationController.text.toString().trim())>=999999){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Amount should be less then "+r"$"+"999999"),));
+                        return false;
                       }
                       String msg = donationController.text.toString().trim();
 
@@ -99,7 +102,7 @@ class _DonationState extends State<Donation> {
                 height: 4.h,
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                margin: EdgeInsets.symmetric(horizontal: 2.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -137,6 +140,7 @@ class _DonationState extends State<Donation> {
                                     borderRadius: BorderRadius.circular(3.w),
                                     color: kBackgroundColor),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(
@@ -147,10 +151,10 @@ class _DonationState extends State<Donation> {
                                         child: SvgPicture.asset("assets/icons/donation.svg", width: 30,),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 2.w,
-                                    ),
+
                                     Container(
+                                      margin: EdgeInsets.only(
+                                          bottom: 0.h, left: 2.w),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -158,10 +162,9 @@ class _DonationState extends State<Donation> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Container(
-                                            width: 74.w,
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                  MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
                                                   "Paid to We Mark The Spot",
@@ -175,11 +178,29 @@ class _DonationState extends State<Donation> {
                                                       fontFamily: "Segoepr"),
                                                 ),
 
-                                                SizedBox(width: 12.w,),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 12.0),
+                                                  child: Container(
+                                                    width: 80,
+                                                    child: Text(
+                                                      r"$"+donatioList[a].plan_price.toString(),
+                                                     // r"$"+"100000000",
+                                                      // userCheckInList[index].businessProfile!.name.toString(),
+                                                      overflow:
+                                                      TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.right,
+                                                      style: TextStyle(
+                                                          fontSize: 11.sp,
+                                                          color: Colors.white,
+                                                          fontFamily: "Segoepr",
+                                                          fontWeight: FontWeight.w700),
+                                                    ),
+                                                  ),
+                                                )
 
-                                                 Text(
-                                                  r"$"+donatioList[a].plan_price.toString(),
-
+                                                 /*Text(
+                                                 // r"$"+donatioList[a].plan_price.toString(),
+                                                     r"$"+"10000",
                                                   // userCheckInList[index].businessProfile!.name.toString(),
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -188,7 +209,7 @@ class _DonationState extends State<Donation> {
                                                       color: Colors.white,
                                                       fontFamily: "Segoepr",
                                                       fontWeight: FontWeight.w700),
-                                                ),
+                                                ),*/
 
 
 
@@ -260,7 +281,7 @@ class _DonationState extends State<Donation> {
                                   ],
                                 )),
                             SizedBox(
-                              height: 2.h,
+                              height: 1.h,
                             ),
                           ],
                         );

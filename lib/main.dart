@@ -41,6 +41,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   playSound: true,
   enableLights: true,
   enableVibration: true,
+
 );
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin
