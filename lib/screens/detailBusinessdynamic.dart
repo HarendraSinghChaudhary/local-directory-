@@ -1736,9 +1736,15 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             "^^");
                                         if (fileList.length < 3) {
                                           await pickImagesMultiple(lengt).then((value) {
-                                            images = value;
-                                            image_video_status = "1";
-                                            ivStatus = "1";
+                                            if(value.length>0){
+                                              images = value;
+                                              image_video_status = "1";
+                                              ivStatus = "1";
+                                            }else{
+                                              images.clear();
+                                              image_video_status = "0";
+                                              ivStatus = "0";
+                                            }
                                           });
                                           if (images.length > 0) {
                                             images.forEach((element) async {
@@ -2195,43 +2201,6 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
     );
   }
 
-  Future<void> pickImagesss() async {
-    List<Asset> resultList = [];
-    try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: 3,
-        enableCamera: false,
-        selectedAssets: images,
-        materialOptions: MaterialOptions(
-          actionBarTitle: "Select upto 3 Images",
-        ),
-      );
-      images = resultList;
-      if (images.length > 0) {
-        image_video_status = "1";
-        images.forEach((element) async {
-          var path = await FlutterAbsolutePath.getAbsolutePath(
-              element.identifier.toString());
-
-          file = File(path.toString());
-          fileName = file!.path.split("/").last;
-          fileList.add(file!);
-          setState(() {
-
-          });
-        });
-      }
-      Navigator.pop(context);
-    } on Exception catch (e) {
-      print(e);
-      image_video_status = "0";
-    }
-
-    setState(() {
-      print("length " + images.length.toString() + "*");
-    });
-    print("pathhh " + fileName.toString() + "*");
-  }
 
   Future<void> pickImagesSlider(int index) async {
     await pickImages().then((value) {
@@ -3203,8 +3172,16 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                             "^^");
                                         if (fileList.length < 3) {
                                           await pickImagesMultiple(lengt).then((value) {
-                                            images = value;
 
+                                            if(value.length>0){
+                                              images = value;
+                                              image_video_status = "1";
+                                              ivStatus = "1";
+                                            }else{
+                                              images.clear();
+                                              image_video_status = "0";
+                                              ivStatus = "0";
+                                            }
                                           });
                                           if (images.length > 0) {
                                             image_video_status = "1";
@@ -3662,9 +3639,15 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
                                         if (fileList.length < 3) {
                                           await pickImagesMultiple(lengt)
                                               .then((value) {
-                                            images = value;
-                                            image_video_status = "1";
-                                            ivStatus = "1";
+                                            if(value.length>0){
+                                              images = value;
+                                              image_video_status = "1";
+                                              ivStatus = "1";
+                                            }else{
+                                              images.clear();
+                                              image_video_status = "0";
+                                              ivStatus = "0";
+                                            }
                                           });
                                           if (images.length > 0) {
                                             images.forEach((element) async {

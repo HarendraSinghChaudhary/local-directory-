@@ -26,6 +26,7 @@ import "package:collection/collection.dart";
 import 'package:supercharged/supercharged.dart';
 import 'package:wemarkthespot/services/modelProvider.dart';
 
+import '../main.dart';
 import '../models/body.dart';
 import 'mainnnn.dart';
 
@@ -76,8 +77,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   var okcount = 0;
   var notcool_count = 0;
   List<NearBy> selectedList = [];
-  double? lat;
-  double? long;
+
   var isImageloaded = false;
   List<NearBy> nearByRestaurantList = [];
 
@@ -655,7 +655,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     if (widget.route.toString() == "home") {
       print("RunHomeRoute");
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        locatePosition();
+          locatePosition();
+
       });
 
       nearBy();
@@ -663,7 +664,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
     } else {
       if (widget.list != null) {
         if (widget.list.length.toString() == "0") {
-          locatePosition();
+
+            locatePosition();
+
           nearBy();
           initilize(nearByRestaurantList);
         } else {
@@ -673,7 +676,9 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
           isFilter = true;
         }
       } else {
-        locatePosition();
+
+          locatePosition();
+
         nearBy();
         initilize(nearByRestaurantList);
       }
@@ -691,25 +696,44 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
   }
 
   void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    if(lat==null || lat=="" || lat=="null"){
+      print("CASE1");
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
 
-    currentPosition = position;
+      currentPosition = position;
 
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
-    print("lat: " + position.latitude.toString());
-    print("long " + position.longitude.toString());
+      LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+      print("lat: " + position.latitude.toString());
+      print("long " + position.longitude.toString());
 
-    CameraPosition cameraPosition =
-        new CameraPosition(target: latLngPosition, zoom: 12);
-    if(newGoogleMapController!=null) {
-      newGoogleMapController!
-          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      _currentPosition =
+      new CameraPosition(target: latLngPosition, zoom: 12);
+      if(newGoogleMapController!=null) {
+        newGoogleMapController!
+            .animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
+    }
+    }else {
+      print("CASE222");
+      var latitude= double.parse(lat.toString());
+      var longitude= double.parse(long.toString());
+      LatLng latLngPosition = LatLng(latitude,longitude);
+
+
+      _currentPosition =
+      new CameraPosition(target: latLngPosition, zoom: 12);
+      if (newGoogleMapController != null) {
+        newGoogleMapController!
+            .animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
+      }
     }
   }
 
-  static final CameraPosition _currentPosition =
+  CameraPosition _currentPosition =
       CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 12);
+
+  CameraPosition _currentPositionnn =
+  CameraPosition(target: LatLng(26.862471, 75.762413), zoom: 12);
 
   void updateUI(){
     setState(() {
@@ -779,7 +803,7 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                   visible = false;
                 });
               },
-              initialCameraPosition: _currentPosition,
+              initialCameraPosition: _currentPositionnn,
               myLocationEnabled: true,
               zoomControlsEnabled: true,
               zoomGesturesEnabled: true,
@@ -788,8 +812,8 @@ class _GoogleMapLocationTestingState extends State<GoogleMapScreen> {
                 _controllerGoogleMap.complete(controller);
                 newGoogleMapController = controller;
 
-                //locatePosition();
-                setState(() {});
+                locatePosition();
+
               },
               markers: markers.map((e) => e).toSet(),
             ),

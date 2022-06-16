@@ -380,6 +380,12 @@ class _SettingsState extends State<Settings> {
                        opacity = false;
                      });
                     await fetchLocation().then((value) async {
+                      print("Value is "+value.toString()+"");
+                      if(value== LocationPermission.deniedForever){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please turn on your location first!")));
+
+                      }
+
                       var isLocationEnable = await Geolocator.isLocationServiceEnabled();
                       if(isLocationEnable) {
                         setState2(() {
@@ -403,6 +409,7 @@ class _SettingsState extends State<Settings> {
                             content: Text("Location Updated")));
                         Navigator.of(context, rootNavigator: true).pop();
                       }else{
+
                         setState2(() {
                           isloading = false;
                         });
@@ -485,10 +492,11 @@ class _SettingsState extends State<Settings> {
   }
 
 
-  Future<void>fetchLocation() async {
+  Future<dynamic>fetchLocation() async {
+    var val;
     await Geolocator.checkPermission().then((value) async {
       print("Check Permission " + value.toString() + "__");
-
+      val = value;
       if (value == LocationPermission.denied) {
         await Geolocator.requestPermission().then((value) async {
           print("Request Permission " + value.toString() + "_");
@@ -507,7 +515,11 @@ class _SettingsState extends State<Settings> {
               long = value.longitude.toString();
             });
           }
+
+
+          val = value;
         });
+
       } else if (value == LocationPermission.always) {
         await Geolocator.getCurrentPosition().then((value) {
           print("Lat " + value.latitude.toString());
@@ -540,6 +552,7 @@ class _SettingsState extends State<Settings> {
               long = value.longitude.toString();
             });
           }
+          val = value;
         });
       }
     });
@@ -549,6 +562,7 @@ class _SettingsState extends State<Settings> {
       print("Lat "+lat.toString()+""),
       print("Long "+long.toString()+"")
     });*/
+    return val;
   }
 
   Future<dynamic> homeApi() async {

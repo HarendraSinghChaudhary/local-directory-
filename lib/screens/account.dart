@@ -587,16 +587,7 @@ class _UserAccountState extends State<UserAccount> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    DefaultButton(height: 40,text: "Cancel", press: (){
-
-
-                      Navigator.of(context, rootNavigator: true).pop();
-                      setState((){
-                        opacity = false;
-                      });
-                    }, width: 100,),
-                    SizedBox(width: 20,),
-                    DefaultButton(height: 40,text: "Logout", press: () async {
+                    DefaultButton(height: 40,text: "Yes", press: () async {
 
                       var pref = await SharedPreferences.getInstance();
                       pref.remove('id');
@@ -620,6 +611,16 @@ class _UserAccountState extends State<UserAccount> {
                           new MaterialPageRoute(
                               builder: (context) => LoginScreen()),
                               (route) => false);
+                    }, width: 100,),
+                    SizedBox(width: 20,),
+
+                    DefaultButton(height: 40,text: "Cancel", press: (){
+
+
+                      Navigator.of(context, rootNavigator: true).pop();
+                      setState((){
+                        opacity = false;
+                      });
                     }, width: 100,),
                   ],
                 )

@@ -2596,8 +2596,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               "^^");
                                           if (fileList.length < 3) {
                                             await pickImagesMultiple(lengt).then((value) {
-                                              images = value;
 
+                                              if(value.length>0){
+                                                images = value;
+                                                image_video_status = "1";
+                                                ivStatus = "1";
+                                              }else{
+                                                images.clear();
+                                                image_video_status = "0";
+                                                ivStatus = "0";
+                                              }
                                             });
                                             if (images.length > 0) {
                                               image_video_status = "1";
@@ -3187,9 +3195,15 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                               "^^");
                                           if (fileList.length < 3) {
                                             await pickImagesMultiple(lengt).then((value) {
-                                              images = value;
-                                              image_video_status = "1";
-                                              ivStatus = "1";
+                                              if(value.length>0){
+                                                images = value;
+                                                image_video_status = "1";
+                                                ivStatus = "1";
+                                              }else{
+                                                images.clear();
+                                                image_video_status = "0";
+                                                ivStatus = "0";
+                                              }
                                             });
                                             if (images.length > 0) {
                                               images.forEach((element) async {
@@ -3639,9 +3653,16 @@ class _DetailBussinessState extends State<DetailBussiness> {
                                           if (fileList.length < 3) {
                                             await pickImagesMultiple(lengt)
                                                 .then((value) {
+
+                                                  if(value.length>0){
                                               images = value;
                                               image_video_status = "1";
                                               ivStatus = "1";
+                                                  }else{
+                                                    images.clear();
+                                                    image_video_status = "0";
+                                                    ivStatus = "0";
+                                                  }
                                             });
                                             if (images.length > 0) {
                                               images.forEach((element) async {
