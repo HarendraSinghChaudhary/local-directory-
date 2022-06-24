@@ -18,6 +18,7 @@ class RestDatasource {
   static final HOMEAPI_URL = BASE_URL + "get_homedata";
   static final USER_NOTIFICATION_STATUS = BASE_URL + "usernotificationstatus";
   static final NEARBYRESTAURANT_URL = BASE_URL + "getnearby";
+  static final LATEST = BASE_URL + "getlastmonthData";
   static final BUSINESSREVIEW_URL = BASE_URL + "business_review";
   static final CHECKINAPI = BASE_URL + "checkinAPi";
   static final COMMUNITYREVIEW_URL = BASE_URL + "community_reviews";

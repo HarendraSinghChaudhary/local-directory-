@@ -55,10 +55,14 @@ class _ExploreState extends State<Explore> {
 
   @override
   void initState() {
-    nearBy();
-    featuredBusinessApi();
-    give();
+
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      nearBy();
+      featuredBusinessApi();
+      give();
+    });
+
   }
 
   bool isloading = false;
@@ -199,7 +203,14 @@ class _ExploreState extends State<Explore> {
       ],
     );
   }
-
+  Route _createRoute(NearBy nearBy) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => DetailBussiness(nearBy: nearBy),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
+  }
   ListView resCard() {
     return ListView.builder(
       shrinkWrap: true,
@@ -213,16 +224,11 @@ class _ExploreState extends State<Explore> {
               onTap: () {
                 if (ids.toString() != '72') {
                   Navigator.of(context)
-                      .push(
-                    new MaterialPageRoute(
-                        builder: (_) => new DetailBussiness(
-                              nearBy: nearByRestaurantList[index],
-                            )),
+                      .push(MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: nearByRestaurantList[index]))
                   )
                       .then((value) {
                     nearBy();
                   });
-
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:wemarkthespot/models/body.dart';
+import 'package:wemarkthespot/screens/bussineslist.dart';
 import 'package:wemarkthespot/screens/communityRepliesById.dart';
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
 import 'package:wemarkthespot/screens/explore.dart';
@@ -82,6 +83,8 @@ Future<void> main() async {
           ),
         );
       });
+
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   final InitializationSettings initializationSettings = InitializationSettings(
@@ -103,13 +106,10 @@ Future<void> main() async {
 
   final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   String initialRoute = Splash.routeName;
-  String? asas  = notificationAppLaunchDetails?.didNotificationLaunchApp.toString();
-  print("assa "+asas.toString());
-  print("Payload "+notificationAppLaunchDetails!.payload.toString()+"^^");
 
 
-  if(notificationAppLaunchDetails.payload.toString()!="null") {
-    if (notificationAppLaunchDetails.didNotificationLaunchApp) {
+  if(notificationAppLaunchDetails?.payload.toString()!="null") {
+    if (notificationAppLaunchDetails!.didNotificationLaunchApp) {
       selectedNotificationPayload = notificationAppLaunchDetails.payload;
    /*   String a = notificationAppLaunchDetails.payload.toString().replaceAll("{", "");
       String b = a.replaceAll("}", "");
@@ -474,7 +474,7 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
             "/addhotspot": (_) => HomeNav(index: 2),
             "/explore": (_) => HomeNav(index: 3),
             "/detailedbusiness": (_) => DetailBussinessDynamic(),
-             "/latestbusiness": (_) => DetailBussinessDynamic(),
+             "/latestbusiness": (_) => Businesslist(),
           },
         );
       },
@@ -624,6 +624,7 @@ class _WeMarkTheSpotState extends State<WeMarkTheSpot> {
 
     });
   }
+
   Future<void> createListMap(Map<String, dynamic> map) async {
     print("ListSaveMap");
     SharedPreferences preferences = await SharedPreferences.getInstance();

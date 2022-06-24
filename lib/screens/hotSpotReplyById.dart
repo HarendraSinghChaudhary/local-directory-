@@ -143,12 +143,12 @@ class _HotSpotReplyByIdState extends State<HotSpotReplyById> {
                             Padding(
                               padding: EdgeInsets.only(top: 0.8.h, left: 2.w),
                               child: CachedNetworkImage(
-                                imageUrl: detail.image.toString(),
+                                imageUrl: detail.user_image.toString(),
                                 imageBuilder: (context, imageProvider) =>
                                     CircleAvatar(
                                   radius: 7.w,
                                   backgroundImage: NetworkImage(
-                                    detail.image.toString(),
+                                    detail.user_image.toString(),
                                   ),
                                 ),
                                 placeholder: (context, url) => CircleAvatar(
@@ -3114,7 +3114,10 @@ class _HotSpotReplyByIdState extends State<HotSpotReplyById> {
         detail.business_name5 = jsonRes["data"]["business_name5"].toString();
         detail.review = jsonRes["data"]["message"].toString();
         detail.review_user_name = jsonRes["data"]["name"].toString();
-        detail.image = jsonRes["data"]["image"].toString();
+        detail.image = jsonRes["data"]["image"];
+        detail.user_image = jsonRes["data"]["user_image"].toString();
+        detail.image_video_status = jsonRes["data"]["image_video_status"].toString();
+
 
         var difference = date2
             .difference(DateTime.parse(jsonRes["data"]["created_at"].toString()))

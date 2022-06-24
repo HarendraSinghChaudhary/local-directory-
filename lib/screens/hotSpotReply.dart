@@ -1302,12 +1302,12 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       isloading = false;
     });
 
-    var request = http.get(
+    var request = http.post(
       Uri.parse(RestDatasource.GETREPLYONCOMMUNITYREVIEW_URL +
           //"3"
           widget.id.toString() +
           "&type=" +
-          "HOTSPOT"),
+          "HOTSPOT")
     );
     String msg = "";
     var jsonArray;

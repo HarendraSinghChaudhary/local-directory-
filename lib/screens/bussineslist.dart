@@ -32,10 +32,10 @@ class _BusinesslistState extends State<Businesslist> {
    bool favEnable = true;
    @override
   void initState() {
-   nearBy();
-  
     super.initState();
-  }
+    nearBy();
+
+   }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -368,13 +368,10 @@ class _BusinesslistState extends State<Businesslist> {
       isloading = true;
     });
 
-    var request = http.post(
+    var request = http.get(
         Uri.parse(
-          RestDatasource.NEARBYRESTAURANT_URL,
-        ),
-        body: {
-          "id": id.toString(),
-        });
+          RestDatasource.LATEST,
+        ));
     String msg = "";
     var jsonArray;
     var jsonRes;

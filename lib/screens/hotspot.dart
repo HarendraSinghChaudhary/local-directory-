@@ -267,12 +267,11 @@ class _HotspotState extends State<Hotspot> {
                                 fontWeight: FontWeight.w700),
                             suffixIcon: InkWell(
                                 onTap: () {
-                                  _scrollController.scrollTo(
-                                      index: 6, duration: Duration(seconds: 2));
+
                                   mesageTextController.clear();
                                   getHostSpotList.clear();
-                                  print("Clicked");
                                   getHotspotApi();
+
                                 },
                                 child: SvgPicture.asset(
                                   "assets/icons/cross.svg",

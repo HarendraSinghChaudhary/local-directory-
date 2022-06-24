@@ -54,7 +54,6 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
   var reviewId = "";
   @override
   void initState() {
-    getDetailsofReview();
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,7 +68,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
         review_id = args.review_id;
         if (review_id.toString() != "" && review_id.toString() != "null") {
           getDetailsofReview();
-          getReplyOnCommunityApi();
+
         }
       }
     });
@@ -106,92 +105,131 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(3.w)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(6.0),
-                              child: CachedNetworkImage(
-                                imageUrl: detail.image.toString(),
-                                imageBuilder: (context, imageProvider) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage: NetworkImage(
-                                    detail.image.toString(),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(6.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: detail.user_image.toString(),
+                                    imageBuilder: (context, imageProvider) =>
+                                        CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage: NetworkImage(
+                                        detail.user_image.toString(),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) => CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage:
+                                          AssetImage("assets/images/usericon.png"),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        CircleAvatar(
+                                      radius: 7.w,
+                                      backgroundImage:
+                                          AssetImage("assets/images/usericon.png"),
+                                    ),
                                   ),
                                 ),
-                                placeholder: (context, url) => CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
+                                SizedBox(
+                                  width: 0.9.w,
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    CircleAvatar(
-                                  radius: 7.w,
-                                  backgroundImage:
-                                      AssetImage("assets/images/usericon.png"),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.9.w,
-                            ),
-                            Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 74.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          //"Person Name",
-                                          detail.review_user_name.toString() != "null"
-                                              ? detail.review_user_name.toString()
-                                              : "User Name",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 11.sp,
-                                              color: kCyanColor,
-                                              fontFamily: "Segoepr"),
+                                Container(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 74.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              //"Person Name",
+                                              detail.review_user_name.toString() != "null"
+                                                  ? detail.review_user_name.toString()
+                                                  : "User Name",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 11.sp,
+                                                  color: kCyanColor,
+                                                  fontFamily: "Segoepr"),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 0.1.h,
-                                  ),
-                                  Container(
-                                    width: 74.w,
-                                    child: Text(
-                                      //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
+                                      ),
+                                      SizedBox(
+                                        height: 0.1.h,
+                                      ),
+                                      Container(
+                                        width: 74.w,
+                                        child: Text(
+                                          //"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer",
 
-                                      detail.review.toString() != "null"
-                                          ? detail.review.toString()
-                                          : "",
-                                      style: TextStyle(
-                                          //overflow: TextOverflow.ellipsis,
-                                          fontSize: 10.2.sp,
-                                          color: Colors.black,
-                                          fontFamily: 'Roboto'),
-                                    ),
+                                          detail.review.toString() != "null"
+                                              ? detail.review.toString()
+                                              : "",
+                                          style: TextStyle(
+                                              //overflow: TextOverflow.ellipsis,
+                                              fontSize: 10.2.sp,
+                                              color: Colors.black,
+                                              fontFamily: 'Roboto'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      SizedBox(
+                                        height: 0.h,
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  SizedBox(
-                                    height: 0.h,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      )),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 1.h,
+                          ),
+                          detail.image_video_status
+                              .toString() ==
+                              "2"
+                              ? SizedBox(
+                              height: 200,
+                              child: VideoItems(
+                                videoPlayerController:
+                                VideoPlayerController.network(
+                                    detail.image[0]),
+                              ))
+                              : Container(
+                            width: 0,
+                            height: 0,
+                          ),
+                          detail.image_video_status
+                              .toString() ==
+                              "1"
+                              ? SizedBox(
+                            height: 200,
+                            child: HotspotImageSlider(
+                                items:
+                                detail.image),
+                          )
+                              : Container(
+                            width: 0,
+                            height: 0,
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                        ],
+                      )
+
+                  ),
                   SizedBox(
                     height: 2.h,
                   ),
@@ -826,6 +864,7 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
     });
 
     if (res.statusCode == 200) {
+      getReplyOnCommunityApi();
       print(jsonRes["status"]);
       getReplyOnCommunityList.clear();
       if (jsonRes["status"].toString() == "true") {
@@ -835,8 +874,9 @@ class _CommunityRepliesByIdState extends State<CommunityRepliesById> {
         detail.business_name1 = jsonRes["data"]["business_name"].toString();
         detail.review = jsonRes["data"]["review"].toString();
         detail.review_user_name = jsonRes["data"]["name"].toString();
-        detail.image = jsonRes["data"]["image"].toString();
-
+        detail.image = jsonRes["data"]["image"];
+        detail.user_image = jsonRes["data"]["user_image"].toString();
+        detail.image_video_status = jsonRes["data"]["image_video_status"].toString();
 
 
         setState(() {
@@ -2243,7 +2283,9 @@ class ReviewDetail{
   var business_name3 = "";
   var business_name4 = "";
   var review_user_name = "";
-  var image = "";
+  var user_image = "";
+  var image_video_status = "";
+  List<dynamic> image = [];
   var username = "";
   var review = "";
   var timeDelay = "";

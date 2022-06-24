@@ -14,6 +14,7 @@ import 'package:wemarkthespot/screens/aboutUs.dart';
 import 'package:wemarkthespot/screens/bussineslist.dart';
 import 'package:wemarkthespot/screens/contactUs.dart';
 import 'package:wemarkthespot/screens/faqs.dart';
+import 'package:wemarkthespot/screens/notifications.dart';
 import 'package:wemarkthespot/screens/privacy.dart';
 import 'package:wemarkthespot/screens/privacyAndPolicy.dart';
 import 'package:wemarkthespot/screens/select_location.dart';
@@ -97,56 +98,50 @@ class _SettingsState extends State<Settings> {
             SizedBox(
               height: 3.h,
             ),
-            InkWell(
-              onTap: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => Businesslist()));
-
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Notifications",
-                    style: TextStyle(
-                        color: kCyanColor,
-                        fontSize: 13.sp,
-                        fontFamily: 'Roboto'),
-                  ),
-                  Center(
-                    child: Container(
-                      child: FlutterSwitch(
-                        activeColor: kPrimaryColor,
-                        width: 12.w,
-                        height: 3.h,
-                        valueFontSize: 0.0,
-                        toggleSize: 20.0,
-                        toggleColor: Colors.black,
-                        value: status,
-                        borderRadius: 30.0,
-                        //padding: 8.0,
-                        showOnOff: true,
-                        disabled: buttonPress?true:false,
-                        onToggle: (val) {
-                          if(!buttonPress) {
-                            buttonPress = true;
-                            setState(() {
-                              status = val;
-                              print(status);
-                              if (status) {
-                                notification_status = "1";
-                                notificationApi("1");
-                              } else {
-                                notification_status = "0";
-                                notificationApi("0");
-                              }
-                            });
-                          }
-                        },
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Notifications",
+                  style: TextStyle(
+                      color: kCyanColor,
+                      fontSize: 13.sp,
+                      fontFamily: 'Roboto'),
+                ),
+                Center(
+                  child: Container(
+                    child: FlutterSwitch(
+                      activeColor: kPrimaryColor,
+                      width: 12.w,
+                      height: 3.h,
+                      valueFontSize: 0.0,
+                      toggleSize: 20.0,
+                      toggleColor: Colors.black,
+                      value: status,
+                      borderRadius: 30.0,
+                      //padding: 8.0,
+                      showOnOff: true,
+                      disabled: buttonPress?true:false,
+                      onToggle: (val) {
+                        if(!buttonPress) {
+                          buttonPress = true;
+                          setState(() {
+                            status = val;
+                            print(status);
+                            if (status) {
+                              notification_status = "1";
+                              notificationApi("1");
+                            } else {
+                              notification_status = "0";
+                              notificationApi("0");
+                            }
+                          });
+                        }
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(
               height: 3.h,

@@ -77,10 +77,18 @@ class _DetailBussinessState extends State<DetailBussiness> {
 
   @override
   void initState() {
+    super.initState();
     communityReviewApi();
     print("vi: " + videoLink.toString());
 
-    super.initState();
+      Future.delayed(const Duration(milliseconds: 500), () {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          isLoading = false;
+        });
+
+      });
+    });
     toggleDraggableScrollableSheet();
   }
 
@@ -104,7 +112,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   String trimFileName = "";
   File? file;
   File? trimFile;
-  bool isLoading = false;
+  bool isLoading = true;
   final picker = ImagePicker();
   bool isVisible = false;
   List<Asset> images = [];
@@ -133,7 +141,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
         children: <Widget>[
           SizedBox.expand(
               child: SafeArea(
-                  child: ListView(
+                  child: isLoading==true?Center(child:Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator()):ListView(
             shrinkWrap: true,
             controller: _controller,
             children: [
@@ -2057,11 +2065,6 @@ class _DetailBussinessState extends State<DetailBussiness> {
   Future<dynamic> communityReviewApi() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var id = prefs.getString("id");
-    print("id Print: " + id.toString());
-    print("buisness Id: " + widget.nearBy.id.toString());
-    setState(() {
-      isloading = false;
-    });
 
     var request = http.post(
         Uri.parse(
@@ -2126,18 +2129,20 @@ class _DetailBussinessState extends State<DetailBussiness> {
           communityReviewList.add(modelAgentSearch);
         }
         if (mounted) {
-          setState(() {});
+          setState(() {
+            isLoading = false;
+          });
         }
       } else {
         setState(() {
-          // isloading = false;
+          isLoading = false;
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {
       setState(() {
-        // isloading = false;
+        isLoading = false;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please try later")));
       });
