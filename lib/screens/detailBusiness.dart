@@ -81,14 +81,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
     communityReviewApi();
     print("vi: " + videoLink.toString());
 
-      Future.delayed(const Duration(milliseconds: 500), () {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {
-          isLoading = false;
-        });
 
-      });
-    });
     toggleDraggableScrollableSheet();
   }
 
@@ -112,7 +105,7 @@ class _DetailBussinessState extends State<DetailBussiness> {
   String trimFileName = "";
   File? file;
   File? trimFile;
-  bool isLoading = true;
+  bool isLoading = false;
   final picker = ImagePicker();
   bool isVisible = false;
   List<Asset> images = [];

@@ -368,10 +368,10 @@ class _BusinesslistState extends State<Businesslist> {
       isloading = true;
     });
 
-    var request = http.get(
+    var request = http.post(
         Uri.parse(
           RestDatasource.LATEST,
-        ));
+        ),body: {"id":id});
     String msg = "";
     var jsonArray;
     var jsonRes;

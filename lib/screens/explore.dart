@@ -15,6 +15,7 @@ import 'package:wemarkthespot/components/shimmerEffect.dart';
 import 'package:wemarkthespot/constant.dart';
 import 'package:wemarkthespot/models/body.dart';
 import 'package:wemarkthespot/screens/account.dart';
+import 'package:wemarkthespot/screens/blank_screen.dart';
 import 'package:wemarkthespot/screens/detailBusiness.dart';
 import 'package:http/http.dart' as http;
 import 'package:wemarkthespot/screens/detailBusinessdynamic.dart';
@@ -224,21 +225,15 @@ class _ExploreState extends State<Explore> {
               onTap: () {
                 if (ids.toString() != '72') {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (builder)=> DetailBussiness(nearBy: nearByRestaurantList[index]))
+                      .push(MaterialPageRoute(builder: (builder)=> BlankScreen(nearby: nearByRestaurantList[index]))
                   )
                       .then((value) {
                     nearBy();
                   });
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => ));
-
                   visitApi(nearByRestaurantList[index].id.toString(), index);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          "Please login or signup first to view business profile")));
+                      content: Text("Please login or signup first to view business profile")));
                 }
               },
               child: Container(

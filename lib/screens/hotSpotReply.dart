@@ -1302,7 +1302,7 @@ class _HotSpotReplyState extends State<HotSpotReply> {
       isloading = false;
     });
 
-    var request = http.post(
+    var request = http.get(
       Uri.parse(RestDatasource.GETREPLYONCOMMUNITYREVIEW_URL +
           //"3"
           widget.id.toString() +
@@ -1324,9 +1324,10 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
     await request.then((http.Response response) {
       res = response;
+      print("Response: " + response.body.toString() + "_");
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
-      print("Response: " + response.body.toString() + "_");
+
       print("ResponseJSON: " + jsonRes.toString() + "_");
       msg = jsonRes["message"].toString();
       jsonArray = jsonRes['data'];
@@ -1720,6 +1721,8 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
         setState(() {
           isloading = false;
+          _refreshController.refreshCompleted();
+          _refreshController.loadComplete();
           if(selectedIndex>-1){
             getReplyOnHotspotList[selectedIndex].viewV = true;
 
@@ -3001,7 +3004,6 @@ class _HotSpotReplyState extends State<HotSpotReply> {
 
           getAllBusinessList.add(modelAgentSearch);
 
-          setState(() {});
         }
 
         setState(() {
