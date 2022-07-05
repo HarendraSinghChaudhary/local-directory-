@@ -32,6 +32,7 @@ import 'package:wemarkthespot/screens/testing.dart';
 import 'package:wemarkthespot/screens/testingsheet.dart';
 import 'package:wemarkthespot/screens/video_player_widget.dart';
 import 'package:wemarkthespot/services/api_client.dart';
+import 'package:wemarkthespot/theme.dart';
 
 import '../models/body.dart';
 import 'detailBusiness.dart';
@@ -227,8 +228,10 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor:opacity==true?Colors.grey.shade700.withOpacity(0.6):Colors.transparent,
-      body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
+      // backgroundColor:opacity==true?Colors.grey.shade700.withOpacity(0.6):Colors.transparent,
+      backgroundColor:Colors.black.withOpacity(0.6),
+      // body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
+      body: isloadingNew==true?loader:
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(
         children: <Widget>[
           SizedBox.expand(

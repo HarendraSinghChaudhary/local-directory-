@@ -51,3 +51,5 @@ AppBarTheme appBarTheme() {
     ),
   );
 }
+
+const loader  = Center(child: CircularProgressIndicator.adaptive());

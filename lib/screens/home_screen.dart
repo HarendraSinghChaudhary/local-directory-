@@ -27,6 +27,7 @@ import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import '../models/body.dart';
+import '../theme.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -39,7 +40,6 @@ class _HomeState extends State<Home> {
   bool isloading = false;
   VideoPlayerController? videoPlayerController;
   VideoPlayerController? videoPlayerController2;
-
 
   late Future gethomedata;
   late Position currentPosition;
@@ -113,10 +113,10 @@ class _HomeState extends State<Home> {
       print("Long "+long.toString()+"")
     });*/
   }
+
   var isPlaying = false;
   var isInitialized = false;
   var isInitialized2 = false;
-
 
   var quoatesid,
       quoatesname,
@@ -139,26 +139,23 @@ class _HomeState extends State<Home> {
       business_name,
       category_name,
       distance;
-  var giveawayDesc,
-      giveawaytitle,
-      giveawayImage;
-      
+  var giveawayDesc, giveawaytitle, giveawayImage;
+
   Future<void>? _initializeVideoPlayerFuture;
 
   Future<void>? _initializeVideoPlayerFuture2;
   @override
   void initState() {
     //locatePosition();
-    print("lat "+lat.toString()+"^^");
-    if(lat.toString().trim()!="" && lat.toString().trim() != "null") {
+    print("lat " + lat.toString() + "^^");
+    if (lat.toString().trim() != "" && lat.toString().trim() != "null") {
       print("case1");
       homeApi();
-    }else{
+    } else {
       print("case2");
       fetchLocation();
     }
     isPlaying = true;
-
 
     super.initState();
     messaging = FirebaseMessaging.instance;
@@ -166,42 +163,42 @@ class _HomeState extends State<Home> {
     FirebaseMessaging.instance.getInitialMessage().then((message) async {
       print('Running Get Initial Message');
 
-      if(message!=null) {
-        print('Running Get Initial Message is '+message.data.toString()+"^^");
+      if (message != null) {
+        print(
+            'Running Get Initial Message is ' + message.data.toString() + "^^");
         if (message.data != null) {
-
           var listdata = await breakPayload(message.data.toString());
           var type = "";
           var review_id = "";
           var reply_id = "";
           listdata.forEach((element) {
-
-            if(element.contains("type")){
-              int i = element.indexOf(":")+2;
-              print("Type "+element.substring(i)+"^^");
+            if (element.contains("type")) {
+              int i = element.indexOf(":") + 2;
+              print("Type " + element.substring(i) + "^^");
               type = element.substring(i).toString();
             }
 
-            if(element.contains("businessreview_id")){
-              int i = element.indexOf(":")+2;
-              print("businessreview_id "+element.substring(i)+"^^");
+            if (element.contains("businessreview_id")) {
+              int i = element.indexOf(":") + 2;
+              print("businessreview_id " + element.substring(i) + "^^");
               review_id = element.substring(i).toString();
             }
 
-            if(element.contains("reply_id")){
-              int i = element.indexOf(":")+2;
-              print("reply_id "+element.substring(i)+"^^");
+            if (element.contains("reply_id")) {
+              int i = element.indexOf(":") + 2;
+              print("reply_id " + element.substring(i) + "^^");
               reply_id = element.substring(i).toString();
             }
           });
 
-          switch(type.toLowerCase()){
+          switch (type.toLowerCase()) {
             case "review":
               NotificationModel model = NotificationModel();
               model.review_id = review_id;
               model.type = type;
               model.reply_id = reply_id;
-              Navigator.pushNamed(context, "/communityReplyId", arguments: model);
+              Navigator.pushNamed(context, "/communityReplyId",
+                  arguments: model);
 
               break;
             case "hotspot":
@@ -214,16 +211,12 @@ class _HomeState extends State<Home> {
               break;
             case "addhotspot":
               await flutterLocalNotificationsPlugin.cancelAll();
-              Navigator.pushNamed(context,"/addhotspot");
+              Navigator.pushNamed(context, "/addhotspot");
 
               break;
             case "giveaway":
-
-
               break;
             case "sendmail":
-
-
               break;
             case "business":
               NotificationModel model = NotificationModel();
@@ -231,19 +224,21 @@ class _HomeState extends State<Home> {
               model.reply_id = "";
               model.type = "business";
 
-              Navigator.pushNamed( context,"/detailedbusiness", arguments: model);
+              Navigator.pushNamed(context, "/detailedbusiness",
+                  arguments: model);
               break;
 
             case "businesslist":
-              Navigator.pushReplacementNamed(context,"/explore");
+              Navigator.pushReplacementNamed(context, "/explore");
 
               break;
-               case "latest":
-              Navigator.pushReplacementNamed(context,"/latestbusiness");
+            case "latest":
+              Navigator.pushReplacementNamed(context, "/latestbusiness");
 
               break;
 
-            default:Navigator.pushNamed(context,"/notification");
+            default:
+              Navigator.pushNamed(context, "/notification");
           }
           Map<String, dynamic> map = message.data;
           print(map.toString());
@@ -272,8 +267,6 @@ class _HomeState extends State<Home> {
         }
       }
     });
-
-
   }
 
 /*
@@ -292,91 +285,84 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
+    return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           automaticallyImplyLeading: false,
-          leading:    Padding(
+          leading: Padding(
             padding: const EdgeInsets.all(14.0),
             child: InkWell(
-                  onTap: () {
-                    if(videoPlayerController!=null) {
-                      if (videoPlayerController!.value.isInitialized) {
-                        videoPlayerController?.pause();
-                      }
-                    }
+              onTap: () {
+                if (videoPlayerController != null) {
+                  if (videoPlayerController!.value.isInitialized) {
+                    videoPlayerController?.pause();
+                  }
+                }
 
-        if(videoPlayerController2!=null) {
-            if (videoPlayerController2!.value.isInitialized) {
-              videoPlayerController2?.pause();
-            }
-        }
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => BusFav()));
-                  },
-                  child: SvgPicture.asset(
-                    "assets/icons/heart1.svg",
-                    width: 26,
-                    color: Colors.white,
-                  ),
-                ),
+                if (videoPlayerController2 != null) {
+                  if (videoPlayerController2!.value.isInitialized) {
+                    videoPlayerController2?.pause();
+                  }
+                }
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => BusFav()));
+              },
+              child: SvgPicture.asset(
+                "assets/icons/heart1.svg",
+                width: 26,
+                color: Colors.white,
+              ),
+            ),
           ),
-          title:  SvgPicture.asset("assets/icons/Layer.svg", width: 50.w,),
+          title: SvgPicture.asset(
+            "assets/icons/Layer.svg",
+            width: 50.w,
+          ),
         ),
         body: isloading
-            ? Align(
-                alignment: Alignment.center,
-                child: ShimmerEffectHome())
+            ? Align(alignment: Alignment.center, child: ShimmerEffectHome())
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                 
-                 
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
                       height: 2.h,
                     ),
-                    imgvideostatus==1?SizedBox(
-                        height: 200,
-                        child: VideoItems(
-                          videoPlayerController:
-                          videoPlayerController2!,
-                        )):CachedNetworkImage(
-                      imageUrl: quoatesimage.toString(),
-                      imageBuilder: (context, imageProvider) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        height: 23.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3.w),
-                          //color: Colors.white,
-                          image: DecorationImage(
-                            // image: AssetImage("assets/images/Business.png"), fit: BoxFit.fill
-                            image: NetworkImage(
-                              //"assets/images/restaurant.jpeg"
-                                quoatesimage.toString()),
-                            fit: BoxFit.fill,
+                    imgvideostatus == 1
+                        ? SizedBox(
+                            height: 200,
+                            child: VideoItems(
+                              videoPlayerController: videoPlayerController2!,
+                            ))
+                        : CachedNetworkImage(
+                            imageUrl: quoatesimage.toString(),
+                            imageBuilder: (context, imageProvider) => Container(
+                              margin: EdgeInsets.symmetric(horizontal: 4.w),
+                              height: 23.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3.w),
+                                //color: Colors.white,
+                                image: DecorationImage(
+                                  // image: AssetImage("assets/images/Business.png"), fit: BoxFit.fill
+                                  image: NetworkImage(
+                                      //"assets/images/restaurant.jpeg"
+                                      quoatesimage.toString()),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                              // child: Image.network(quoatesimage.toString(), fit: BoxFit.fill)
+                            ),
+                            placeholder: (context, url) => Image.asset(
+                              "assets/images/Business.png",
+                              fit: BoxFit.fill,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              "assets/images/Business.png",
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        ),
-                        // child: Image.network(quoatesimage.toString(), fit: BoxFit.fill)
-                      ),
-                      placeholder: (context, url) => Image.asset(
-                        "assets/images/Business.png",
-                        fit: BoxFit.fill,
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        "assets/images/Business.png",
-                        fit: BoxFit.fill,
-                      ),
-                    ),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -391,8 +377,6 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
-
-
                     Visibility(
                       visible: quoatestitle.toString() != "null",
                       child: SizedBox(
@@ -434,38 +418,48 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 2.h,
                     ),
-                    datavideo_status==0?SizedBox(
-                        height: 200,
-                        child: VideoItems(
-                          videoPlayerController: videoPlayerController!, 
-                         
-                        )):Container(),
+                    datavideo_status == 0
+                        ? SizedBox(
+                            height: 200,
+                            child: VideoItems(
+                              videoPlayerController: videoPlayerController!,
+                            ))
+                        : Container(),
 
-                     /* YoutubePlayer(
+                    /* YoutubePlayer(
                         controller: _controller,
                         liveUIColor: Colors.amber,
                         showVideoProgressIndicator: true,
                       ),*/
 
                     Visibility(
-                      visible: image.toString()!="null",
+                      visible: image.toString() != "null",
                       child: SizedBox(
                         height: 2.h,
                       ),
                     ),
                     InkWell(
                       onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return loader;
+                            });
                         NotificationModel model = NotificationModel();
                         model.review_id = dataid;
                         model.reply_id = "";
                         model.type = "business";
 
-                        Navigator.pushNamed(context, "/detailedbusiness", arguments: model);
+                        Navigator.pushNamed(context, "/detailedbusiness",
+                                arguments: model)
+                            .whenComplete(() {
+                          Navigator.pop(context);
+                        });
                       },
                       child: Stack(
                         children: [
                           Visibility(
-                            visible: image.toString()!="null",
+                            visible: image.toString() != "null",
                             child: Container(
                               margin: EdgeInsets.symmetric(horizontal: 4.w),
                               height: 20.h,
@@ -483,7 +477,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           Visibility(
-                            visible: business_name.toString()!="null",
+                            visible: business_name.toString() != "null",
                             child: Positioned(
                               bottom: 2.h,
                               left: 8.w,
@@ -492,9 +486,9 @@ class _HomeState extends State<Home> {
                                 children: [
                                   Text(
                                     // "Business",
-                    
+
                                     business_name.toString(),
-                    
+
                                     style: TextStyle(
                                         fontSize: 21.sp,
                                         color: Colors.white,
@@ -519,7 +513,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           Visibility(
-                            visible: ratting.toString() !="null",
+                            visible: ratting.toString() != "null",
                             child: Positioned(
                               bottom: 3.h,
                               right: 6.w,
@@ -550,14 +544,14 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Visibility(
-                      visible: opeing_hour.toString()!="null",
+                      visible: opeing_hour.toString() != "null",
                       child: SizedBox(
                         height: 2.h,
                       ),
                     ),
-                     Visibility(
-                       visible: opeing_hour.toString()!="null",
-                       child: Container(
+                    Visibility(
+                      visible: opeing_hour.toString() != "null",
+                      child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.w),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,7 +560,9 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Open time: " + opeing_hour.toString() + " AM",
+                                  "Open time: " +
+                                      opeing_hour.toString() +
+                                      " AM",
                                   style: TextStyle(
                                       fontSize: 11.sp,
                                       color: kPrimaryColor,
@@ -588,13 +584,13 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                             Visibility(
-                              visible: distance.toString()!="null",
+                              visible: distance.toString() != "null",
                               child: SizedBox(
                                 height: 1.5.h,
                               ),
                             ),
                             Visibility(
-                              visible: distance.toString()!="null",
+                              visible: distance.toString() != "null",
                               child: Text(
                                 "Distance: " + distance.toString() + " mi",
                                 style: TextStyle(
@@ -607,93 +603,119 @@ class _HomeState extends State<Home> {
                             ),
                           ],
                         ),
+                      ),
                     ),
-                     ),
                     SizedBox(
                       height: 2.h,
                     ),
-                    description.toString()!="null"|| description.toString()!=""?Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                          description.toString()!="null"?description.toString():"",
-                        // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                        style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Color(0xFFCECECE),
-                            fontFamily: "Roboto"),
-                      ),
-                    ):Container(height: 0, width: 0,),
+                    description.toString() != "null" ||
+                            description.toString() != ""
+                        ? Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Text(
+                              description.toString() != "null"
+                                  ? description.toString()
+                                  : "",
+                              // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Color(0xFFCECECE),
+                                  fontFamily: "Roboto"),
+                            ),
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
+                          ),
                     SizedBox(
                       height: 3.h,
                     ),
-                    giveawayImage.toString()!="null"?Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                        "Giveaways",
-                        style: TextStyle(
-                            fontSize: 20.sp,
-                            color: kCyanColor,
-                            fontFamily: "Segoepr"),
-                      ),
-                    ):Container(height: 0,width: 0,),
+                    giveawayImage.toString() != "null"
+                        ? Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Text(
+                              "Giveaways",
+                              style: TextStyle(
+                                  fontSize: 20.sp,
+                                  color: kCyanColor,
+                                  fontFamily: "Segoepr"),
+                            ),
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
+                          ),
                     SizedBox(
                       height: 2.h,
                     ),
-
-                    giveawayImage.toString()!="null"?Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      height: 20.h,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.w),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            //"assets/images/restaurant.jpeg"
-                            giveawayImage.toString()
-
+                    giveawayImage.toString() != "null"
+                        ? Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            height: 20.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3.w),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    //"assets/images/restaurant.jpeg"
+                                    giveawayImage.toString()),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            // child: Image.asset(),
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
                           ),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      // child: Image.asset(),
-                    ):Container(height: 0,width: 0,),
-                    giveawayImage.toString()!="null"? SizedBox(
-                      height: 2.h,
-                    ):SizedBox(
-                      height: 0,
-                    ),
-                    giveawaytitle.toString()!="null"?Padding(
-                      padding: EdgeInsets.symmetric(horizontal:4.w),
-                      child: Text("${giveawaytitle.toString()}",
-                       style: TextStyle(
-                              fontSize: 15.sp,
-                              color: kCyanColor,
-                              fontFamily: "Segoepr"),
-                      ),
-                    ):Container(),
-                    giveawayDesc.toString()!="null"?Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                          giveawayDesc.toString()!="null"?giveawayDesc.toString():"",
-                        style: TextStyle(
-                            fontSize: 11.sp,
-                            color: Color(0xFFCECECE),
-                            fontFamily: "Roboto"),
-                      ),
-                    ):Container(height: 0,width: 0,),
-                    giveawayDesc.toString()!="null"?SizedBox(
-                      height: 2.h,
-                    ):SizedBox(height: 0),
+                    giveawayImage.toString() != "null"
+                        ? SizedBox(
+                            height: 2.h,
+                          )
+                        : SizedBox(
+                            height: 0,
+                          ),
+                    giveawaytitle.toString() != "null"
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Text(
+                              "${giveawaytitle.toString()}",
+                              style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: kCyanColor,
+                                  fontFamily: "Segoepr"),
+                            ),
+                          )
+                        : Container(),
+                    giveawayDesc.toString() != "null"
+                        ? Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Text(
+                              giveawayDesc.toString() != "null"
+                                  ? giveawayDesc.toString()
+                                  : "",
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Color(0xFFCECECE),
+                                  fontFamily: "Roboto"),
+                            ),
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
+                          ),
+                    giveawayDesc.toString() != "null"
+                        ? SizedBox(
+                            height: 2.h,
+                          )
+                        : SizedBox(height: 0),
                   ],
                 ),
               ));
   }
 
-
-
   @override
   Widget VideoPlayWidget(BuildContext context) {
-
     return FutureBuilder(
         future: _initializeVideoPlayerFuture,
         builder: (context, snapshot) {
@@ -709,18 +731,18 @@ class _HomeState extends State<Home> {
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
                       child: videoPlayerController!.value.isInitialized
                           ? AspectRatio(
-                        aspectRatio: videoPlayerController!.value.aspectRatio,
-                        child: VideoPlayer(videoPlayerController!),
-                      )
+                              aspectRatio:
+                                  videoPlayerController!.value.aspectRatio,
+                              child: VideoPlayer(videoPlayerController!),
+                            )
                           : Container(),
                     ),
                   ),
-
                   Center(
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          if(videoPlayerController!=null) {
+                          if (videoPlayerController != null) {
                             if (videoPlayerController!.value.isPlaying) {
                               videoPlayerController?.pause();
                             } else {
@@ -738,22 +760,19 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             );
-          }else{
+          } else {
             return Center(
-              child: CircularProgressIndicator(),);
+              child: CircularProgressIndicator(),
+            );
           }
-        }
-    );
+        });
   }
-
 
   @override
   Widget VideoPlayWidget2(BuildContext context) {
-
     return FutureBuilder(
         future: _initializeVideoPlayerFuture2,
         builder: (context, snapshot) {
@@ -769,24 +788,21 @@ class _HomeState extends State<Home> {
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
                       child: videoPlayerController2!.value.isInitialized
                           ? AspectRatio(
-                        aspectRatio: videoPlayerController2!.value.aspectRatio,
-                        child: VideoPlayer(videoPlayerController!),
-                      )
+                              aspectRatio:
+                                  videoPlayerController2!.value.aspectRatio,
+                              child: VideoPlayer(videoPlayerController!),
+                            )
                           : Container(),
                     ),
                   ),
-
                   Center(
                     child: InkWell(
                       onTap: () {
                         setState(() {
-
-                          if(videoPlayerController2!.value.isPlaying){
+                          if (videoPlayerController2!.value.isPlaying) {
                             videoPlayerController2!.pause();
-
-                          }else{
+                          } else {
                             videoPlayerController2!.play();
-
                           }
                         });
                       },
@@ -799,16 +815,15 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             );
-          }else{
+          } else {
             return Center(
-              child: CircularProgressIndicator(),);
+              child: CircularProgressIndicator(),
+            );
           }
-        }
-    );
+        });
   }
 
   @override
@@ -840,11 +855,10 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-
   Future<dynamic> homeApi() async {
-   await FirebaseMessaging.instance.getToken().then((value) {
+    await FirebaseMessaging.instance.getToken().then((value) {
       fcm_token = value.toString();
-      print("FCM "+fcm_token.toString()+"^^");
+      print("FCM " + fcm_token.toString() + "^^");
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -853,7 +867,7 @@ class _HomeState extends State<Home> {
     print("id lat: " + lat.toString());
     print("id long: " + long.toString());
     print("fcm token: " + fcm_token.toString());
-    if(mounted) {
+    if (mounted) {
       setState(() {
         isloading = true;
       });
@@ -865,9 +879,9 @@ class _HomeState extends State<Home> {
         ),
         body: {
           "id": id.toString(),
-          "lat":  lat.toString(),//"26.8546714985159",
-          "long":long.toString(),//"75.76675952576491"
-          "fcm_token":fcm_token.toString()
+          "lat": lat.toString(), //"26.8546714985159",
+          "long": long.toString(), //"75.76675952576491"
+          "fcm_token": fcm_token.toString()
         });
 
     var jsonRes;
@@ -883,7 +897,9 @@ class _HomeState extends State<Home> {
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
       notification_status = jsonRes["notification_status"].toString();
-      print("notification status "+jsonRes["notification_status"].toString()+"^^");
+      print("notification status " +
+          jsonRes["notification_status"].toString() +
+          "^^");
       if (jsonRes["status"].toString() == "true") {
         quoatesid = jsonRes["quoatesdata"]["id"].toString();
         print("id:" + quoatesid.toString());
@@ -900,8 +916,7 @@ class _HomeState extends State<Home> {
         description = jsonRes["data"]["description"].toString();
         dataid = jsonRes["data"]["user_id"].toString();
 
-
-        print("data id: "+dataid.toString());
+        print("data id: " + dataid.toString());
 
         image = jsonRes["data"]["business_images"].toString();
         distance = jsonRes["data"]["distance"].toString();
@@ -913,18 +928,19 @@ class _HomeState extends State<Home> {
         giveawayDesc = jsonRes["giweaways"]["description"].toString();
         giveawayImage = jsonRes["giweaways"]["image"].toString();
         giveawaytitle = jsonRes["giweaways"]["name"].toString();
-        print("giveawayDesc "+giveawayDesc.toString()+"^^");
-        print("giveawayImage "+giveawayImage.toString()+"^^");
-
+        print("giveawayDesc " + giveawayDesc.toString() + "^^");
+        print("giveawayImage " + giveawayImage.toString() + "^^");
 
         datavideo = jsonRes["quoatesdata"]["video"].toString();
 
-        print("video: "+jsonRes["quoatesdata"]["video"].toString());
-        if(datavideo!=null){
-          videoPlayerController = await VideoPlayerController.network(datavideo);
+        print("video: " + jsonRes["quoatesdata"]["video"].toString());
+        if (datavideo != null) {
+          videoPlayerController =
+              await VideoPlayerController.network(datavideo);
         }
-        if(imgvideostatus.toString()=="1") {
-          videoPlayerController2 = new VideoPlayerController.network(quoatesimage);
+        if (imgvideostatus.toString() == "1") {
+          videoPlayerController2 =
+              new VideoPlayerController.network(quoatesimage);
         }
 /*
       if(datavideo!=null) {
@@ -961,7 +977,8 @@ class _HomeState extends State<Home> {
       } else {
         setState(() {
           isloading = false;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(jsonRes["message"].toString())));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(jsonRes["message"].toString())));
         });
       }
     } else {
@@ -973,33 +990,31 @@ class _HomeState extends State<Home> {
     }
   }
 
-
-  void checkVideo(){
+  void checkVideo() {
     // Implement your calls inside these conditions' bodies :
-    if(videoPlayerController!.value.position == Duration(seconds: 0, minutes: 0, hours: 0)) {
+    if (videoPlayerController!.value.position ==
+        Duration(seconds: 0, minutes: 0, hours: 0)) {
       print('video Started');
     }
 
-    if(videoPlayerController!.value.position == videoPlayerController!.value.duration) {
+    if (videoPlayerController!.value.position ==
+        videoPlayerController!.value.duration) {
       print('video Ended');
     }
-
   }
 
-
-
-  void checkVideo2(){
+  void checkVideo2() {
     // Implement your calls inside these conditions' bodies :
-    if(videoPlayerController2!.value.position == Duration(seconds: 0, minutes: 0, hours: 0)) {
+    if (videoPlayerController2!.value.position ==
+        Duration(seconds: 0, minutes: 0, hours: 0)) {
       print('video Started');
     }
 
-    if(videoPlayerController2!.value.position == videoPlayerController2!.value.duration) {
+    if (videoPlayerController2!.value.position ==
+        videoPlayerController2!.value.duration) {
       print('video Ended');
     }
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 }
