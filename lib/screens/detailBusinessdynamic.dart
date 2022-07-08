@@ -81,12 +81,17 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
   late VideoPlayerController _controllerr;
   var businessid = "";
+  duration (){
+    print("duration 1");
+    
+  }
   @override
   void initState() {
     isloadingNew = true;
     super.initState();
     toggleDraggableScrollableSheet();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      
       final args = ModalRoute
           .of(context)!
           .settings
@@ -99,6 +104,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
           communityReviewApi();
         }
       }
+      Duration(seconds: 1);
     });
   }
 
@@ -229,7 +235,7 @@ class _DetailBussinessDynamicState extends State<DetailBussinessDynamic> {
 
     return Scaffold(
       // backgroundColor:opacity==true?Colors.grey.shade700.withOpacity(0.6):Colors.transparent,
-      backgroundColor:Colors.black.withOpacity(0.6),
+      backgroundColor:Colors.black,
       // body: isloadingNew==true?Center(child: Platform.isIOS?CupertinoActivityIndicator():CircularProgressIndicator(),):
       body: isloadingNew==true?loader:
       nearby==null?Center(child: Text("No Details found", style: TextStyle(color: Colors.white),),):Stack(

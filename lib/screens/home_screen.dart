@@ -440,21 +440,26 @@ class _HomeState extends State<Home> {
                     ),
                     InkWell(
                       onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return loader;
-                            });
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return loader;
+                        //     });
                         NotificationModel model = NotificationModel();
                         model.review_id = dataid;
                         model.reply_id = "";
                         model.type = "business";
+                        // Future.delayed(
+                        //   Duration(seconds: 1),
+                        //   (){
 
+                            
+                        //   }
+                        // );
                         Navigator.pushNamed(context, "/detailedbusiness",
-                                arguments: model)
-                            .whenComplete(() {
-                          Navigator.pop(context);
-                        });
+                                arguments: model);
+
+                        
                       },
                       child: Stack(
                         children: [
