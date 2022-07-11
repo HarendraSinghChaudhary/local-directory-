@@ -2478,18 +2478,37 @@ class _HotspotState extends State<Hotspot> {
           "image[]", getHostSpotList[index].replyfile!.path));
     } else if (getHostSpotList[index].reply_image_video_status == "1") {
     print("++++"+getHostSpotList[index].replyimages.toString());
-      getHostSpotList[index].replyimages.forEach((element) async {
+      // getHostSpotList[index].replyimages.forEach((element) async {
 
-        var path = await FlutterAbsolutePath.getAbsolutePath(
-            element.identifier.toString());
-        print("ImagePath " + path.toString());
-        request.files.add(http.MultipartFile(
-            'image[]',
-            File(path.toString()).readAsBytes().asStream(),
-            File(path.toString()).lengthSync(),
-            filename: path.toString().split("/").last));
+      //   var path = await FlutterAbsolutePath.getAbsolutePath(
+      //       element.identifier.toString());
+      //   print("ImagePath " + path.toString());
+      //   request.files.add(http.MultipartFile(
+      //       'image[]',
+      //       File(path.toString()).readAsBytes().asStream(),
+      //       File(path.toString()).lengthSync(),
+      //       filename: path.toString().split("/").last));
 
-      });
+      // });
+      List<http.MultipartFile> newList = [];
+
+      // getHostSpotList[index].replyimages.forEach((element)
+      for (int i = 0; i < getHostSpotList[index].replyimages.length; i++)  {
+        var element = getHostSpotList[index].replyimages[i];
+      var path = await FlutterAbsolutePath.getAbsolutePath(element.identifier.toString());
+      File imageFile =  File(path.toString());
+
+      var stream = new http.ByteStream(imageFile.openRead());
+      var length = await imageFile.length();
+
+      var multipartFile = new http.MultipartFile("image[]", stream, length,
+          filename: path.toString().split("/").last);
+      newList.add(multipartFile);
+    };
+
+
+
+    request.files.addAll(newList);
     }
     String msg = "";
     var jsonRes;
