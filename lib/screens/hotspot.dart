@@ -2472,10 +2472,14 @@ class _HotspotState extends State<Hotspot> {
       }
     }
     if (getHostSpotList[index].reply_image_video_status == "2") {
+    print("======"+getHostSpotList[index].replyfile!.path);
+
       request.files.add(await http.MultipartFile.fromPath(
           "image[]", getHostSpotList[index].replyfile!.path));
     } else if (getHostSpotList[index].reply_image_video_status == "1") {
+    print("++++"+getHostSpotList[index].replyimages.toString());
       getHostSpotList[index].replyimages.forEach((element) async {
+
         var path = await FlutterAbsolutePath.getAbsolutePath(
             element.identifier.toString());
         print("ImagePath " + path.toString());
@@ -2484,6 +2488,7 @@ class _HotspotState extends State<Hotspot> {
             File(path.toString()).readAsBytes().asStream(),
             File(path.toString()).lengthSync(),
             filename: path.toString().split("/").last));
+
       });
     }
     String msg = "";
@@ -3359,7 +3364,9 @@ class _HotspotState extends State<Hotspot> {
         getHostSpotList[index]
             .replyfileList
             .add(getHostSpotList[index].replyfile!);
-        setState(() {});
+        setState(() {
+          // print(getHostSpotList[index].image);
+        });
       });
       Navigator.of(context, rootNavigator: true).pop();
     } else {
