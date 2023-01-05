@@ -72,7 +72,7 @@ class Page1 extends StatelessWidget {
       appBar: AppBar(title: Text('Page1')),
       body: Container(
         alignment: Alignment.center,
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text('go to Page2'),
           onPressed: () => navigatorKey.currentState!.pushNamed('/page2'),
         ),

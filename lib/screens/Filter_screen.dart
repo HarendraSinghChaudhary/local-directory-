@@ -435,7 +435,7 @@ class _FliterScreenState extends State<FliterScreen> {
                        color: kPrimaryColor
                      )
                     ),
-                    child: FlatButton(
+                    child: TextButton(
                      
                      
                       onPressed: () {

@@ -22,9 +22,12 @@ class DefaultButton extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: FlatButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        color: kPrimaryColor,
+      child: TextButton(
+        style: TextButton.styleFrom(
+           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: kPrimaryColor,
+        ),
+       
         onPressed: press,
         child: Text(
           text,

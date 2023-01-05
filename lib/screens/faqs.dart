@@ -193,7 +193,7 @@ bool isloading = false;
     var res;
 
     await request.then((http.Response response) {
-      res = response;
+  
       final JsonDecoder _decoder = new JsonDecoder();
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
@@ -204,6 +204,9 @@ bool isloading = false;
 
     if (res.statusCode == 200) {
       print(jsonRes["status"]);
+
+
+      
 
       if (jsonRes["status"].toString() == "true") {
         for (var i = 0; i < jsonArray.length; i++) {
